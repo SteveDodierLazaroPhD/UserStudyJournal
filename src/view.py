@@ -156,10 +156,21 @@ class ActivityView(gtk.VBox):
         self.pack_start(self.optionsbar,False, False)
         self.optionsbar.pack_start(gtk.Label("Show:"),False, False, 3)
         for k in SUPPORTED_SOURCES.keys():
-            img = gtk.image_new_from_pixbuf(get_category_icon(SUPPORTED_SOURCES[k]["icon"]))
+            img = gtk.image_new_from_pixbuf(get_category_icon(SUPPORTED_SOURCES[k]["icon"], 16))
             btn = FilterButton(img, k)
             self.optionsbar.pack_start(btn, False, False)
             btn.connect_after("clicked", self.set_filter)
+            
+        self.combobox = gtk.combo_box_new_text()
+        hbox = gtk.HBox()
+        hbox.pack_start(gtk.Label("Sort by:"), False, False)
+        hbox.pack_start(self.combobox, True, False, 3)
+        self.optionsbar.pack_end(hbox, False, False)
+        self.combobox.append_text("Type")
+        self.combobox.append_text("Populartiy")
+        self.combobox.append_text("Recency")
+        self.combobox.set_active(0)
+        
     
     def set_filter(self, widget):
         self.category_filter[widget.category] = widget.active
@@ -284,4 +295,5 @@ class DayView(gtk.VBox):
                             subject = event_dict[k][subject]["events"][0].subjects[0]
                             icon =  thumbnailer.get_icon(subject, 32)
                             self.view.append_object(icon, subject.text, subject)
-
+                            
+            

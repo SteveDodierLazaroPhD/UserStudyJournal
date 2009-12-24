@@ -49,7 +49,6 @@ class DayListView(gtk.TreeView):
     def clear(self):
         self.store.clear()
     
-
     def append_object(self, icon, text, subject):
         #print text
         #text = "<span><b>"+text+"</b></span>"
