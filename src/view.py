@@ -264,8 +264,9 @@ class DayView(gtk.VBox):
             if not SORTING == "TYPE":
                 for event in x:
                     subject = event.subjects[0]
-                    icon =  thumbnailer.get_icon(subject, 32)
-                    self.view.append_object(icon, subject.text, subject)
+                    if exists(subject.uri):
+                        icon =  thumbnailer.get_icon(subject, 32)
+                        self.view.append_object(icon, subject.text, subject)
 
             else:
                 print "BUAUAU"
