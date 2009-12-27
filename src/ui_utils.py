@@ -28,9 +28,17 @@ import gtk
 import gnome.ui
 
 
-class Settings():
+class Settings(gobject.GObject):
+    __gsignals__ = {
+        "change-view" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_STRING,)),
+    }
     def __init__(self):
+        gobject.GObject.__init__(self)
         self.view = "Journal"
+        
+    def set_view(self, view):
+        self.view = view
+        self.emit("change-view", self.view)
         
 class SettingsWindow(gtk.Window):
     def __init__(self):
@@ -50,7 +58,11 @@ class SettingsWindow(gtk.Window):
         hbox.pack_start(label, True, True, 3)
         hbox.pack_start(self.viewcombobox, True, True, 3)
         self.vbox.pack_start(hbox, False, False)
-        self.viewcombobox.set_active(0)
+        self.viewcombobox.set_active(0),
+        self.viewcombobox.connect("changed", self.change_view)
+        
+    def change_view(self, w):
+        settings.set_view(w.get_active_text())
         
 
 class LaunchManager:

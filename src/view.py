@@ -143,19 +143,23 @@ class ActivityView(gtk.VBox):
         
         self.zg = CLIENT
         self.__init_optionsbar()
-        self.set_view_type(settings.view)
+        self.set_view_type()
     
         self.range = 3
         self._set_today_timestamp()
         
         self.ready = True
         
+        settings.connect("change-view", lambda w, x: self.set_view_type(True))
         self.set_views()
         
-    def set_view_type(self, viewtype):
+    def set_view_type(self, refresh=False):
         
+        for w in self:
+            if not w == self.optionsbar:
+                self.remove(w)
         
-        if viewtype == "Journal":
+        if settings.view == "Journal":
             self.daysbox = gtk.HBox(True)
         else:
             self.daysbox = gtk.VBox()
@@ -164,9 +168,10 @@ class ActivityView(gtk.VBox):
         self.scroll.add_with_viewport(self.daysbox)
         self.scroll.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         self.pack_start(self.scroll, True, True, 3)
-        
-        
-        
+        if refresh:
+            self.set_views()
+        self.scroll.show_all()
+
     def __init_optionsbar(self):
         self.optionsbar = gtk.HBox()
         self.pack_start(self.optionsbar,False, False)
@@ -228,20 +233,19 @@ class ActivityView(gtk.VBox):
         self.set_views()
       
     def set_views(self):
+        self.days.clear()
         if self.ready:
             print "SETTING VIEWS", self.sorting
             for w in self.daysbox:
                 self.daysbox.remove(w)
             for i in xrange(self.range):
+                if not settings.view == "Journal":
+                    i = (self.range-1) - i
                 ptime =  datetime.datetime.fromtimestamp(self.start + i*86400).strftime("%A, %d %B %Y")
                 if not self.days.has_key(ptime):
                     dayview = DayView(ptime, self.start + i*86400, sorting=self.sorting)
                     self.days[ptime] = dayview
-                if settings.view == "Journal":
                     self.daysbox.pack_start(self.days[ptime])
-                else:
-                    self.daysbox.pack_start(self.days[ptime], False, False)
-                    
                 self.days[ptime].show_all()
                 self.days[ptime].init_events(self.sorting)
 
@@ -280,10 +284,8 @@ class DayView(gtk.VBox):
         event2 = Event()
         event2.set_interpretation(Interpretation.MODIFY_EVENT.uri)
         if self.sorting == "Recency":
-            print "GETTING RECENT"
             self.zg.find_event_ids_for_templates([event,event2], self._handle_find_events, [self.start*1000, self.end*1000], num_events=50000, result_type=2)
         else:
-            print "GETTING MOST"
             self.zg.find_event_ids_for_templates([event,event2], self._handle_find_events, [self.start*1000, self.end*1000], num_events=50000, result_type=4)
 
     def _handle_find_events(self, ids):
@@ -303,33 +305,32 @@ class DayView(gtk.VBox):
         self.view.clear()
         subjects = {}
         
-        if settings.view == "Journal":
-            if not self.sorting == "Type":
-                for event in x:
-                    subject = event.subjects[0]
-                    if exists(subject.uri):
+        if not self.sorting == "Type":
+            for event in x:
+                subject = event.subjects[0]
+                if exists(subject.uri):
+                    icon =  thumbnailer.get_icon(subject, 32)
+                    self.view.append_object(icon, subject.text, subject)
+
+        else:
+            for event in x:
+                subject = event.subjects[0] 
+                if exists(subject.uri):
+                    if not event_dict.has_key(subject.interpretation):
+                        event_dict[subject.interpretation] = {}
+                    if not event_dict[subject.interpretation].has_key(subject.uri):
+                        event_dict[subject.interpretation][subject.uri] = {"count":0, "events":[]}
+                    event_dict[subject.interpretation][subject.uri]["count"]+=1
+                    event_dict[subject.interpretation][subject.uri]["events"].append(event)
+            events = event_dict.keys()
+            if events: events.sort()
+            for k in events:
+                for subject in event_dict[k]:
+                    if not subject in subjects.keys():
+                        subjects[subject] = event_dict[k][subject]["events"][0].subjects[0]
+                        subject = event_dict[k][subject]["events"][0].subjects[0]
                         icon =  thumbnailer.get_icon(subject, 32)
                         self.view.append_object(icon, subject.text, subject)
 
-            else:
-                for event in x:
-                    subject = event.subjects[0] 
-                    if exists(subject.uri):
-                        if not event_dict.has_key(subject.interpretation):
-                            event_dict[subject.interpretation] = {}
-                        if not event_dict[subject.interpretation].has_key(subject.uri):
-                            event_dict[subject.interpretation][subject.uri] = {"count":0, "events":[]}
-                        event_dict[subject.interpretation][subject.uri]["count"]+=1
-                        event_dict[subject.interpretation][subject.uri]["events"].append(event)
-                events = event_dict.keys()
-                if events: events.sort()
-                for k in events:
-                    for subject in event_dict[k]:
-                        if not subject in subjects.keys():
-                            subjects[subject] = event_dict[k][subject]["events"][0].subjects[0]
-                            subject = event_dict[k][subject]["events"][0].subjects[0]
-                            icon =  thumbnailer.get_icon(subject, 32)
-                            self.view.append_object(icon, subject.text, subject)
-
-                            
-            
+                        
+        
