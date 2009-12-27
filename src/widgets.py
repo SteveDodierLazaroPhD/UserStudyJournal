@@ -4,8 +4,10 @@ Created on Nov 28, 2009
 @author: seif
 '''
 import gtk
+import datetime
 import gobject
 import pango
+from ui_utils import settings
 #from teamgeist import TeamgeistInterface
 
 
@@ -16,7 +18,8 @@ class DayListView(gtk.TreeView):
                                 gtk.gdk.Pixbuf,
                                 str,    #TIME
                                 gobject.TYPE_PYOBJECT,
-                                gobject.TYPE_BOOLEAN
+                                gobject.TYPE_BOOLEAN,
+                                str
                                 )
 
         self.filters = {}
@@ -26,13 +29,19 @@ class DayListView(gtk.TreeView):
         icon_column = gtk.TreeViewColumn("Icon", icon_cell, pixbuf=0)
 
         text_cell = gtk.CellRendererText()
-        #text_cell.set_properties("wrap-width", 100)
-        #text_cell.set_properties("wrap-mode", gtk.WRAP_WORD_CHAR)
         text_cell.set_property("ellipsize", pango.ELLIPSIZE_END)
         text_column = gtk.TreeViewColumn("Activity", text_cell, markup=1)
+        text_column.set_expand(True)
+        
+        time_cell = gtk.CellRendererText()
+        self.time_column = gtk.TreeViewColumn("Activity", time_cell, markup=4)
         
         self.append_column(icon_column)
         self.append_column(text_column)
+        if settings.show_timestamps:
+            self.append_column(self.time_column)
+            
+        settings.connect("toggle-time", lambda x, y: self.revisit_timestamps())
         
         self.set_headers_visible(False)
         
@@ -40,25 +49,33 @@ class DayListView(gtk.TreeView):
         self.filterstore.set_visible_column(3)
         self.set_model(self.filterstore)
 
+    def revisit_timestamps(self):
+        if not settings.show_timestamps:
+            self.remove_column(self.time_column)
+        else:
+            self.append_column(self.time_column)
+
     def set_filters(self, filters):
         self.filters = filters
         for path in self.store:
-            subject =  path[2]
-            path[3] = self.filters[subject.interpretation]
+            event =  path[2]
+            path[3] = self.filters[event.subjects[0].interpretation]
 
     def clear(self):
         self.store.clear()
     
-    def append_object(self, icon, text, subject):
+    def append_object(self, icon, text, event):
         #print text
         #text = "<span><b>"+text+"</b></span>"
-        bool = self.filters[subject.interpretation]
-        
+        bool = self.filters[event.subjects[0].interpretation]
+        timestamp = datetime.datetime.fromtimestamp(int(event.timestamp)/1000).strftime("%H:%M")
+
         self.store.append([
                         icon,
                         text,
-                        subject,
-                        bool
+                        event,
+                        bool,
+                        timestamp
                         ])
 
 

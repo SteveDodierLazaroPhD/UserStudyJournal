@@ -310,7 +310,7 @@ class DayView(gtk.VBox):
                 subject = event.subjects[0]
                 if exists(subject.uri):
                     icon =  thumbnailer.get_icon(subject, 32)
-                    self.view.append_object(icon, subject.text, subject)
+                    self.view.append_object(icon, subject.text, event)
 
         else:
             for event in x:
@@ -328,9 +328,10 @@ class DayView(gtk.VBox):
                 for subject in event_dict[k]:
                     if not subject in subjects.keys():
                         subjects[subject] = event_dict[k][subject]["events"][0].subjects[0]
+                        event = event_dict[k][subject]["events"][0]
                         subject = event_dict[k][subject]["events"][0].subjects[0]
                         icon =  thumbnailer.get_icon(subject, 32)
-                        self.view.append_object(icon, subject.text, subject)
+                        self.view.append_object(icon, subject.text, event)
 
                         
         

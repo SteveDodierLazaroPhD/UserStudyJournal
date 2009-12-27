@@ -31,14 +31,26 @@ import gnome.ui
 class Settings(gobject.GObject):
     __gsignals__ = {
         "change-view" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_STRING,)),
+        "change-insertions" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_STRING,)),
+         "toggle-time" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_BOOLEAN,)),
     }
     def __init__(self):
         gobject.GObject.__init__(self)
         self.view = "Journal"
+        self.insertions = "Subjects"
+        self.show_timestamps = False
         
     def set_view(self, view):
         self.view = view
         self.emit("change-view", self.view)
+        
+    def set_insertions(self, insertions):
+        self.insertions = insertions
+        self.emit("change-insertions", self.view)
+        
+    def toggle_time(self, bool):
+        self.show_timestamps = bool
+        self.emit("toggle-time", self.show_timestamps)
         
 class SettingsWindow(gtk.Window):
     def __init__(self):
@@ -47,9 +59,16 @@ class SettingsWindow(gtk.Window):
         self.vbox = gtk.VBox()
         self.add(self.vbox)
         self.__init_viewtype()
+        self.__init_insertions()
+        self.__init_showtimestamps()
+        
+    def __init_showtimestamps(self): 
+        self.timecheckbox = gtk.CheckButton("Show Time")
+        self.vbox.pack_start(self.timecheckbox, False, False)
+        self.timecheckbox.connect("toggled", self.toggle_time)
         
     def __init_viewtype(self):
-        hbox = gtk.HBox()
+        hbox = gtk.HBox(True)
         label = gtk.Label("View Type")
         label.set_alignment(0.0, 0.5)
         self.viewcombobox = gtk.combo_box_new_text()
@@ -61,8 +80,27 @@ class SettingsWindow(gtk.Window):
         self.viewcombobox.set_active(0),
         self.viewcombobox.connect("changed", self.change_view)
         
+    def __init_insertions(self):
+        hbox = gtk.HBox(True)
+        label = gtk.Label("Show")
+        label.set_alignment(0.0, 0.5)
+        self.insertioncombobox = gtk.combo_box_new_text()
+        self.insertioncombobox.append_text("Subjects")
+        self.insertioncombobox.append_text("Events")
+        hbox.pack_start(label, True, True, 3)
+        hbox.pack_start(self.insertioncombobox, True, True, 3)
+        self.vbox.pack_start(hbox, False, False)
+        self.insertioncombobox.set_active(0),
+        self.insertioncombobox.connect("changed", self.change_insertions)
+        
     def change_view(self, w):
         settings.set_view(w.get_active_text())
+
+    def change_insertions(self, w):
+        settings.set_insertions(w.get_active_text())
+        
+    def toggle_time(self, w):
+        settings.toggle_time(w.get_active())
         
 
 class LaunchManager:
