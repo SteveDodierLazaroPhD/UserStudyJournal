@@ -28,6 +28,31 @@ import gtk
 import gnome.ui
 
 
+class Settings():
+    def __init__(self):
+        self.view = "Journal"
+        
+class SettingsWindow(gtk.Window):
+    def __init__(self):
+        gtk.Window.__init__(self)
+        self.set_title("Settings")
+        self.vbox = gtk.VBox()
+        self.add(self.vbox)
+        self.__init_viewtype()
+        
+    def __init_viewtype(self):
+        hbox = gtk.HBox()
+        label = gtk.Label("View Type")
+        label.set_alignment(0.0, 0.5)
+        self.viewcombobox = gtk.combo_box_new_text()
+        self.viewcombobox.append_text("Journal")
+        self.viewcombobox.append_text("List")
+        hbox.pack_start(label, True, True, 3)
+        hbox.pack_start(self.viewcombobox, True, True, 3)
+        self.vbox.pack_start(hbox, False, False)
+        self.viewcombobox.set_active(0)
+        
+
 class LaunchManager:
     """
     A program lauching utility which handles opening a URI or executing a
@@ -359,6 +384,7 @@ icon_factory = IconFactory()
 thumbnailer = Thumbnailer()
 thumb_factory = gnome.ui.ThumbnailFactory("normal")
 launcher = LaunchManager()
+settings = Settings()
     
 SUPPORTED_SOURCES = {
                      Interpretation.VIDEO.uri:  {"icon": "gnome-mime-video", "desc":"Video(s) watched"},

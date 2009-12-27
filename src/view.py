@@ -20,11 +20,6 @@ except RuntimeError, e:
     print "Unable to connect to Zeitgeist, won't send events. Reason: '%s'" %e
     CLIENT = None
 
-SUBJECT_VIEW = "Type"
-EVENT_VIEW = "Activity View"
-VIEW_TYPE = SUBJECT_VIEW
-
-
 CATEGORY_FILTER= {}
 for k in SUPPORTED_SOURCES.keys():
             CATEGORY_FILTER[k] = True
@@ -61,13 +56,18 @@ class Portal(gtk.Window):
         
     def __init_menubar(self):
         viewmenu = gtk.Menu()
-        
+        self.settingswindow = SettingsWindow()
         filem = gtk.MenuItem("File")
         filem.set_submenu(viewmenu)
         self.menu.append(filem)
         self.menu.show_all()
         
     def __init_widgets(self):
+        uimanager = gtk.UIManager()
+        accelgroup = uimanager.get_accel_group()
+        self.add_accel_group(accelgroup)
+
+        
         self.menu = gtk.MenuBar()
         self.notebook = Notebook()
         self.statusbar = gtk.Statusbar()
@@ -84,38 +84,41 @@ class Portal(gtk.Window):
         self.backbtn = gtk.ToolButton("gtk-go-back")
         self.todaybtn = gtk.ToolButton("gtk-home")
         self.fwdbtn = gtk.ToolButton("gtk-go-forward")
-        self.prefbtn = gtk.ToggleToolButton("gtk-preferences")
+        self.optbtn = gtk.ToolItem()
+        btn = gtk.ToggleButton()
+        btn.set_relief(gtk.RELIEF_NONE)
+        btn.add(gtk.Label("Options"))
+        self.optbtn.add(btn)
+        self.prefbtn = gtk.ToolButton("gtk-preferences")
+        #self.propbtn = gtk.ToolButton("gtk-properties")
         
         self.todaybtn.connect("clicked", lambda w: self.notebook.activityview._set_today_timestamp())
         self.backbtn.connect("clicked", lambda w: self.notebook.activityview.jump(-86400))
         self.fwdbtn.connect("clicked", lambda w: self.notebook.activityview.jump(86400))
-        self.prefbtn.connect("toggled", self.notebook.activityview.toggle_optionsbar)
+        self.prefbtn.connect("clicked", self.toggle_preferences)
+        btn.connect("toggled", self.notebook.activityview.toggle_optionsbar)
         
         toolbar.add(self.backbtn)
         toolbar.add(self.todaybtn)
         toolbar.add(self.fwdbtn)
         toolbar.add(gtk.SeparatorToolItem())
-        toolbar.add(self.prefbtn)
+        toolbar.add(self.optbtn)
         
-        #self.combobox = gtk.combo_box_new_text()
-        #self.combobox.append_text(SUBJECT_VIEW)
-        #self.combobox.append_text(EVENT_VIEW)
-        #self.combobox.set_active(0)
-        
-        
-        #hbox = gtk.VBox()
-        #hbox.pack_start(self.combobox, True, False)
-        
-        #toolbar2.add(hbox)
-        
+        hbox = gtk.HBox()
+        hbox.pack_start(self.prefbtn)
         self.searchbar = SearchEntry()
-        toolbar2.add(self.searchbar)
+        hbox.pack_end(self.searchbar)
+        toolbar2.add(hbox)
         
         self.show_all()
 
+    def toggle_preferences(self, w):
+        if not self.settingswindow:
+            self.settingswindow = SettingsWindow()
+        self.settingswindow.show_all()
+
     def quit(self, widget):
         gtk.main_quit()
-
 
 class Notebook(gtk.Notebook):
     
@@ -130,31 +133,39 @@ class Notebook(gtk.Notebook):
         self.append_page(self.activityview, tab)
         tab.closebtn.set_sensitive(False)
 
-
 class ActivityView(gtk.VBox):
     def __init__(self):
         gtk.VBox.__init__(self)
         
         self.ready = False
         self.days = {}
+        self.sorting = "Type"
         
         self.zg = CLIENT
         self.__init_optionsbar()
-        self.sorting = "Type"
-        
-        
-        self.daysbox = gtk.HBox(True)
-        scroll = gtk.ScrolledWindow()
-        scroll.add_with_viewport(self.daysbox)
-        scroll.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        self.pack_start(scroll, True, True, 3)
-        
+        self.set_view_type(settings.view)
+    
         self.range = 3
         self._set_today_timestamp()
         
         self.ready = True
         
         self.set_views()
+        
+    def set_view_type(self, viewtype):
+        
+        
+        if viewtype == "Journal":
+            self.daysbox = gtk.HBox(True)
+        else:
+            self.daysbox = gtk.VBox()
+        
+        self.scroll = gtk.ScrolledWindow()
+        self.scroll.add_with_viewport(self.daysbox)
+        self.scroll.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        self.pack_start(self.scroll, True, True, 3)
+        
+        
         
     def __init_optionsbar(self):
         self.optionsbar = gtk.HBox()
@@ -173,7 +184,6 @@ class ActivityView(gtk.VBox):
         self.optionsbar.pack_end(hbox, False, False)
         self.optionsbar.set_border_width(3)
         
-        self.sorting = "Type"
         self.combobox.append_text("Type")
         self.combobox.append_text("Populartiy")
         self.combobox.append_text("Recency")
@@ -183,12 +193,10 @@ class ActivityView(gtk.VBox):
             self.set_views()
             
         self.combobox.connect("changed", change_sorting)
-        
         self.combobox.set_active(0)
         
     def set_filter(self, widget):
         CATEGORY_FILTER[widget.category] = widget.active
-        print widget.category, widget.active
         for daybox in self.days.values():
             daybox.view.set_filters(CATEGORY_FILTER)
     
@@ -215,35 +223,38 @@ class ActivityView(gtk.VBox):
         if not dayinfocus:
             dayinfocus = int(time.mktime(time.strptime(time.strftime("%d %B %Y") , "%d %B %Y")))
             pt = datetime.datetime.fromtimestamp(dayinfocus).strftime("%A, %d %B %Y    %H:%M:%S")
-            print self.range, dayinfocus, "--------------> "+ pt
         self.end =  dayinfocus + 86399 
         self.start =  dayinfocus - (self.range-1)*86400
         self.set_views()
       
     def set_views(self):
         if self.ready:
-            print "SETTING VIEWS"
+            print "SETTING VIEWS", self.sorting
             for w in self.daysbox:
                 self.daysbox.remove(w)
             for i in xrange(self.range):
                 ptime =  datetime.datetime.fromtimestamp(self.start + i*86400).strftime("%A, %d %B %Y")
                 if not self.days.has_key(ptime):
-                    dayview = DayView(ptime, self.start + i*86400)
+                    dayview = DayView(ptime, self.start + i*86400, sorting=self.sorting)
                     self.days[ptime] = dayview
-                self.daysbox.pack_start(self.days[ptime])
+                if settings.view == "Journal":
+                    self.daysbox.pack_start(self.days[ptime])
+                else:
+                    self.daysbox.pack_start(self.days[ptime], False, False)
+                    
                 self.days[ptime].show_all()
-                self.days[ptime].set_sorting(self.sorting)
-                self.days[ptime].init_events()
+                self.days[ptime].init_events(self.sorting)
 
 class DayView(gtk.VBox):
         
-    def __init__(self, ptime, timestamp):
+    def __init__(self, ptime, timestamp, sorting = "Type"):
         gtk.VBox.__init__(self)
         self.time = ptime
         self.zg = CLIENT
-        self.sorting = "Type"
         self.start = timestamp
         self.end = timestamp + 86400
+        self.sorting = sorting
+        print "************", self.sorting
         self.label = gtk.Label(self.time)
         if ptime == datetime.datetime.fromtimestamp(time.time()).strftime("%A, %d %B %Y"):
             self.label.set_markup("<span><b>"+self.time+"</b></span>")
@@ -252,15 +263,18 @@ class DayView(gtk.VBox):
         scroll.add_with_viewport(self.label)
         self.pack_start(scroll, False, False)
         scroll = gtk.ScrolledWindow()
-        scroll.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        if settings.view == "Journal":
+            scroll.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        else:
+            scroll.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_NEVER)
+
         self.view = DayListView()
         scroll.add_with_viewport(self.view)
         self.pack_start(scroll)
         
-    def set_sorting(self, sorting):
-        self.sorting = sorting
         
-    def init_events(self):
+    def init_events(self, sorting):
+        self.sorting = sorting
         event = Event()
         event.set_interpretation(Interpretation.VISIT_EVENT.uri)        
         event2 = Event()
@@ -282,7 +296,6 @@ class DayView(gtk.VBox):
         
     def insert_events(self, x):
                 
-        print "-------------------", len(x)
         def exists(uri):
             return not uri.startswith("file://") or os.path.exists(urllib.unquote(str(uri[7:])))
         
@@ -290,7 +303,7 @@ class DayView(gtk.VBox):
         self.view.clear()
         subjects = {}
         
-        if VIEW_TYPE == SUBJECT_VIEW:
+        if settings.view == "Journal":
             if not self.sorting == "Type":
                 for event in x:
                     subject = event.subjects[0]
@@ -299,7 +312,6 @@ class DayView(gtk.VBox):
                         self.view.append_object(icon, subject.text, subject)
 
             else:
-                print "TYPE"
                 for event in x:
                     subject = event.subjects[0] 
                     if exists(subject.uri):
