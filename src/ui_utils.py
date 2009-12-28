@@ -32,13 +32,22 @@ class Settings(gobject.GObject):
     __gsignals__ = {
         "change-view" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_STRING,)),
         "change-insertions" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_STRING,)),
-         "toggle-time" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_BOOLEAN,)),
+        "toggle-time" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_BOOLEAN,)),
+        "toggle-grouping" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_OBJECT,)),
     }
     def __init__(self):
         gobject.GObject.__init__(self)
         self.view = "Journal"
         self.insertions = "Subjects"
         self.show_timestamps = False
+        self.compress_categories={
+                     Interpretation.VIDEO.uri:  False,
+                     Interpretation.MUSIC.uri: False,
+                     Interpretation.IMAGE.uri: False,
+                     Interpretation.DOCUMENT.uri: False,
+                     Interpretation.SOURCECODE.uri: False,
+                     Interpretation.UNKNOWN.uri: False
+                     }
         
     def set_view(self, view):
         self.view = view
@@ -52,6 +61,11 @@ class Settings(gobject.GObject):
         self.show_timestamps = bool
         self.emit("toggle-time", self.show_timestamps)
         
+    def toggle_compression(self, cat, bool):
+        self.compress_categories[cat] = bool
+        self.emit("toggle-time", self.compress_categories)
+
+        
 class SettingsWindow(gtk.Window):
     def __init__(self):
         gtk.Window.__init__(self)
@@ -61,11 +75,25 @@ class SettingsWindow(gtk.Window):
         self.__init_viewtype()
         self.__init_insertions()
         self.__init_showtimestamps()
+        self.__init_compressor()
         
     def __init_showtimestamps(self): 
         self.timecheckbox = gtk.CheckButton("Show Time")
         self.vbox.pack_start(self.timecheckbox, False, False)
+        self.timecheckbox.set_active(settings.show_timestamps)
         self.timecheckbox.connect("toggled", self.toggle_time)
+        
+    def __init_compressor(self): 
+        label = gtk.Label()
+        label.set_markup("<span><b>Group:</b></span>")
+        label.set_alignment(0.0, 0.5)
+        self.vbox.pack_start(label, False, False)
+        for source in SUPPORTED_SOURCES.keys():
+            checkbox = CheckButton(source)
+            checkbox.set_active(settings.compress_categories[source])
+            self.vbox.pack_start(checkbox, False, False)
+            checkbox.connect("toggled", self.toggle_category)
+
         
     def __init_viewtype(self):
         hbox = gtk.HBox(True)
@@ -77,7 +105,10 @@ class SettingsWindow(gtk.Window):
         hbox.pack_start(label, True, True, 3)
         hbox.pack_start(self.viewcombobox, True, True, 3)
         self.vbox.pack_start(hbox, False, False)
-        self.viewcombobox.set_active(0),
+        if settings.view == "Journal":
+            self.viewcombobox.set_active(0)
+        else:
+            self.viewcombobox.set_active(1)
         self.viewcombobox.connect("changed", self.change_view)
         
     def __init_insertions(self):
@@ -102,6 +133,17 @@ class SettingsWindow(gtk.Window):
     def toggle_time(self, w):
         settings.toggle_time(w.get_active())
         
+    def toggle_category(self, w):
+        settings.toggle_compression(w.category, w.get_active())
+
+
+class CheckButton(gtk.CheckButton):
+    def __init__(self, category):
+        gtk.CheckButton.__init__(self)
+        self.category = category
+        self.text = SUPPORTED_SOURCES[category]["text"]
+        self.set_label(self.text)
+
 
 class LaunchManager:
     """
@@ -437,10 +479,10 @@ launcher = LaunchManager()
 settings = Settings()
     
 SUPPORTED_SOURCES = {
-                     Interpretation.VIDEO.uri:  {"icon": "gnome-mime-video", "desc":"Video(s) watched"},
-                     Interpretation.MUSIC.uri: {"icon": "gnome-mime-audio", "desc":"Audio heard"},
-                     Interpretation.IMAGE.uri: {"icon": "image", "desc":"Image(s) viewed"},
-                     Interpretation.DOCUMENT.uri: {"icon": "stock_new-presentation", "desc":"Document(s) edited or read"},
-                     Interpretation.SOURCECODE.uri: {"icon": "applications-development", "desc":"Source(s) edited or read"},
-                     Interpretation.UNKNOWN.uri: {"icon":"applications-other", "desc":"other activitie(s)"}
+                     Interpretation.VIDEO.uri:  {"text":"Video", "icon": "gnome-mime-video", "desc":"Video(s) watched"},
+                     Interpretation.MUSIC.uri: {"text":"Music", "icon": "gnome-mime-audio", "desc":"Audio heard"},
+                     Interpretation.IMAGE.uri: {"text":"Image", "icon": "image", "desc":"Image(s) viewed"},
+                     Interpretation.DOCUMENT.uri: {"text":"Document", "icon": "stock_new-presentation", "desc":"Document(s) edited or read"},
+                     Interpretation.SOURCECODE.uri: {"text":"Development", "icon": "applications-development", "desc":"Source(s) edited or read"},
+                     Interpretation.UNKNOWN.uri: {"text":"Other", "icon":"applications-other", "desc":"other activitie(s)"}
                      }

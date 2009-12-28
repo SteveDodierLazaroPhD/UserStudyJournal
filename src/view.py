@@ -57,10 +57,14 @@ class Portal(gtk.Window):
     def __init_menubar(self):
         viewmenu = gtk.Menu()
         self.settingswindow = SettingsWindow()
+        self.settingswindow.connect("destroy", self.destroy_settings)
         filem = gtk.MenuItem("File")
         filem.set_submenu(viewmenu)
         self.menu.append(filem)
         self.menu.show_all()
+        
+    def destroy_settings(self, w):
+        self.settingswindow = None
         
     def __init_widgets(self):
         uimanager = gtk.UIManager()
@@ -151,6 +155,7 @@ class ActivityView(gtk.VBox):
         self.ready = True
         
         settings.connect("change-view", lambda w, x: self.set_view_type(True))
+        settings.connect("toggle-time", lambda w, x: self.set_view_type(True))
         self.set_views()
         
     def set_view_type(self, refresh=False):
@@ -292,6 +297,7 @@ class DayView(gtk.VBox):
         self.zg.get_events(ids, self._handle_get_events)
     
     def _handle_get_events(self, events):
+        self.events = events
         self.view.set_filters(CATEGORY_FILTER)
         self.insert_events(events)
         self.view.show_all()
@@ -304,6 +310,12 @@ class DayView(gtk.VBox):
         event_dict = {}
         self.view.clear()
         subjects = {}
+        
+        cat, x = self.extract_categories(x)
+        
+        for c in cat.keys():
+            self.view.append_category(c, cat[c])
+            
         
         if not self.sorting == "Type":
             for event in x:
@@ -334,4 +346,15 @@ class DayView(gtk.VBox):
                         self.view.append_object(icon, subject.text, event)
 
                         
-        
+    def extract_categories(self, events):
+        categories={}
+        temp_events = []
+        for event in events:
+            cat = event.subjects[0].interpretation 
+            if settings.compress_categories[cat]:
+                if not categories.has_key(event.subjects[0].interpretation):
+                    categories[cat] = []
+                categories[cat].append(event)
+            else:
+                temp_events.append(event)
+        return categories, temp_events

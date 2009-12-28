@@ -7,7 +7,7 @@ import gtk
 import datetime
 import gobject
 import pango
-from ui_utils import settings
+from ui_utils import *
 #from teamgeist import TeamgeistInterface
 
 
@@ -69,7 +69,6 @@ class DayListView(gtk.TreeView):
         #text = "<span><b>"+text+"</b></span>"
         bool = self.filters[event.subjects[0].interpretation]
         timestamp = datetime.datetime.fromtimestamp(int(event.timestamp)/1000).strftime("%H:%M")
-
         self.store.append([
                         icon,
                         text,
@@ -78,6 +77,18 @@ class DayListView(gtk.TreeView):
                         timestamp
                         ])
 
+    def append_category(self, cat, events):
+        bool = self.filters[cat]
+        icon = get_category_icon(SUPPORTED_SOURCES[cat]["icon"], 32)
+        text = "<span><b>" + str(len(events)) +"  " + SUPPORTED_SOURCES[cat]["desc"] + "</b></span>"
+        self.store.append([
+                        icon,
+                        text,
+                        events,
+                        bool,
+                        None
+                        ])
+        
 
 class FilterButton(gtk.Button):
     def __init__(self, img, category):
