@@ -71,6 +71,7 @@ class SettingsWindow(gtk.Window):
         gtk.Window.__init__(self)
         self.set_title("Settings")
         self.vbox = gtk.VBox()
+        self.set_border_width(6)
         self.add(self.vbox)
         self.__init_viewtype()
         self.__init_insertions()
