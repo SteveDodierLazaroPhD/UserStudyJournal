@@ -38,13 +38,13 @@ class Portal(gtk.Window):
         self.connect("destroy", self.quit)
         self.set_size_request(800, 360)
         self.model = model
+        self.settingswindow = None
         
         self.vbox = gtk.VBox()
         self.add(self.vbox)
         
         self.__init_widgets()
         self.__init_toolbar()
-        self.__init_menubar()
         
         #self.vbox.pack_start(self.menu, False, False)
         self.vbox.pack_start(self.toolbar, False, False)
@@ -54,25 +54,11 @@ class Portal(gtk.Window):
         self.show_all()
         self.notebook.activityview.optionsbar.hide_all()
         
-    def __init_menubar(self):
-        viewmenu = gtk.Menu()
-        self.settingswindow = SettingsWindow()
-        self.settingswindow.connect("destroy", self.destroy_settings)
-        filem = gtk.MenuItem("File")
-        filem.set_submenu(viewmenu)
-        self.menu.append(filem)
-        self.menu.show_all()
-        
+    
     def destroy_settings(self, w):
         self.settingswindow = None
         
     def __init_widgets(self):
-        uimanager = gtk.UIManager()
-        accelgroup = uimanager.get_accel_group()
-        self.add_accel_group(accelgroup)
-
-        
-        self.menu = gtk.MenuBar()
         self.notebook = Notebook()
         self.statusbar = gtk.Statusbar()
         
@@ -156,6 +142,7 @@ class ActivityView(gtk.VBox):
         
         settings.connect("change-view", lambda w, x: self.set_view_type(True))
         settings.connect("toggle-time", lambda w, x: self.set_view_type(True))
+        settings.connect("toggle-grouping", lambda w: self.set_view_type(True))
         self.set_views()
         
     def set_view_type(self, refresh=False):
@@ -180,12 +167,11 @@ class ActivityView(gtk.VBox):
     def __init_optionsbar(self):
         self.optionsbar = gtk.HBox()
         self.pack_start(self.optionsbar,False, False)
-        self.optionsbar.pack_start(gtk.Label("Show:"),False, False, 3)
+        self.optionsbar.pack_start(gtk.Label("Group:"),False, False, 3)
         for k in SUPPORTED_SOURCES.keys():
-            img = gtk.image_new_from_pixbuf(get_category_icon(SUPPORTED_SOURCES[k]["icon"], 16))
-            btn = FilterButton(img, k)
+            btn = ToggleButton(k)
             self.optionsbar.pack_start(btn, False, False)
-            btn.connect_after("clicked", self.set_filter)
+            #btn.connect_after("toggled", self.set_filter)
             
         self.combobox = gtk.combo_box_new_text()
         hbox = gtk.HBox()
@@ -200,16 +186,10 @@ class ActivityView(gtk.VBox):
         
         def change_sorting(widget):
             self.sorting = widget.get_active_text()
-            self.set_views()
-            
+            self.set_views()            
         self.combobox.connect("changed", change_sorting)
         self.combobox.set_active(0)
         
-    def set_filter(self, widget):
-        CATEGORY_FILTER[widget.category] = widget.active
-        for daybox in self.days.values():
-            daybox.view.set_filters(CATEGORY_FILTER)
-    
     def toggle_optionsbar(self, widget):
         if widget.get_active():
             self.optionsbar.show_all()

@@ -90,22 +90,6 @@ class DayListView(gtk.TreeView):
                         ])
         
 
-class FilterButton(gtk.Button):
-    def __init__(self, img, category):
-        gtk.Button.__init__(self)
-        self.category = category
-        self.img = img
-        self.active = True
-        self.add(self.img)
-        self.set_focus_on_click(False)
-        
-        self.set_relief(gtk.RELIEF_NONE)
-        self.connect("clicked", self.toggle)
-
-    def toggle(self, widget):
-        self.active = not self.active
-        self.img.set_sensitive(self.active)
-
 class Tab(gtk.HBox):
     def __init__(self, text):
         gtk.HBox.__init__(self)

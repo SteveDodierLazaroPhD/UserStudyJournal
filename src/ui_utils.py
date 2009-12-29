@@ -33,7 +33,7 @@ class Settings(gobject.GObject):
         "change-view" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_STRING,)),
         "change-insertions" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_STRING,)),
         "toggle-time" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_BOOLEAN,)),
-        "toggle-grouping" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_OBJECT,)),
+        "toggle-grouping" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
     }
     def __init__(self):
         gobject.GObject.__init__(self)
@@ -63,7 +63,7 @@ class Settings(gobject.GObject):
         
     def toggle_compression(self, cat, bool):
         self.compress_categories[cat] = bool
-        self.emit("toggle-time", self.compress_categories)
+        self.emit("toggle-grouping")
 
         
 class SettingsWindow(gtk.Window):
@@ -76,7 +76,7 @@ class SettingsWindow(gtk.Window):
         self.__init_viewtype()
         self.__init_insertions()
         self.__init_showtimestamps()
-        self.__init_compressor()
+        #self.__init_compressor()
         
     def __init_showtimestamps(self): 
         self.timecheckbox = gtk.CheckButton("Show Time")
@@ -84,13 +84,14 @@ class SettingsWindow(gtk.Window):
         self.timecheckbox.set_active(settings.show_timestamps)
         self.timecheckbox.connect("toggled", self.toggle_time)
         
-    def __init_compressor(self): 
+    def __init_compressor(self):
+        hbox = gtk.HBox() 
         label = gtk.Label()
         label.set_markup("<span><b>Group:</b></span>")
         label.set_alignment(0.0, 0.5)
-        self.vbox.pack_start(label, False, False)
+        hbox.pack_start(label, False, False, 3)
         for source in SUPPORTED_SOURCES.keys():
-            checkbox = CheckButton(source)
+            checkbox = ToggleButton(source)
             checkbox.set_active(settings.compress_categories[source])
             self.vbox.pack_start(checkbox, False, False)
             checkbox.connect("toggled", self.toggle_category)
@@ -138,12 +139,17 @@ class SettingsWindow(gtk.Window):
         settings.toggle_compression(w.category, w.get_active())
 
 
-class CheckButton(gtk.CheckButton):
+class ToggleButton(gtk.ToggleButton):
     def __init__(self, category):
-        gtk.CheckButton.__init__(self)
+        gtk.ToggleButton.__init__(self)
         self.category = category
         self.text = SUPPORTED_SOURCES[category]["text"]
-        self.set_label(self.text)
+        img = gtk.image_new_from_pixbuf(get_category_icon(SUPPORTED_SOURCES[category]["icon"], 16))
+        self.set_image(img)
+        self.set_relief(gtk.RELIEF_NONE)
+        self.set_focus_on_click(False)
+        self.connect("toggled", lambda w: settings.toggle_compression(self.category, self.get_active()))
+        
 
 
 class LaunchManager:
