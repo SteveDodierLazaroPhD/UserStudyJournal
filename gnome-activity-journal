@@ -1,0 +1,16 @@
+#! /usr/bin/env python
+# -.- coding: utf-8 -.-
+
+# GNOME Activity Journal
+#
+# Copyright © 2009 Seif Lotfy <seif@lotfy.com>
+
+import gtk
+
+from src.view import Portal
+from src.model import Model
+
+if __name__ == '__main__':    
+    model = Model()
+    portal = Portal(model)
+    gtk.main()
