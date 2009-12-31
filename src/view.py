@@ -191,7 +191,7 @@ class ActivityView(gtk.VBox):
         self.scroll = gtk.ScrolledWindow()
         self.scroll.add_with_viewport(self.daysbox)
         self.scroll.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        self.pack_start(self.scroll, True, True, 3)
+        self.pack_start(self.scroll, True, True)
         if refresh:
             self.set_views()
         self.scroll.show_all()
