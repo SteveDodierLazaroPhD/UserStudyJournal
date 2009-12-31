@@ -39,7 +39,7 @@ class DayListView(gtk.TreeView):
         self.append_column(icon_column)
         self.append_column(text_column)
         if settings.show_timestamps:
-            self.append_column(self.time_column)
+            self.insert_column(self.time_column, 0)
             
         settings.connect("toggle-time", lambda x, y: self.revisit_timestamps())
         
@@ -53,7 +53,7 @@ class DayListView(gtk.TreeView):
         if not settings.show_timestamps:
             self.remove_column(self.time_column)
         else:
-            self.append_column(self.time_column)
+            self.insert_column(self.time_column, 0)
 
     def set_filters(self, filters):
         self.filters = filters
@@ -88,7 +88,6 @@ class DayListView(gtk.TreeView):
                         bool,
                         None
                         ])
-        
 
 class Tab(gtk.HBox):
     def __init__(self, text):

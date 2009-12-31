@@ -72,39 +72,71 @@ class Portal(gtk.Window):
         self.toolbar.pack_end(toolbar2, False, False)
         
         self.backbtn = gtk.ToolButton("gtk-go-back")
-        self.todaybtn = gtk.ToolButton("gtk-home")
         self.fwdbtn = gtk.ToolButton("gtk-go-forward")
-        self.optbtn = gtk.ToolItem()
-        btn = gtk.ToggleButton()
-        btn.set_relief(gtk.RELIEF_NONE)
-        btn.add(gtk.Label("Options"))
-        self.optbtn.add(btn)
-        self.prefbtn = gtk.ToolButton("gtk-preferences")
+        self.todaybtn = gtk.ToolButton("gtk-home")
+        self.optbtn = gtk.ToggleToolButton("gtk-preferences")
         #self.propbtn = gtk.ToolButton("gtk-properties")
         
         self.todaybtn.connect("clicked", lambda w: self.notebook.activityview._set_today_timestamp())
         self.backbtn.connect("clicked", lambda w: self.notebook.activityview.jump(-86400))
         self.fwdbtn.connect("clicked", lambda w: self.notebook.activityview.jump(86400))
-        self.prefbtn.connect("clicked", self.toggle_preferences)
-        btn.connect("toggled", self.notebook.activityview.toggle_optionsbar)
+        self.optbtn.connect("toggled", self.notebook.activityview.toggle_optionsbar)
+        
+        self.horviewbtn = gtk.ToggleToolButton()
+        self.verviewbtn = gtk.ToggleToolButton()
+        
+        pixbuf = gtk.gdk.pixbuf_new_from_file_at_size("data/view-calendar-workweek.svg", 24, 24) 
+        img = gtk.image_new_from_pixbuf(pixbuf)
+        self.horviewbtn.set_icon_widget(img)
+        self.horviewbtn.set_active(True)
+        
+        pixbuf = gtk.gdk.pixbuf_new_from_file_at_size("data/view-calendar-list.svg", 24, 24) 
+        img = gtk.image_new_from_pixbuf(pixbuf)
+        self.verviewbtn.set_icon_widget(img)
+        
+        self.horviewbtn.connect("toggled", self.toggle_view)
+        self.verviewbtn.connect("toggled", self.toggle_view)
+        self.__togglingview = False
         
         toolbar.add(self.backbtn)
-        toolbar.add(self.todaybtn)
         toolbar.add(self.fwdbtn)
+        toolbar.add(self.todaybtn)
         toolbar.add(gtk.SeparatorToolItem())
         toolbar.add(self.optbtn)
+        toolbar.add(self.horviewbtn)
+        toolbar.add(self.verviewbtn)
         
         hbox = gtk.HBox()
-        hbox.pack_start(self.prefbtn)
         self.searchbar = SearchEntry()
         hbox.pack_end(self.searchbar)
         toolbar2.add(hbox)
         
         self.show_all()
-
+        
+    def toggle_view(self, widget):
+        if not self.__togglingview:
+            self.__togglingview = True
+            if widget == self.horviewbtn:
+                if self.horviewbtn.get_active():
+                    self.verviewbtn.set_active(False)
+                else:
+                    self.horviewbtn.set_active(True)
+                if not settings.view == "Journal":
+                    settings.set_view("Journal")
+            else:
+                if self.verviewbtn.get_active():
+                    self.horviewbtn.set_active(False)
+                else:
+                    self.verviewbtn.set_active(True)
+                if settings.view == "Journal":
+                    settings.set_view("List")
+            self.__togglingview = False
+            
+            
     def toggle_preferences(self, w):
         if not self.settingswindow:
             self.settingswindow = SettingsWindow()
+            self.settingswindow.connect("destroy", self.destroy_settings)
         self.settingswindow.show_all()
 
     def quit(self, widget):
@@ -141,7 +173,6 @@ class ActivityView(gtk.VBox):
         self.ready = True
         
         settings.connect("change-view", lambda w, x: self.set_view_type(True))
-        settings.connect("toggle-time", lambda w, x: self.set_view_type(True))
         settings.connect("toggle-grouping", lambda w: self.set_view_type(True))
         self.set_views()
         
@@ -166,13 +197,20 @@ class ActivityView(gtk.VBox):
 
     def __init_optionsbar(self):
         self.optionsbar = gtk.HBox()
-        self.pack_start(self.optionsbar,False, False)
+        self.pack_end(self.optionsbar,False, False)
         self.optionsbar.pack_start(gtk.Label("Group:"),False, False, 3)
         for k in SUPPORTED_SOURCES.keys():
             btn = ToggleButton(k)
             self.optionsbar.pack_start(btn, False, False)
             #btn.connect_after("toggled", self.set_filter)
-            
+
+        self.timecheckbox = gtk.CheckButton("Show Time")
+        self.timecheckbox.set_active(settings.show_timestamps)
+        self.timecheckbox.connect("toggled", lambda w: settings.toggle_time(self.timecheckbox.get_active()))
+        self.timecheckbox.set_focus_on_click(False)
+        self.optionsbar.pack_end(self.timecheckbox, False, False, 3)
+        
+                    
         self.combobox = gtk.combo_box_new_text()
         hbox = gtk.HBox()
         hbox.pack_start(gtk.Label("Sort by:"), False, False)
@@ -205,6 +243,7 @@ class ActivityView(gtk.VBox):
         self.range = int(int((end - start))/86400) + 1
         self.set_views()
     
+
     def _set_today_timestamp(self, dayinfocus=None):    
         '''
         Return the range of seconds between the min_timestamp and max_timestamp        
@@ -218,6 +257,8 @@ class ActivityView(gtk.VBox):
         self.set_views()
       
     def set_views(self):
+        for day in self.days:
+            self.days[day].clear()
         self.days.clear()
         if self.ready:
             print "SETTING VIEWS", self.sorting
@@ -256,11 +297,14 @@ class DayView(gtk.VBox):
             scroll.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         else:
             scroll.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_NEVER)
+            self.label.set_alignment(0.01, 0.5)
 
         self.view = DayListView()
         scroll.add_with_viewport(self.view)
         self.pack_start(scroll)
         
+    def clear(self):
+        self.view.store.clear()
         
     def init_events(self, sorting):
         self.sorting = sorting
@@ -325,7 +369,6 @@ class DayView(gtk.VBox):
                         icon =  thumbnailer.get_icon(subject, 32)
                         self.view.append_object(icon, subject.text, event)
 
-                        
     def extract_categories(self, events):
         categories={}
         temp_events = []
