@@ -102,9 +102,10 @@ class Portal(gtk.Window):
         toolbar.add(self.fwdbtn)
         toolbar.add(self.todaybtn)
         toolbar.add(gtk.SeparatorToolItem())
-        toolbar.add(self.optbtn)
         toolbar.add(self.horviewbtn)
         toolbar.add(self.verviewbtn)
+        toolbar.add(gtk.SeparatorToolItem())
+        toolbar.add(self.optbtn)
         
         hbox = gtk.HBox()
         self.searchbar = SearchEntry()
