@@ -48,6 +48,23 @@ class DayListView(gtk.TreeView):
         self.filterstore = self.store.filter_new()
         self.filterstore.set_visible_column(3)
         self.set_model(self.filterstore)
+        
+        self.connect("button-press-event", self._handle_click)
+        self.connect("row-activated", self._handle_open)
+        
+    def _handle_open(self, view, path, column, item=None):
+        if not item:
+            item = view.get_model()[path][2].subjects[0]
+        if item.mimetype == "x-tomboy/note":
+            uri_to_open = "note://tomboy/%s" % os.path.splitext(os.path.split(item.uri)[1])[0]
+        else:
+            uri_to_open = item.uri
+        if uri_to_open:
+            launcher.launch_uri(uri_to_open, item.mimetype)
+        
+    def _handle_click(self, view, event):
+        #print view, event
+        pass
 
     def revisit_timestamps(self):
         if not settings.show_timestamps:
