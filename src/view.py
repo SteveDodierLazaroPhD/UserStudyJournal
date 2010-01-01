@@ -8,7 +8,6 @@ import pango
 import gobject
 import time
 import datetime
-from contextview import WindowView
 from widgets import *
 from ui_utils import *
 from zeitgeist.client import ZeitgeistClient

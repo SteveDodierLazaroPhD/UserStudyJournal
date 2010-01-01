@@ -52,7 +52,7 @@ class DayListView(gtk.TreeView):
         self.connect("button-press-event", self._handle_click)
         self.connect("row-activated", self._handle_open)
         
-    def _handle_open(self, view, path, column, item=None):
+    def _handle_open(self, view=None, path=None, column=None, item=None):
         if not item:
             item = view.get_model()[path][2].subjects[0]
         if item.mimetype == "x-tomboy/note":
@@ -62,9 +62,28 @@ class DayListView(gtk.TreeView):
         if uri_to_open:
             launcher.launch_uri(uri_to_open, item.mimetype)
         
-    def _handle_click(self, view, event):
-        #print view, event
-        pass
+    def _handle_click(self, view, ev):
+        if ev.button == 3:
+            (path,col,x,y) = view.get_path_at_pos(int(ev.x),int(ev.y))
+            iter = self.filterstore.get_iter(path)
+            item = self.filterstore.get_value(iter, 2).subjects[0]
+            if item:
+                menu = gtk.Menu()
+                menu.attach_to_widget(view, None)
+                self._populate_popup(menu, item)
+                menu.popup(None, None, None, ev.button, ev.time)
+
+    def _populate_popup(self, menu, item):
+        open = gtk.ImageMenuItem (gtk.STOCK_OPEN)
+        open.connect("activate", lambda *discard: self._handle_open(item=item))
+        open.show()
+        menu.append(open)
+        most = gtk.MenuItem(("Get most used with... (N/A)"))
+        most.show()
+        menu.append(most)
+        prop = gtk.MenuItem(("Properties... (N/A)"))
+        prop.show()
+        menu.append(prop)
 
     def revisit_timestamps(self):
         if not settings.show_timestamps:
