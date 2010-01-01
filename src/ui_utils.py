@@ -26,7 +26,7 @@ import urllib
 import os
 import gtk
 import gnome.ui
-
+import gettext
 
 class Settings(gobject.GObject):
     __gsignals__ = {
@@ -83,20 +83,19 @@ class SettingsWindow(gtk.Window):
         self.vbox.pack_start(self.timecheckbox, False, False)
         self.timecheckbox.set_active(settings.show_timestamps)
         self.timecheckbox.connect("toggled", self.toggle_time)
-        
+    
     def __init_compressor(self):
         hbox = gtk.HBox() 
         label = gtk.Label()
         label.set_markup("<span><b>Group:</b></span>")
         label.set_alignment(0.0, 0.5)
         hbox.pack_start(label, False, False, 3)
-        for source in SUPPORTED_SOURCES.keys():
+        for source in SUPPORTED_SOURCES.iterkeys():
             checkbox = ToggleButton(source)
             checkbox.set_active(settings.compress_categories[source])
             self.vbox.pack_start(checkbox, False, False)
             checkbox.connect("toggled", self.toggle_category)
-
-        
+    
     def __init_viewtype(self):
         hbox = gtk.HBox(True)
         label = gtk.Label("View Type")
@@ -143,8 +142,8 @@ class ToggleButton(gtk.ToggleButton):
     def __init__(self, category):
         gtk.ToggleButton.__init__(self)
         self.category = category
-        self.text = SUPPORTED_SOURCES[category]["text"]
-        img = gtk.image_new_from_pixbuf(get_category_icon(SUPPORTED_SOURCES[category]["icon"], 16))
+        self.text = SUPPORTED_SOURCES[category].name
+        img = gtk.image_new_from_pixbuf(get_category_icon(SUPPORTED_SOURCES[category].icon, 16))
         self.set_image(img)
         self.set_relief(gtk.RELIEF_NONE)
         self.set_focus_on_click(False)
@@ -484,12 +483,28 @@ thumbnailer = Thumbnailer()
 thumb_factory = gnome.ui.ThumbnailFactory("normal")
 launcher = LaunchManager()
 settings = Settings()
+
+class Source:
     
+    def __init__(self, interpretation, icon, desc_sing, desc_pl):
+        self.name = interpretation.name
+        self.icon = icon
+        self._desc_sing = desc_sing
+        self._desc_pl = desc_pl
+    
+    def group_label(self, num):
+        return gettext.ngettext(self._desc_sing, self._desc_pl, num)
+
 SUPPORTED_SOURCES = {
-                     Interpretation.VIDEO.uri:  {"text":"Video", "icon": "gnome-mime-video", "desc":"Video(s) watched"},
-                     Interpretation.MUSIC.uri: {"text":"Music", "icon": "gnome-mime-audio", "desc":"Audio heard"},
-                     Interpretation.IMAGE.uri: {"text":"Image", "icon": "image", "desc":"Image(s) viewed"},
-                     Interpretation.DOCUMENT.uri: {"text":"Document", "icon": "stock_new-presentation", "desc":"Document(s) edited or read"},
-                     Interpretation.SOURCECODE.uri: {"text":"Development", "icon": "applications-development", "desc":"Source(s) edited or read"},
-                     Interpretation.UNKNOWN.uri: {"text":"Other", "icon":"applications-other", "desc":"other activitie(s)"}
-                     }
+    # TODO: Please change this description stuff. To give a single reason,
+    # saying "videos watched" is a lie because you may have edited them, or
+    # it may just be a "bookmark event".
+    #
+    # Also, how this is implemented now won't work fine with i18n.
+    Interpretation.VIDEO.uri: Source(Interpretation.VIDEO, "gnome-mime-video", "video watched", "videos watched"),
+    Interpretation.MUSIC.uri: Source(Interpretation.MUSIC, "gnome-mime-audio", "audio heard", "audios heard"),
+    Interpretation.IMAGE.uri: Source(Interpretation.IMAGE, "image", "image viewed", "images viewed"),
+    Interpretation.DOCUMENT.uri: Source(Interpretation.DOCUMENT, "stock_new-presentation", "document edited or read", "documents edited or read"),
+    Interpretation.SOURCECODE.uri: Source(Interpretation.SOURCECODE, "applications-development", "source file edited or read", "source files edited or read"),
+    Interpretation.UNKNOWN.uri: Source(Interpretation.UNKNOWN, "applications-other", "other activity", "other activites"),
+}

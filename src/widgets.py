@@ -79,8 +79,8 @@ class DayListView(gtk.TreeView):
 
     def append_category(self, cat, events):
         bool = self.filters[cat]
-        icon = get_category_icon(SUPPORTED_SOURCES[cat]["icon"], 32)
-        text = "<span><b>" + str(len(events)) +"  " + SUPPORTED_SOURCES[cat]["desc"] + "</b></span>"
+        icon = get_category_icon(SUPPORTED_SOURCES[cat].icon, 32)
+        text = "<span><b>%d %s</b></span>" % (len(events), SUPPORTED_SOURCES[cat].group_label(len(events)))
         self.store.append([
                         icon,
                         text,

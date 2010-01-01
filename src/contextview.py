@@ -78,7 +78,7 @@ class DrawingAreaExample:
 
     def draw_pixmap(self, x, y):
         key = Interpretation.VIDEO.uri
-        pixbuf = get_category_icon(SUPPORTED_SOURCES[key]["icon"])
+        pixbuf = get_category_icon(SUPPORTED_SOURCES[key].icon)
         self.area.window.draw_pixbuf(self.gc, pixbuf, 0, 0, x+15, y+25,
                                        -1, -1)
         self.pangolayout.set_text("Pixmap")
