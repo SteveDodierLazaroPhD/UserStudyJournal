@@ -135,27 +135,31 @@ class Portal(gtk.Window):
         self.show_all()
         
         def _handle_calendar_focus(view , widget):
-            self.toggle_cal(self.calbtn)
+            self.calendar.hide_all()
+            self.__freeze = True
+            self.calbtn.set_active(False)
                 
         self.calendar.connect_after("focus-out-event", _handle_calendar_focus)
         self.calbtn.connect_after("toggled", self.toggle_cal)
 
     
     def toggle_cal(self, w):
-        print self.calbtn.props.has_focus
-        def update_position():
-            wx = self.calbtn.allocation.x
-            wy = self.calbtn.allocation.height
-            #x, y = self.calbtn.size_request()
-            #self.calendar.move(rx, ry+y)
-            x, y = self.window.get_origin()
-            self.calendar.move(x+wx,y+wy)
         if not self.__freeze:
-            if self.calbtn.get_active():
-                self.calendar.show_all()
-                update_position()
-            else:
-                self.calendar.hide_all()
+            print self.calbtn.props.has_focus
+            def update_position():
+                wx = self.calbtn.allocation.x
+                wy = self.calbtn.allocation.height
+                #x, y = self.calbtn.size_request()
+                #self.calendar.move(rx, ry+y)
+                x, y = self.window.get_origin()
+                self.calendar.move(x+wx,y+wy)
+            if not self.__freeze:
+                if self.calbtn.get_active():
+                    self.calendar.show_all()
+                    update_position()
+                else:
+                    self.calendar.hide_all()
+        self.__freeze = False
         
     def toggle_view(self, widget):
         if not self.__togglingview:

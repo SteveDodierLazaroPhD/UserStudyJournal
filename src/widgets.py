@@ -44,6 +44,12 @@ class DayListView(gtk.TreeView):
             
         settings.connect("toggle-time", lambda x, y: self.revisit_timestamps())
         
+        def _deselect_all(view, event):
+            selection = self.get_selection()
+            selection.unselect_all()
+        
+        self.connect("focus-out-event", _deselect_all)
+        
         self.set_headers_visible(False)
         
         self.filterstore = self.store.filter_new()
