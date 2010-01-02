@@ -219,3 +219,40 @@ class SearchEntry(gtk.Entry):
 
         self.search_timeout = 0
         return False
+
+class Calendar(gtk.Window):
+    def __init__(self):
+        gtk.Window.__init__(self)
+        self.vbox = gtk.VBox()
+        evbox = gtk.EventBox()
+
+        evbox2 = gtk.EventBox()
+        evbox.add(evbox2)        
+        evbox2.add(self.vbox)
+        #evbox.set_border_width(3)
+        evbox2.set_border_width(3)
+        
+        menu = gtk.Menu()
+        evbox.modify_bg(gtk.STATE_NORMAL, menu.style.bg[gtk.STATE_SELECTED])
+        evbox2.modify_bg(gtk.STATE_NORMAL, menu.style.bg[gtk.STATE_NORMAL])
+
+        self.calendar = gtk.Calendar()
+
+        self.timerangebox = gtk.HBox()
+        label = gtk.Label("Days to display:")
+        label.set_markup("<span><b>Days to display: </b></span>")
+        self.timerangebox.pack_start(label)
+        
+        self.combox = gtk.combo_box_new_text()
+        self.combox.append_text("1 day")
+        self.combox.append_text("3 days")
+        self.combox.append_text("1 week")
+        self.combox.append_text("1 month")
+        self.combox.set_active(1)
+        
+        self.timerangebox.pack_start(self.combox)
+
+        self.add(evbox)
+        self.vbox.pack_start(self.calendar)
+        self.vbox.pack_start(self.timerangebox)
+        self.set_decorated(False)

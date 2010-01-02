@@ -10,6 +10,7 @@ import time
 import datetime
 from widgets import *
 from ui_utils import *
+
 from zeitgeist.client import ZeitgeistClient
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation
 
@@ -42,13 +43,14 @@ class Portal(gtk.Window):
         self.vbox = gtk.VBox()
         self.add(self.vbox)
         
+        self.__freeze = False
         self.__init_widgets()
         self.__init_toolbar()
         
         #self.vbox.pack_start(self.menu, False, False)
         self.vbox.pack_start(self.toolbar, False, False)
         self.vbox.pack_start(self.notebook, True, True)
-        self.vbox.pack_start(self.statusbar, False, False)
+        #self.vbox.pack_start(self.statusbar, False, False)
         
         self.show_all()
         self.notebook.activityview.optionsbar.hide_all()
@@ -109,6 +111,12 @@ class Portal(gtk.Window):
         self.verviewbtn.connect("toggled", self.toggle_view)
         self.__togglingview = False
         
+        self.calendar = Calendar()
+        self.calbtn = gtk.ToggleToolButton("stock_calendar")
+        pixbuf = icon_factory.load_icon("stock_calendar", 32)
+        img = gtk.image_new_from_pixbuf(pixbuf)
+        self.calbtn.set_icon_widget(img)
+        
         toolbar.add(self.backbtn)
         toolbar.add(self.fwdbtn)
         toolbar.add(self.todaybtn)
@@ -116,14 +124,38 @@ class Portal(gtk.Window):
         toolbar.add(self.horviewbtn)
         toolbar.add(self.verviewbtn)
         toolbar.add(gtk.SeparatorToolItem())
-        toolbar.add(self.optbtn)
+        toolbar.add(self.calbtn)
         
         hbox = gtk.HBox()
         self.searchbar = SearchEntry()
+        hbox.pack_start(self.optbtn)
         hbox.pack_end(self.searchbar)
         toolbar2.add(hbox)
         
         self.show_all()
+        
+        def _handle_calendar_focus(view , widget):
+            self.toggle_cal(self.calbtn)
+                
+        self.calendar.connect_after("focus-out-event", _handle_calendar_focus)
+        self.calbtn.connect_after("toggled", self.toggle_cal)
+
+    
+    def toggle_cal(self, w):
+        print self.calbtn.props.has_focus
+        def update_position():
+            wx = self.calbtn.allocation.x
+            wy = self.calbtn.allocation.height
+            #x, y = self.calbtn.size_request()
+            #self.calendar.move(rx, ry+y)
+            x, y = self.window.get_origin()
+            self.calendar.move(x+wx,y+wy)
+        if not self.__freeze:
+            if self.calbtn.get_active():
+                self.calendar.show_all()
+                update_position()
+            else:
+                self.calendar.hide_all()
         
     def toggle_view(self, widget):
         if not self.__togglingview:
@@ -176,12 +208,12 @@ class ActivityView(gtk.VBox):
         self.sorting = "Type"
         
         self.zg = CLIENT
-        self.__init_optionsbar()
-        self.set_view_type()
-    
         self.range = 3
         self._set_today_timestamp()
         
+        self.__init_optionsbar()
+        self.set_view_type()
+    
         self.ready = True
         
         settings.connect("change-view", lambda w, x: self.set_view_type(True))
@@ -206,6 +238,7 @@ class ActivityView(gtk.VBox):
         if refresh:
             self.set_views()
         self.scroll.show_all()
+        
 
     def __init_optionsbar(self):
         self.optionsbar = gtk.HBox()
