@@ -76,10 +76,22 @@ class Portal(gtk.Window):
         self.optbtn = gtk.ToggleToolButton("gtk-preferences")
         #self.propbtn = gtk.ToolButton("gtk-properties")
         
+        def toggle_optionsbar(widget):
+            if not widget.get_active():
+                self.optbtn.set_tooltip_text("Show Options")
+            else:
+                self.optbtn.set_tooltip_text("Hide Options")
+
         self.todaybtn.connect("clicked", lambda w: self.notebook.activityview._set_today_timestamp())
         self.backbtn.connect("clicked", lambda w: self.notebook.activityview.jump(-86400))
         self.fwdbtn.connect("clicked", lambda w: self.notebook.activityview.jump(86400))
         self.optbtn.connect("toggled", self.notebook.activityview.toggle_optionsbar)
+        self.optbtn.connect("toggled", toggle_optionsbar)
+        
+        self.backbtn.set_tooltip_text("Go back in time")
+        self.fwdbtn.set_tooltip_text("Look into the future")
+        self.todaybtn.set_tooltip_text("Recent Events")
+        self.optbtn.set_tooltip_text("Show Options")
         
         self.horviewbtn = gtk.ToggleToolButton()
         self.verviewbtn = gtk.ToggleToolButton()
