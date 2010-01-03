@@ -21,51 +21,70 @@
 
 import os.path
 import gobject
-from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation
 import urllib
 import os
 import gtk
 import gnome.ui
 import gettext
+from fungtk.quickconf import QuickConf
+from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation
 
 class Settings(gobject.GObject):
+    
     __gsignals__ = {
         "change-view" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_STRING,)),
         "change-insertions" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_STRING,)),
         "toggle-time" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_BOOLEAN,)),
         "toggle-grouping" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
     }
+    
     def __init__(self):
-        gobject.GObject.__init__(self)
-        self.view = "Journal"
-        self.insertions = "Subjects"
-        self.show_timestamps = False
-        self.compress_categories={
-                     Interpretation.VIDEO.uri:  False,
-                     Interpretation.MUSIC.uri: False,
-                     Interpretation.IMAGE.uri: False,
-                     Interpretation.DOCUMENT.uri: False,
-                     Interpretation.SOURCECODE.uri: False,
-                     Interpretation.UNKNOWN.uri: False
-                     }
         
+        gobject.GObject.__init__(self)
+        
+        self._conf = QuickConf('/apps/gnome-activity-journal')
+        self.view = self._conf.get("view", "Journal")
+        self.show_timestamps = self._conf.get("show_timestamps", False)
+        self.insertions = "Subjects"
+        self.compress_categories = {
+            Interpretation.VIDEO.uri:  False,
+            Interpretation.MUSIC.uri: False,
+            Interpretation.IMAGE.uri: False,
+            Interpretation.DOCUMENT.uri: False,
+            Interpretation.SOURCECODE.uri: False,
+            Interpretation.UNKNOWN.uri: False
+        }
+        
+        # Connect to changes in gconf
+        self._conf.connect("view",
+            lambda key, value: self.set_view(value))
+        self._conf.connect("show_timestamps",
+            lambda key, value: self.toggle_time(value))
+    
     def set_view(self, view):
+        if view == self.view:
+            return
         self.view = view
         self.emit("change-view", self.view)
-        
+        if not from_gconf:
+            self._conf['view'] = view
+    
     def set_insertions(self, insertions):
         self.insertions = insertions
         self.emit("change-insertions", self.view)
-        
+    
     def toggle_time(self, bool):
+        if bool == self.show_timestamps:
+            return
         self.show_timestamps = bool
         self.emit("toggle-time", self.show_timestamps)
-        
+        self._conf['show_timestamps'] = bool
+    
     def toggle_compression(self, cat, bool):
         self.compress_categories[cat] = bool
         self.emit("toggle-grouping")
 
-        
+
 class SettingsWindow(gtk.Window):
     def __init__(self):
         gtk.Window.__init__(self)

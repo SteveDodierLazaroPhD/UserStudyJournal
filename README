@@ -1,0 +1,18 @@
+GNOME Activity Journal
+
+Dependencies
+------------------------------
+
+You'll need to have Zeitgeist (version 0.3 or later) and FunGTK installed.
+
+To get them, run inside this directory:
+
+ $ bzr get lp:zeitgeist dep-zeitgeist
+ $ ln -s dep-zeitgeist zeitgeist
+ 
+ $ bzr get lp:fungtk dep-fungtk
+ $ ln -s dep-fungtk fungtk
+
+And then start Zeitgeist in a separate terminal window, running:
+
+ $ ./dep-zeitgeist/zeitgeist-client.py
