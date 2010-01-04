@@ -4,6 +4,7 @@ Created on Nov 28, 2009
 @author: seif
 '''
 import gtk
+import gettext
 import pango
 import gobject
 import time
@@ -17,7 +18,7 @@ from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation
 try:
     CLIENT = ZeitgeistClient()
 except RuntimeError, e:
-    print "Unable to connect to Zeitgeist, won't send events. Reason: '%s'" %e
+    print "Unable to connect to Zeitgeist: %s" % e
     CLIENT = None
 
 CATEGORY_FILTER= {}
@@ -54,7 +55,6 @@ class Portal(gtk.Window):
         
         self.show_all()
         self.notebook.activityview.optionsbar.hide_all()
-        
     
     def destroy_settings(self, w):
         self.settingswindow = None
@@ -90,10 +90,10 @@ class Portal(gtk.Window):
         self.optbtn.connect("toggled", self.notebook.activityview.toggle_optionsbar)
         self.optbtn.connect("toggled", toggle_optionsbar)
         
-        self.backbtn.set_tooltip_text("Go back in time")
-        self.fwdbtn.set_tooltip_text("Look into the future")
-        self.todaybtn.set_tooltip_text("Recent Events")
-        self.optbtn.set_tooltip_text("Show Options")
+        self.backbtn.set_tooltip_text(_("Go back in time"))
+        self.fwdbtn.set_tooltip_text(_("Look into the future"))
+        self.todaybtn.set_tooltip_text(_("Recent Events"))
+        self.optbtn.set_tooltip_text(_("Show Options"))
         
         self.horviewbtn = gtk.ToggleToolButton()
         self.verviewbtn = gtk.ToggleToolButton()
@@ -142,7 +142,6 @@ class Portal(gtk.Window):
         self.calendar.connect_after("focus-out-event", _handle_calendar_focus)
         self.calbtn.connect_after("toggled", self.toggle_cal)
 
-    
     def toggle_cal(self, w):
         if not self.__freeze:
             print self.calbtn.props.has_focus
@@ -199,7 +198,7 @@ class Notebook(gtk.Notebook):
         
     def _set_own_timeline(self):
         self.activityview = ActivityView()
-        tab = Tab("Personal Timeline")
+        tab = Tab(_("Personal Timeline"))
         self.append_page(self.activityview, tab)
         tab.closebtn.set_sensitive(False)
 
@@ -242,7 +241,6 @@ class ActivityView(gtk.VBox):
         if refresh:
             self.set_views()
         self.scroll.show_all()
-        
 
     def __init_optionsbar(self):
         self.optionsbar = gtk.HBox()
@@ -259,7 +257,6 @@ class ActivityView(gtk.VBox):
         self.timecheckbox.set_focus_on_click(False)
         self.optionsbar.pack_end(self.timecheckbox, False, False, 3)
         
-                    
         self.combobox = gtk.combo_box_new_text()
         hbox = gtk.HBox()
         hbox.pack_start(gtk.Label("Sort by:"), False, False)
@@ -292,7 +289,6 @@ class ActivityView(gtk.VBox):
         self.range = int(int((end - start))/86400) + 1
         self.set_views()
     
-
     def _set_today_timestamp(self, dayinfocus=None):    
         '''
         Return the range of seconds between the min_timestamp and max_timestamp        
@@ -310,7 +306,6 @@ class ActivityView(gtk.VBox):
             self.days[day].clear()
         self.days.clear()
         if self.ready:
-            print "SETTING VIEWS", self.sorting
             for w in self.daysbox:
                 self.daysbox.remove(w)
             for i in xrange(self.range):

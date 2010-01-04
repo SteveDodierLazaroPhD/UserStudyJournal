@@ -3,13 +3,14 @@ Created on Nov 28, 2009
 
 @author: seif
 '''
+
 import gtk
+import gettext
 import datetime
 import gobject
 import pango
 from ui_utils import *
 #from teamgeist import TeamgeistInterface
-
 
 class DayListView(gtk.TreeView):
     def __init__(self):
@@ -81,16 +82,14 @@ class DayListView(gtk.TreeView):
                 menu.popup(None, None, None, ev.button, ev.time)
 
     def _populate_popup(self, menu, item):
-        open = gtk.ImageMenuItem (gtk.STOCK_OPEN)
+        open = gtk.ImageMenuItem(gtk.STOCK_OPEN)
         open.connect("activate", lambda *discard: self._handle_open(item=item))
-        open.show()
         menu.append(open)
-        most = gtk.MenuItem(("Get most used with... (N/A)"))
-        most.show()
+        most = gtk.MenuItem(_("Related files..."))
         menu.append(most)
-        prop = gtk.MenuItem(("Properties... (N/A)"))
-        prop.show()
+        prop = gtk.MenuItem(_("Properties..."))
         menu.append(prop)
+        menu.show_all()
 
     def revisit_timestamps(self):
         if not settings.show_timestamps:
@@ -159,8 +158,7 @@ class SearchEntry(gtk.Entry):
                     (gobject.TYPE_STRING,))
     }
 
-    # TODO: i18n
-    default_text = "Search"
+    default_text = _("Search...")
 
     # The font style of the text in the entry.
     font_style = None
@@ -245,15 +243,15 @@ class Calendar(gtk.Window):
         self.calendar = gtk.Calendar()
 
         self.timerangebox = gtk.HBox()
-        label = gtk.Label("Days to display:")
-        label.set_markup("<span><b>Days to display: </b></span>")
+        label = gtk.Label()
+        label.set_markup("<span><b>%s </b></span>" % _("Days to display:"))
         self.timerangebox.pack_start(label)
         
         self.combox = gtk.combo_box_new_text()
-        self.combox.append_text("1 day")
-        self.combox.append_text("3 days")
-        self.combox.append_text("1 week")
-        self.combox.append_text("1 month")
+        self.combox.append_text(_("1 day"))
+        self.combox.append_text(_("3 days"))
+        self.combox.append_text(_("1 week"))
+        self.combox.append_text(_("1 month"))
         self.combox.set_active(1)
         
         self.timerangebox.pack_start(self.combox)

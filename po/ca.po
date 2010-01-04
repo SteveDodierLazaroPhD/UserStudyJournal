@@ -1,0 +1,65 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: GNOME Activity Journal\n"
+"Report-Msgid-Bugs-To: zeitgeist@lists.launchpad.net\n"
+"POT-Creation-Date: 2010-01-04 01:06+0100\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Siegfried-Angel Gevatter Pujals <rainct@ubuntu.com>\n"
+"Language-Team: Siegfried Gevatter <siegfried@gevatter.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Catalan\n"
+
+#: ../src/view.py:93
+msgid "Go back in time"
+msgstr "Retrocedeix en el temps"
+
+#: ../src/view.py:94
+msgid "Look into the future"
+msgstr "Avança en el temps"
+
+#: ../src/view.py:95
+msgid "Recent Events"
+msgstr "Esdeveniments recents"
+
+#: ../src/view.py:96
+msgid "Show Options"
+msgstr "Mostra les opcions"
+
+#: ../src/view.py:201
+msgid "Personal Timeline"
+msgstr "Línia cronològica personal"
+
+#: ../src/widgets.py:88
+msgid "Related files..."
+msgstr "Fitxers relacionats..."
+
+#: ../src/widgets.py:90
+msgid "Properties..."
+msgstr "Propietats..."
+
+#: ../src/widgets.py:161
+msgid "Search..."
+msgstr "Cerca..."
+
+#: ../src/widgets.py:247
+msgid "Days to display:"
+msgstr "Dies a mostrar:"
+
+#: ../src/widgets.py:251
+msgid "1 day"
+msgstr "1 dia"
+
+#: ../src/widgets.py:252
+msgid "3 days"
+msgstr "3 dies"
+
+#: ../src/widgets.py:253
+msgid "1 week"
+msgstr "1 setmana"
+
+#: ../src/widgets.py:254
+msgid "1 month"
+msgstr "1 mes"
+

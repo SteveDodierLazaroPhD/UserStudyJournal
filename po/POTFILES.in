@@ -1,0 +1,4 @@
+gnome-activity-journal
+src/ui_utils.py
+src/view.py
+src/widgets.py

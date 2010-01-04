@@ -4,13 +4,15 @@
 # GNOME Activity Journal
 #
 # Copyright © 2009 Seif Lotfy <seif@lotfy.com>
+# Copyright © 2010 Siegfried Gevatter <siegfried@gevatter.com>
 
 import gtk
+import gettext
 
 from src.view import Portal
-from src.model import Model
 
-if __name__ == '__main__':    
-    model = Model()
-    portal = Portal(model)
+gettext.install('gnome-activity-journal', 'build/mo', unicode=True)
+
+if __name__ == '__main__': 
+    portal = Portal(object)
     gtk.main()
