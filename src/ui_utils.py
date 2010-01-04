@@ -45,7 +45,6 @@ class Settings(gobject.GObject):
         self._conf = QuickConf('/apps/gnome-activity-journal')
         self.view = self._conf.get("view", "Journal")
         self.show_timestamps = self._conf.get("show_timestamps", False)
-        self.insertions = "Subjects"
         self.compress_categories = {
             Interpretation.VIDEO.uri:  False,
             Interpretation.MUSIC.uri: False,
@@ -84,90 +83,6 @@ class Settings(gobject.GObject):
         self.compress_categories[cat] = bool
         self.emit("toggle-grouping")
 
-
-class SettingsWindow(gtk.Window):
-    def __init__(self):
-        gtk.Window.__init__(self)
-        self.set_title("Settings")
-        self.vbox = gtk.VBox()
-        self.set_border_width(6)
-        self.add(self.vbox)
-        self.__init_viewtype()
-        self.__init_insertions()
-        self.__init_showtimestamps()
-        #self.__init_compressor()
-        
-    def __init_showtimestamps(self): 
-        self.timecheckbox = gtk.CheckButton("Show Time")
-        self.vbox.pack_start(self.timecheckbox, False, False)
-        self.timecheckbox.set_active(settings.show_timestamps)
-        self.timecheckbox.connect("toggled", self.toggle_time)
-    
-    def __init_compressor(self):
-        hbox = gtk.HBox() 
-        label = gtk.Label()
-        label.set_markup("<span><b>Group:</b></span>")
-        label.set_alignment(0.0, 0.5)
-        hbox.pack_start(label, False, False, 3)
-        for source in SUPPORTED_SOURCES.iterkeys():
-            checkbox = ToggleButton(source)
-            checkbox.set_active(settings.compress_categories[source])
-            self.vbox.pack_start(checkbox, False, False)
-            checkbox.connect("toggled", self.toggle_category)
-    
-    def __init_viewtype(self):
-        hbox = gtk.HBox(True)
-        label = gtk.Label("View Type")
-        label.set_alignment(0.0, 0.5)
-        self.viewcombobox = gtk.combo_box_new_text()
-        self.viewcombobox.append_text("Journal")
-        self.viewcombobox.append_text("List")
-        hbox.pack_start(label, True, True, 3)
-        hbox.pack_start(self.viewcombobox, True, True, 3)
-        self.vbox.pack_start(hbox, False, False)
-        if settings.view == "Journal":
-            self.viewcombobox.set_active(0)
-        else:
-            self.viewcombobox.set_active(1)
-        self.viewcombobox.connect("changed", self.change_view)
-        
-    def __init_insertions(self):
-        hbox = gtk.HBox(True)
-        label = gtk.Label("Show")
-        label.set_alignment(0.0, 0.5)
-        self.insertioncombobox = gtk.combo_box_new_text()
-        self.insertioncombobox.append_text("Subjects")
-        self.insertioncombobox.append_text("Events")
-        hbox.pack_start(label, True, True, 3)
-        hbox.pack_start(self.insertioncombobox, True, True, 3)
-        self.vbox.pack_start(hbox, False, False)
-        self.insertioncombobox.set_active(0),
-        self.insertioncombobox.connect("changed", self.change_insertions)
-        
-    def change_view(self, w):
-        settings.set_view(w.get_active_text())
-
-    def change_insertions(self, w):
-        settings.set_insertions(w.get_active_text())
-        
-    def toggle_time(self, w):
-        settings.toggle_time(w.get_active())
-        
-    def toggle_category(self, w):
-        settings.toggle_compression(w.category, w.get_active())
-
-
-class ToggleButton(gtk.ToggleButton):
-    def __init__(self, category):
-        gtk.ToggleButton.__init__(self)
-        self.category = category
-        self.text = SUPPORTED_SOURCES[category].name
-        img = gtk.image_new_from_pixbuf(get_category_icon(SUPPORTED_SOURCES[category].icon, 16))
-        self.set_image(img)
-        self.set_relief(gtk.RELIEF_NONE)
-        self.set_focus_on_click(False)
-        self.connect("toggled", lambda w: settings.toggle_compression(self.category, self.get_active()))
-        
 
 
 class LaunchManager:
@@ -427,7 +342,6 @@ class IconFactory():
                         border, border)
         return mythumb
     
-    
 class Thumbnailer:
     
     def __init__(self):
@@ -487,7 +401,6 @@ class CellRendererPixbuf(gtk.CellRendererPixbuf):
     def do_activate(self, event, widget, path, background_area, cell_area, flags):
         model = widget.get_model()
         self.emit("toggled",path)
-
 
 def get_category_icon(icon, size=24):
     try:

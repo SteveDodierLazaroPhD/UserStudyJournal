@@ -1,223 +1,31 @@
 '''
-Created on Nov 28, 2009
+Created on Jan 4, 2010
 
 @author: seif
 '''
+
 import gtk
-import gettext
-import pango
-import gobject
 import time
-import datetime
 from widgets import *
 from ui_utils import *
-
-from zeitgeist.client import ZeitgeistClient
-from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation
-
-try:
-    CLIENT = ZeitgeistClient()
-except RuntimeError, e:
-    print "Unable to connect to Zeitgeist: %s" % e
-    CLIENT = None
-
+from daywidgets import *
 CATEGORY_FILTER= {}
 for k in SUPPORTED_SOURCES.keys():
             CATEGORY_FILTER[k] = True
-
-
-class Portal(gtk.Window):
-    '''
-    classdocs
-    '''
-
-    def __init__(self, model):
-        '''
-        Constructor
-        '''
-        gtk.Window.__init__(self)
-        self.connect("destroy", self.quit)
-        self.set_size_request(800, 360)
-        self.model = model
-        self.settingswindow = None
-        
-        self.vbox = gtk.VBox()
-        self.add(self.vbox)
-        
-        self.__freeze = False
-        self.__init_widgets()
-        self.__init_toolbar()
-        
-        #self.vbox.pack_start(self.menu, False, False)
-        self.vbox.pack_start(self.toolbar, False, False)
-        self.vbox.pack_start(self.notebook, True, True)
-        #self.vbox.pack_start(self.statusbar, False, False)
-        
-        self.show_all()
-        self.notebook.activityview.optionsbar.hide_all()
-    
-    def destroy_settings(self, w):
-        self.settingswindow = None
-        
-    def __init_widgets(self):
-        self.notebook = Notebook()
-        self.statusbar = gtk.Statusbar()
-        
-    def __init_toolbar(self):
-        self.toolbar = gtk.HBox()
-        
-        toolbar = gtk.Toolbar()
-        self.toolbar.pack_start(toolbar)
-        
-        toolbar2 = gtk.Toolbar()
-        self.toolbar.pack_end(toolbar2, False, False)
-        
-        self.backbtn = gtk.ToolButton("gtk-go-back")
-        self.fwdbtn = gtk.ToolButton("gtk-go-forward")
-        self.todaybtn = gtk.ToolButton("gtk-home")
-        self.optbtn = gtk.ToggleToolButton("gtk-preferences")
-        #self.propbtn = gtk.ToolButton("gtk-properties")
-        
-        def toggle_optionsbar(widget):
-            if not widget.get_active():
-                self.optbtn.set_tooltip_text("Show Options")
-            else:
-                self.optbtn.set_tooltip_text("Hide Options")
-
-        self.todaybtn.connect("clicked", lambda w: self.notebook.activityview._set_today_timestamp())
-        self.backbtn.connect("clicked", lambda w: self.notebook.activityview.jump(-86400))
-        self.fwdbtn.connect("clicked", lambda w: self.notebook.activityview.jump(86400))
-        self.optbtn.connect("toggled", self.notebook.activityview.toggle_optionsbar)
-        self.optbtn.connect("toggled", toggle_optionsbar)
-        
-        self.backbtn.set_tooltip_text(_("Go back in time"))
-        self.fwdbtn.set_tooltip_text(_("Look into the future"))
-        self.todaybtn.set_tooltip_text(_("Recent Events"))
-        self.optbtn.set_tooltip_text(_("Show Options"))
-        
-        self.horviewbtn = gtk.ToggleToolButton()
-        self.verviewbtn = gtk.ToggleToolButton()
-        
-        pixbuf = gtk.gdk.pixbuf_new_from_file_at_size("data/view-calendar-workweek.svg", 24, 24) 
-        img = gtk.image_new_from_pixbuf(pixbuf)
-        self.horviewbtn.set_icon_widget(img)
-        self.horviewbtn.set_active(True)
-        
-        pixbuf = gtk.gdk.pixbuf_new_from_file_at_size("data/view-calendar-list.svg", 24, 24) 
-        img = gtk.image_new_from_pixbuf(pixbuf)
-        self.verviewbtn.set_icon_widget(img)
-        
-        self.horviewbtn.connect("toggled", self.toggle_view)
-        self.verviewbtn.connect("toggled", self.toggle_view)
-        self.__togglingview = False
-        
-        self.calendar = Calendar()
-        self.calbtn = gtk.ToggleToolButton("stock_calendar")
-        pixbuf = icon_factory.load_icon("stock_calendar", 32)
-        img = gtk.image_new_from_pixbuf(pixbuf)
-        self.calbtn.set_icon_widget(img)
-        
-        toolbar.add(self.backbtn)
-        toolbar.add(self.fwdbtn)
-        toolbar.add(self.todaybtn)
-        toolbar.add(gtk.SeparatorToolItem())
-        toolbar.add(self.horviewbtn)
-        toolbar.add(self.verviewbtn)
-        toolbar.add(gtk.SeparatorToolItem())
-        toolbar.add(self.calbtn)
-        
-        hbox = gtk.HBox()
-        self.searchbar = SearchEntry()
-        hbox.pack_start(self.optbtn)
-        hbox.pack_end(self.searchbar)
-        toolbar2.add(hbox)
-        
-        self.show_all()
-        
-        def _handle_calendar_focus(view , widget):
-            self.calendar.hide_all()
-            self.__freeze = True
-            self.calbtn.set_active(False)
-                
-        self.calendar.connect_after("focus-out-event", _handle_calendar_focus)
-        self.calbtn.connect_after("toggled", self.toggle_cal)
-
-    def toggle_cal(self, w):
-        if not self.__freeze:
-            print self.calbtn.props.has_focus
-            def update_position():
-                wx = self.calbtn.allocation.x
-                wy = self.calbtn.allocation.height
-                #x, y = self.calbtn.size_request()
-                #self.calendar.move(rx, ry+y)
-                x, y = self.window.get_origin()
-                self.calendar.move(x+wx,y+wy)
-            if not self.__freeze:
-                if self.calbtn.get_active():
-                    self.calendar.show_all()
-                    update_position()
-                else:
-                    self.calendar.hide_all()
-        self.__freeze = False
-        
-    def toggle_view(self, widget):
-        if not self.__togglingview:
-            self.__togglingview = True
-            if widget == self.horviewbtn:
-                if self.horviewbtn.get_active():
-                    self.verviewbtn.set_active(False)
-                else:
-                    self.horviewbtn.set_active(True)
-                if not settings.view == "Journal":
-                    settings.set_view("Journal")
-            else:
-                if self.verviewbtn.get_active():
-                    self.horviewbtn.set_active(False)
-                else:
-                    self.verviewbtn.set_active(True)
-                if settings.view == "Journal":
-                    settings.set_view("List")
-            self.__togglingview = False
-            
-            
-    def toggle_preferences(self, w):
-        if not self.settingswindow:
-            self.settingswindow = SettingsWindow()
-            self.settingswindow.connect("destroy", self.destroy_settings)
-        self.settingswindow.show_all()
-
-    def quit(self, widget):
-        gtk.main_quit()
-
-class Notebook(gtk.Notebook):
-    
-    def __init__(self):
-        gtk.Notebook.__init__(self)
-        self.set_show_tabs(False)
-        self._set_own_timeline()
-        
-    def _set_own_timeline(self):
-        self.activityview = ActivityView()
-        tab = Tab(_("Personal Timeline"))
-        self.append_page(self.activityview, tab)
-        tab.closebtn.set_sensitive(False)
 
 class ActivityView(gtk.VBox):
     def __init__(self):
         gtk.VBox.__init__(self)
         
-        self.ready = False
         self.days = {}
-        self.sorting = "Type"
+        self.sorting = "Recency"
         
-        self.zg = CLIENT
         self.range = 3
-        self._set_today_timestamp()
+        self.daysbox = None
         
+        self._set_today_timestamp()
         self.__init_optionsbar()
         self.set_view_type()
-    
-        self.ready = True
         
         settings.connect("change-view", lambda w, x: self.set_view_type(True))
         settings.connect("toggle-grouping", lambda w: self.set_view_type(True))
@@ -234,13 +42,10 @@ class ActivityView(gtk.VBox):
         else:
             self.daysbox = gtk.VBox()
         
-        self.scroll = gtk.ScrolledWindow()
-        self.scroll.add_with_viewport(self.daysbox)
-        self.scroll.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        self.pack_start(self.scroll, True, True)
+        self.pack_start(self.daysbox)
         if refresh:
             self.set_views()
-        self.scroll.show_all()
+        self.daysbox.show_all()
 
     def __init_optionsbar(self):
         self.optionsbar = gtk.HBox()
@@ -296,16 +101,15 @@ class ActivityView(gtk.VBox):
         # For the local timezone
         if not dayinfocus:
             dayinfocus = int(time.mktime(time.strptime(time.strftime("%d %B %Y") , "%d %B %Y")))
-            pt = datetime.datetime.fromtimestamp(dayinfocus).strftime("%A, %d %B %Y    %H:%M:%S")
         self.end =  dayinfocus + 86399 
         self.start =  dayinfocus - (self.range-1)*86400
         self.set_views()
       
     def set_views(self):
-        for day in self.days:
-            self.days[day].clear()
+        #for day in self.days:
+           # self.days[day].clear()
         self.days.clear()
-        if self.ready:
+        if self.daysbox:
             for w in self.daysbox:
                 self.daysbox.remove(w)
             for i in xrange(self.range):
@@ -313,115 +117,9 @@ class ActivityView(gtk.VBox):
                     i = (self.range-1) - i
                 ptime =  datetime.datetime.fromtimestamp(self.start + i*86400).strftime("%A, %d %B %Y")
                 if not self.days.has_key(ptime):
-                    dayview = DayView(ptime, self.start + i*86400, sorting=self.sorting)
+                    print ptime
+                    dayview = DayWidget(self.start + i*86400, self.start + i*86400 + 86400)
                     self.days[ptime] = dayview
-                    self.daysbox.pack_start(self.days[ptime])
-                self.days[ptime].show_all()
-                self.days[ptime].init_events(self.sorting)
-
-class DayView(gtk.VBox):
-        
-    def __init__(self, ptime, timestamp, sorting = "Type"):
-        gtk.VBox.__init__(self)
-        self.time = ptime
-        self.zg = CLIENT
-        self.start = timestamp
-        self.end = timestamp + 86400
-        self.sorting = sorting
-        print "************", self.sorting
-        self.label = gtk.Label(self.time)
-        if ptime == datetime.datetime.fromtimestamp(time.time()).strftime("%A, %d %B %Y"):
-            self.label.set_markup("<span><b>"+self.time+"</b></span>")
-        scroll = gtk.ScrolledWindow()
-        scroll.set_policy(gtk.POLICY_NEVER, gtk.POLICY_NEVER)
-        scroll.add_with_viewport(self.label)
-        self.pack_start(scroll, False, False)
-        scroll = gtk.ScrolledWindow()
-        if settings.view == "Journal":
-            scroll.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        else:
-            scroll.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_NEVER)
-            self.label.set_alignment(0.01, 0.5)
-
-        self.view = DayListView()
-        scroll.add_with_viewport(self.view)
-        self.pack_start(scroll)
-        
-    def clear(self):
-        self.view.store.clear()
-        
-    def init_events(self, sorting):
-        self.sorting = sorting
-        event = Event()
-        event.set_interpretation(Interpretation.VISIT_EVENT.uri)        
-        event2 = Event()
-        event2.set_interpretation(Interpretation.MODIFY_EVENT.uri)
-        if self.sorting == "Recency":
-            self.zg.find_event_ids_for_templates([event,event2], self._handle_find_events, [self.start*1000, self.end*1000], num_events=50000, result_type=2)
-        else:
-            self.zg.find_event_ids_for_templates([event,event2], self._handle_find_events, [self.start*1000, self.end*1000], num_events=50000, result_type=4)
-
-    def _handle_find_events(self, ids):
-        self.zg.get_events(ids, self._handle_get_events)
-    
-    def _handle_get_events(self, events):
-        self.events = events
-        self.view.set_filters(CATEGORY_FILTER)
-        self.insert_events(events)
-        self.view.show_all()
-        
-    def insert_events(self, x):
+                    self.daysbox.pack_start(self.days[ptime], True, True, 3)
+                #self.days[ptime].init_events()
                 
-        def exists(uri):
-            return not uri.startswith("file://") or os.path.exists(urllib.unquote(str(uri[7:])))
-        
-        event_dict = {}
-        self.view.clear()
-        subjects = {}
-        
-        cat, x = self.extract_categories(x)
-        
-        for c in cat.keys():
-            self.view.append_category(c, cat[c])
-            
-        
-        if not self.sorting == "Type":
-            for event in x:
-                subject = event.subjects[0]
-                if exists(subject.uri):
-                    icon =  thumbnailer.get_icon(subject, 32)
-                    self.view.append_object(icon, subject.text, event)
-
-        else:
-            for event in x:
-                subject = event.subjects[0] 
-                if exists(subject.uri):
-                    if not event_dict.has_key(subject.interpretation):
-                        event_dict[subject.interpretation] = {}
-                    if not event_dict[subject.interpretation].has_key(subject.uri):
-                        event_dict[subject.interpretation][subject.uri] = {"count":0, "events":[]}
-                    event_dict[subject.interpretation][subject.uri]["count"]+=1
-                    event_dict[subject.interpretation][subject.uri]["events"].append(event)
-            events = event_dict.keys()
-            if events: events.sort()
-            for k in events:
-                for subject in event_dict[k]:
-                    if not subject in subjects.keys():
-                        subjects[subject] = event_dict[k][subject]["events"][0].subjects[0]
-                        event = event_dict[k][subject]["events"][0]
-                        subject = event_dict[k][subject]["events"][0].subjects[0]
-                        icon =  thumbnailer.get_icon(subject, 32)
-                        self.view.append_object(icon, subject.text, event)
-
-    def extract_categories(self, events):
-        categories={}
-        temp_events = []
-        for event in events:
-            cat = event.subjects[0].interpretation 
-            if settings.compress_categories[cat]:
-                if not categories.has_key(event.subjects[0].interpretation):
-                    categories[cat] = []
-                categories[cat].append(event)
-            else:
-                temp_events.append(event)
-        return categories, temp_events

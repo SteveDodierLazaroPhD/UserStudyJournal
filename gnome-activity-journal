@@ -9,7 +9,7 @@
 import gtk
 import gettext
 
-from src.view import Portal
+from src.main import Portal
 
 gettext.install('gnome-activity-journal', 'build/mo', unicode=True)
 

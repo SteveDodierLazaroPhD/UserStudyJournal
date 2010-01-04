@@ -12,126 +12,17 @@ import pango
 from ui_utils import *
 #from teamgeist import TeamgeistInterface
 
-class DayListView(gtk.TreeView):
-    def __init__(self):
-        gtk.TreeView.__init__(self)
-        self.store = gtk.ListStore(
-                                gtk.gdk.Pixbuf,
-                                str,    #TIME
-                                gobject.TYPE_PYOBJECT,
-                                gobject.TYPE_BOOLEAN,
-                                str
-                                )
-
-        self.filters = {}
-        # Icon 
-        icon_cell = gtk.CellRendererPixbuf()
-        icon_cell.set_property("yalign", 0.5)
-        icon_column = gtk.TreeViewColumn("Icon", icon_cell, pixbuf=0)
-
-        text_cell = gtk.CellRendererText()
-        text_cell.set_property("ellipsize", pango.ELLIPSIZE_END)
-        text_column = gtk.TreeViewColumn("Activity", text_cell, markup=1)
-        text_column.set_expand(True)
+class ToggleButton(gtk.ToggleButton):
+    def __init__(self, category):
+        gtk.ToggleButton.__init__(self)
+        self.category = category
+        self.text = SUPPORTED_SOURCES[category].name
+        img = gtk.image_new_from_pixbuf(get_category_icon(SUPPORTED_SOURCES[category].icon, 16))
+        self.set_image(img)
+        self.set_relief(gtk.RELIEF_NONE)
+        self.set_focus_on_click(False)
+        self.connect("toggled", lambda w: settings.toggle_compression(self.category, self.get_active()))
         
-        time_cell = gtk.CellRendererText()
-        self.time_column = gtk.TreeViewColumn("Activity", time_cell, markup=4)
-        
-        self.append_column(icon_column)
-        self.append_column(text_column)
-        if settings.show_timestamps:
-            #self.insert_column(self.time_column, 0)
-            self.append_column(self.time_column)
-            
-        settings.connect("toggle-time", lambda x, y: self.revisit_timestamps())
-        
-        def _deselect_all(view, event):
-            selection = self.get_selection()
-            selection.unselect_all()
-        
-        self.connect("focus-out-event", _deselect_all)
-        
-        self.set_headers_visible(False)
-        
-        self.filterstore = self.store.filter_new()
-        self.filterstore.set_visible_column(3)
-        self.set_model(self.filterstore)
-        
-        self.connect("button-press-event", self._handle_click)
-        self.connect("row-activated", self._handle_open)
-        
-    def _handle_open(self, view=None, path=None, column=None, item=None):
-        if not item:
-            item = view.get_model()[path][2].subjects[0]
-        if item.mimetype == "x-tomboy/note":
-            uri_to_open = "note://tomboy/%s" % os.path.splitext(os.path.split(item.uri)[1])[0]
-        else:
-            uri_to_open = item.uri
-        if uri_to_open:
-            launcher.launch_uri(uri_to_open, item.mimetype)
-        
-    def _handle_click(self, view, ev):
-        if ev.button == 3:
-            (path,col,x,y) = view.get_path_at_pos(int(ev.x),int(ev.y))
-            iter = self.filterstore.get_iter(path)
-            item = self.filterstore.get_value(iter, 2).subjects[0]
-            if item:
-                menu = gtk.Menu()
-                menu.attach_to_widget(view, None)
-                self._populate_popup(menu, item)
-                menu.popup(None, None, None, ev.button, ev.time)
-
-    def _populate_popup(self, menu, item):
-        open = gtk.ImageMenuItem(gtk.STOCK_OPEN)
-        open.connect("activate", lambda *discard: self._handle_open(item=item))
-        menu.append(open)
-        most = gtk.MenuItem(_("Related files..."))
-        menu.append(most)
-        prop = gtk.MenuItem(_("Properties..."))
-        menu.append(prop)
-        menu.show_all()
-
-    def revisit_timestamps(self):
-        if not settings.show_timestamps:
-            self.remove_column(self.time_column)
-        else:
-            #self.insert_column(self.time_column, 0)
-            self.append_column(self.time_column)
-    
-    def set_filters(self, filters):
-        self.filters = filters
-        for path in self.store:
-            event =  path[2]
-            path[3] = self.filters[event.subjects[0].interpretation]
-
-    def clear(self):
-        self.store.clear()
-    
-    def append_object(self, icon, text, event):
-        #print text
-        #text = "<span><b>"+text+"</b></span>"
-        bool = self.filters[event.subjects[0].interpretation]
-        timestamp = datetime.datetime.fromtimestamp(int(event.timestamp)/1000).strftime("%H:%M")
-        self.store.append([
-                        icon,
-                        text,
-                        event,
-                        bool,
-                        timestamp
-                        ])
-
-    def append_category(self, cat, events):
-        bool = self.filters[cat]
-        icon = get_category_icon(SUPPORTED_SOURCES[cat].icon, 24)
-        text = "<span><b>%d %s</b></span>" % (len(events), SUPPORTED_SOURCES[cat].group_label(len(events)))
-        self.store.append([
-                        icon,
-                        text,
-                        events,
-                        bool,
-                        None
-                        ])
-
 class Tab(gtk.HBox):
     def __init__(self, text):
         gtk.HBox.__init__(self)
@@ -224,39 +115,42 @@ class SearchEntry(gtk.Entry):
         self.search_timeout = 0
         return False
 
-class Calendar(gtk.Window):
-    def __init__(self):
-        gtk.Window.__init__(self)
-        self.vbox = gtk.VBox()
-        evbox = gtk.EventBox()
-
-        evbox2 = gtk.EventBox()
-        evbox.add(evbox2)        
-        evbox2.add(self.vbox)
-        #evbox.set_border_width(3)
-        evbox2.set_border_width(3)
+class CategoryButton(gtk.HBox):
+    __gsignals__ = {
+        "toggle" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_BOOLEAN,)),
+    }
+    def __init__(self, category, count):
+        gtk.HBox.__init__(self)
+        #self.img = gtk.image_new_from_pixbuf(icon_factory.load_icon(SUPPORTED_SOURCES[category].icon, 24))
+        self.label = gtk.Label(SUPPORTED_SOURCES[category].group_label(count))
+        self.label.set_alignment(0.0, 0.5)
+        #print SUPPORTED_SOURCES[category].name
+        self.btn = gtk.Button()
+        self.btn.set_relief(gtk.RELIEF_NONE)
+        img = gtk.image_new_from_stock("gtk-add", 2)
+        self.btn.set_size_request(32,32)
+        self.btn.set_image(img)
+        self.btn.set_focus_on_click(False)
+        self.active = False
         
-        menu = gtk.Menu()
-        evbox.modify_bg(gtk.STATE_NORMAL, menu.style.bg[gtk.STATE_SELECTED])
-        evbox2.modify_bg(gtk.STATE_NORMAL, menu.style.bg[gtk.STATE_NORMAL])
-
-        self.calendar = gtk.Calendar()
-
-        self.timerangebox = gtk.HBox()
+        self.pack_start(self.btn, False, False)
+        #self.pack_start(self.img, False, False)
+        self.pack_start(self.label)
+        
         label = gtk.Label()
-        label.set_markup("<span><b>%s </b></span>" % _("Days to display:"))
-        self.timerangebox.pack_start(label)
+        label.set_markup("<span color='darkgrey'>"+"("+str(count)+")"+"</span>")
+        label.set_alignment(1.0,0.5)
+        self.pack_end(label, False, False, 3)
+        self.show_all()
         
-        self.combox = gtk.combo_box_new_text()
-        self.combox.append_text(_("1 day"))
-        self.combox.append_text(_("3 days"))
-        self.combox.append_text(_("1 week"))
-        self.combox.append_text(_("1 month"))
-        self.combox.set_active(1)
+        self.btn.connect("clicked", self.toggle)
+    
+    def toggle(self, widget):
+        self.active = not self.active
+        if self.active:
+            img = gtk.image_new_from_stock("gtk-remove", 4)
+        else:
+            img = gtk.image_new_from_stock("gtk-add", 4)
+        self.btn.set_image(img)
+        self.emit("toggle", self.active)
         
-        self.timerangebox.pack_start(self.combox)
-
-        self.add(evbox)
-        self.vbox.pack_start(self.calendar)
-        self.vbox.pack_start(self.timerangebox)
-        self.set_decorated(False)
