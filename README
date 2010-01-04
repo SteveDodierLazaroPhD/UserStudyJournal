@@ -15,4 +15,8 @@ To get them, run inside this directory:
 
 And then start Zeitgeist in a separate terminal window, running:
 
- $ ./dep-zeitgeist/zeitgeist-client.py
+ $ ./dep-zeitgeist/zeitgeist-daemon.py
+
+Once Zeitgeist is running, you can start the GNOME Activity Journal like this:
+
+ $ ./gnome-activity-journal
