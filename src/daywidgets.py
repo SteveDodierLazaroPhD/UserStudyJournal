@@ -75,9 +75,10 @@ class DayWidget(gtk.VBox):
         
         style = evbox.get_style().copy()
         if self.week_day_string == "Today":
-            evbox.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse("darkblue"))
-        else:
             evbox.modify_bg(gtk.STATE_NORMAL,  style.bg[gtk.STATE_SELECTED])
+        else:            
+            #evbox.modify_bg(gtk.STATE_NORMAL,  gtk.gdk.color_parse("white"))
+            pass
             
         self.pack_start(evbox)
         
@@ -105,20 +106,27 @@ class DayWidget(gtk.VBox):
         
         today = time.time()
         
-        
-        if today - 86400 * 7 < self.day_start:
+        if today > self.day_start and today < self.day_end:
             label1 = gtk.Label()
             label1.set_markup("<span size='x-large' color='white'><b>"+self.week_day_string +"</b></span>")
             label1.set_alignment(0.5,0.5)
             label2 = gtk.Label()
             label2.set_markup("<span size='small' color='grey'>"+self.date_string +", "+ self.year_string+"</span>")
             label2.set_alignment(0.5,0.5)
-        else:
+        
+        elif today - 86400 * 7 < self.day_start:
             label1 = gtk.Label()
-            label1.set_markup("<span size='x-large' color='white'><b>"+self.date_string +"</b></span>")
+            label1.set_markup("<span size='x-large'><b>"+self.week_day_string +"</b></span>")
             label1.set_alignment(0.5,0.5)
             label2 = gtk.Label()
-            label2.set_markup("<span size='small' color='grey'>"+self.week_day_string+ ", "+ self.year_string +"</span>")
+            label2.set_markup("<span size='small' color='darkgrey'>"+self.date_string +", "+ self.year_string+"</span>")
+            label2.set_alignment(0.5,0.5)
+        else:
+            label1 = gtk.Label()
+            label1.set_markup("<span size='x-large'><b>"+self.date_string +"</b></span>")
+            label1.set_alignment(0.5,0.5)
+            label2 = gtk.Label()
+            label2.set_markup("<span size='small' color='darkgrey'>"+self.week_day_string+ ", "+ self.year_string +"</span>")
             label2.set_alignment(0.5,0.5)
         
         
