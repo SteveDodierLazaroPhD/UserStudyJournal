@@ -22,6 +22,7 @@ class ActivityView(gtk.VBox):
         
         self.range = 3
         self.daysbox = None
+        self.__first_run = True
         
         self._set_today_timestamp()
         self.__init_optionsbar()
@@ -42,7 +43,11 @@ class ActivityView(gtk.VBox):
         else:
             self.daysbox = gtk.VBox()
         
-        self.pack_start(self.daysbox)
+        
+        self.scroll = gtk.ScrolledWindow()
+        self.scroll.add_with_viewport(self.daysbox)
+        self.pack_start(self.scroll, True, True)
+        self.scroll.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_NEVER)
         if refresh:
             self.set_views()
         self.daysbox.show_all()
@@ -107,7 +112,7 @@ class ActivityView(gtk.VBox):
       
     def set_views(self):
         #for day in self.days:
-           # self.days[day].clear()
+            #self.days[day].clear()
         #self.days.clear()
         if self.daysbox:
             for w in self.daysbox:
@@ -117,9 +122,7 @@ class ActivityView(gtk.VBox):
                     i = (self.range-1) - i
                 ptime =  datetime.datetime.fromtimestamp(self.start + i*86400).strftime("%A, %d %B %Y")
                 if not self.days.has_key(ptime):
-                    print ptime
                     dayview = DayWidget(self.start + i*86400, self.start + i*86400 + 86400)
                     self.days[ptime] = dayview
                 self.daysbox.pack_start(self.days[ptime], True, True, 3)
-                #self.days[ptime].init_events()
                 

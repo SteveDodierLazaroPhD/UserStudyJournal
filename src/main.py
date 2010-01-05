@@ -42,7 +42,6 @@ class Portal(gtk.Window):
         self.vbox = gtk.VBox()
         self.notebook = Notebook()
         self._init_toolbar()
-        self.maximize()
         
         self.add(self.vbox)
         self.vbox.pack_start(self.toolbar, False, False)
@@ -55,6 +54,7 @@ class Portal(gtk.Window):
         self.show_all()
         self.notebook.activityview.optionsbar.hide_all()
         self.toolbar.hide_all()
+        self.maximize()
 
     def destroy_settings(self, w):
         self.settingswindow = None
@@ -68,8 +68,13 @@ class Portal(gtk.Window):
         toolbar2 = gtk.Toolbar()
         self.toolbar.pack_end(toolbar2, False, False)
         
-        self.backbtn = gtk.ToolButton("gtk-go-back")
-        self.fwdbtn = gtk.ToolButton("gtk-go-forward")
+        self.backbtn = gtk.Button()
+        self.backbtn.add(gtk.Arrow(gtk.ARROW_LEFT, gtk.SHADOW_NONE))
+        self.backbtn.set_relief(gtk.RELIEF_NONE)
+        self.fwdbtn = gtk.Button()
+        self.fwdbtn.set_relief(gtk.RELIEF_NONE)
+        self.fwdbtn.add(gtk.Arrow(gtk.ARROW_RIGHT, gtk.SHADOW_NONE))
+        
         self.todaybtn = gtk.ToolButton("gtk-home")
         self.optbtn = gtk.ToggleToolButton("gtk-preferences")
         

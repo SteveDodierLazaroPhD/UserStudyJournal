@@ -21,14 +21,19 @@ except RuntimeError, e:
     CLIENT = None
 
 
-class DayWidget(gtk.EventBox):
+class DayWidget(gtk.VBox):
     def __init__(self, start, end):
-        gtk.EventBox.__init__(self)
+        gtk.VBox.__init__(self)
         hour = 60*60
         self.day_start = start
         self.day_end = end
-        self.week_day_string = datetime.datetime.fromtimestamp(self.day_start).strftime("%A")
         self.date_string = datetime.datetime.fromtimestamp(self.day_start).strftime("%d %B %Y")
+        if time.time() < self.day_end and time.time() > self.day_start:
+            self.week_day_string = "Today"
+        elif time.time() - 86400 < self.day_end and time.time() - 86400> self.day_start:
+            self.week_day_string = "Yesterday"
+        else:
+            self.week_day_string = datetime.datetime.fromtimestamp(self.day_start).strftime("%A")
         
         self.morning = {
                         "start": self.day_start,
@@ -72,15 +77,17 @@ class DayWidget(gtk.EventBox):
         evbox.add(self.vbox)
         
         style = evbox.get_style().copy()
-        evbox.modify_bg(gtk.STATE_NORMAL, style.bg[gtk.STATE_SELECTED])
-        
-        self.add(evbox)
+        if self.week_day_string == "Today":
+            evbox.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse("darkblue"))
+        else:
+            evbox.modify_bg(gtk.STATE_NORMAL,  style.bg[gtk.STATE_SELECTED])
+            
+        self.pack_start(evbox)
         
         self.__init_date_label()
        
         #label.modify_bg(gtk.STATE_SELECTED, style.bg[gtk.STATE_SELECTED])
 
-        
         self.view = gtk.VBox()
         scroll = gtk.ScrolledWindow()
         
@@ -99,10 +106,7 @@ class DayWidget(gtk.EventBox):
         vbox = gtk.VBox(False, 3)
         
         label = gtk.Label()
-        if time.time() < self.day_end and time.time() > self.day_start:
-            self.week_day_string = "Today"
-        elif time.time() - 86400 < self.day_end and time.time() - 86400> self.day_start:
-            self.week_day_string = "Yesterday"
+        
         label.set_markup("<span size='x-large' color='white'><b>"+self.week_day_string +"</b></span>")
         label.set_alignment(0.5,0.5)
 

@@ -122,7 +122,7 @@ class CategoryButton(gtk.HBox):
     def __init__(self, category, count):
         gtk.HBox.__init__(self)
         #self.img = gtk.image_new_from_pixbuf(icon_factory.load_icon(SUPPORTED_SOURCES[category].icon, 24))
-        self.label = gtk.Label(SUPPORTED_SOURCES[category].group_label(count))
+        self.label = gtk.Label()
         self.label.set_alignment(0.0, 0.5)
         #print SUPPORTED_SOURCES[category].name
         self.btn = gtk.Button()
@@ -136,6 +136,8 @@ class CategoryButton(gtk.HBox):
 
         self.pack_start(self.btn, False, False)
         #self.pack_start(self.img, False, False)
+        self.label.set_markup("<span>"+SUPPORTED_SOURCES[category].group_label(count)+"</span>")
+        self.label.set_ellipsize(pango.ELLIPSIZE_END)
         self.pack_start(self.label)
 
         label = gtk.Label()
@@ -172,7 +174,7 @@ class Item(gtk.Button):
 
         hbox = gtk.HBox()
         hbox.pack_start(gtk.image_new_from_pixbuf(self.icon), False, False)
-        hbox.pack_start(label)
+        hbox.pack_start(label, True, True, 3)
 
         label = gtk.Label()
         t = datetime.datetime.fromtimestamp(self.time).strftime("%H:%M")
