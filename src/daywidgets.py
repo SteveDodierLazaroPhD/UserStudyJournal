@@ -160,7 +160,7 @@ class DayPartWidget(gtk.VBox):
         self.label = gtk.Label()
         self.label.set_markup("<span color='darkgrey'><b> "+part+"</b></span>")
         self.label.set_alignment(0.01, 0.5)
-        self.pack_start(self.label, False, False, 12)
+        self.pack_start(self.label, False, False, 6)
         self.view = gtk.VBox()
         self.pack_start(self.view)
         self.zg = CLIENT
