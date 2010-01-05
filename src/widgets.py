@@ -127,9 +127,10 @@ class CategoryButton(gtk.HBox):
         #print SUPPORTED_SOURCES[category].name
         self.btn = gtk.Button()
         self.btn.set_relief(gtk.RELIEF_NONE)
-        img = gtk.image_new_from_stock("gtk-add", 2)
         self.btn.set_size_request(32,32)
-        self.btn.set_image(img)
+        self.img = gtk.Label()
+        self.img.set_markup("<span><b>+</b></span>")
+        self.btn.add(self.img)
         self.btn.set_focus_on_click(False)
         self.active = False
         
@@ -148,10 +149,9 @@ class CategoryButton(gtk.HBox):
     def toggle(self, widget):
         self.active = not self.active
         if self.active:
-            img = gtk.image_new_from_stock("gtk-remove", 4)
+            self.img.set_markup("<span><b>-</b></span>")
         else:
-            img = gtk.image_new_from_stock("gtk-add", 4)
-        self.btn.set_image(img)
+            self.img.set_markup("<span><b>+</b></span>")
         self.emit("toggle", self.active)
         
 class Item(gtk.Button):

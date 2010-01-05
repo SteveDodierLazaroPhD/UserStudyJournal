@@ -61,7 +61,7 @@ class DayWidget(gtk.EventBox):
         self.__init_events()
         
     def __init_widgets(self):
-        tm = gtk.Menu()
+        tm = gtk.IconView()
         tm.show_all()
         style = tm.get_style().copy()
         
