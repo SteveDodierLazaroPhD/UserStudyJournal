@@ -78,12 +78,11 @@ class DayWidget(gtk.VBox):
         evbox = gtk.EventBox()
         evbox.add(self.vbox)
         
-        style = evbox.get_style().copy()
         if self.week_day_string == "Today":
-            evbox.modify_bg(gtk.STATE_NORMAL,  style.bg[gtk.STATE_SELECTED])
-        else:            
-            #evbox.modify_bg(gtk.STATE_NORMAL,  gtk.gdk.color_parse("white"))
-            pass
+            color = gtk.gdk.rgb_get_colormap().alloc_color('#5C9EE5')
+            evbox.modify_bg(gtk.STATE_NORMAL, color)
+        else:            #F2F2F1
+            evbox.modify_bg(gtk.STATE_NORMAL,  gtk.gdk.color_parse("white"))
             
         self.pack_start(evbox)
         
@@ -93,14 +92,18 @@ class DayWidget(gtk.VBox):
 
         self.view = gtk.VBox()
         scroll = gtk.ScrolledWindow()
+        scroll.set_shadow_type(gtk.SHADOW_NONE)
         
         evbox = gtk.EventBox()
         evbox.add(self.view)
         self.view.set_border_width(6)
         
-        evbox.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse("white"))
+        color = gtk.gdk.rgb_get_colormap().alloc_color('#F2F2F1')
+        evbox.modify_bg(gtk.STATE_NORMAL, color)
         scroll.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
         scroll.add_with_viewport(evbox)
+        for w in scroll.get_children():
+            w.set_shadow_type(gtk.SHADOW_NONE)
         self.vbox.pack_start(scroll)
         self.show_all()
         
@@ -116,7 +119,7 @@ class DayWidget(gtk.VBox):
             label1.set_markup("<span size='x-large' color='white'><b>"+self.week_day_string +"</b></span>")
             label1.set_alignment(0.5,0.5)
             label2 = gtk.Label()
-            label2.set_markup("<span size='small' color='grey'>"+self.date_string +", "+ self.year_string+"</span>")
+            label2.set_markup("<span size='small' color='white'>"+self.date_string +", "+ self.year_string+"</span>")
             label2.set_alignment(0.5,0.5)
         
         elif today - 86400 * 7 < self.day_start:
