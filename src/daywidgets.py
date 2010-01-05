@@ -119,7 +119,7 @@ class DayWidget(gtk.VBox):
             label1.set_markup("<span size='x-large' color='white'><b>"+self.week_day_string +"</b></span>")
             label1.set_alignment(0.5,0.5)
             label2 = gtk.Label()
-            label2.set_markup("<span size='small' color='white'>"+self.date_string +", "+ self.year_string+"</span>")
+            label2.set_markup("<span color='white'>"+self.date_string +", "+ self.year_string+"</span>")
             label2.set_alignment(0.5,0.5)
         
         elif today - 86400 * 7 < self.day_start:
@@ -127,14 +127,14 @@ class DayWidget(gtk.VBox):
             label1.set_markup("<span size='x-large'><b>"+self.week_day_string +"</b></span>")
             label1.set_alignment(0.5,0.5)
             label2 = gtk.Label()
-            label2.set_markup("<span size='small' color='darkgrey'>"+self.date_string +", "+ self.year_string+"</span>")
+            label2.set_markup("<span color='darkgrey'>"+self.date_string +", "+ self.year_string+"</span>")
             label2.set_alignment(0.5,0.5)
         else:
             label1 = gtk.Label()
             label1.set_markup("<span size='x-large'><b>"+self.date_string +"</b></span>")
             label1.set_alignment(0.5,0.5)
             label2 = gtk.Label()
-            label2.set_markup("<span size='small' color='darkgrey'>"+self.week_day_string+ ", "+ self.year_string +"</span>")
+            label2.set_markup("<span color='darkgrey'>"+self.week_day_string+ ", "+ self.year_string +"</span>")
             label2.set_alignment(0.5,0.5)
         
         
