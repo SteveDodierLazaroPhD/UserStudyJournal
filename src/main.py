@@ -38,6 +38,7 @@ class Portal(gtk.Window):
         self.connect("destroy", self.quit)
         self.set_size_request(800, 360)
         self.settingswindow = None
+        self.set_title("Journal")
         
         self.set_border_width(12)
         
