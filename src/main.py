@@ -1,8 +1,23 @@
-'''
-Created on Nov 28, 2009
+# -.- coding: utf-8 -.-
 
-@author: seif
-'''
+# Zeitgeist
+#
+# Copyright © 2009-2010 Seif Lotfy <seif@lotfy.com>
+# Copyright © 2010 Siegfried Gevatter <siegfried@gevatter.com>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 import gtk
 import gettext
 import pango
@@ -12,50 +27,38 @@ import datetime
 from widgets import *
 from view import ActivityView
 
-
 class Portal(gtk.Window):
-    '''
-    classdocs
-    '''
 
-    def __init__(self, model):
-        '''
-        Constructor
-        '''
+    settingswindow = None
+
+    def __init__(self):
+        
         gtk.Window.__init__(self)
+        
         self.connect("destroy", self.quit)
         self.set_size_request(-1, 360)
-        self.model = model
         self.settingswindow = None
         
         self.vbox = gtk.VBox()
+        self.notebook = Notebook()
+        self._init_toolbar()
+        
         self.add(self.vbox)
-        
-        self.__freeze = False
-        self.__init_widgets()
-        self.__init_toolbar()
-        
-        #self.vbox.pack_start(self.menu, False, False)
         self.vbox.pack_start(self.toolbar, False, False)
         hbox = gtk.HBox()
         hbox.pack_start(self.backbtn, False, False)        
         hbox.pack_start(self.notebook)
         hbox.pack_start(self.fwdbtn, False, False)
         self.vbox.pack_start(hbox, True, True)
-        #self.vbox.pack_start(self.statusbar, False, False)
         
         self.show_all()
         self.notebook.activityview.optionsbar.hide_all()
         self.toolbar.hide_all()
-    
+
     def destroy_settings(self, w):
         self.settingswindow = None
-        
-    def __init_widgets(self):
-        self.notebook = Notebook()
-        self.statusbar = gtk.Statusbar()
-        
-    def __init_toolbar(self):
+
+    def _init_toolbar(self):
         self.toolbar = gtk.HBox()
         
         toolbar = gtk.Toolbar()
@@ -68,7 +71,6 @@ class Portal(gtk.Window):
         self.fwdbtn = gtk.ToolButton("gtk-go-forward")
         self.todaybtn = gtk.ToolButton("gtk-home")
         self.optbtn = gtk.ToggleToolButton("gtk-preferences")
-        #self.propbtn = gtk.ToolButton("gtk-properties")
         
         def toggle_optionsbar(widget):
             if not widget.get_active():
@@ -103,9 +105,6 @@ class Portal(gtk.Window):
         self.verviewbtn.connect("toggled", self.toggle_view)
         self.__togglingview = False
         
-                
-        #toolbar.add(self.backbtn)
-        #toolbar.add(self.fwdbtn)
         toolbar.add(self.todaybtn)
         toolbar.add(gtk.SeparatorToolItem())
         toolbar.add(self.horviewbtn)
@@ -119,9 +118,7 @@ class Portal(gtk.Window):
         toolbar2.add(hbox)
         
         self.show_all()
-        
-        
-        
+
     def toggle_view(self, widget):
         if not self.__togglingview:
             self.__togglingview = True
@@ -140,8 +137,7 @@ class Portal(gtk.Window):
                 if settings.view == "Journal":
                     settings.set_view("List")
             self.__togglingview = False
-            
-            
+
     def toggle_preferences(self, w):
         if not self.settingswindow:
             self.settingswindow = SettingsWindow()
@@ -163,4 +159,3 @@ class Notebook(gtk.Notebook):
         tab = Tab(_("Personal Timeline"))
         self.append_page(self.activityview, tab)
         tab.closebtn.set_sensitive(False)
-
