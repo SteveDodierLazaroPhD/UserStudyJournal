@@ -55,7 +55,7 @@ class Portal(gtk.Window):
         hbox.pack_start(self.backbtn, False, False)        
         hbox.pack_start(self.activityview)
         hbox.pack_start(self.fwdbtn, False, False)
-        self.vbox.pack_start(hbox, True, True, 6)
+        self.vbox.pack_start(hbox, True, True, 12)
         
         self.show_all()
         self.activityview.optionsbar.hide_all()
