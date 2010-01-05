@@ -8,6 +8,8 @@ import time, datetime
 import gobject
 import pango
 
+from datetime import date
+
 from zeitgeist.client import ZeitgeistClient
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation
 
@@ -22,19 +24,22 @@ except RuntimeError, e:
 
 
 class DayWidget(gtk.VBox):
+    # day_start - "time_t"
+    # day_end   - "time_t"
+
     def __init__(self, start, end):
         gtk.VBox.__init__(self)
         hour = 60*60
         self.day_start = start
         self.day_end = end
-        self.date_string = datetime.datetime.fromtimestamp(self.day_start).strftime("%d %B")
-        self.year_string = datetime.datetime.fromtimestamp(self.day_start).strftime("%Y")
+        self.date_string = date.fromtimestamp(self.day_start).strftime("%d %B")
+        self.year_string = date.fromtimestamp(self.day_start).strftime("%Y")
         if time.time() < self.day_end and time.time() > self.day_start:
             self.week_day_string = "Today"
         elif time.time() - 86400 < self.day_end and time.time() - 86400> self.day_start:
             self.week_day_string = "Yesterday"
         else:
-                self.week_day_string = datetime.datetime.fromtimestamp(self.day_start).strftime("%A")
+                self.week_day_string = date.fromtimestamp(self.day_start).strftime("%A")
         
         self.morning = {
                         "start": self.day_start,
