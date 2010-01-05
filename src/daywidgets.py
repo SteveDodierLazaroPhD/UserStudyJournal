@@ -175,12 +175,19 @@ class DayPartWidget(gtk.VBox):
         keys = self.categories.keys()
         keys.sort()
         
+        temp_keys = []
         for key in keys:
+            events = self.categories[key]
+            if len(events) > 1:
+                box = CategoryBox(key, events)
+                self.view.pack_start(box)
+            else:
+                temp_keys.append(key)
+            
+        for key in temp_keys:
             events = self.categories[key]
             box = CategoryBox(key, events)
             self.view.pack_start(box)
-        for w in self.view:
-            print w
 
 class CategoryBox(gtk.VBox):
     def __init__(self, category, events):
