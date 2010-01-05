@@ -40,21 +40,22 @@ class Portal(gtk.Window):
         self.settingswindow = None
         self.set_title("Journal")
         
-        self.set_border_width(12)
-        
         self.vbox = gtk.VBox()
         color = gtk.gdk.rgb_get_colormap().alloc_color('#EEEEEC')
         self.modify_bg(gtk.STATE_NORMAL, color)
         self.activityview = ActivityView()
         self._init_toolbar()
         
+        # We configure the view so that the left/right buttons touch the
+        # left/right edges in order to utilize Fitts law. This is accomplished
+        # by having no padding on the HBox
         self.add(self.vbox)
-        self.vbox.pack_start(self.toolbar, False, False)
+        self.vbox.pack_start(self.toolbar, False, False, 6)
         hbox = gtk.HBox()
         hbox.pack_start(self.backbtn, False, False)        
         hbox.pack_start(self.activityview)
         hbox.pack_start(self.fwdbtn, False, False)
-        self.vbox.pack_start(hbox, True, True)
+        self.vbox.pack_start(hbox, True, True, 6)
         
         self.show_all()
         self.activityview.optionsbar.hide_all()
