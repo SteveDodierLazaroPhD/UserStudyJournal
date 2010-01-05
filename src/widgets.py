@@ -125,25 +125,30 @@ class CategoryButton(gtk.HBox):
         self.label = gtk.Label()
         self.label.set_alignment(0.0, 0.5)
         #print SUPPORTED_SOURCES[category].name
+        hbox = gtk.HBox()
+        
         self.btn = gtk.Button()
         self.btn.set_relief(gtk.RELIEF_NONE)
         self.btn.set_size_request(32,32)
+        self.btn.set_focus_on_click(False)
+        self.btn.add(hbox)
+        
         self.img = gtk.Label()
         self.img.set_markup("<span color='darkgrey'><b>+</b></span>")
-        self.btn.add(self.img)
-        self.btn.set_focus_on_click(False)
+        
+        hbox.pack_start(self.img, False, False)
         self.active = False
 
-        self.pack_start(self.btn, False, False)
+        self.pack_start(self.btn)
         #self.pack_start(self.img, False, False)
         self.label.set_markup("<span>"+SUPPORTED_SOURCES[category].group_label(count)+"</span>")
         self.label.set_ellipsize(pango.ELLIPSIZE_END)
-        self.pack_start(self.label)
+        hbox.pack_start(self.label, True, True, 6)
 
         label = gtk.Label()
         label.set_markup("<span color='darkgrey'>"+"("+str(count)+")"+"</span>")
         label.set_alignment(1.0,0.5)
-        self.pack_end(label, False, False, 3)
+        hbox.pack_end(label, False, False, 3)
         self.show_all()
 
         self.btn.connect("clicked", self.toggle)

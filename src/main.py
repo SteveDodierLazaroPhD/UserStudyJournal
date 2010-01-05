@@ -36,7 +36,7 @@ class Portal(gtk.Window):
         gtk.Window.__init__(self)
         
         self.connect("destroy", self.quit)
-        self.set_size_request(-1, 360)
+        self.set_size_request(800, 360)
         self.settingswindow = None
         
         self.vbox = gtk.VBox()
@@ -71,9 +71,11 @@ class Portal(gtk.Window):
         self.backbtn = gtk.Button()
         self.backbtn.add(gtk.Arrow(gtk.ARROW_LEFT, gtk.SHADOW_NONE))
         self.backbtn.set_relief(gtk.RELIEF_NONE)
+        self.backbtn.set_focus_on_click(False)
         self.fwdbtn = gtk.Button()
         self.fwdbtn.set_relief(gtk.RELIEF_NONE)
         self.fwdbtn.add(gtk.Arrow(gtk.ARROW_RIGHT, gtk.SHADOW_NONE))
+        self.fwdbtn.set_focus_on_click(False)
         
         self.todaybtn = gtk.ToolButton("gtk-home")
         self.optbtn = gtk.ToggleToolButton("gtk-preferences")
