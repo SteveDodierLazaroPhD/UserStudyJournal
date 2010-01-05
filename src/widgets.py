@@ -152,7 +152,7 @@ class CategoryButton(gtk.HBox):
         self.show_all()
 
         self.btn.connect("clicked", self.toggle)
-
+        
     def toggle(self, widget):
         self.active = not self.active
         if self.active:
