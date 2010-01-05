@@ -42,19 +42,19 @@ class Portal(gtk.Window):
         self.set_border_width(6)
         
         self.vbox = gtk.VBox()
-        self.notebook = Notebook()
+        self.activityview = ActivityView()
         self._init_toolbar()
         
         self.add(self.vbox)
         self.vbox.pack_start(self.toolbar, False, False)
         hbox = gtk.HBox()
         hbox.pack_start(self.backbtn, False, False)        
-        hbox.pack_start(self.notebook)
+        hbox.pack_start(self.activityview)
         hbox.pack_start(self.fwdbtn, False, False)
         self.vbox.pack_start(hbox, True, True)
         
         self.show_all()
-        self.notebook.activityview.optionsbar.hide_all()
+        self.activityview.optionsbar.hide_all()
         self.toolbar.hide_all()
         self.maximize()
 
@@ -91,10 +91,10 @@ class Portal(gtk.Window):
             else:
                 self.optbtn.set_tooltip_text("Hide Options")
 
-        self.todaybtn.connect("clicked", lambda w: self.notebook.activityview._set_today_timestamp())
-        self.backbtn.connect("clicked", lambda w: self.notebook.activityview.jump(-86400))
-        self.fwdbtn.connect("clicked", lambda w: self.notebook.activityview.jump(86400))
-        self.optbtn.connect("toggled", self.notebook.activityview.toggle_optionsbar)
+        self.todaybtn.connect("clicked", lambda w: self.activityview._set_today_timestamp())
+        self.backbtn.connect("clicked", lambda w: self.activityview.jump(-86400))
+        self.fwdbtn.connect("clicked", lambda w: self.activityview.jump(86400))
+        self.optbtn.connect("toggled", self.activityview.toggle_optionsbar)
         self.optbtn.connect("toggled", toggle_optionsbar)
         
         self.backbtn.set_tooltip_text(_("Go back in time"))
@@ -151,24 +151,7 @@ class Portal(gtk.Window):
                     settings.set_view("List")
             self.__togglingview = False
 
-    def toggle_preferences(self, w):
-        if not self.settingswindow:
-            self.settingswindow = SettingsWindow()
-            self.settingswindow.connect("destroy", self.destroy_settings)
-        self.settingswindow.show_all()
 
     def quit(self, widget):
         gtk.main_quit()
 
-class Notebook(gtk.Notebook):
-    
-    def __init__(self):
-        gtk.Notebook.__init__(self)
-        self.set_show_tabs(False)
-        self._set_own_timeline()
-        
-    def _set_own_timeline(self):
-        self.activityview = ActivityView()
-        tab = Tab(_("Personal Timeline"))
-        self.append_page(self.activityview, tab)
-        tab.closebtn.set_sensitive(False)

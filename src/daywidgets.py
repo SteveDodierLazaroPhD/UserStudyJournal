@@ -181,6 +181,7 @@ class DayPartWidget(gtk.VBox):
             self.hide_all()
     
     def _handle_get_events(self, events):
+        real_count = 0
         
         def exists(uri):
             return not uri.startswith("file://") or os.path.exists(urllib.unquote(str(uri[7:])))
@@ -190,25 +191,29 @@ class DayPartWidget(gtk.VBox):
         for event in events:
             subject = event.subjects[0]
             if exists(subject.uri):
+                real_count += 1
                 if not self.categories.has_key(subject.interpretation):
                     self.categories[subject.interpretation] = []
                 self.categories[subject.interpretation].append(event)
-        keys = self.categories.keys()
-        keys.sort()
-        
-        temp_keys = []
-        for key in keys:
-            events = self.categories[key]
-            if len(events) > 1:
+        if real_count == 0:
+            self.hide_all()
+        else:
+            keys = self.categories.keys()
+            keys.sort()
+            
+            temp_keys = []
+            for key in keys:
+                events = self.categories[key]
+                if len(events) > 1:
+                    box = CategoryBox(key, events)
+                    self.view.pack_start(box)
+                else:
+                    temp_keys.append(key)
+                
+            for key in temp_keys:
+                events = self.categories[key]
                 box = CategoryBox(key, events)
                 self.view.pack_start(box)
-            else:
-                temp_keys.append(key)
-            
-        for key in temp_keys:
-            events = self.categories[key]
-            box = CategoryBox(key, events)
-            self.view.pack_start(box)
 
 class CategoryBox(gtk.VBox):
     def __init__(self, category, events):
