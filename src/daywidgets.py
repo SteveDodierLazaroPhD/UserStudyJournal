@@ -171,11 +171,10 @@ class CategoryBox(gtk.VBox):
         self.btn = CategoryButton(category, len(events))
         self.btn.connect("toggle", self.toggle)
         self.pack_start(self.btn, False, False)
-        self.view = DayListView()
+        self.view = gtk.VBox(True)
         for event in events:
-            icon = thumbnailer.get_icon(event.subjects[0], 24)
-            text = event.subjects[0].text
-            self.view.append_object(icon, text, event)
+            item = Item(event)
+            self.view.pack_start(item)
         hbox = gtk.HBox()
         self.label = gtk.Label("    ")
         hbox.pack_start(self.label, False, False)
@@ -196,100 +195,3 @@ class CategoryBox(gtk.VBox):
         else:
             self.view.hide_all()
             self.label.hide_all()
-
-class DayListView(gtk.TreeView):
-    def __init__(self):
-        gtk.TreeView.__init__(self)
-        self.store = gtk.ListStore(
-                                gtk.gdk.Pixbuf,
-                                str,    #TIME
-                                gobject.TYPE_PYOBJECT,
-                                str
-                                )
-
-        self.filters = {}
-        # Icon
-        icon_cell = gtk.CellRendererPixbuf()
-        icon_cell.set_property("yalign", 0.5)
-        icon_cell.set_property("xalign", 1.0)
-        icon_column = gtk.TreeViewColumn("Icon", icon_cell, pixbuf=0)
-
-        text_cell = gtk.CellRendererText()
-        text_cell.set_property("ellipsize", pango.ELLIPSIZE_END)
-        text_column = gtk.TreeViewColumn("Activity", text_cell, markup=1)
-        text_column.set_expand(True)
-        
-        time_cell = gtk.CellRendererText()
-        self.time_column = gtk.TreeViewColumn("Activity", time_cell, markup=3)
-        
-        self.append_column(icon_column)
-        self.append_column(text_column)
-        self.append_column(self.time_column)
-            
-        
-        def _deselect_all(view, event):
-            selection = self.get_selection()
-            selection.unselect_all()
-        
-        self.connect("focus-out-event", _deselect_all)
-        
-        self.set_headers_visible(False)
-        
-        self.set_model(self.store)
-        
-        self.connect("button-press-event", self._handle_click)
-        self.connect("row-activated", self._handle_open)
-        
-    def _handle_open(self, view=None, path=None, column=None, item=None):
-        if not item:
-            item = view.get_model()[path][2].subjects[0]
-        if item.mimetype == "x-tomboy/note":
-            uri_to_open = "note://tomboy/%s" % os.path.splitext(os.path.split(item.uri)[1])[0]
-        else:
-            uri_to_open = item.uri
-        if uri_to_open:
-            launcher.launch_uri(uri_to_open, item.mimetype)
-        
-    def _handle_click(self, view, ev):
-        if ev.button == 3:
-            (path,col,x,y) = view.get_path_at_pos(int(ev.x),int(ev.y))
-            iter = self.filterstore.get_iter(path)
-            item = self.filterstore.get_value(iter, 2).subjects[0]
-            if item:
-                menu = gtk.Menu()
-                menu.attach_to_widget(view, None)
-                self._populate_popup(menu, item)
-                menu.popup(None, None, None, ev.button, ev.time)
-
-    def _populate_popup(self, menu, item):
-        open = gtk.ImageMenuItem(gtk.STOCK_OPEN)
-        open.connect("activate", lambda *discard: self._handle_open(item=item))
-        menu.append(open)
-        most = gtk.MenuItem(_("Related files..."))
-        menu.append(most)
-        prop = gtk.MenuItem(_("Properties..."))
-        menu.append(prop)
-        menu.show_all()
-
-    
-    def set_filters(self, filters):
-        self.filters = filters
-        for path in self.store:
-            event =  path[2]
-            path[3] = self.filters[event.subjects[0].interpretation]
-
-    def clear(self):
-        self.store.clear()
-    
-    def append_object(self, icon, text, event):
-        #print text
-        #text = "<span><b>"+text+"</b></span>"
-        bool = True
-        timestamp = datetime.datetime.fromtimestamp(int(event.timestamp)/1000).strftime("%H:%M")
-        timestamp = "<span color='darkgrey'>"+timestamp+"</span>"
-        self.store.append([
-                        icon,
-                        text,
-                        event,
-                        timestamp
-                        ])

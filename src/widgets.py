@@ -154,3 +154,22 @@ class CategoryButton(gtk.HBox):
         self.btn.set_image(img)
         self.emit("toggle", self.active)
         
+class Item(gtk.Button):
+    def __init__(self, event):
+        gtk.Button.__init__(self)
+        self.event = event
+        self.subject = event.subjects[0]
+        self.time = float(event.timestamp)/1000
+        self.icon = thumbnailer.get_icon(self.subject, 24)
+        self.set_relief(gtk.RELIEF_NONE)
+        self.set_focus_on_click(False)
+        img = gtk.image_new_from_pixbuf(self.icon)
+        label = gtk.Label(" "+self.subject.text)
+        label.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
+        label.set_alignment(0.0, 0.5)
+        
+        hbox = gtk.HBox()
+        hbox.pack_start(img, False, False)
+        hbox.pack_start(label)
+        hbox.pack_start(img)
+        self.add(hbox)

@@ -83,8 +83,6 @@ class Settings(gobject.GObject):
         self.compress_categories[cat] = bool
         self.emit("toggle-grouping")
 
-
-
 class LaunchManager:
     """
     A program lauching utility which handles opening a URI or executing a

@@ -108,7 +108,7 @@ class ActivityView(gtk.VBox):
     def set_views(self):
         #for day in self.days:
            # self.days[day].clear()
-        self.days.clear()
+        #self.days.clear()
         if self.daysbox:
             for w in self.daysbox:
                 self.daysbox.remove(w)
@@ -120,6 +120,6 @@ class ActivityView(gtk.VBox):
                     print ptime
                     dayview = DayWidget(self.start + i*86400, self.start + i*86400 + 86400)
                     self.days[ptime] = dayview
-                    self.daysbox.pack_start(self.days[ptime], True, True, 3)
+                self.daysbox.pack_start(self.days[ptime], True, True, 3)
                 #self.days[ptime].init_events()
                 
