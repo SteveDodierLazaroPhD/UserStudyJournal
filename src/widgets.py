@@ -22,7 +22,7 @@ class ToggleButton(gtk.ToggleButton):
         self.set_relief(gtk.RELIEF_NONE)
         self.set_focus_on_click(False)
         self.connect("toggled", lambda w: settings.toggle_compression(self.category, self.get_active()))
-        
+
 class Tab(gtk.HBox):
     def __init__(self, text):
         gtk.HBox.__init__(self)
@@ -35,7 +35,7 @@ class Tab(gtk.HBox):
         img = gtk.image_new_from_stock("gtk-close", 4)
         self.closebtn.add(img)
         self.pack_end(self.closebtn)
-        
+
         self.show_all()
 
 class SearchEntry(gtk.Entry):
@@ -133,19 +133,19 @@ class CategoryButton(gtk.HBox):
         self.btn.add(self.img)
         self.btn.set_focus_on_click(False)
         self.active = False
-        
+
         self.pack_start(self.btn, False, False)
         #self.pack_start(self.img, False, False)
         self.pack_start(self.label)
-        
+
         label = gtk.Label()
         label.set_markup("<span color='darkgrey'>"+"("+str(count)+")"+"</span>")
         label.set_alignment(1.0,0.5)
         self.pack_end(label, False, False, 3)
         self.show_all()
-        
+
         self.btn.connect("clicked", self.toggle)
-    
+
     def toggle(self, widget):
         self.active = not self.active
         if self.active:
@@ -153,28 +153,34 @@ class CategoryButton(gtk.HBox):
         else:
             self.img.set_markup("<span color='darkgrey'><b>+</b></span>")
         self.emit("toggle", self.active)
-        
+
 class Item(gtk.Button):
+
     def __init__(self, event):
+
         gtk.Button.__init__(self)
+
         self.event = event
         self.subject = event.subjects[0]
-        self.time = float(event.timestamp)/1000
+        self.time = float(event.timestamp) / 1000
         self.icon = thumbnailer.get_icon(self.subject, 24)
         self.set_relief(gtk.RELIEF_NONE)
         self.set_focus_on_click(False)
-        img = gtk.image_new_from_pixbuf(self.icon)
-        label = gtk.Label(" "+self.subject.text)
+        label = gtk.Label(self.subject.text)
         label.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
         label.set_alignment(0.0, 0.5)
-        
+
         hbox = gtk.HBox()
-        hbox.pack_start(img, False, False)
+        hbox.pack_start(gtk.image_new_from_pixbuf(self.icon), False, False)
         hbox.pack_start(label)
-        hbox.pack_start(img)
-        
+
         label = gtk.Label()
         t = datetime.datetime.fromtimestamp(self.time).strftime("%H:%M")
-        label.set_markup("<span color='darkgrey'>   "+t+"</span>")
-        hbox.pack_end(label,False, False)
+        label.set_markup("<span color='darkgrey'>   %s</span>" % t)
+        hbox.pack_end(label, False, False)
         self.add(hbox)
+
+        self.connect("pressed", self.launch)
+    
+    def launch(self, *discard):
+        launcher.launch_uri(self.subject.uri, self.subject.mimetype)
