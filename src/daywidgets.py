@@ -61,6 +61,8 @@ class DayWidget(gtk.EventBox):
         self.__init_events()
         
     def __init_widgets(self):
+        
+        
         tm = gtk.IconView()
         tm.show_all()
         style = tm.get_style().copy()
@@ -74,21 +76,9 @@ class DayWidget(gtk.EventBox):
         
         self.add(evbox)
         
-        label = gtk.Label()
-        if time.time() < self.day_end and time.time() > self.day_start:
-            self.week_day_string = "Today"
-        elif time.time() - 86400 < self.day_end and time.time() - 86400> self.day_start:
-            self.week_day_string = "Yesterday"
-        label.set_markup("<span size='large' color='white'><b>"+self.week_day_string +"</b></span>")
-        label.set_alignment(0.5,0.5)
-        self.vbox.pack_start(label, False, False)
-        label.modify_bg(gtk.STATE_SELECTED, style.bg[gtk.STATE_SELECTED])
-        
-        label = gtk.Label()
-        label.set_markup("<span size='small' color='grey'>"+self.date_string +"</span>")
-        label.set_alignment(0.5,0.5)
-        self.vbox.pack_start(label, False, False)
-        label.modify_bg(gtk.STATE_SELECTED, style.bg[gtk.STATE_SELECTED])
+        self.__init_date_label()
+       
+        #label.modify_bg(gtk.STATE_SELECTED, style.bg[gtk.STATE_SELECTED])
 
         
         self.view = gtk.VBox()
@@ -96,12 +86,35 @@ class DayWidget(gtk.EventBox):
         
         evbox = gtk.EventBox()
         evbox.add(self.view)
+        self.view.set_border_width(6)
         
         evbox.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse("white"))
         scroll.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
         scroll.add_with_viewport(evbox)
         self.vbox.pack_start(scroll)
         self.show_all()
+        
+    def __init_date_label(self):
+        
+        vbox = gtk.VBox(False, 3)
+        
+        label = gtk.Label()
+        if time.time() < self.day_end and time.time() > self.day_start:
+            self.week_day_string = "Today"
+        elif time.time() - 86400 < self.day_end and time.time() - 86400> self.day_start:
+            self.week_day_string = "Yesterday"
+        label.set_markup("<span size='x-large' color='white'><b>"+self.week_day_string +"</b></span>")
+        label.set_alignment(0.5,0.5)
+
+        vbox.pack_start(label,False,False)
+
+        label = gtk.Label()
+        label.set_markup("<span size='small' color='grey'>"+self.date_string +"</span>")
+        label.set_alignment(0.5,0.5)
+        
+        vbox.pack_start(label,False,False)
+        
+        self.vbox.pack_start(vbox, False, False, 6)
         
     def __init_events(self):
         for w in self.view:

@@ -129,7 +129,7 @@ class CategoryButton(gtk.HBox):
         self.btn.set_relief(gtk.RELIEF_NONE)
         self.btn.set_size_request(32,32)
         self.img = gtk.Label()
-        self.img.set_markup("<span><b>+</b></span>")
+        self.img.set_markup("<span color='darkgrey'><b>+</b></span>")
         self.btn.add(self.img)
         self.btn.set_focus_on_click(False)
         self.active = False
@@ -149,9 +149,9 @@ class CategoryButton(gtk.HBox):
     def toggle(self, widget):
         self.active = not self.active
         if self.active:
-            self.img.set_markup("<span><b>-</b></span>")
+            self.img.set_markup("<span color='darkgrey'><b>-</b></span>")
         else:
-            self.img.set_markup("<span><b>+</b></span>")
+            self.img.set_markup("<span color='darkgrey'><b>+</b></span>")
         self.emit("toggle", self.active)
         
 class Item(gtk.Button):
@@ -175,6 +175,6 @@ class Item(gtk.Button):
         
         label = gtk.Label()
         t = datetime.datetime.fromtimestamp(self.time).strftime("%H:%M")
-        label.set_markup("<span color='darkgrey'>"+t+"</span>")
+        label.set_markup("<span color='darkgrey'>   "+t+"</span>")
         hbox.pack_end(label,False, False)
         self.add(hbox)

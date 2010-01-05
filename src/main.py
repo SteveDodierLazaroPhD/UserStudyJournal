@@ -42,6 +42,7 @@ class Portal(gtk.Window):
         self.vbox = gtk.VBox()
         self.notebook = Notebook()
         self._init_toolbar()
+        self.maximize()
         
         self.add(self.vbox)
         self.vbox.pack_start(self.toolbar, False, False)
