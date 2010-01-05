@@ -431,10 +431,10 @@ SUPPORTED_SOURCES = {
     # it may just be a "bookmark event".
     #
     # Also, how this is implemented now won't work fine with i18n.
-    Interpretation.VIDEO.uri: Source(Interpretation.VIDEO, "gnome-mime-video", "video watched", "videos watched"),
-    Interpretation.MUSIC.uri: Source(Interpretation.MUSIC, "gnome-mime-audio", "audio heard", "audios heard"),
-    Interpretation.IMAGE.uri: Source(Interpretation.IMAGE, "image", "image viewed", "images viewed"),
-    Interpretation.DOCUMENT.uri: Source(Interpretation.DOCUMENT, "stock_new-presentation", "document edited or read", "documents edited or read"),
-    Interpretation.SOURCECODE.uri: Source(Interpretation.SOURCECODE, "applications-development", "source file edited or read", "source files edited or read"),
-    Interpretation.UNKNOWN.uri: Source(Interpretation.UNKNOWN, "applications-other", "other activity", "other activites"),
+    Interpretation.VIDEO.uri: Source(Interpretation.VIDEO, "gnome-mime-video", "Watched Video", "Watched Videos"),
+    Interpretation.MUSIC.uri: Source(Interpretation.MUSIC, "gnome-mime-audio", "Played Audio", "Played Audio"),
+    Interpretation.IMAGE.uri: Source(Interpretation.IMAGE, "image", "Viewed Image", "Viewed Images"),
+    Interpretation.DOCUMENT.uri: Source(Interpretation.DOCUMENT, "stock_new-presentation", "Edited or Read Document", "Edited or Read Documents"),
+    Interpretation.SOURCECODE.uri: Source(Interpretation.SOURCECODE, "applications-development", "Edited or Read Development File", "Edited or Read Development Files"),
+    Interpretation.UNKNOWN.uri: Source(Interpretation.UNKNOWN, "applications-other", "Other Activity", "Other Activities"),
 }

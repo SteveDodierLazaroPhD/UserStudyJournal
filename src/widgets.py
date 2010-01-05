@@ -172,4 +172,9 @@ class Item(gtk.Button):
         hbox.pack_start(img, False, False)
         hbox.pack_start(label)
         hbox.pack_start(img)
+        
+        label = gtk.Label()
+        t = datetime.datetime.fromtimestamp(self.time).strftime("%H:%M")
+        label.set_markup("<span color='darkgrey'>"+t+"</span>")
+        hbox.pack_end(label,False, False)
         self.add(hbox)
