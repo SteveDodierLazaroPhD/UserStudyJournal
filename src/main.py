@@ -39,7 +39,7 @@ class Portal(gtk.Window):
         self.set_size_request(800, 360)
         self.settingswindow = None
         
-        self.set_border_width(6)
+        self.set_border_width(12)
         
         self.vbox = gtk.VBox()
         color = gtk.gdk.rgb_get_colormap().alloc_color('#EEEEEC')
