@@ -73,6 +73,9 @@ class Portal(gtk.Window):
         self.todaybtn = gtk.ToolButton("gtk-home")
         self.optbtn = gtk.ToggleToolButton("gtk-preferences")
         
+        self.fwdbtn.set_size_request(34,-1)
+        self.backbtn.set_size_request(34,-1)
+        
         def toggle_optionsbar(widget):
             if not widget.get_active():
                 self.optbtn.set_tooltip_text("Show Options")
