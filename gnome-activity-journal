@@ -48,9 +48,18 @@ except ImportError, e:
     print "-" * 60
     sys.exit(1)
 
-from src.main import Portal
-
 gettext.install('gnome-activity-journal', 'build/mo', unicode=True)
+
+try:
+    from zeitgeist.client import ZeitgeistClient
+    CLIENT = ZeitgeistClient()
+except RuntimeError, e:
+    print "ERROR: Unable to connect to Zeitgeist:"
+    print "%s" % e
+    CLIENT = None
+    sys.exit(1)
+
+from src.main import Portal
 
 if __name__ == '__main__': 
     portal = Portal()
