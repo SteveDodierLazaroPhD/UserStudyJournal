@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: zeitgeist@lists.launchpad.net\n"
-"POT-Creation-Date: 2010-01-04 01:06+0100\n"
+"POT-Creation-Date: 2010-01-05 20:57+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,54 +16,26 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/view.py:93
+#: ../src/main.py:98
 msgid "Go back in time"
 msgstr ""
 
-#: ../src/view.py:94
+#: ../src/main.py:99
 msgid "Look into the future"
 msgstr ""
 
-#: ../src/view.py:95
+#: ../src/main.py:100
 msgid "Recent Events"
 msgstr ""
 
-#: ../src/view.py:96
+#: ../src/main.py:101
 msgid "Show Options"
 msgstr ""
 
-#: ../src/view.py:201
+#: ../src/main.py:170
 msgid "Personal Timeline"
 msgstr ""
 
-#: ../src/widgets.py:88
-msgid "Related files..."
-msgstr ""
-
-#: ../src/widgets.py:90
-msgid "Properties..."
-msgstr ""
-
-#: ../src/widgets.py:161
+#: ../src/widgets.py:52
 msgid "Search..."
-msgstr ""
-
-#: ../src/widgets.py:247
-msgid "Days to display:"
-msgstr ""
-
-#: ../src/widgets.py:251
-msgid "1 day"
-msgstr ""
-
-#: ../src/widgets.py:252
-msgid "3 days"
-msgstr ""
-
-#: ../src/widgets.py:253
-msgid "1 week"
-msgstr ""
-
-#: ../src/widgets.py:254
-msgid "1 month"
 msgstr ""
