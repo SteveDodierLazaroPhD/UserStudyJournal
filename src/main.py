@@ -39,6 +39,8 @@ class Portal(gtk.Window):
         self.set_size_request(800, 360)
         self.settingswindow = None
         
+        self.set_border_width(6)
+        
         self.vbox = gtk.VBox()
         self.notebook = Notebook()
         self._init_toolbar()
