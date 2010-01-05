@@ -6,8 +6,47 @@
 # Copyright © 2009 Seif Lotfy <seif@lotfy.com>
 # Copyright © 2010 Siegfried Gevatter <siegfried@gevatter.com>
 
+import os, sys
 import gtk
 import gettext
+
+# Where this file lives
+our_dir = os.path.abspath(os.path.dirname(__file__))
+
+# Make sure references to data files work (FIXME temporary hack!)
+os.chdir(our_dir)
+
+# Check for critical modules from other repositories first.
+# Support side-by-side or nested repositories during development.
+#
+# If zeitgeist is installed locally (with --prefix=<home>/.local) then Python
+# should have added ~/.local/lib/python<ver>/site-packages to the search path
+# automatically.  If it hasn't, then take a closer look at site.USER_SITE,
+# site.USER_BASE, and site.ENABLE_USER_SITE.
+try:
+    # repo/module names
+    other_repos = ['zeitgeist', 'fungtk']
+
+    # paths of potential repos next to us and below us
+    repo_paths = ([os.path.join(our_dir, '..', repo) for repo in other_repos] +
+                  [os.path.join(our_dir, '.' , repo) for repo in other_repos])
+
+    # look for (and import) the needed modules 
+    from imp import load_module, find_module
+    for module in other_repos:
+        m = find_module(module, repo_paths + sys.path)
+        print 'Using the "%s" module from %s' % (module, os.path.abspath(m[1]))
+        load_module(module, *m)
+
+except ImportError, e:
+    print "-" * 60
+    print "ERROR: %s." % e.message
+    print "Did you remember to fetch the 'lp:zeitgeist' and 'lp:fungtk' repositories?"
+    print
+    print "Please see the README file for more information, or contact us"
+    print "in IRC channel #zeitgeist on Freenode (irc.freenode.net)."
+    print "-" * 60
+    sys.exit(1)
 
 from src.main import Portal
 
