@@ -27,13 +27,14 @@ class DayWidget(gtk.VBox):
         hour = 60*60
         self.day_start = start
         self.day_end = end
-        self.date_string = datetime.datetime.fromtimestamp(self.day_start).strftime("%d %B %Y")
+        self.date_string = datetime.datetime.fromtimestamp(self.day_start).strftime("%d %B")
+        self.year_string = datetime.datetime.fromtimestamp(self.day_start).strftime("%Y")
         if time.time() < self.day_end and time.time() > self.day_start:
             self.week_day_string = "Today"
         elif time.time() - 86400 < self.day_end and time.time() - 86400> self.day_start:
             self.week_day_string = "Yesterday"
         else:
-            self.week_day_string = datetime.datetime.fromtimestamp(self.day_start).strftime("%A")
+                self.week_day_string = datetime.datetime.fromtimestamp(self.day_start).strftime("%A")
         
         self.morning = {
                         "start": self.day_start,
@@ -68,10 +69,6 @@ class DayWidget(gtk.VBox):
     def __init_widgets(self):
         
         
-        tm = gtk.IconView()
-        tm.show_all()
-        style = tm.get_style().copy()
-        
         self.vbox = gtk.VBox()
         evbox = gtk.EventBox()
         evbox.add(self.vbox)
@@ -104,19 +101,30 @@ class DayWidget(gtk.VBox):
     def __init_date_label(self):
         
         vbox = gtk.VBox(False, 3)
+        label1 = gtk.Label()
         
-        label = gtk.Label()
+        today = time.time()
         
-        label.set_markup("<span size='x-large' color='white'><b>"+self.week_day_string +"</b></span>")
-        label.set_alignment(0.5,0.5)
+        
+        if today - 86400 * 7 < self.day_start:
+            label1 = gtk.Label()
+            label1.set_markup("<span size='x-large' color='white'><b>"+self.week_day_string +"</b></span>")
+            label1.set_alignment(0.5,0.5)
+            label2 = gtk.Label()
+            label2.set_markup("<span size='small' color='grey'>"+self.date_string +", "+ self.year_string+"</span>")
+            label2.set_alignment(0.5,0.5)
+        else:
+            label1 = gtk.Label()
+            label1.set_markup("<span size='x-large' color='white'><b>"+self.date_string +"</b></span>")
+            label1.set_alignment(0.5,0.5)
+            label2 = gtk.Label()
+            label2.set_markup("<span size='small' color='grey'>"+self.week_day_string+ ", "+ self.year_string +"</span>")
+            label2.set_alignment(0.5,0.5)
+        
+        
+        vbox.pack_start(label1,False,False)
+        vbox.pack_start(label2,False,False)
 
-        vbox.pack_start(label,False,False)
-
-        label = gtk.Label()
-        label.set_markup("<span size='small' color='grey'>"+self.date_string +"</span>")
-        label.set_alignment(0.5,0.5)
-        
-        vbox.pack_start(label,False,False)
         
         self.vbox.pack_start(vbox, False, False, 6)
         
