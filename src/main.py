@@ -24,8 +24,10 @@ import pango
 import gobject
 import time
 import datetime
+
 from widgets import *
 from view import ActivityView
+from ui_utils import settings
 
 class Portal(gtk.Window):
 
@@ -33,6 +35,7 @@ class Portal(gtk.Window):
 
         gtk.Window.__init__(self)
         self._screen = gtk.gdk.Screen()
+        self._requested_size = None
 
         self.connect("destroy", self.quit)
         self.set_title("Journal")
@@ -66,21 +69,31 @@ class Portal(gtk.Window):
         hbox.pack_start(self.fwdbtn, False, False)
         self.vbox.pack_start(hbox, True, True, 12)
 
-        self.set_size_request(0, 0)
         self.show_all()
-        
+
         # Do this after showing the window so that in environment with multiple
         # monitors we know which one will show the Journal.
         self._request_size()
         self.set_position(gtk.WIN_POS_CENTER)
+        self.connect("configure-event", self._on_size_changed)
 
     def _request_size(self):
-        min_size = (800, 360)
         screen = self._screen.get_monitor_geometry(
             self._screen.get_monitor_at_point(*self.get_position()))
-        avg_size = (int(screen[2] * 0.80), int(screen[3] * 0.75))
-        self.set_size_request(max(avg_size[0], min_size[0]),
-            max(avg_size[1], min_size[1]))
+
+        size = (int(screen[2] * 0.80), int(screen[3] * 0.75))
+        if settings["window_size_x"] and settings["window_size_x"] <= screen[2]:
+            size[0] = settings['window_size_x']
+        size = (int(screen[2] * 0.80), int(screen[3] * 0.75))
+        if settings["window_size_y"] and settings["window_size_y"] <= screen[3]:
+            size[1] = settings["window_size_y"]
+
+        self.set_geometry_hints(self, min_width=800, min_height=360,
+            base_width=size[0], base_height=size[1])
+        self._requested_size = size
+    
+    def _on_size_changed(self, window, event):
+        pass #print event.height, event.width, self._requested_size
 
     def toggle_view(self, widget):
         if not self.__togglingview:
@@ -101,7 +114,5 @@ class Portal(gtk.Window):
                     settings.set_view("List")
             self.__togglingview = False
 
-
     def quit(self, widget):
         gtk.main_quit()
-
