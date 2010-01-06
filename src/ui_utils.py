@@ -1,9 +1,9 @@
 # -.- coding: utf-8 -.-
-
-# Zeitgeist
 #
-# Copyright © 2009 Seif Lotfy <seif@lotfy.com>
-# Copyright © 2009 Siegfried Gevatter <siegfried@gevatter.com>
+# GNOME Activity Journal
+#
+# Copyright © 2009-2010 Seif Lotfy <seif@lotfy.com>
+# Copyright © 2009-2010 Siegfried Gevatter <siegfried@gevatter.com>
 # Copyright © 2007 Alex Graveley <alex@beatniksoftware.com>
 #
 # This program is free software: you can redistribute it and/or modify
@@ -29,60 +29,6 @@ import gettext
 from fungtk.quickconf import QuickConf
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation
 
-class Settings(gobject.GObject):
-    
-    __gsignals__ = {
-        "change-view" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_STRING,)),
-        "change-insertions" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_STRING,)),
-        "toggle-time" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_BOOLEAN,)),
-        "toggle-grouping" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
-    }
-    
-    def __init__(self):
-        
-        gobject.GObject.__init__(self)
-        
-        self._conf = QuickConf('/apps/gnome-activity-journal')
-        self.view = self._conf.get("view", "Journal")
-        self.show_timestamps = self._conf.get("show_timestamps", False)
-        self.compress_categories = {
-            Interpretation.VIDEO.uri:  False,
-            Interpretation.MUSIC.uri: False,
-            Interpretation.IMAGE.uri: False,
-            Interpretation.DOCUMENT.uri: False,
-            Interpretation.SOURCECODE.uri: False,
-            Interpretation.UNKNOWN.uri: False
-        }
-        
-        # Connect to changes in gconf
-        self._conf.connect("view",
-            lambda key, value: self.set_view(value))
-        self._conf.connect("show_timestamps",
-            lambda key, value: self.toggle_time(value))
-    
-    def set_view(self, view):
-        if view == self.view:
-            return
-        self.view = view
-        self.emit("change-view", self.view)
-        if not from_gconf:
-            self._conf['view'] = view
-    
-    def set_insertions(self, insertions):
-        self.insertions = insertions
-        self.emit("change-insertions", self.view)
-    
-    def toggle_time(self, bool):
-        if bool == self.show_timestamps:
-            return
-        self.show_timestamps = bool
-        self.emit("toggle-time", self.show_timestamps)
-        self._conf['show_timestamps'] = bool
-    
-    def toggle_compression(self, cat, bool):
-        self.compress_categories[cat] = bool
-        self.emit("toggle-grouping")
-
 class LaunchManager:
     """
     A program lauching utility which handles opening a URI or executing a
@@ -96,7 +42,7 @@ class LaunchManager:
     See the startup notification spec for more information on
     DESKTOP_STARTUP_IDs.
     """
-    
+
     def __init__(self):
         self.recent_model = None
 
@@ -106,10 +52,10 @@ class LaunchManager:
             import zeitgeist_recent
             self.recent_model = zeitgeist_recent.recent_model
         return self.recent_model
-    
+
     def launch_uri(self, uri, mimetype = None):
         assert uri, "Must specify URI to launch"
-    
+
         child = os.fork()
         if not child:
             # Inside forked child
@@ -134,7 +80,7 @@ class LaunchManager:
                 # No mimetype found for URI: %s
                 pass
         return child
-    
+
     def get_local_path(self, uri):
         scheme, path = urllib.splittype(uri)
         if scheme == None:
@@ -145,7 +91,7 @@ class LaunchManager:
                 path = path[2:]
             return path
         return None
-    
+
     def launch_command_with_uris(self, command, uri_list, launcher_uri = None):
         if command.rfind("%U") > -1:
             uri_str = ""
@@ -184,7 +130,7 @@ class LaunchManager:
             return startup_ids
         else:
             return self.launch_command(command, launcher_uri)
-    
+
     def make_startup_id(self, key, ev_time = None):
         if not ev_time:
             ev_time = gtk.get_current_event_time()
@@ -216,17 +162,17 @@ class LaunchManager:
             os._exit(0)
         else:
             os.wait()
-           
+
             return (child, startup_id)
 
 class IconFactory():
     """
     Icon lookup swiss-army knife (from menutreemodel.py)
     """
-    
+
     def __init__(self):
         self.icon_dict={}
-    
+
     def load_icon_from_path(self, icon_path, icon_size=None):
         try:
             if icon_size:
@@ -238,7 +184,7 @@ class IconFactory():
         except Exception:
             pass
         return None
-    
+
     def load_icon_from_data_dirs(self, icon_value, icon_size=None):
         data_dirs = None
         if os.environ.has_key("XDG_DATA_DIRS"):
@@ -251,27 +197,27 @@ class IconFactory():
                                               icon_size)
             if retval:
                 return retval
-            
+
             retval = self.load_icon_from_path(os.path.join(data_dir, "icons", icon_value),
                                               icon_size)
             if retval:
                 return retval
         return None
-    
+
     def transparentize(self, pixbuf, percent):
         pixbuf = pixbuf.add_alpha(False, '0', '0', '0')
         for row in pixbuf.get_pixels_array():
             for pix in row:
                 pix[3] = min(int(pix[3]), 255 - (percent * 0.01 * 255))
         return pixbuf
-    
+
     def greyscale(self, pixbuf):
         pixbuf = pixbuf.copy()
         for row in pixbuf.get_pixels_array():
             for pix in row:
                 pix[0] = pix[1] = pix[2] = (int(pix[0]) + int(pix[1]) + int(pix[2])) / 3
         return pixbuf
-    
+
     def load_icon(self, icon_value, icon_size, force_size=True, cache=True):
         if not self.icon_dict.has_key(str(icon_value)+str(icon_size)) or not cache:
             try:
@@ -284,14 +230,14 @@ class IconFactory():
                     icon_name = os.path.basename(icon_value)
                 else:
                     icon_name = icon_value
-                
+
                 if icon_name.endswith(".png"):
                     icon_name = icon_name[:-len(".png")]
                 elif icon_name.endswith(".xpm"):
                     icon_name = icon_name[:-len(".xpm")]
                 elif icon_name.endswith(".svg"):
                     icon_name = icon_name[:-len(".svg")]
-                
+
                 icon = None
                 info = icon_theme.lookup_icon(icon_name, icon_size, gtk.ICON_LOOKUP_USE_BUILTIN)
                 if info:
@@ -300,8 +246,8 @@ class IconFactory():
                     elif info.get_filename():
                         icon = self.load_icon_from_path(info.get_filename(), icon_size)
                 else:
-                    icon = self.load_icon_from_data_dirs(icon_value, icon_size) 
-                
+                    icon = self.load_icon_from_data_dirs(icon_value, icon_size)
+
                 if cache:
                     self.icon_dict[str(icon_value)+str(icon_size)] = icon
                 return icon
@@ -310,7 +256,7 @@ class IconFactory():
                 return None
         else:
             return self.icon_dict[str(icon_value)+str(icon_size)]
-    
+
     def load_image(self, icon_value, icon_size, force_size=True):
         pixbuf = self.load_icon(icon_value, icon_size, force_size)
         img = gtk.Image()
@@ -339,20 +285,20 @@ class IconFactory():
                         mythumb,
                         border, border)
         return mythumb
-    
+
 class Thumbnailer:
-    
+
     def __init__(self):
         self.icon_dict={}
 
     def get_icon(self, subject, icon_size, timestamp = 0):
-        
+
         uri = subject.uri
         if not self.icon_dict.get(uri+str(icon_size)):
             cached_icon = self._lookup_or_make_thumb(uri, subject.mimetype,
                 icon_size, timestamp)
             self.icon_dict[uri+str(icon_size)] = cached_icon
-        
+
         return self.icon_dict[uri+str(icon_size)]
 
     def _lookup_or_make_thumb(self, uri, mimetype, icon_size, timestamp):
@@ -371,7 +317,7 @@ class Thumbnailer:
             if thumb:
                 thumb = icon_factory.make_icon_frame(thumb, icon_size)
                 return thumb
-            
+
         except Exception:
             pass
 
@@ -387,7 +333,7 @@ class Thumbnailer:
                                         "gnome-trash")
 
 class CellRendererPixbuf(gtk.CellRendererPixbuf):
-    
+
     __gsignals__ = {
         'toggled': (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE,
         (gobject.TYPE_STRING,))
@@ -395,7 +341,7 @@ class CellRendererPixbuf(gtk.CellRendererPixbuf):
     def __init__(self):
         gtk.CellRendererPixbuf.__init__(self)
         self.set_property('mode', gtk.CELL_RENDERER_MODE_ACTIVATABLE)
-    
+
     def do_activate(self, event, widget, path, background_area, cell_area, flags):
         model = widget.get_model()
         self.emit("toggled",path)
@@ -405,23 +351,23 @@ def get_category_icon(icon, size=24):
         return icon_theme.load_icon (icon, size, 0)
     except:
         return None
-    
+
 
 icon_theme = gtk.icon_theme_get_default()
 icon_factory = IconFactory()
 thumbnailer = Thumbnailer()
 thumb_factory = gnome.ui.ThumbnailFactory("normal")
 launcher = LaunchManager()
-settings = Settings()
+settings = QuickConf('/apps/gnome-activity-journal')
 
 class Source:
-    
+
     def __init__(self, interpretation, icon, desc_sing, desc_pl):
         self.name = interpretation.name
         self.icon = icon
         self._desc_sing = desc_sing
         self._desc_pl = desc_pl
-    
+
     def group_label(self, num):
         return gettext.ngettext(self._desc_sing, self._desc_pl, num)
 

@@ -1,6 +1,6 @@
 # -.- coding: utf-8 -.-
-
-# Zeitgeist
+#
+# GNOME Activity Journal
 #
 # Copyright © 2009-2010 Seif Lotfy <seif@lotfy.com>
 # Copyright © 2010 Siegfried Gevatter <siegfried@gevatter.com>
@@ -36,7 +36,7 @@ class Portal(gtk.Window):
         gtk.Window.__init__(self)
         
         self.connect("destroy", self.quit)
-        self.set_size_request(800, 360)
+        self._request_size()
         self.settingswindow = None
         self.set_title("Journal")
         
@@ -58,12 +58,14 @@ class Portal(gtk.Window):
         self.vbox.pack_start(hbox, True, True, 12)
         
         self.show_all()
-        self.activityview.optionsbar.hide_all()
         self.toolbar.hide_all()
-        self.maximize()
 
     def destroy_settings(self, w):
         self.settingswindow = None
+
+    def _request_size(self):
+        self.set_size_request(800, 360)
+        # gtk.gdk.Screen().get_height()
 
     def _init_toolbar(self):
         self.toolbar = gtk.HBox()
@@ -88,18 +90,10 @@ class Portal(gtk.Window):
         
         self.fwdbtn.set_size_request(34,-1)
         self.backbtn.set_size_request(34,-1)
-        
-        def toggle_optionsbar(widget):
-            if not widget.get_active():
-                self.optbtn.set_tooltip_text("Show Options")
-            else:
-                self.optbtn.set_tooltip_text("Hide Options")
 
         self.todaybtn.connect("clicked", lambda w: self.activityview._set_today_timestamp())
         self.backbtn.connect("clicked", lambda w: self.activityview.jump(-86400))
         self.fwdbtn.connect("clicked", lambda w: self.activityview.jump(86400))
-        self.optbtn.connect("toggled", self.activityview.toggle_optionsbar)
-        self.optbtn.connect("toggled", toggle_optionsbar)
         
         self.backbtn.set_tooltip_text(_("Go back in time"))
         self.fwdbtn.set_tooltip_text(_("Look into the future"))

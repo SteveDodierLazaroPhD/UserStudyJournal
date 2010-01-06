@@ -1,8 +1,22 @@
-'''
-Created on Nov 28, 2009
-
-@author: seif
-'''
+# -.- coding: utf-8 -.-
+#
+# GNOME Activity Journal
+#
+# Copyright © 2009-2010 Seif Lotfy <seif@lotfy.com>
+# Copyright © 2010 Siegfried Gevatter <siegfried@gevatter.com>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import gtk
 import gettext
@@ -116,43 +130,44 @@ class SearchEntry(gtk.Entry):
         return False
 
 class CategoryButton(gtk.HBox):
+
     __gsignals__ = {
         "toggle" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_BOOLEAN,)),
     }
+
     def __init__(self, category, count):
         gtk.HBox.__init__(self)
-        #self.img = gtk.image_new_from_pixbuf(icon_factory.load_icon(SUPPORTED_SOURCES[category].icon, 24))
         self.label = gtk.Label()
         self.label.set_alignment(0.0, 0.5)
-        #print SUPPORTED_SOURCES[category].name
         hbox = gtk.HBox()
-        
+
         self.btn = gtk.Button()
         self.btn.set_relief(gtk.RELIEF_NONE)
         self.btn.set_size_request(32,32)
         self.btn.set_focus_on_click(False)
         self.btn.add(hbox)
-        
+
         self.img = gtk.Label()
         self.img.set_markup("<span color='darkgrey'><b>+</b></span>")
-        
+
         hbox.pack_start(self.img, False, False)
         self.active = False
 
         self.pack_start(self.btn)
         #self.pack_start(self.img, False, False)
-        self.label.set_markup("<span>"+SUPPORTED_SOURCES[category].group_label(count)+"</span>")
+        self.label.set_markup("<span>%s</span>" % \
+            SUPPORTED_SOURCES[category].group_label(count))
         self.label.set_ellipsize(pango.ELLIPSIZE_END)
         hbox.pack_start(self.label, True, True, 12)
 
         label = gtk.Label()
-        label.set_markup("<span color='darkgrey'>"+"("+str(count)+")"+"</span>")
+        label.set_markup("<span color='darkgrey'>(%d)</span>" % count)
         label.set_alignment(1.0,0.5)
         hbox.pack_end(label, False, False)
         self.show_all()
 
         self.btn.connect("clicked", self.toggle)
-        
+
     def toggle(self, widget):
         self.active = not self.active
         if self.active:
@@ -188,6 +203,6 @@ class Item(gtk.Button):
         self.add(hbox)
 
         self.connect("pressed", self.launch)
-    
+
     def launch(self, *discard):
         launcher.launch_uri(self.subject.uri, self.subject.mimetype)
