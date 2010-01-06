@@ -121,10 +121,10 @@ class DayWidget(gtk.VBox):
                 color = rc_style.bg[gtk.STATE_SELECTED]
                 evbox.modify_bg(gtk.STATE_NORMAL, color)
             else:
-                color = rc_style.text[gtk.STATE_SELECTED]
+                color = rc_style.base[gtk.STATE_NORMAL]
                 evbox.modify_bg(gtk.STATE_NORMAL,  color)
 
-            color = rc_style.text [gtk.STATE_SELECTED]
+            color = rc_style.base[gtk.STATE_NORMAL]
             color.red = color.red * 985 / 1000
             color.green = color.green * 985 / 1000
             color.blue = color.blue * 985 / 1000
@@ -141,10 +141,10 @@ class DayWidget(gtk.VBox):
 
         if today > self.day_start and today < self.day_end:
             label1 = gtk.Label()
-            label1.set_markup("<span size='x-large' color='white'><b>"+self.week_day_string +"</b></span>")
+            label1.set_markup("<span size='x-large'><b>"+self.week_day_string +"</b></span>")
             label1.set_alignment(0.5,0.5)
             label2 = gtk.Label()
-            label2.set_markup("<span color='white'>"+self.date_string +", "+ self.year_string+"</span>")
+            label2.set_markup("<span>"+self.date_string +", "+ self.year_string+"</span>")
             label2.set_alignment(0.5,0.5)
 
         elif today - 86400 * 7 < self.day_start:
@@ -152,20 +152,34 @@ class DayWidget(gtk.VBox):
             label1.set_markup("<span size='x-large'><b>"+self.week_day_string +"</b></span>")
             label1.set_alignment(0.5,0.5)
             label2 = gtk.Label()
-            label2.set_markup("<span color='darkgrey'>"+self.date_string +", "+ self.year_string+"</span>")
+            label2.set_markup("<span>"+self.date_string +", "+ self.year_string+"</span>")
             label2.set_alignment(0.5,0.5)
         else:
             label1 = gtk.Label()
-            label1.set_markup("<span size='x-large'><b>"+self.date_string +"</b></span>")
+            label1.set_markup("<span><b>"+self.date_string +"</b></span>")
             label1.set_alignment(0.5,0.5)
             label2 = gtk.Label()
-            label2.set_markup("<span color='darkgrey'>"+self.week_day_string+ ", "+ self.year_string +"</span>")
+            label2.set_markup("<span>"+self.week_day_string+ ", "+ self.year_string +"</span>")
             label2.set_alignment(0.5,0.5)
 
         vbox.pack_start(label1,False,False)
         vbox.pack_start(label2,False,False)
 
+        def change_style(widget, style):
+            rc_style = self.style
+            if self.week_day_string == "Today":
+                color = rc_style.text[gtk.STATE_SELECTED]
+                label1.modify_text(gtk.STATE_NORMAL, color)
+                color = rc_style.bg[gtk.STATE_SELECTED]
+                label2.modify_bg(gtk.STATE_NORMAL, color)
+            else:
+                color = rc_style.base[gtk.STATE_SELECTED] 
+                label1.modify_text(gtk.STATE_NORMAL, color)
+                color = rc_style.base[gtk.STATE_SELECTED]
+                label2.modify_text(gtk.STATE_NORMAL, color)
+                
 
+        self.connect("style-set", change_style)
         self.vbox.pack_start(vbox, False, False, 6)
 
     def __init_events(self):
