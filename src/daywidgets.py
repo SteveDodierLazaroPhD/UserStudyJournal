@@ -214,7 +214,7 @@ class DayPartWidget(gtk.VBox):
         event2 = Event()
         event2.set_interpretation(Interpretation.MODIFY_EVENT.uri)
         
-        self.event_templates = [event, event2]
+        self.event_templates = [] #[event, event2]
         
         def change_style(widget, style):
             rc_style = self.style
@@ -228,15 +228,21 @@ class DayPartWidget(gtk.VBox):
 
         self.connect("style-set", change_style)
         
-        def notify_insert_handler(time_range, events):
+        
+        
+        print "---------------------"
+        print [self.start, self.end], self.event_templates
+        print "---------------------"
+        
+        self.zg.install_monitor([self.start*1000, self.end*1000], self.event_templates,
+            self.notify_insert_handler, self.notify_delete_handler)
+        
+    def notify_insert_handler(self, time_range, events):
             print "inserted new event"
             self.init_events()
         
-        def notify_delete_handler(time_range, event_ids):
+    def notify_delete_handler(self, time_range, event_ids):
             self.init_events()            
-        
-        self.zg.install_monitor([self.start, self.end], self.event_templates,
-            notify_insert_handler, notify_delete_handler)
         
     def init_events(self):
         self.zg.find_event_ids_for_templates(self.event_templates,
