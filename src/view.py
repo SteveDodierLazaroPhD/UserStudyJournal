@@ -89,4 +89,4 @@ class ActivityView(gtk.VBox):
                 if not self.days.has_key(ptime):
                     dayview = DayWidget(self.start + i*86400, self.start + i*86400 + 86400)
                     self.days[ptime] = dayview
-                self.daysbox.pack_start(self.days[ptime], True, True, 6)
+                self.daysbox.pack_start(self.days[ptime], True, True, 3)

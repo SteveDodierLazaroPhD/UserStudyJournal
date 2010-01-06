@@ -156,7 +156,7 @@ class DayWidget(gtk.VBox):
             label2.set_alignment(0.5,0.5)
         else:
             label1 = gtk.Label()
-            label1.set_markup("<span><b>"+self.date_string +"</b></span>")
+            label1.set_markup("<span size='x-large'><b>"+self.date_string +"</b></span>")
             label1.set_alignment(0.5,0.5)
             label2 = gtk.Label()
             label2.set_markup("<span>"+self.week_day_string+ ", "+ self.year_string +"</span>")
@@ -276,6 +276,7 @@ class DayPartWidget(gtk.VBox):
             temp_keys = []
             for key in keys:
                 events = self.categories[key]
+                events.reverse()
                 if len(events) > 1:
                     box = CategoryBox(key, events)
                     self.view.pack_start(box)
@@ -284,6 +285,7 @@ class DayPartWidget(gtk.VBox):
 
             for key in temp_keys:
                 events = self.categories[key]
+                events.reverse()
                 box = CategoryBox(key, events)
                 self.view.pack_start(box)
 
