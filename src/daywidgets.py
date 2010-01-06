@@ -209,6 +209,13 @@ class DayPartWidget(gtk.VBox):
         self.zg = CLIENT
         self.show_all()
         
+        event = Event()
+        event.set_interpretation(Interpretation.VISIT_EVENT.uri)
+        event2 = Event()
+        event2.set_interpretation(Interpretation.MODIFY_EVENT.uri)
+        
+        self.event_templates = [event, event2]
+        
         def change_style(widget, style):
             rc_style = self.style
             color = rc_style.bg[gtk.STATE_NORMAL] 
@@ -220,13 +227,19 @@ class DayPartWidget(gtk.VBox):
                 
 
         self.connect("style-set", change_style)
-
+        
+        def notify_insert_handler(time_range, events):
+            print "inserted new event"
+            self.init_events()
+        
+        def notify_delete_handler(time_range, event_ids):
+            self.init_events()            
+        
+        self.zg.install_monitor([self.start, self.end], self.event_templates,
+            notify_insert_handler, notify_delete_handler)
+        
     def init_events(self):
-        event = Event()
-        event.set_interpretation(Interpretation.VISIT_EVENT.uri)
-        event2 = Event()
-        event2.set_interpretation(Interpretation.MODIFY_EVENT.uri)
-        self.zg.find_event_ids_for_templates([event, event2],
+        self.zg.find_event_ids_for_templates(self.event_templates,
             self._handle_find_events, [self.start * 1000, self.end * 1000],
             num_events=50000, result_type=ResultType.MostRecentSubjects)
 
@@ -244,6 +257,9 @@ class DayPartWidget(gtk.VBox):
                 os.path.exists(urllib.unquote(str(uri[7:])))
 
         self.categories = {}
+
+        for widget in self.view:
+            self.view.remove(widget)
 
         for event in events:
             subject = event.subjects[0]
