@@ -41,8 +41,8 @@ class Portal(gtk.Window):
         self.set_title("Journal")
         
         self.vbox = gtk.VBox()
-        color = gtk.gdk.rgb_get_colormap().alloc_color('#EEEEEC')
-        self.modify_bg(gtk.STATE_NORMAL, color)
+        #color = gtk.gdk.rgb_get_colormap().alloc_color('#EEEEEC')
+        #self.modify_bg(gtk.STATE_NORMAL, color)
         self.activityview = ActivityView()
         self._init_toolbar()
         
