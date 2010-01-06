@@ -228,17 +228,10 @@ class DayPartWidget(gtk.VBox):
 
         self.connect("style-set", change_style)
         
-        
-        
-        print "---------------------"
-        print [self.start, self.end], self.event_templates
-        print "---------------------"
-        
         self.zg.install_monitor([self.start*1000, self.end*1000], self.event_templates,
             self.notify_insert_handler, self.notify_delete_handler)
         
     def notify_insert_handler(self, time_range, events):
-            print "inserted new event"
             self.init_events()
         
     def notify_delete_handler(self, time_range, event_ids):
