@@ -29,112 +29,58 @@ from view import ActivityView
 
 class Portal(gtk.Window):
 
-    settingswindow = None
-
     def __init__(self):
-        
+
         gtk.Window.__init__(self)
         self._screen = gtk.gdk.Screen()
-        
+
         self.connect("destroy", self.quit)
-        self._request_size()
-        self.settingswindow = None
         self.set_title("Journal")
-        
+        self.set_position(gtk.WIN_POS_CENTER)
+
         self.vbox = gtk.VBox()
         #color = gtk.gdk.rgb_get_colormap().alloc_color('#EEEEEC')
         #self.modify_bg(gtk.STATE_NORMAL, color)
         self.activityview = ActivityView()
-        self._init_toolbar()
-        
+
+        self.backbtn = gtk.Button()
+        self.backbtn.add(gtk.Arrow(gtk.ARROW_LEFT, gtk.SHADOW_NONE))
+        self.backbtn.set_relief(gtk.RELIEF_NONE)
+        self.backbtn.set_focus_on_click(False)
+        self.backbtn.set_tooltip_text(_("Go back in time"))
+        self.fwdbtn = gtk.Button()
+        self.fwdbtn.set_relief(gtk.RELIEF_NONE)
+        self.fwdbtn.add(gtk.Arrow(gtk.ARROW_RIGHT, gtk.SHADOW_NONE))
+        self.fwdbtn.set_focus_on_click(False)
+        self.fwdbtn.set_tooltip_text(_("Look into the future"))
+        self.backbtn.connect("clicked", lambda w: self.activityview.jump(-86400))
+        self.fwdbtn.connect("clicked", lambda w: self.activityview.jump(86400))
+
         # We configure the view so that the left/right buttons touch the
         # left/right edges in order to utilize Fitts law. This is accomplished
         # by having no padding on the HBox
         self.add(self.vbox)
-        self.vbox.pack_start(self.toolbar, False, False, 6)
         hbox = gtk.HBox()
-        hbox.pack_start(self.backbtn, False, False)        
+        hbox.pack_start(self.backbtn, False, False)
         hbox.pack_start(self.activityview)
         hbox.pack_start(self.fwdbtn, False, False)
         self.vbox.pack_start(hbox, True, True, 12)
-        
-        self.show_all()
-        self.toolbar.hide_all()
 
-    def destroy_settings(self, w):
-        self.settingswindow = None
+        self.set_size_request(0, 0)
+        self.show_all()
+        
+        # Do this after showing the window so that in environment with multiple
+        # monitors we know which one will show the Journal.
+        self._request_size()
+        self.set_position(gtk.WIN_POS_CENTER)
 
     def _request_size(self):
         min_size = (800, 360)
         screen = self._screen.get_monitor_geometry(
             self._screen.get_monitor_at_point(*self.get_position()))
-        avg_size = (screen[2] * 0.80, screen[3] * 0.75)
-        
+        avg_size = (int(screen[2] * 0.80), int(screen[3] * 0.75))
         self.set_size_request(max(avg_size[0], min_size[0]),
             max(avg_size[1], min_size[1]))
-
-    def _init_toolbar(self):
-        self.toolbar = gtk.HBox()
-        
-        toolbar = gtk.Toolbar()
-        self.toolbar.pack_start(toolbar)
-        
-        toolbar2 = gtk.Toolbar()
-        self.toolbar.pack_end(toolbar2, False, False)
-        
-        self.backbtn = gtk.Button()
-        self.backbtn.add(gtk.Arrow(gtk.ARROW_LEFT, gtk.SHADOW_NONE))
-        self.backbtn.set_relief(gtk.RELIEF_NONE)
-        self.backbtn.set_focus_on_click(False)
-        self.fwdbtn = gtk.Button()
-        self.fwdbtn.set_relief(gtk.RELIEF_NONE)
-        self.fwdbtn.add(gtk.Arrow(gtk.ARROW_RIGHT, gtk.SHADOW_NONE))
-        self.fwdbtn.set_focus_on_click(False)
-        
-        self.todaybtn = gtk.ToolButton("gtk-home")
-        self.optbtn = gtk.ToggleToolButton("gtk-preferences")
-        
-        self.fwdbtn.set_size_request(34,-1)
-        self.backbtn.set_size_request(34,-1)
-
-        self.todaybtn.connect("clicked", lambda w: self.activityview._set_today_timestamp())
-        self.backbtn.connect("clicked", lambda w: self.activityview.jump(-86400))
-        self.fwdbtn.connect("clicked", lambda w: self.activityview.jump(86400))
-        
-        self.backbtn.set_tooltip_text(_("Go back in time"))
-        self.fwdbtn.set_tooltip_text(_("Look into the future"))
-        self.todaybtn.set_tooltip_text(_("Recent Events"))
-        self.optbtn.set_tooltip_text(_("Show Options"))
-        
-        self.horviewbtn = gtk.ToggleToolButton()
-        self.verviewbtn = gtk.ToggleToolButton()
-        
-        pixbuf = gtk.gdk.pixbuf_new_from_file_at_size("data/view-calendar-workweek.svg", 24, 24) 
-        img = gtk.image_new_from_pixbuf(pixbuf)
-        self.horviewbtn.set_icon_widget(img)
-        self.horviewbtn.set_active(True)
-        
-        pixbuf = gtk.gdk.pixbuf_new_from_file_at_size("data/view-calendar-list.svg", 24, 24) 
-        img = gtk.image_new_from_pixbuf(pixbuf)
-        self.verviewbtn.set_icon_widget(img)
-        
-        self.horviewbtn.connect("toggled", self.toggle_view)
-        self.verviewbtn.connect("toggled", self.toggle_view)
-        self.__togglingview = False
-        
-        toolbar.add(self.todaybtn)
-        toolbar.add(gtk.SeparatorToolItem())
-        toolbar.add(self.horviewbtn)
-        toolbar.add(self.verviewbtn)
-        toolbar.add(gtk.SeparatorToolItem())
-        toolbar.add(self.optbtn)
-        
-        hbox = gtk.HBox()
-        self.searchbar = SearchEntry()
-        hbox.pack_end(self.searchbar)
-        toolbar2.add(hbox)
-        
-        self.show_all()
 
     def toggle_view(self, widget):
         if not self.__togglingview:
