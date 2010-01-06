@@ -164,7 +164,7 @@ class CategoryButton(gtk.HBox):
             self.label.set_markup("<span>%s</span>" % \
                                   SUPPORTED_SOURCES[category].group_label(count))
         self.label.set_ellipsize(pango.ELLIPSIZE_END)
-        hbox.pack_start(self.label, True, True, 12)
+        hbox.pack_start(self.label, True, True, 9)
 
         label = gtk.Label()
         label.set_markup("<span>(%d)</span>" % count)
@@ -220,7 +220,7 @@ class Item(gtk.Button):
 
         hbox = gtk.HBox()
         hbox.pack_start(gtk.image_new_from_pixbuf(self.icon), False, False)
-        hbox.pack_start(label, True, True, 12)
+        hbox.pack_start(label, True, True, 9)
 
         label = gtk.Label()
         t = datetime.datetime.fromtimestamp(self.time).strftime("%H:%M")
