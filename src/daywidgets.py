@@ -125,9 +125,9 @@ class DayWidget(gtk.VBox):
                 evbox.modify_bg(gtk.STATE_NORMAL,  color)
 
             color = rc_style.base[gtk.STATE_NORMAL]
-            color.red = color.red * 985 / 1000
-            color.green = color.green * 985 / 1000
-            color.blue = color.blue * 985 / 1000
+            color.red = color.red * 9 / 10
+            color.green = color.green * 9 / 10
+            color.blue = color.blue * 9 / 10
             evbox2.modify_bg(gtk.STATE_NORMAL, color)
 
         self.connect("style-set", change_style)
