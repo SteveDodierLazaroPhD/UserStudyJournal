@@ -290,9 +290,6 @@ class DayPartWidget(gtk.VBox):
                 temp_events += events
             
             def comp(x, y):
-                print "*****"
-                print x, y
-                print "*****"
                 return cmp(int(x.timestamp), int(y.timestamp))
             
             temp_events.sort(comp)
