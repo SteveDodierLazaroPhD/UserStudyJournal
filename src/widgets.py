@@ -148,7 +148,7 @@ class CategoryButton(gtk.HBox):
         self.btn.add(hbox)
 
         self.img = gtk.Label()
-        self.img.set_markup("<span size='x-small'><b>+</b></span>")
+        self.img.set_markup("<span size='x-small' color='darkgrey'><b>+</b></span>")
         self.img.set_alignment(0.5, 0.5)
         btn = gtk.Button()
         btn.add(self.img)
@@ -188,9 +188,9 @@ class CategoryButton(gtk.HBox):
     def toggle(self, widget):
         self.active = not self.active
         if self.active:
-            self.img.set_markup("<span size='x-small'><b>-</b></span>")
+            self.img.set_markup("<span size='x-small' color='darkgrey'><b>-</b></span>")
         else:
-            self.img.set_markup("<span size='x-small'><b>+</b></span>")
+            self.img.set_markup("<span size='x-small' color='darkgrey'><b>+</b></span>")
         self.emit("toggle", self.active)
 
 class Item(gtk.Button):
