@@ -125,9 +125,9 @@ class DayWidget(gtk.VBox):
                 evbox.modify_bg(gtk.STATE_NORMAL,  color)
 
             color = rc_style.base[gtk.STATE_NORMAL]
-            color.red = color.red * 9 / 10
-            color.green = color.green * 9 / 10
-            color.blue = color.blue * 9 / 10
+            color.red = color.red * 95 / 100
+            color.green = color.green * 95 / 100
+            color.blue = color.blue * 95 / 100
             evbox2.modify_bg(gtk.STATE_NORMAL, color)
 
         self.connect("style-set", change_style)
@@ -174,9 +174,9 @@ class DayWidget(gtk.VBox):
                 label2.modify_fg(gtk.STATE_NORMAL, color)
             else:
                 color = rc_style.bg[gtk.STATE_NORMAL] 
-                color.red = color.red*2/3
-                color.green = color.green*2/3
-                color.blue = color.blue*2/3
+                color.red = color.red*3/4
+                color.green = color.green*3/4
+                color.blue = color.blue*3/4
                 #label1.modify_text(gtk.STATE_NORMAL, color)
                 label2.modify_fg(gtk.STATE_NORMAL, color)
                 
@@ -201,13 +201,25 @@ class DayPartWidget(gtk.VBox):
         self.start = start
         self.end = end
         self.label = gtk.Label()
-        self.label.set_markup("<span color='darkgrey'><b>%s</b></span>" % part)
+        self.label.set_markup("<span><b>%s</b></span>" % part)
         self.label.set_alignment(0.01, 0.5)
         self.pack_start(self.label, False, False, 6)
         self.view = gtk.VBox()
         self.pack_start(self.view)
         self.zg = CLIENT
         self.show_all()
+        
+        def change_style(widget, style):
+            rc_style = self.style
+            color = rc_style.bg[gtk.STATE_NORMAL] 
+            color.red = color.red*2/3
+            color.green = color.green*2/3
+            color.blue = color.blue*2/3
+            #label1.modify_text(gtk.STATE_NORMAL, color)
+            self.label.modify_fg(gtk.STATE_NORMAL, color)
+                
+
+        self.connect("style-set", change_style)
 
     def init_events(self):
         event = Event()

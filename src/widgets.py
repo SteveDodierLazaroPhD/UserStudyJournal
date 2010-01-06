@@ -148,7 +148,7 @@ class CategoryButton(gtk.HBox):
         self.btn.add(hbox)
 
         self.img = gtk.Label()
-        self.img.set_markup("<span size='small' color='darkgrey'><b>+</b></span>")
+        self.img.set_markup("<span size='small'><b>+</b></span>")
         self.img.set_alignment(0.5, 0.5)
         btn = gtk.Button()
         btn.add(self.img)
@@ -166,7 +166,7 @@ class CategoryButton(gtk.HBox):
         hbox.pack_start(self.label, True, True, 12)
 
         label = gtk.Label()
-        label.set_markup("<span color='darkgrey'>(%d)</span>" % count)
+        label.set_markup("<span>(%d)</span>" % count)
         label.set_alignment(1.0,0.5)
         hbox.pack_end(label, False, False)
         self.show_all()
@@ -182,15 +182,23 @@ class CategoryButton(gtk.HBox):
             color.blue = color.blue * 985 / 1000
             btn.modify_bg(gtk.STATE_NORMAL, color)
             
+            color = rc_style.bg[gtk.STATE_NORMAL] 
+            color.red = color.red*2/3
+            color.green = color.green*2/3
+            color.blue = color.blue*2/3
+            label.modify_fg(gtk.STATE_NORMAL, color)
+            self.img.modify_fg(gtk.STATE_NORMAL, color)
+            
         self.connect("style-set", change_style)
+        
 
 
     def toggle(self, widget):
         self.active = not self.active
         if self.active:
-            self.img.set_markup("<span size='small' color='darkgrey'><b>-</b></span>")
+            self.img.set_markup("<span size='small'><b>-</b></span>")
         else:
-            self.img.set_markup("<span size='small' color='darkgrey'><b>+</b></span>")
+            self.img.set_markup("<span size='small'><b>+</b></span>")
         self.emit("toggle", self.active)
 
 class Item(gtk.Button):
@@ -215,11 +223,23 @@ class Item(gtk.Button):
 
         label = gtk.Label()
         t = datetime.datetime.fromtimestamp(self.time).strftime("%H:%M")
-        label.set_markup("<span color='darkgrey'>%s</span>" % t)
+        label.set_markup("<span>%s</span>" % t)
         hbox.pack_end(label, False, False)
         self.add(hbox)
 
         self.connect("clicked", self.launch)
+        
+        def change_style(widget, style):
+            rc_style = self.style
+            color = rc_style.bg[gtk.STATE_NORMAL] 
+            color.red = color.red*3/4
+            color.green = color.green*3/4
+            color.blue = color.blue*3/4
+            #label1.modify_text(gtk.STATE_NORMAL, color)
+            label.modify_fg(gtk.STATE_NORMAL, color)
+                
+
+        self.connect("style-set", change_style)
 
     def launch(self, *discard):
         launcher.launch_uri(self.subject.uri, self.subject.mimetype)
