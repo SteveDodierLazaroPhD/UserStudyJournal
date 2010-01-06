@@ -219,7 +219,7 @@ class Item(gtk.Button):
         hbox.pack_end(label, False, False)
         self.add(hbox)
 
-        self.connect("pressed", self.launch)
+        self.connect("clicked", self.launch)
 
     def launch(self, *discard):
         launcher.launch_uri(self.subject.uri, self.subject.mimetype)
