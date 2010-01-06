@@ -34,6 +34,7 @@ class Portal(gtk.Window):
     def __init__(self):
         
         gtk.Window.__init__(self)
+        self._screen = gtk.gdk.Screen()
         
         self.connect("destroy", self.quit)
         self._request_size()
@@ -64,8 +65,13 @@ class Portal(gtk.Window):
         self.settingswindow = None
 
     def _request_size(self):
-        self.set_size_request(800, 360)
-        # gtk.gdk.Screen().get_height()
+        min_size = (800, 360)
+        screen = self._screen.get_monitor_geometry(
+            self._screen.get_monitor_at_point(*self.get_position()))
+        avg_size = (screen[2] * 0.80, screen[3] * 0.75)
+        
+        self.set_size_request(max(avg_size[0], min_size[0]),
+            max(avg_size[1], min_size[1]))
 
     def _init_toolbar(self):
         self.toolbar = gtk.HBox()
