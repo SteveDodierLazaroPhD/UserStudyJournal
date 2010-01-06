@@ -93,12 +93,6 @@ class DayWidget(gtk.VBox):
         evbox = gtk.EventBox()
         evbox.add(self.vbox)
 
-        if self.week_day_string == "Today":
-            color = gtk.gdk.rgb_get_colormap().alloc_color('#5C9EE5')
-            evbox.modify_bg(gtk.STATE_NORMAL, color)
-        else:
-            evbox.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse("white"))
-
         self.pack_start(evbox)
 
         self.__init_date_label()

@@ -148,9 +148,14 @@ class CategoryButton(gtk.HBox):
         self.btn.add(hbox)
 
         self.img = gtk.Label()
-        self.img.set_markup("<span color='darkgrey'><b>+</b></span>")
-
-        hbox.pack_start(self.img, False, False)
+        self.img.set_markup("<span size='x-small'><b>+</b></span>")
+        self.img.set_alignment(0.5, 0.5)
+        btn = gtk.Button()
+        btn.add(self.img)
+        #btn.set_sensitive(False)
+        btn.set_size_request(20,20)
+        
+        hbox.pack_start(btn, False, False)
         self.active = False
 
         self.pack_start(self.btn)
@@ -167,13 +172,25 @@ class CategoryButton(gtk.HBox):
         self.show_all()
 
         self.btn.connect("clicked", self.toggle)
+        btn.set_relief(gtk.RELIEF_HALF)
+        
+        def change_style(widget, style):
+            rc_style = self.style
+            color = rc_style.text [gtk.STATE_SELECTED]
+            color.red = color.red * 985 / 1000
+            color.green = color.green * 985 / 1000
+            color.blue = color.blue * 985 / 1000
+            btn.modify_bg(gtk.STATE_NORMAL, color)
+            
+        self.connect("style-set", change_style)
+
 
     def toggle(self, widget):
         self.active = not self.active
         if self.active:
-            self.img.set_markup("<span color='darkgrey'><b>-</b></span>")
+            self.img.set_markup("<span size='x-small'><b>-</b></span>")
         else:
-            self.img.set_markup("<span color='darkgrey'><b>+</b></span>")
+            self.img.set_markup("<span size='x-small'><b>+</b></span>")
         self.emit("toggle", self.active)
 
 class Item(gtk.Button):
