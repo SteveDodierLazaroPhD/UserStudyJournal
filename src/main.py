@@ -69,31 +69,28 @@ class Portal(gtk.Window):
         hbox.pack_start(self.fwdbtn, False, False)
         self.vbox.pack_start(hbox, True, True, 12)
 
-        self.show_all()
-
-        # Do this after showing the window so that in environment with multiple
-        # monitors we know which one will show the Journal.
         self._request_size()
-        self.set_position(gtk.WIN_POS_CENTER)
+        self.show_all()
         self.connect("configure-event", self._on_size_changed)
 
     def _request_size(self):
         screen = self._screen.get_monitor_geometry(
             self._screen.get_monitor_at_point(*self.get_position()))
 
-        size = (int(screen[2] * 0.80), int(screen[3] * 0.75))
-        if settings["window_size_x"] and settings["window_size_x"] <= screen[2]:
-            size[0] = settings['window_size_x']
-        size = (int(screen[2] * 0.80), int(screen[3] * 0.75))
-        if settings["window_size_y"] and settings["window_size_y"] <= screen[3]:
-            size[1] = settings["window_size_y"]
+        size = [int(screen[2] * 0.80), int(screen[3] * 0.75)]
+        if settings["window_width"] and settings["window_width"] <= screen[2]:
+            size[0] = settings['window_width']
+        if settings["window_height"] and settings["window_height"] <= screen[3]:
+            size[1] = settings["window_height"]
 
-        self.set_geometry_hints(self, min_width=800, min_height=360,
-            base_width=size[0], base_height=size[1])
+        self.set_geometry_hints(min_width=800, min_height=360)
+        self.resize(size[0], size[1])
         self._requested_size = size
     
     def _on_size_changed(self, window, event):
-        pass #print event.height, event.width, self._requested_size
+        if (event.width, event.height) not in self._requested_size:
+            settings["window_width"] = event.width
+            settings["window_height"] = event.height
 
     def toggle_view(self, widget):
         if not self.__togglingview:
