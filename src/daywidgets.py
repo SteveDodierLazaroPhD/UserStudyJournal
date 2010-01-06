@@ -169,14 +169,16 @@ class DayWidget(gtk.VBox):
             rc_style = self.style
             if self.week_day_string == "Today":
                 color = rc_style.text[gtk.STATE_SELECTED]
-                label1.modify_text(gtk.STATE_NORMAL, color)
-                color = rc_style.bg[gtk.STATE_SELECTED]
-                label2.modify_bg(gtk.STATE_NORMAL, color)
+                label1.modify_fg(gtk.STATE_NORMAL, color)
+                color = rc_style.text[gtk.STATE_SELECTED]
+                label2.modify_fg(gtk.STATE_NORMAL, color)
             else:
-                color = rc_style.base[gtk.STATE_SELECTED] 
-                label1.modify_text(gtk.STATE_NORMAL, color)
-                color = rc_style.base[gtk.STATE_SELECTED]
-                label2.modify_text(gtk.STATE_NORMAL, color)
+                color = rc_style.bg[gtk.STATE_NORMAL] 
+                color.red = color.red*2/3
+                color.green = color.green*2/3
+                color.blue = color.blue*2/3
+                #label1.modify_text(gtk.STATE_NORMAL, color)
+                label2.modify_fg(gtk.STATE_NORMAL, color)
                 
 
         self.connect("style-set", change_style)
