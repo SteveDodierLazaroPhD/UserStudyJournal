@@ -277,17 +277,27 @@ class DayPartWidget(gtk.VBox):
             for key in keys:
                 events = self.categories[key]
                 events.reverse()
-                if len(events) > 1:
+                if len(events) > 3:
                     box = CategoryBox(key, events)
                     self.view.pack_start(box)
                 else:
                     temp_keys.append(key)
-
+            
+            temp_events = []
+            
             for key in temp_keys:
                 events = self.categories[key]
-                events.reverse()
-                box = CategoryBox(key, events)
-                self.view.pack_start(box)
+                temp_events += events
+            
+            def comp(x, y):
+                print "*****"
+                print x, y
+                print "*****"
+                return cmp(int(x.timestamp), int(y.timestamp))
+            
+            temp_events.sort(comp)
+            box = CategoryBox(None, temp_events)
+            self.view.pack_start(box)
 
 class CategoryBox(gtk.VBox):
     def __init__(self, category, events):
@@ -308,7 +318,7 @@ class CategoryBox(gtk.VBox):
         self.view.hide_all()
         self.label.hide_all()
 
-        if len(events) == 1:
+        if not category:
             self.view.show_all()
             self.btn.hide_all()
 
