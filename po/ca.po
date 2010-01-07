@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GNOME Activity Journal\n"
 "Report-Msgid-Bugs-To: zeitgeist@lists.launchpad.net\n"
-"POT-Creation-Date: 2010-01-04 01:06+0100\n"
+"POT-Creation-Date: 2010-01-08 00:24+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Siegfried-Angel Gevatter Pujals <rainct@ubuntu.com>\n"
 "Language-Team: Siegfried Gevatter <siegfried@gevatter.com>\n"
@@ -11,55 +11,54 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Catalan\n"
 
-#: ../src/view.py:93
+#: ../src/main.py:59
 msgid "Go back in time"
 msgstr "Retrocedeix en el temps"
 
-#: ../src/view.py:94
+#: ../src/main.py:64
 msgid "Look into the future"
 msgstr "Avança en el temps"
 
-#: ../src/view.py:95
-msgid "Recent Events"
-msgstr "Esdeveniments recents"
-
-#: ../src/view.py:96
-msgid "Show Options"
-msgstr "Mostra les opcions"
-
-#: ../src/view.py:201
-msgid "Personal Timeline"
-msgstr "Línia cronològica personal"
-
-#: ../src/widgets.py:88
-msgid "Related files..."
-msgstr "Fitxers relacionats..."
-
-#: ../src/widgets.py:90
-msgid "Properties..."
-msgstr "Propietats..."
-
-#: ../src/widgets.py:161
+#: ../src/widgets.py:66
 msgid "Search..."
 msgstr "Cerca..."
 
-#: ../src/widgets.py:247
-msgid "Days to display:"
-msgstr "Dies a mostrar:"
+#: ../src/daywidgets.py:52
+msgid "Morning"
+msgstr "Matí"
 
-#: ../src/widgets.py:251
-msgid "1 day"
-msgstr "1 dia"
+#: ../src/daywidgets.py:53
+msgid "Afternoon"
+msgstr "Tarda"
 
-#: ../src/widgets.py:252
-msgid "3 days"
-msgstr "3 dies"
+#: ../src/daywidgets.py:54
+msgid "Evening"
+msgstr "Vespre"
 
-#: ../src/widgets.py:253
-msgid "1 week"
-msgstr "1 setmana"
+#: ../src/daywidgets.py:64
+msgid "Today"
+msgstr "Avui"
 
-#: ../src/widgets.py:254
-msgid "1 month"
-msgstr "1 mes"
+#: ../src/daywidgets.py:66
+msgid "Yesterday"
+msgstr "Ahir"
+
+#~ msgid "Recent Events"
+#~ msgstr "Esdeveniments recents"
+#~ msgid "Show Options"
+#~ msgstr "Mostra les opcions"
+#~ msgid "Personal Timeline"
+#~ msgstr "Línia cronològica personal"
+#~ msgid "Related files..."
+#~ msgstr "Fitxers relacionats..."
+#~ msgid "Properties..."
+#~ msgstr "Propietats..."
+#~ msgid "Days to display:"
+#~ msgstr "Dies a mostrar:"
+#~ msgid "3 days"
+#~ msgstr "3 dies"
+#~ msgid "1 week"
+#~ msgstr "1 setmana"
+#~ msgid "1 month"
+#~ msgstr "1 mes"
 
