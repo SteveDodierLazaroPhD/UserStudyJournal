@@ -155,9 +155,9 @@ class CategoryButton(gtk.HBox):
         #self.pack_start(self.img, False, False)
         
         if category:
-            text = "<span><b>%d </b></span>" % count
-            text = text + "<span>%s</span>" % \
+            text = "<span>%s</span>" % \
                                       SUPPORTED_SOURCES[category].group_label(count)
+            text = text + " <span>(%d)</span>" % count
             self.label.set_markup(text)
         self.label.set_ellipsize(pango.ELLIPSIZE_END)
         
