@@ -41,6 +41,8 @@ class Portal(gtk.Window):
         self.set_title("Journal")
         self.set_position(gtk.WIN_POS_CENTER)
 
+        self.set_icon_from_file("data/icons/hicolor/scalable/gnome-activity-journal.svg")
+
         self.vbox = gtk.VBox()
         #color = gtk.gdk.rgb_get_colormap().alloc_color('#EEEEEC')
         #self.modify_bg(gtk.STATE_NORMAL, color)
