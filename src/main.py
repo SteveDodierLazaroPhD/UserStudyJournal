@@ -38,10 +38,11 @@ class Portal(gtk.Window):
         self._requested_size = None
 
         self.connect("destroy", self.quit)
-        self.set_title("Journal")
+        self.set_title("Activity Journal")
         self.set_position(gtk.WIN_POS_CENTER)
 
         self.set_icon_list(gtk.gdk.pixbuf_new_from_file("data/icons/hicolor/16x16/gnome-activity-journal.png"),
+                           gtk.gdk.pixbuf_new_from_file("data/icons/hicolor/24x24/gnome-activity-journal.png"),
                            gtk.gdk.pixbuf_new_from_file("data/icons/hicolor/32x32/gnome-activity-journal.png"),
                            gtk.gdk.pixbuf_new_from_file("data/icons/hicolor/48x48/gnome-activity-journal.png"),
                            gtk.gdk.pixbuf_new_from_file("data/icons/hicolor/scalable/gnome-activity-journal.svg"))
@@ -74,8 +75,8 @@ class Portal(gtk.Window):
         hbox.pack_start(self.fwdbtn, False, False)
         
         btn = gtk.Button()
-        self.vbox.pack_start(btn, True, True, 12)
-        self.vbox.pack_start(hbox, True, True, 12)
+        self.vbox.pack_start(btn, True, True, 6)
+        self.vbox.pack_start(hbox, True, True, 6)
 
         self._request_size()
         self.show_all()
