@@ -140,55 +140,42 @@ class CategoryButton(gtk.HBox):
         self.label = gtk.Label()
         self.label.set_alignment(0.0, 0.5)
         hbox = gtk.HBox()
-
-        self.btn = gtk.Button()
-        self.btn.set_relief(gtk.RELIEF_NONE)
-        self.btn.set_size_request(32,32)
-        self.btn.set_focus_on_click(False)
-        self.btn.add(hbox)
-
-        self.img = gtk.Label()
-        self.img.set_markup("<span size='small'><b>+</b></span>")
-        self.img.set_alignment(0.5, 0.5)
-        btn = gtk.Button()
-        btn.add(self.img)
-        #btn.set_sensitive(False)
-        btn.set_size_request(21,21)
         
-        hbox.pack_start(btn, False, False)
+        self.expander = gtk.LinkButton("")
+        self.expander.set_label("Show")
+        self.expander.set_focus_on_click(False)
+        self.expander.set_focus_chain([])
+        self.expander.set_relief(gtk.RELIEF_NONE)
+            
         self.active = False
 
-        self.pack_start(self.btn)
+        self.pack_start(hbox)
         #self.pack_start(self.img, False, False)
         if category:
             self.label.set_markup("<span>%s</span>" % \
                                   SUPPORTED_SOURCES[category].group_label(count))
         self.label.set_ellipsize(pango.ELLIPSIZE_END)
-        hbox.pack_start(self.label, True, True, 9)
-
+        
         label = gtk.Label()
-        label.set_markup("<span>(%d)</span>" % count)
+        label.set_markup("<span><b>%d</b></span>" % count)
         label.set_alignment(1.0,0.5)
-        hbox.pack_end(label, False, False)
         self.show_all()
+        
+        hbox.pack_start(label, False, False)
+        hbox.pack_start(self.label, True, True, 9)
+        hbox.pack_end(self.expander, False, False)
 
-        self.btn.connect("clicked", self.toggle)
-        btn.set_relief(gtk.RELIEF_HALF)
+
+        self.expander.connect("clicked", self.toggle)
+        #btn.set_relief(gtk.RELIEF_HALF)
         
         def change_style(widget, style):
             rc_style = self.style
-            color = rc_style.text [gtk.STATE_SELECTED]
-            color.red = color.red * 985 / 1000
-            color.green = color.green * 985 / 1000
-            color.blue = color.blue * 985 / 1000
-            btn.modify_bg(gtk.STATE_NORMAL, color)
-            
             color = rc_style.bg[gtk.STATE_NORMAL] 
             color.red = color.red*2/3
             color.green = color.green*2/3
             color.blue = color.blue*2/3
             label.modify_fg(gtk.STATE_NORMAL, color)
-            self.img.modify_fg(gtk.STATE_NORMAL, color)
             
         self.connect("style-set", change_style)
         
@@ -197,9 +184,9 @@ class CategoryButton(gtk.HBox):
     def toggle(self, widget):
         self.active = not self.active
         if self.active:
-            self.img.set_markup("<span size='small'><b>-</b></span>")
+            self.expander.set_label("Hide")
         else:
-            self.img.set_markup("<span size='small'><b>+</b></span>")
+            self.expander.set_label("Show")
         self.emit("toggle", self.active)
 
 class Item(gtk.Button):
