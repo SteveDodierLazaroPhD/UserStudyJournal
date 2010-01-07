@@ -211,7 +211,7 @@ class DayPartWidget(gtk.VBox):
             num_events=50000, result_type=ResultType.MostRecentSubjects)
 
     def _handle_find_events(self, ids):
-        self.show_all()
+        self.show()
         if len(ids) > 0:
             self.zg.get_events(ids, self._handle_get_events)
         else:
