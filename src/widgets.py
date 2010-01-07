@@ -141,10 +141,13 @@ class CategoryButton(gtk.HBox):
         self.label.set_alignment(0.0, 0.5)
         hbox = gtk.HBox()
         
-        self.expander = gtk.link_button_new("Show")
-        self.expander.set_focus_on_click(False)
-        self.set_focus_chain([])
-        self.expander.set_relief(gtk.RELIEF_NONE)
+        self.expander = gtk.Label()
+        self.expander.set_markup("<span underline='single' color='blue'>Show</span>")
+        #self.expander.set_focus_on_click(False)
+        #self.set_focus_chain([])
+        btn = gtk.Button()
+        btn.add(self.expander)
+        btn.set_relief(gtk.RELIEF_NONE)
             
         self.active = False
 
@@ -161,21 +164,17 @@ class CategoryButton(gtk.HBox):
         self.show_all()
         
         hbox.pack_start(self.label, True, True, 9)
-        hbox.pack_end(self.expander, False, False)
-
-
-        self.expander.connect("clicked", self.toggle)
+        hbox.pack_end(btn, False, False)
+        btn.connect("clicked", self.toggle)
+        btn.set_focus_on_click(False)
         #btn.set_relief(gtk.RELIEF_HALF)
         
-        
-
-
     def toggle(self, widget):
         self.active = not self.active
         if self.active:
-            self.expander.set_label("Hide")
+            self.expander.set_markup("<span underline='single' color='blue'>Hide</span>")
         else:
-            self.expander.set_label("Show")
+            self.expander.set_markup("<span underline='single' color='blue'>Show</span>")
         self.emit("toggle", self.active)
 
 class Item(gtk.Button):
