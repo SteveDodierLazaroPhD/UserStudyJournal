@@ -49,14 +49,8 @@ class DayWidget(gtk.VBox):
         hour = 60*60
         self.day_start = start
         self.day_end = end
-        self.date_string = date.fromtimestamp(self.day_start).strftime("%d %B")
-        self.year_string = date.fromtimestamp(self.day_start).strftime("%Y")
-        if time.time() < self.day_end and time.time() > self.day_start:
-            self.week_day_string = "Today"
-        elif time.time() - 86400 < self.day_end and time.time() - 86400> self.day_start:
-            self.week_day_string = "Yesterday"
-        else:
-                self.week_day_string = date.fromtimestamp(self.day_start).strftime("%A")
+        
+        self.set_date_strings()
 
         self.morning = {
                         "start": self.day_start,
@@ -88,9 +82,18 @@ class DayWidget(gtk.VBox):
         self.__init_widgets()
         self.__init_events()
 
+    def set_date_strings(self):
+        self.date_string = date.fromtimestamp(self.day_start).strftime("%d %B")
+        self.year_string = date.fromtimestamp(self.day_start).strftime("%Y")
+        if time.time() < self.day_end and time.time() > self.day_start:
+            self.week_day_string = "Today"
+        elif time.time() - 86400 < self.day_end and time.time() - 86400> self.day_start:
+            self.week_day_string = "Yesterday"
+        else:
+                self.week_day_string = date.fromtimestamp(self.day_start).strftime("%A")
+        self.emit("style-set", None)
+
     def __init_widgets(self):
-
-
         self.vbox = gtk.VBox()
         evbox = gtk.EventBox()
         evbox.add(self.vbox)
@@ -244,7 +247,7 @@ class DayPartWidget(gtk.VBox):
             for key in keys:
                 events = self.categories[key]
                 events.reverse()
-                if len(events) > 3:
+                if len(events) > 1:
                     box = CategoryBox(key, events)
                     self.view.pack_start(box)
                 else:

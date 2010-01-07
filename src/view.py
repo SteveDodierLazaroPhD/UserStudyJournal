@@ -90,3 +90,4 @@ class ActivityView(gtk.VBox):
                     dayview = DayWidget(self.start + i*86400, self.start + i*86400 + 86400)
                     self.days[ptime] = dayview
                 self.daysbox.pack_start(self.days[ptime], True, True, 3)
+                self.days[ptime].set_date_strings()
