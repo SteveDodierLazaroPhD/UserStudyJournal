@@ -20,7 +20,9 @@
 import gtk
 import time, datetime
 import gobject
+import cairo
 import pango
+import math
 
 from datetime import date
 
@@ -135,54 +137,18 @@ class DayWidget(gtk.VBox):
     def __init_date_label(self):
 
         vbox = gtk.VBox(False, 3)
-        label1 = gtk.Label()
+        vbox = gtk.VBox(False, 3)
+        daylabel = DayLabel(self.week_day_string, self.date_string)
+        x, y = vbox.get_size_request()
+        daylabel.set_size_request(100, 60)
+
 
         today = time.time()
 
-        if today > self.day_start and today < self.day_end:
-            label1 = gtk.Label()
-            label1.set_markup("<span size='x-large'><b>"+self.week_day_string +"</b></span>")
-            label1.set_alignment(0.5,0.5)
-            label2 = gtk.Label()
-            label2.set_markup("<span>"+self.date_string +", "+ self.year_string+"</span>")
-            label2.set_alignment(0.5,0.5)
+        vbox.pack_start(daylabel,False,False)
 
-        elif today - 86400 * 7 < self.day_start:
-            label1 = gtk.Label()
-            label1.set_markup("<span size='x-large'><b>"+self.week_day_string +"</b></span>")
-            label1.set_alignment(0.5,0.5)
-            label2 = gtk.Label()
-            label2.set_markup("<span>"+self.date_string +", "+ self.year_string+"</span>")
-            label2.set_alignment(0.5,0.5)
-        else:
-            label1 = gtk.Label()
-            label1.set_markup("<span size='x-large'><b>"+self.date_string +"</b></span>")
-            label1.set_alignment(0.5,0.5)
-            label2 = gtk.Label()
-            label2.set_markup("<span>"+self.week_day_string+ ", "+ self.year_string +"</span>")
-            label2.set_alignment(0.5,0.5)
+        self.vbox.pack_start(vbox, False, False)
 
-        vbox.pack_start(label1,False,False)
-        vbox.pack_start(label2,False,False)
-
-        def change_style(widget, style):
-            rc_style = self.style
-            if self.week_day_string == "Today":
-                color = rc_style.text[gtk.STATE_SELECTED]
-                label1.modify_fg(gtk.STATE_NORMAL, color)
-                color = rc_style.text[gtk.STATE_SELECTED]
-                label2.modify_fg(gtk.STATE_NORMAL, color)
-            else:
-                color = rc_style.bg[gtk.STATE_NORMAL] 
-                color.red = color.red*3/4
-                color.green = color.green*3/4
-                color.blue = color.blue*3/4
-                #label1.modify_text(gtk.STATE_NORMAL, color)
-                label2.modify_fg(gtk.STATE_NORMAL, color)
-                
-
-        self.connect("style-set", change_style)
-        self.vbox.pack_start(vbox, False, False, 6)
 
     def __init_events(self):
         for w in self.view:
@@ -327,3 +293,91 @@ class CategoryBox(gtk.VBox):
         else:
             self.view.hide_all()
             self.label.hide_all()
+
+class DayLabel(gtk.DrawingArea):
+
+    def __init__(self, day, date):
+        if day == "Today":
+            self.leading = True
+        else:
+            self.leading = False
+        super(DayLabel, self).__init__()
+        self.date = date
+        self.day = day
+        self.connect("expose_event", self.expose)
+    
+    def expose(self, widget, event):
+        context = widget.window.cairo_create()
+        self.context = context
+
+        bg = self.style.bg[0]
+        red, green, blue = bg.red/65535.0, bg.green/65535.0, bg.blue/65535.0
+        self.font_name = self.style.font_desc.get_family()
+        
+        context.set_source_rgba(red, green, blue, 1)
+
+        context.set_operator(cairo.OPERATOR_SOURCE)
+        context.paint()
+        # set a clip region for the expose event
+        context.rectangle(event.area.x, event.area.y, event.area.width, event.area.height)
+        context.clip()
+        self.draw(context, event)
+        self.day_text(context, event)
+        return False
+    
+    def day_text(self, context, event):
+        context.select_font_face(self.font_name, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
+        
+        x, y = event.area.width, event.area.height
+        context.set_font_size(24)
+        if self.leading:
+            context.set_source_rgba(1, 1, 1, 1)
+        else:
+            context.set_source_rgba(0.2, 0.2, 0.2, 1)
+            
+        xbearing, ybearing, width, height, xadvance, yadvance = context.text_extents(self.day)
+        a = (x-width)/2
+        b = y-height-5
+        context.move_to(a, b)
+        
+        context.show_text(self.day)
+        self.date_text(context, event, height)
+
+
+    def date_text(self, context, event, last_text_height):
+        context.select_font_face(self.font_name, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_NORMAL)
+
+        x, y = event.area.width, event.area.height
+        context.set_font_size(14)
+        if self.leading:
+            context.set_source_rgba(1, 1, 1, 1)
+        else:
+            context.set_source_rgba(0.7, 0.7, 0.7, 1)
+
+        xbearing, ybearing, width, height, xadvance, yadvance = context.text_extents(self.date)
+        a = (x-width)/2
+        b = last_text_height + height + 10
+        context.move_to(a, b)
+        
+        context.show_text(self.date)
+    
+    def draw(self, context, event):
+        if self.leading:
+            bg = self.style.bg[3]
+            red, green, blue = bg.red/65535.0, bg.green/65535.0, bg.blue/65535.0
+        else:
+            red, green, blue = 1, 1, 1
+        
+        # Draw
+        x = 0; y = 0
+        r = 8
+        w, h = event.area.width, event.area.height
+        # Temporary color, I will fix this later when I have a chance to sleep. 
+        context.set_source_rgba(red, green, blue, 1)
+
+        context.new_sub_path()
+        context.arc(r+x, r+y, r, math.pi, 3 * math.pi /2)
+        context.arc(w-r, r+y, r, 3 * math.pi / 2, 0)
+        context.close_path()
+        context.rectangle(0, r, w, h)
+        context.fill_preserve()
