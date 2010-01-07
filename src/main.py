@@ -67,12 +67,15 @@ class Portal(gtk.Window):
         hbox.pack_start(self.backbtn, False, False)
         hbox.pack_start(self.activityview)
         hbox.pack_start(self.fwdbtn, False, False)
+        
+        btn = gtk.Button()
+        self.vbox.pack_start(btn, True, True, 12)
         self.vbox.pack_start(hbox, True, True, 12)
 
         self._request_size()
         self.show_all()
         self.connect("configure-event", self._on_size_changed)
-
+        btn.hide()
     def _request_size(self):
         screen = self._screen.get_monitor_geometry(
             self._screen.get_monitor_at_point(*self.get_position()))

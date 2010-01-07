@@ -122,10 +122,10 @@ class DayWidget(gtk.VBox):
 
         def change_style(widget, style):
             rc_style = self.style
-            color = rc_style.base[gtk.STATE_NORMAL]
-            color.red = color.red * 95 / 100
-            color.green = color.green * 95 / 100
-            color.blue = color.blue * 95 / 100
+            color = rc_style.bg[gtk.STATE_NORMAL]
+            color.red = color.red * 105 / 100
+            color.green = color.green * 105 / 100
+            color.blue = color.blue * 105 / 100
             evbox2.modify_bg(gtk.STATE_NORMAL, color)
 
         self.connect("style-set", change_style)
@@ -358,7 +358,7 @@ class DayLabel(gtk.DrawingArea):
         
         # Draw
         x = 0; y = 0
-        r = 8
+        r = 5
         w, h = event.area.width, event.area.height
         # Temporary color, I will fix this later when I have a chance to sleep. 
         context.set_source_rgba(red, green, blue, 1)

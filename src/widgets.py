@@ -233,10 +233,9 @@ class Item(gtk.Button):
         def change_style(widget, style):
             rc_style = self.style
             color = rc_style.bg[gtk.STATE_NORMAL] 
-            color.red = color.red*3/4
-            color.green = color.green*3/4
-            color.blue = color.blue*3/4
-            #label1.modify_text(gtk.STATE_NORMAL, color)
+            color.red = color.red*2/3
+            color.green = color.green*2/3
+            color.blue = color.blue*2/3
             label.modify_fg(gtk.STATE_NORMAL, color)
                 
 
