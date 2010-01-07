@@ -120,7 +120,6 @@ class DayWidget(gtk.VBox):
         self.show_all()
 
         def change_style(widget, style):
-            print "*************"
             rc_style = self.style
             if self.week_day_string == "Today":
                 color = rc_style.bg[gtk.STATE_SELECTED]
