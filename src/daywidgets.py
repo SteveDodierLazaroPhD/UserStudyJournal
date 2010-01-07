@@ -311,6 +311,7 @@ class DayLabel(gtk.DrawingArea):
         context.clip()
         self.draw(context, event)
         self.day_text(context, event)
+        gobject.timeout_add_seconds((int(time.time()) % 86400)+1, self._daily_refresh)
         return False
     
     def day_text(self, context, event):
@@ -369,3 +370,11 @@ class DayLabel(gtk.DrawingArea):
         context.close_path()
         context.rectangle(0, r, w, h)
         context.fill_preserve()
+
+    def _daily_refresh(self, *args, **kwargs):
+        self.queue_draw()
+        gobject.timeout_add_seconds(86400, self._daily_refresh)
+        if (time.time() % 86400) < 100: return True
+        return False
+
+    
