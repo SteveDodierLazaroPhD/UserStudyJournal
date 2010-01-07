@@ -3,6 +3,7 @@
 # GNOME Activity Journal
 #
 # Copyright © 2009-2010 Seif Lotfy <seif@lotfy.com>
+# Copyright © 2010 Randal Barlow <email.tehk@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -281,8 +282,8 @@ class CategoryBox(gtk.VBox):
             self.view.hide_all()
             self.label.hide_all()
 
-class DayLabel(gtk.DrawingArea):
 
+class DayLabel(gtk.DrawingArea):
     def __init__(self, day, date):
         if day == "Today":
             self.leading = True
