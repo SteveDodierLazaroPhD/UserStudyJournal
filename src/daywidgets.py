@@ -21,6 +21,7 @@
 import gtk
 import time, datetime
 import gobject
+import gettext
 import cairo
 import pango
 import math
@@ -47,33 +48,11 @@ class DayWidget(gtk.VBox):
         self.day_end = end
         
         self.set_date_strings()
-
-        self.morning = {
-                        "start": self.day_start,
-                        "end": self.day_start + 12*hour -1
-                        }
-        self.afternoon = {
-                          "start": self.day_start + 12*hour,
-                          "end": self.day_start + 18*hour-1
-                          }
-        self.evening = {
-                        "start": self.day_start + 18*hour,
-                        "end": self.day_end
-                        }
-
-        self.day_split = {
-                          "Morning":  self.morning,
-                          "Afternoon": self.afternoon,
-                          "Evening": self.evening
-                          }
-
-        self.day_part_widgets = {
-                                      "Morning":  None,
-                                      "Afternoon": None,
-                                      "Evening": None
-                                      }
-
-        self.part_order = ["Morning", "Afternoon", "Evening"]
+        self._periods = [
+            (_("Morning"), start, start + 12*hour - 1),
+            (_("Afternoon"), start + 12*hour, start + 18*hour - 1),
+            (_("Evening"), start + 18*hour, end),
+        ]
 
         self.__init_widgets()
         self.__init_events()
@@ -82,9 +61,9 @@ class DayWidget(gtk.VBox):
         self.date_string = date.fromtimestamp(self.day_start).strftime("%d %B")
         self.year_string = date.fromtimestamp(self.day_start).strftime("%Y")
         if time.time() < self.day_end and time.time() > self.day_start:
-            self.week_day_string = "Today"
+            self.week_day_string = _("Today")
         elif time.time() - 86400 < self.day_end and time.time() - 86400> self.day_start:
-            self.week_day_string = "Yesterday"
+            self.week_day_string = _("Yesterday")
         else:
                 self.week_day_string = date.fromtimestamp(self.day_start).strftime("%A")
         self.emit("style-set", None)
@@ -136,10 +115,8 @@ class DayWidget(gtk.VBox):
     def __init_events(self):
         for w in self.view:
             self.view.remove(w)
-        keys = self.day_split.keys()
-        keys.sort()
-        for key in self.part_order:
-            part = DayPartWidget(key, self.day_split[key]["start"], self.day_split[key]["end"])
+        for period in self._periods:
+            part = DayPartWidget(period[0], period[1], period[2])
             self.view.pack_start(part, False, False)
             part.init_events()
 
