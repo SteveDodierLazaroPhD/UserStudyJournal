@@ -121,13 +121,6 @@ class DayWidget(gtk.VBox):
 
         def change_style(widget, style):
             rc_style = self.style
-            if self.week_day_string == "Today":
-                color = rc_style.bg[gtk.STATE_SELECTED]
-                evbox.modify_bg(gtk.STATE_NORMAL, color)
-            else:
-                color = rc_style.base[gtk.STATE_NORMAL]
-                evbox.modify_bg(gtk.STATE_NORMAL,  color)
-
             color = rc_style.base[gtk.STATE_NORMAL]
             color.red = color.red * 95 / 100
             color.green = color.green * 95 / 100
@@ -138,18 +131,10 @@ class DayWidget(gtk.VBox):
 
     def __init_date_label(self):
 
-        vbox = gtk.VBox(False, 3)
-        vbox = gtk.VBox(False, 3)
         daylabel = DayLabel(self.week_day_string, self.date_string)
-        x, y = vbox.get_size_request()
+        #x, y = vbox.get_size_request()
         daylabel.set_size_request(100, 60)
-
-
-        today = time.time()
-
-        vbox.pack_start(daylabel,False,False)
-
-        self.vbox.pack_start(vbox, False, False)
+        self.vbox.pack_start(daylabel, False, False)
 
 
     def __init_events(self):
@@ -339,7 +324,7 @@ class DayLabel(gtk.DrawingArea):
             
         xbearing, ybearing, width, height, xadvance, yadvance = context.text_extents(self.day)
         a = (x-width)/2
-        b = y-height-5
+        b = y-height-7
         context.move_to(a, b)
         
         context.show_text(self.day)
