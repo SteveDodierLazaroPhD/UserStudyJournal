@@ -153,35 +153,21 @@ class CategoryButton(gtk.HBox):
 
         self.pack_start(hbox)
         #self.pack_start(self.img, False, False)
-        label = gtk.Label()
-        label.set_alignment(0.0, 0.5)
         
         if category:
-            text = SUPPORTED_SOURCES[category].group_label(count)
-            label.set_text(text)
-            text = " <span>(%d)</span>" % count
+            text = "<span>%s</span>" % \
+                                      SUPPORTED_SOURCES[category].group_label(count)
+            text = text + " <span color='darkgrey'> (%d)</span>" % count
             self.label.set_markup(text)
-        label.set_ellipsize(pango.ELLIPSIZE_END)        
-        hbox.pack_start(label, True, True, 9)
-
+        self.label.set_ellipsize(pango.ELLIPSIZE_END)
         
         self.show_all()
         
-        hbox.pack_start(self.label,False, False)
+        hbox.pack_start(self.label, True, True, 9)
         hbox.pack_end(btn, False, False)
         btn.connect("clicked", self.toggle)
         btn.set_focus_on_click(False)
         #btn.set_relief(gtk.RELIEF_HALF)
-        
-        def change_style(widget, style):
-            rc_style = self.style
-            color = rc_style.bg[gtk.STATE_NORMAL] 
-            color.red = color.red*2/3
-            color.green = color.green*2/3
-            color.blue = color.blue*2/3
-            self.label.modify_fg(gtk.STATE_NORMAL, color)
-            
-        self.connect("style-set", change_style)
         
     def toggle(self, widget):
         self.active = not self.active
