@@ -317,7 +317,7 @@ class DayLabel(gtk.DrawingArea):
         context.select_font_face(self.font_name, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
         
         x, y = event.area.width, event.area.height
-        context.set_font_size(24)
+        context.set_font_size(22)
         if self.leading:
             context.set_source_rgba(1, 1, 1, 1)
         else:
@@ -325,7 +325,7 @@ class DayLabel(gtk.DrawingArea):
             
         xbearing, ybearing, width, height, xadvance, yadvance = context.text_extents(self.day)
         a = (x-width)/2
-        b = y-height-7
+        b = y - height - 10
         context.move_to(a, b)
         
         context.show_text(self.day)
@@ -336,7 +336,7 @@ class DayLabel(gtk.DrawingArea):
         context.select_font_face(self.font_name, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_NORMAL)
 
         x, y = event.area.width, event.area.height
-        context.set_font_size(14)
+        context.set_font_size(12)
         if self.leading:
             context.set_source_rgba(1, 1, 1, 1)
         else:
@@ -344,7 +344,7 @@ class DayLabel(gtk.DrawingArea):
 
         xbearing, ybearing, width, height, xadvance, yadvance = context.text_extents(self.date)
         a = (x-width)/2
-        b = last_text_height + height + 10
+        b = last_text_height + height + 15
         context.move_to(a, b)
         
         context.show_text(self.date)
