@@ -455,6 +455,107 @@
        id="radialGradient3794"
        xlink:href="#linearGradient3692-7"
        inkscape:collect="always" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3692"
+       id="radialGradient2977"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.97356613,0,0,0.91868615,50.321546,37.038816)"
+       cx="178.58208"
+       cy="476.69064"
+       fx="178.58208"
+       fy="476.69064"
+       r="19.575857" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3660"
+       id="linearGradient2979"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.54545456,0,0,0.99999151,-345.72726,10.995728)"
+       x1="192.7858"
+       y1="-504.79968"
+       x2="194.00397"
+       y2="-504.79968" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3752"
+       id="linearGradient2981"
+       gradientUnits="userSpaceOnUse"
+       x1="165.24686"
+       y1="501.55154"
+       x2="166.46263"
+       y2="485.4649"
+       gradientTransform="matrix(0.67230949,0,0,0.67223533,104.22678,154.67362)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3728"
+       id="linearGradient2983"
+       gradientUnits="userSpaceOnUse"
+       x1="196.86769"
+       y1="501.88687"
+       x2="205.93097"
+       y2="501.88687"
+       gradientTransform="matrix(0.67230949,0,0,0.67223533,104.39343,154.46125)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3744"
+       id="linearGradient2985"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.65779981,0,0,0.70138216,107.20892,138.86288)"
+       x1="200.55119"
+       y1="485.77957"
+       x2="204.91356"
+       y2="485.78012" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3772"
+       id="linearGradient2987"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.65779981,0,0,0.70138216,107.20892,139.56427)"
+       x1="199.03242"
+       y1="488.26974"
+       x2="196.77747"
+       y2="482.70724" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3622"
+       id="linearGradient2989"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.57058754,0,0,0.67223533,123.82485,154.00472)"
+       x1="197.72409"
+       y1="491.68591"
+       x2="199.0789"
+       y2="484.58057" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3720"
+       id="linearGradient2991"
+       gradientUnits="userSpaceOnUse"
+       x1="180.00543"
+       y1="500.79849"
+       x2="208.82005"
+       y2="500.79849"
+       gradientTransform="matrix(0.66267733,0,0,0.67223533,106.02823,154.16318)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3704"
+       id="linearGradient2993"
+       gradientUnits="userSpaceOnUse"
+       x1="203.72328"
+       y1="488.96158"
+       x2="172.875"
+       y2="485.08658"
+       gradientTransform="matrix(0.67230949,0,0,0.67223533,105.22678,154.67362)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3764"
+       id="linearGradient2995"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.74761016,0,0,0.67038472,-382.05064,154.96938)"
+       x1="194.01909"
+       y1="483.89049"
+       x2="198.03188"
+       y2="483.89049" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -463,9 +564,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="4"
-     inkscape:cx="36.957172"
-     inkscape:cy="34.529209"
+     inkscape:zoom="1"
+     inkscape:cx="72.312511"
+     inkscape:cy="26.653422"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -476,7 +577,8 @@
      inkscape:window-y="0"
      inkscape:window-maximized="1"
      inkscape:snap-global="true"
-     inkscape:snap-nodes="false">
+     inkscape:snap-nodes="false"
+     inkscape:snap-bbox-midpoints="true">
     <inkscape:grid
        type="xygrid"
        id="grid2818"
@@ -706,7 +808,7 @@
        sodipodi:cy="504.75217"
        sodipodi:rx="2.6737475"
        sodipodi:ry="2.519068"
-       d="m 170.6116,507.27123 a 2.6737475,2.519068 0 1 1 0.26595,-5.02564"
+       d="m 170.6116,507.27123 c -1.47667,0 -2.67375,-1.12782 -2.67374,-2.51906 0,-1.39125 1.19707,-2.51907 2.67374,-2.51907 0.0888,0 0.17757,0.004 0.26595,0.0125"
        transform="matrix(0.56101014,0,0,0.59545928,54.31845,183.84408)"
        sodipodi:start="1.5707969"
        sodipodi:end="4.8120188"
@@ -732,7 +834,7 @@
        inkscape:export-ydpi="90" />
     <path
        transform="matrix(0.74801387,0,0,0.79394533,9.91344,84.157811)"
-       d="m 168.13794,503.79604 a 2.6737475,2.519068 0 0 1 2.55465,-1.56179"
+       d="m 168.13794,503.79604 c 0.42293,-0.97127 1.44087,-1.59358 2.55465,-1.56179"
        sodipodi:ry="2.519068"
        sodipodi:rx="2.6737475"
        sodipodi:cy="504.75217"
@@ -754,7 +856,7 @@
        sodipodi:cy="504.75217"
        sodipodi:rx="2.6737475"
        sodipodi:ry="2.519068"
-       d="m 168.91367,502.80623 a 2.6737475,2.519068 0 0 1 1.8251,-0.57028"
+       d="m 168.91367,502.80623 c 0.51226,-0.39675 1.16272,-0.6 1.8251,-0.57028"
        transform="matrix(1.1220187,0,0,1.1909157,-53.89612,-116.21385)"
        sodipodi:start="4.0243322"
        sodipodi:end="4.7599695"
@@ -770,7 +872,7 @@
        sodipodi:cy="504.75217"
        sodipodi:rx="2.6737475"
        sodipodi:ry="2.519068"
-       d="m 170.70536,507.26969 a 2.6737475,2.519068 0 0 1 -2.76712,-2.56021"
+       d="m 170.70536,507.26969 c -1.47576,0.0488 -2.71408,-1.0388 -2.76586,-2.42919 -0.002,-0.0437 -0.002,-0.0874 -0.001,-0.13102"
        transform="matrix(0.93501747,0,0,0.9924308,-21.49154,-17.528159)"
        sodipodi:start="1.5357226"
        sodipodi:end="3.1585402"
@@ -847,6 +949,244 @@
        x="146.03329"
        y="474.40344"
        inkscape:export-filename="/home/hbons/gnome-activity-journal.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#faeedc;fill-opacity:1;stroke:none;opacity:0"
+       id="rect2929"
+       width="32"
+       height="32"
+       x="213"
+       y="467.36218"
+       inkscape:export-filename="/home/hbons/Moblin/zeitgeist/gnome-activity-journal/data/icons/hicolor/32x32/gnome-activity-journal.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       transform="matrix(0.63954671,0,0,0.67223533,110.25799,156.68197)"
+       sodipodi:nodetypes="cccccc"
+       id="path2931"
+       d="m 169.70042,485.61609 34.89088,0 1.61539,17.13375 0.38461,4.07945 -38.89088,0 2,-21.2132 z"
+       style="fill:#888a85;fill-opacity:1;stroke:none;filter:url(#filter3686);opacity:0.67716535"
+       inkscape:export-filename="/home/hbons/Moblin/zeitgeist/gnome-activity-journal/data/icons/hicolor/32x32/gnome-activity-journal.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       sodipodi:nodetypes="ccccc"
+       id="path2933"
+       d="m 217.59497,469.94337 22.43833,0.25209 2.01692,21.51153 c 0,0 -24.569,3.94727 -26.24977,2.8969 -0.50424,-1.63857 1.79452,-24.66052 1.79452,-24.66052 z"
+       style="fill:url(#radialGradient2977);fill-opacity:1;stroke:none"
+       inkscape:export-filename="/home/hbons/Moblin/zeitgeist/gnome-activity-journal/data/icons/hicolor/32x32/gnome-activity-journal.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       sodipodi:nodetypes="ccccccc"
+       id="path2935"
+       d="m 217.82116,470.1806 0.68891,10e-4 -1.31665,22.47591 -0.25634,2.50486 -1.44483,-1.7435 c 0,0 2.32891,-23.23843 2.32891,-23.23843 l 0,-1.9e-4 z"
+       style="fill:#f5dfbc;fill-opacity:1;stroke:none"
+       inkscape:export-filename="/home/hbons/Moblin/zeitgeist/gnome-activity-journal/data/icons/hicolor/32x32/gnome-activity-journal.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       sodipodi:nodetypes="cscccscccc"
+       id="path2937"
+       d="M 218.49232,492.10983 C 217.23958,492.29911 217,492.9602 217,493.75327 c 0,0.79307 0.23958,1.44081 1.49232,1.63008 l 23.93608,0.0802 0,-0.0135 c -1.605,0 -2.21885,-0.75655 -2.21885,-1.69687 0,-0.94034 0.61385,-1.71026 2.21885,-1.71026 l -23.20954,0 -0.72654,0.067 0,2e-5 z"
+       style="fill:#ffffff;fill-opacity:1;stroke:none"
+       inkscape:export-filename="/home/hbons/Moblin/zeitgeist/gnome-activity-journal/data/icons/hicolor/32x32/gnome-activity-journal.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       sodipodi:type="arc"
+       style="fill:none;stroke:#3465a4;stroke-width:1.54594159;stroke-linecap:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="path2939"
+       sodipodi:cx="170.6116"
+       sodipodi:cy="504.75217"
+       sodipodi:rx="2.6737475"
+       sodipodi:ry="2.519068"
+       d="m 170.6116,507.27123 a 2.6737475,2.519068 0 1 1 0,-5.03813"
+       transform="matrix(0.62794105,0,0,0.66633853,134.92077,157.3918)"
+       sodipodi:open="true"
+       sodipodi:start="1.5707963"
+       sodipodi:end="4.712389"
+       inkscape:export-filename="/home/hbons/Moblin/zeitgeist/gnome-activity-journal/data/icons/hicolor/32x32/gnome-activity-journal.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       transform="scale(-1,-1)"
+       style="fill:url(#linearGradient2979);fill-opacity:1;stroke:none"
+       id="rect2941"
+       width="6"
+       height="0.99999148"
+       x="-241"
+       y="-494.36218"
+       rx="0.5"
+       ry="0.5"
+       inkscape:export-filename="/home/hbons/Moblin/zeitgeist/gnome-activity-journal/data/icons/hicolor/32x32/gnome-activity-journal.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       sodipodi:nodetypes="cc"
+       id="path2943"
+       d="m 217.46891,469.85934 -1.98722,23.27254"
+       style="fill:none;stroke:url(#linearGradient2981);stroke-width:0.99999994px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1"
+       inkscape:export-filename="/home/hbons/Moblin/zeitgeist/gnome-activity-journal/data/icons/hicolor/32x32/gnome-activity-journal.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:none;stroke:#8f5902;stroke-width:0.99999994px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 217.46891,469.85934 22.85852,0"
+       id="path2945"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/hbons/Moblin/zeitgeist/gnome-activity-journal/data/icons/hicolor/32x32/gnome-activity-journal.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       sodipodi:nodetypes="cc"
+       id="path2947"
+       d="m 218.5,491.83248 24.00662,0.0297"
+       style="fill:none;stroke:url(#linearGradient2983);stroke-width:0.99999994;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       inkscape:export-filename="/home/hbons/Moblin/zeitgeist/gnome-activity-journal/data/icons/hicolor/32x32/gnome-activity-journal.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:#f2d6aa;fill-opacity:1;stroke:none"
+       d="m 217.84708,491.70699 -1.34462,0.67224 1.34462,-0.67224 z"
+       id="path2949"
+       sodipodi:nodetypes="ccc"
+       inkscape:export-filename="/home/hbons/Moblin/zeitgeist/gnome-activity-journal/data/icons/hicolor/32x32/gnome-activity-journal.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       transform="matrix(0.74801469,0,0,0.79394349,91.880018,93.117485)"
+       d="m 170.451,507.26669 a 2.6737475,2.519068 0 0 1 0.19647,-5.03336"
+       sodipodi:ry="2.519068"
+       sodipodi:rx="2.6737475"
+       sodipodi:cy="504.75217"
+       sodipodi:cx="170.6116"
+       id="path2951"
+       style="fill:none;stroke:#d48e20;stroke-width:1.29762781;stroke-linecap:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       sodipodi:type="arc"
+       sodipodi:start="1.6308999"
+       sodipodi:end="4.7258034"
+       sodipodi:open="true"
+       inkscape:export-filename="/home/hbons/Moblin/zeitgeist/gnome-activity-journal/data/icons/hicolor/32x32/gnome-activity-journal.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       sodipodi:open="true"
+       sodipodi:end="3.2411279"
+       sodipodi:start="1.5707963"
+       sodipodi:type="arc"
+       style="fill:none;stroke:#5c3a01;stroke-width:1.10388196;stroke-linecap:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="path2953"
+       sodipodi:cx="170.6116"
+       sodipodi:cy="504.75217"
+       sodipodi:rx="2.6737475"
+       sodipodi:ry="2.519068"
+       d="m 170.6116,507.27123 a 2.6737475,2.519068 0 0 1 -2.66051,-2.76939"
+       transform="matrix(0.87938935,0,0,0.93319729,67.817239,22.478038)"
+       inkscape:export-filename="/home/hbons/Moblin/zeitgeist/gnome-activity-journal/data/icons/hicolor/32x32/gnome-activity-journal.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       sodipodi:nodetypes="cc"
+       id="path2955"
+       d="m 217.51581,495.86218 24.96839,0"
+       style="fill:none;stroke:#5c3a01;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1"
+       inkscape:export-filename="/home/hbons/Moblin/zeitgeist/gnome-activity-journal/data/icons/hicolor/32x32/gnome-activity-journal.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:none;stroke:#8f5902;stroke-width:0.99999994px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 240.35634,469.85352 2.1648,22.01063"
+       id="path2957"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/hbons/Moblin/zeitgeist/gnome-activity-journal/data/icons/hicolor/32x32/gnome-activity-journal.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       sodipodi:nodetypes="ccczscccccccc"
+       id="path2959"
+       d="m 240.50241,476.86251 c 0.59766,-0.0164 1.3075,0.54675 1.36318,1.23637 0,0 0.53925,5.04031 0.53925,5.04031 0,0.97689 -1.79433,0.99103 -1.88328,-0.13529 0,0 -0.0164,-0.20765 -0.0164,-0.20765 -0.0395,-0.50029 -0.63597,-1.03976 -1.30656,-1.03976 l -4.5994,0 c -1.16293,0 -2.09916,-0.98718 -2.09916,-2.21339 0,-1.52753 0.82125,-2.68059 1.93557,-2.68059 l 5.4091,0 -4e-5,0 0.65779,0 -5e-5,0 z"
+       style="fill:url(#linearGradient2985);fill-opacity:1;stroke:url(#linearGradient2987);stroke-width:0.99999994;stroke-opacity:1"
+       inkscape:export-filename="/home/hbons/Moblin/zeitgeist/gnome-activity-journal/data/icons/hicolor/32x32/gnome-activity-journal.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       sodipodi:nodetypes="cccc"
+       id="path2961"
+       d="m 233.78098,479.86218 c 0,0 0.32096,1.05037 1.0342,1.00836 l 4.83041,0.021 c 0,0 1.85441,-0.003 1.85441,1.99573"
+       style="fill:none;stroke:url(#linearGradient2989);stroke-width:0.99999994px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1"
+       inkscape:export-filename="/home/hbons/Moblin/zeitgeist/gnome-activity-journal/data/icons/hicolor/32x32/gnome-activity-journal.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       ry="0.49999997"
+       rx="0.5"
+       y="-494.36218"
+       x="-233"
+       height="1.0000026"
+       width="10"
+       id="rect2963"
+       style="fill:#eeeeec;fill-opacity:1;stroke:none"
+       transform="scale(-1,-1)"
+       inkscape:export-filename="/home/hbons/Moblin/zeitgeist/gnome-activity-journal/data/icons/hicolor/32x32/gnome-activity-journal.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:#f5dfbc;fill-opacity:1;stroke:url(#linearGradient2991);stroke-width:1;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="M 219.16291,490.86218 241.5,490.89188"
+       id="path2967"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/hbons/Moblin/zeitgeist/gnome-activity-journal/data/icons/hicolor/32x32/gnome-activity-journal.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       sodipodi:type="arc"
+       style="fill:none;stroke:#f5dfbc;stroke-width:0.86005861;stroke-linecap:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="path2969"
+       sodipodi:cx="170.6116"
+       sodipodi:cy="504.75217"
+       sodipodi:rx="2.6737475"
+       sodipodi:ry="2.519068"
+       d="m 167.94234,504.60628 a 2.6737475,2.519068 0 0 1 2.79232,-2.37051"
+       transform="matrix(1.1351742,0,0,1.1909167,25.790949,-107.25561)"
+       sodipodi:start="3.1995372"
+       sodipodi:end="4.7584285"
+       sodipodi:open="true"
+       inkscape:export-filename="/home/hbons/Moblin/zeitgeist/gnome-activity-journal/data/icons/hicolor/32x32/gnome-activity-journal.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="opacity:0.67068272;fill:url(#linearGradient2993);fill-opacity:1;stroke:none"
+       d="m 218.59497,469.94337 9.66445,0.25209 -6.7231,21.51153 c 0,0 -3.0551,3.94727 -4.73587,2.8969 -0.50424,-1.63857 1.79452,-24.66052 1.79452,-24.66052 z"
+       id="path2971"
+       sodipodi:nodetypes="ccccc"
+       inkscape:export-filename="/home/hbons/Moblin/zeitgeist/gnome-activity-journal/data/icons/hicolor/32x32/gnome-activity-journal.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       transform="scale(-1,1)"
+       style="fill:url(#linearGradient2995);fill-opacity:1;stroke:none"
+       id="rect2973"
+       width="3"
+       height="2.0000098"
+       x="-237"
+       y="478.36218"
+       rx="1.5073131"
+       ry="1.5073131"
+       inkscape:export-filename="/home/hbons/Moblin/zeitgeist/gnome-activity-journal/data/icons/hicolor/32x32/gnome-activity-journal.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       ry="1.5073133"
+       rx="1.5073131"
+       y="477.36218"
+       x="234.30217"
+       height="2.0055308"
+       width="2.6978345"
+       id="rect2975"
+       style="fill:#faeedc;fill-opacity:1;stroke:none"
+       inkscape:export-filename="/home/hbons/Moblin/zeitgeist/gnome-activity-journal/data/icons/hicolor/32x32/gnome-activity-journal.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
   </g>

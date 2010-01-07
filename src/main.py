@@ -42,6 +42,7 @@ class Portal(gtk.Window):
         self.set_position(gtk.WIN_POS_CENTER)
 
         self.set_icon_list(gtk.gdk.pixbuf_new_from_file("data/icons/hicolor/16x16/gnome-activity-journal.png"),
+                           gtk.gdk.pixbuf_new_from_file("data/icons/hicolor/32x32/gnome-activity-journal.png"),
                            gtk.gdk.pixbuf_new_from_file("data/icons/hicolor/48x48/gnome-activity-journal.png"),
                            gtk.gdk.pixbuf_new_from_file("data/icons/hicolor/scalable/gnome-activity-journal.svg"))
 
