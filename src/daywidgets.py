@@ -97,9 +97,22 @@ class DayWidget(gtk.VBox):
         def change_style(widget, style):
             rc_style = self.style
             color = rc_style.bg[gtk.STATE_NORMAL]
-            color.red = color.red * 105 / 100
-            color.green = color.green * 105 / 100
-            color.blue = color.blue * 105 / 100
+            
+            if color.red * 125/100 > 65535.0:
+            	color.red = 65535.0
+            else:
+                color.red = color.red * 125 / 100
+            	
+            if color.green * 125/100 > 65535.0:
+            	color.green = 65535.0
+            else:
+            	color.green = color.green * 125 / 100
+            	
+            if color.blue * 125/100 > 65535.0:
+            	color.blue = 65535.0
+            else:
+                color.blue = color.blue * 125 / 100
+                
             evbox2.modify_bg(gtk.STATE_NORMAL, color)
 
         self.connect("style-set", change_style)
@@ -144,11 +157,11 @@ class DayPartWidget(gtk.VBox):
         
         def change_style(widget, style):
             rc_style = self.style
-            color = rc_style.bg[gtk.STATE_NORMAL] 
-            color.red = color.red*2/3
-            color.green = color.green*2/3
-            color.blue = color.blue*2/3
-            #label1.modify_text(gtk.STATE_NORMAL, color)
+            color = rc_style.bg[gtk.STATE_NORMAL]
+            fcolor = rc_style.fg[gtk.STATE_NORMAL] 
+            color.red = (2*color.red + fcolor.red)/3
+            color.green = (2*color.green + fcolor.green)/3
+            color.blue = (2*color.blue + fcolor.blue)/3
             self.label.modify_fg(gtk.STATE_NORMAL, color)
                 
 
@@ -292,9 +305,13 @@ class DayLabel(gtk.DrawingArea):
         x, y = event.area.width, event.area.height
         context.set_font_size(20)
         if self.leading:
-            context.set_source_rgba(1, 1, 1, 1)
+            fg = self.style.text[gtk.STATE_SELECTED]
+            red, green, blue = fg.red/65535.0, fg.green/65535.0, fg.blue/65535.0
+            context.set_source_rgba(red, green, blue, 1)
         else:
-            context.set_source_rgba(0.2, 0.2, 0.2, 1)
+            fg = self.style.fg[gtk.STATE_NORMAL]
+            red, green, blue = fg.red/65535.0, fg.green/65535.0, fg.blue/65535.0
+            context.set_source_rgba(red, green, blue, 1)
             
         xbearing, ybearing, width, height, xadvance, yadvance = context.text_extents(self.day)
         a = (x-width)/2
@@ -311,9 +328,14 @@ class DayLabel(gtk.DrawingArea):
         x, y = event.area.width, event.area.height
         context.set_font_size(12)
         if self.leading:
-            context.set_source_rgba(1, 1, 1, 1)
+            fg = self.style.text[gtk.STATE_SELECTED]
+            red, green, blue = fg.red/65535.0, fg.green/65535.0, fg.blue/65535.0
+            context.set_source_rgba(red, green, blue, 1)
         else:
-            context.set_source_rgba(0.7, 0.7, 0.7, 1)
+            fg = self.style.fg[gtk.STATE_NORMAL]
+            bg = self.style.bg[gtk.STATE_NORMAL]
+            red, green, blue = (2*bg.red+fg.red)/3/65535.0, (2*bg.green+fg.green)/3/65535.0, (2*bg.blue+fg.blue)/3/65535.0
+            context.set_source_rgba(red, green, blue, 1)
 
         xbearing, ybearing, width, height, xadvance, yadvance = context.text_extents(self.date)
         a = (x-width)/2
@@ -327,14 +349,24 @@ class DayLabel(gtk.DrawingArea):
             bg = self.style.bg[3]
             red, green, blue = bg.red/65535.0, bg.green/65535.0, bg.blue/65535.0
         else:
-            red, green, blue = 1, 1, 1
+            bg = self.style.bg[gtk.STATE_NORMAL]
+            red = (bg.red * 125 / 100)/65535.0
+            green = (bg.green * 125 / 100)/65535.0
+            blue = (bg.blue * 125 / 100)/65535.0
         
         # Draw
         x = 0; y = 0
         r = 5
         w, h = event.area.width, event.area.height
         # Temporary color, I will fix this later when I have a chance to sleep. 
-        context.set_source_rgba(red, green, blue, 1)
+        grad = cairo.LinearGradient(0, 3*event.area.height, 0, 0)
+        grad.add_color_stop_rgb(0,  0, 0, 0)
+        grad.add_color_stop_rgb(1,  red, green, blue)
+        
+        if self.leading:
+            context.set_source(grad)
+	else:
+	    context.set_source_rgba(red, green, blue, 1)
 
         context.new_sub_path()
         context.arc(r+x, r+y, r, math.pi, 3 * math.pi /2)

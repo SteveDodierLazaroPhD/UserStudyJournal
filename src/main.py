@@ -58,23 +58,40 @@ class Portal(gtk.Window):
         self.backbtn.add(gtk.Arrow(gtk.ARROW_LEFT, gtk.SHADOW_NONE))
         self.backbtn.set_relief(gtk.RELIEF_NONE)
         self.backbtn.set_focus_on_click(False)
-        self.backbtn.set_tooltip_text(_("Go back in time"))
+        self.backbtn.set_tooltip_text(_("Go Back in Time"))
+        
         self.fwdbtn = gtk.Button()
+        self.fwdbtn.set_sensitive(False)
         self.fwdbtn.set_relief(gtk.RELIEF_NONE)
         self.fwdbtn.add(gtk.Arrow(gtk.ARROW_RIGHT, gtk.SHADOW_NONE))
         self.fwdbtn.set_focus_on_click(False)
-        self.fwdbtn.set_tooltip_text(_("Look into the future"))
-        self.backbtn.connect("clicked", lambda w: self.activityview.jump(-86400))
-        self.fwdbtn.connect("clicked", lambda w: self.activityview.jump(86400))
+        self.fwdbtn.set_tooltip_text(_("Look into the Future"))
+        
+        self.ffwdbtn = gtk.Button()
+        self.ffwdbtn.set_sensitive(False)
+        self.ffwdbtn.set_relief(gtk.RELIEF_NONE)
+        self.ffwdbtn.add(gtk.Arrow(gtk.ARROW_RIGHT, gtk.SHADOW_NONE))
+        self.ffwdbtn.add(gtk.Arrow(gtk.ARROW_DOWN, gtk.SHADOW_NONE))
+        self.ffwdbtn.set_focus_on_click(False)
+        self.ffwdbtn.set_tooltip_text(_("Jump to Today"))
+        
+        self.backbtn.connect("clicked", self.moveback)
+        self.fwdbtn.connect("clicked", self.moveup)
+        self.ffwdbtn.connect("clicked", self.jumpup)
 
         # We configure the view so that the left/right buttons touch the
         # left/right edges in order to utilize Fitts law. This is accomplished
         # by having no padding on the HBox
         self.add(self.vbox)
+        self.rbox = gtk.VBox()
+        self.rbox.pack_start(self.ffwdbtn, False, 20)
+        self.rbox.pack_start(self.fwdbtn)
+        
         hbox = gtk.HBox()
+
         hbox.pack_start(self.backbtn, False, False)
         hbox.pack_start(self.activityview)
-        hbox.pack_start(self.fwdbtn, False, False)
+        hbox.pack_start(self.rbox, False, False)
         
         btn = gtk.Button()
         self.vbox.pack_start(btn, True, True, 6)
@@ -88,8 +105,24 @@ class Portal(gtk.Window):
         self.show_all()
         self.connect("configure-event", self._on_size_changed)
         btn.hide()
-        
-        
+    
+    def jumpup(self, data=None):
+    	self.activityview._set_today_timestamp()
+    	self.fwdbtn.set_sensitive(False)
+    	self.ffwdbtn.set_sensitive(False)
+    	
+    def moveup(self, data=None):
+	self.activityview.jump(86400)
+	dayinfocus = int(time.mktime(time.strptime(time.strftime("%d %B %Y") , "%d %B %Y")))
+	if (dayinfocus) < self.activityview.end:
+    		self.fwdbtn.set_sensitive(False)
+    		self.ffwdbtn.set_sensitive(False)
+    	
+    def moveback(self, data=None):
+    	self.activityview.jump(-86400)
+    	self.fwdbtn.set_sensitive(True)
+    	self.ffwdbtn.set_sensitive(True)
+    	
     def _request_size(self):
         screen = self._screen.get_monitor_geometry(
             self._screen.get_monitor_at_point(*self.get_position()))
