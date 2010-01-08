@@ -118,7 +118,7 @@ class ScrollCal(gtk.DrawingArea):
         
         x = self.xincrement
         y = event.area.height
-        color =  get_gtk_rgba(self.style, "bg", 0)
+        color =  get_gtk_rgba(self.style, "text", 4)
         
         for date, nitems in self.history:
             #if check_for_new_month(date):
@@ -150,7 +150,7 @@ class ScrollCal(gtk.DrawingArea):
         radius = 2.1
         y = maxheight - height
         # Draw
-        context.set_source_rgba(color[0]*0.9, color[1]*0.9, color[2]*0.9, color[3])
+        context.set_source_rgba(color[0], color[1], color[2], color[3])
         context.move_to(x + radius, y)
         context.new_sub_path()
         context.arc(radius + x, radius + y, radius, math.pi, 3 * math.pi /2)
