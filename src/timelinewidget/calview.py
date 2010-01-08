@@ -234,18 +234,6 @@ class ScrollCal(gtk.DrawingArea):
 
     
 class CalWidget(gtk.HBox):
-    def scroll_viewport(self, widget, viewport, scroll_cal, value, *args, **kwargs):
-        """Broken for now
-        """
-        adjustment = viewport.get_hadjustment()
-        page_size = adjustment.get_page_size()
-        if value < 1:
-            newadjval = 0 if value > adjustment.value else (adjustment.value + value)
-        elif adjustment.value + page_size > scroll_cal.max_width - value:
-            newadjval = scroll_cal.max_width - page_size
-        else:
-            newadjval = adjustment.value + value
-        adjustment.set_value(newadjval)
 
     def __init__(self):
         super(gtk.HBox, self).__init__()
@@ -264,9 +252,12 @@ class CalWidget(gtk.HBox):
         b2.add(gtk.Arrow(gtk.ARROW_RIGHT, gtk.SHADOW_NONE))
         b2.set_relief(gtk.RELIEF_NONE)
         b2.set_focus_on_click(False)
-    
-        b1.connect("clicked", self.scroll_viewport, port, self.scrollcal, -100)
-        b2.connect("clicked", self.scroll_viewport, port, self.scrollcal, 100)
+        
+        print 3*self.scrollcal.xincrement
+        b1.connect("clicked", self.scroll_viewport, port, 
+                   self.scrollcal, -3*self.scrollcal.xincrement)
+        b2.connect("clicked", self.scroll_viewport, port, 
+                   self.scrollcal, 3*self.scrollcal.xincrement)
         self.scrollcal.connect("data-updated", self.scroll_to_end)
         self.pack_start(b1, False, False)
         self.pack_start(port, True, True, 3)    
@@ -276,6 +267,20 @@ class CalWidget(gtk.HBox):
         self.adj.set_upper(self.scrollcal.max_width)
         self.adj.set_value(1)
         self.adj.set_value(self.scrollcal.max_width - self.adj.page_size)
+
+    def scroll_viewport(self, widget, viewport, scroll_cal, value, *args, **kwargs):
+        """Broken for now
+        """
+        print value
+        adjustment = viewport.get_hadjustment()
+        page_size = adjustment.get_page_size()
+        if value < 1:
+            newadjval = 0 if value > adjustment.value else (adjustment.value + value)
+        elif adjustment.value + page_size > scroll_cal.max_width - value:
+            newadjval = scroll_cal.max_width - page_size
+        else:
+            newadjval = adjustment.value + value
+        adjustment.set_value(newadjval)
         
     def scroll_to_end(self, *args, **kwargs):
         self.adj.set_upper(self.scrollcal.max_width)
