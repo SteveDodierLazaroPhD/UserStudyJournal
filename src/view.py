@@ -50,11 +50,15 @@ class ActivityView(gtk.VBox):
         
         
         def selection_callback(history, i):
+            #print history, i
             if i < len(history):
                 selection_date = history[i][0]
-                if isinstance(selection_date, int): 
-                    selection_date = date.fromtimestamp(selection_date).strftime("%d/%B")
-                print "%d day %s has %s events\n" % (i,selection_date, history[i][1])
+                end = selection_date + 86399
+                start = selection_date - (self.range -1)*86400
+                self.set_range(start, end)
+                #if isinstance(selection_date, int): 
+                    #selection_date = date.fromtimestamp(selection_date).strftime("%d/%B")
+                #print "%d day %s has %s events\n" % (i,selection_date, history[i][1])
         
         def date_changed(*args, **kwargs):
             print "Date Changed"
