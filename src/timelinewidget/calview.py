@@ -108,8 +108,24 @@ class ScrollCal(gtk.DrawingArea):
 
         context = widget.window.cairo_create()
         # Set the source to the background color
-        bgcolor = get_gtk_rgba(self.style, "bg", 0)
-        context.set_source_rgba(bgcolor[0]*1.05, bgcolor[1]*1.05, bgcolor[2]*1.05, 1)
+        color = get_gtk_rgba(self.style, "bg", 0)
+        
+        if color[0] * 105/100 > 65535.0:
+            c1 = 65535.0
+        else:
+            c1 = color[0] * 105 / 100
+            
+        if color[1] * 105/100 > 65535.0:
+            c2 = 65535.0
+        else:
+            c2 = color[1] * 105 / 100
+            
+        if color[2] * 105/100 > 65535.0:
+            c3 = 65535.0
+        else:
+            c3 = color[2] * 105 / 100
+        
+        context.set_source_rgba(c1, c2, c3, 1)
         context.set_operator(cairo.OPERATOR_SOURCE)
         context.paint()
         # set a clip region for the expose event
