@@ -158,7 +158,6 @@ class DayPartWidget(gtk.VBox):
             self.notify_insert_handler, self.notify_delete_handler)
         
     def notify_insert_handler(self, time_range, events):
-            print "**********"
             self.init_events()
         
     def notify_delete_handler(self, time_range, event_ids):
@@ -174,7 +173,7 @@ class DayPartWidget(gtk.VBox):
         if len(ids) > 0:
             self.zg.get_events(ids, self._handle_get_events)
         else:
-            self.hide_all()
+            self.hide()
 
     def _handle_get_events(self, events):
         real_count = 0
