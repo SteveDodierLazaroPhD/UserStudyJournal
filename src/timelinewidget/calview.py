@@ -150,7 +150,7 @@ class ScrollCal(gtk.DrawingArea):
         radius = 2.1
         y = maxheight - height
         # Draw
-        context.set_source_rgba(*color)
+        context.set_source_rgba(color[0]*1.05, color[1]*1.05, color[2]*1.05, color[3])
         context.move_to(x + radius, y)
         context.new_sub_path()
         context.arc(radius + x, radius + y, radius, math.pi, 3 * math.pi /2)
