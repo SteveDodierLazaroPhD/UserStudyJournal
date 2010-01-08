@@ -110,20 +110,20 @@ class ScrollCal(gtk.DrawingArea):
         # Set the source to the background color
         color = get_gtk_rgba(self.style, "bg", 0)
         
-        if color[0] * 105/100 > 65535.0:
+        if color[0] * 102/100 > 65535.0:
             c1 = 65535.0
         else:
-            c1 = color[0] * 105 / 100
+            c1 = color[0] * 102 / 100
             
-        if color[1] * 105/100 > 65535.0:
+        if color[1] * 102/100 > 65535.0:
             c2 = 65535.0
         else:
-            c2 = color[1] * 105 / 100
+            c2 = color[1] * 102 / 100
             
-        if color[2] * 105/100 > 65535.0:
+        if color[2] * 102/100 > 65535.0:
             c3 = 65535.0
         else:
-            c3 = color[2] * 105 / 100
+            c3 = color[2] * 102 / 100
         
         context.set_source_rgba(c1, c2, c3, 1)
         context.set_operator(cairo.OPERATOR_SOURCE)

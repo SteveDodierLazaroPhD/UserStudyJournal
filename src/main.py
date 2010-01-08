@@ -71,7 +71,7 @@ class Portal(gtk.Window):
         self.ffwdbtn.set_sensitive(False)
         self.ffwdbtn.set_relief(gtk.RELIEF_NONE)
         self.ffwdbtn.add(gtk.Arrow(gtk.ARROW_RIGHT, gtk.SHADOW_NONE))
-        self.ffwdbtn.add(gtk.Arrow(gtk.ARROW_DOWN, gtk.SHADOW_NONE))
+        #self.ffwdbtn.add(gtk.Arrow(gtk.ARROW_DOWN, gtk.SHADOW_NONE))
         self.ffwdbtn.set_focus_on_click(False)
         self.ffwdbtn.set_tooltip_text(_("Jump to Today"))
         
