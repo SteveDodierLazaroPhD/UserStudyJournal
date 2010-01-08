@@ -18,11 +18,13 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import gtk
 import time
 from widgets import *
 from ui_utils import *
 from daywidgets import *
+from timelinewidget.calview import cal
+from timelinewidget import rdate_z
+
 
 class ActivityView(gtk.VBox):
 
@@ -38,10 +40,28 @@ class ActivityView(gtk.VBox):
 
         self._set_today_timestamp()
         self._set_view_type()
+        self.set_timeline()
 
         settings.connect("change-view", lambda w, x: self.set_view_type(True))
         settings.connect("toggle-grouping", lambda w: self.set_view_type(True))
         self.set_views()
+
+    def set_timeline(self):
+        
+        
+        def selection_callback(history, i):
+            if i < len(history):
+                selection_date = history[i][0]
+                if isinstance(selection_date, int): 
+                    selection_date = date.fromtimestamp(selection_date).strftime("%d/%B")
+                print "%d day %s has %s events\n" % (i,selection_date, history[i][1])
+        
+        def date_changed(*args, **kwargs):
+            print "Date Changed"
+        
+        rdate_z.datelist(90, cal.scrollcal.update_data)
+        cal.scrollcal.connect_selection_callback(selection_callback)
+        cal.scrollcal.connect("date-set", date_changed)
 
     def _set_view_type(self, refresh=False):
 

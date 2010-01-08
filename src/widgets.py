@@ -230,6 +230,7 @@ class Item(gtk.Button):
         self.add(hbox)
 
         self.connect("clicked", self.launch)
+        self.connect("button_press_event", self._show_item_popup)
         
         def change_style(widget, style):
             rc_style = self.style
@@ -238,9 +239,35 @@ class Item(gtk.Button):
             color.green = color.green*2/3
             color.blue = color.blue*2/3
             label.modify_fg(gtk.STATE_NORMAL, color)
-                
 
         self.connect("style-set", change_style)
+        
+    def _show_item_popup(self, widget, ev):
+        if ev.button == 3:
+            item = self.subject
+            if item:
+                menu = gtk.Menu()
+                menu.attach_to_widget(widget, None)
+                self._populate_popup(menu, item)
+                menu.popup(None, None, None, ev.button, ev.time)
+     
+    def _populate_popup(self, menu, item):
+        open = gtk.ImageMenuItem (gtk.STOCK_OPEN)
+        #open.connect("activate", lambda *discard: self._open_item(item=item))
+        open.show()
+        menu.append(open)
+        #if item["bookmark"]:
+            #bookmark = gtk.MenuItem(("Unbookmark"))
+        #else:
+            #bookmark = gtk.MenuItem(("Bookmark"))
+        #bookmark.connect("activate", lambda w: self.toggle_bookmark(item=item))
+        #bookmark.show()
+        #menu.append(bookmark)
+                
+        #tag = gtk.MenuItem(("Edit tags..."))
+        #tag.connect("activate", lambda w: self.tag_item(item))
+        #tag.show()
+        #menu.append(tag)
 
     def launch(self, *discard):
         launcher.launch_uri(self.subject.uri, self.subject.mimetype)

@@ -28,6 +28,8 @@ import datetime
 from widgets import *
 from view import ActivityView
 from ui_utils import settings
+from timelinewidget.calview import cal
+
 
 class Portal(gtk.Window):
 
@@ -78,10 +80,16 @@ class Portal(gtk.Window):
         self.vbox.pack_start(btn, True, True, 6)
         self.vbox.pack_start(hbox, True, True, 6)
 
+        self.vbox.pack_end(cal, False, False)
+        
         self._request_size()
+        
+        
         self.show_all()
         self.connect("configure-event", self._on_size_changed)
         btn.hide()
+        
+        
     def _request_size(self):
         screen = self._screen.get_monitor_geometry(
             self._screen.get_monitor_at_point(*self.get_position()))

@@ -140,7 +140,7 @@ class DayPartWidget(gtk.VBox):
         event2 = Event()
         event2.set_interpretation(Interpretation.MODIFY_EVENT.uri)
         
-        self.event_templates = [] #[event, event2]
+        self.event_templates = [event, event2]
         
         def change_style(widget, style):
             rc_style = self.style
