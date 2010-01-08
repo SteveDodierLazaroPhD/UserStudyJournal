@@ -83,7 +83,10 @@ class ActivityView(gtk.VBox):
         self.daysbox.show_all()
 
     def jump(self, offset):
-        self.set_range(self.start+offset, self.end+offset)
+        self.start = self.start+offset
+        diff = self.start - cal.scrollcal.history[0][0]
+        cal.scrollcal.set_selection(diff/86400)
+        self.set_range(self.start, self.end+offset)
 
     def set_range(self, start, end):
         self.start = start
