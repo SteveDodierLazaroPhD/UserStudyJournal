@@ -75,10 +75,13 @@ class ScrollCal(gtk.DrawingArea):
         self.add_events(gtk.gdk.BUTTON_PRESS_MASK)
         self.connect("expose_event", self.expose)
         self.connect("button-press-event", self.clicked)
-        self.update_data(history, draw = False)
         gobject.signal_new("date-set", ScrollCal,
                            gobject.SIGNAL_RUN_LAST,
                            gobject.TYPE_NONE,())
+        gobject.signal_new("data-updated", ScrollCal,
+                           gobject.SIGNAL_RUN_LAST,
+                           gobject.TYPE_NONE,())
+        self.update_data(history, draw = False)
 
 
     def update_data(self, history = None, draw = True):
@@ -94,7 +97,9 @@ class ScrollCal(gtk.DrawingArea):
             self.max_width = self.xincrement + (self.xincrement *len(history))
         else:
             self.history.update()
-        if draw: self.queue_draw()
+        if draw:
+            self.queue_draw()
+        self.emit("data-updated")
 
     def expose(self, widget, event, selected = None):        
         # Default hilight to the final 3 items
@@ -261,14 +266,19 @@ class CalWidget(gtk.HBox):
     
         b1.connect("clicked", self.scroll_viewport, port, self.scrollcal, -100)
         b2.connect("clicked", self.scroll_viewport, port, self.scrollcal, 100)
-        
+        self.scrollcal.connect("data-updated", self.scroll_to_end)
         self.pack_start(b1, False, False)
         self.pack_start(port, True, True)    
         self.pack_end(b2, False, False)
            
-        adj = port.get_hadjustment()    
-        adj.set_upper(self.scrollcal.max_width)
-        adj.set_value(1)
-        adj.set_value(self.scrollcal.max_width - adj.page_size)
+        self.adj = port.get_hadjustment()    
+        self.adj.set_upper(self.scrollcal.max_width)
+        self.adj.set_value(1)
+        self.adj.set_value(self.scrollcal.max_width - self.adj.page_size)
+        
+    def scroll_to_end(self, *args, **kwargs):
+        self.adj.set_upper(self.scrollcal.max_width)
+        self.adj.set_value(1)
+        self.adj.set_value(self.scrollcal.max_width - self.adj.page_size)
 
 cal = CalWidget()
