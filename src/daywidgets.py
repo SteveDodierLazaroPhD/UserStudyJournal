@@ -359,14 +359,13 @@ class DayLabel(gtk.DrawingArea):
         r = 5
         w, h = event.area.width, event.area.height
         # Temporary color, I will fix this later when I have a chance to sleep. 
-        grad = cairo.LinearGradient(0, 3*event.area.height, 0, 0)
-        grad.add_color_stop_rgb(0,  0, 0, 0)
-        grad.add_color_stop_rgb(1,  red, green, blue)
+        #grad = cairo.LinearGradient(0, 3*event.area.height, 0, 0)
+        #grad.add_color_stop_rgb(0,  0, 0, 0)
+        #grad.add_color_stop_rgb(1,  red, green, blue)
         
-        if self.leading:
-            context.set_source(grad)
-	else:
-	    context.set_source_rgba(red, green, blue, 1)
+        #if self.leading:
+            #context.set_source(grad)
+        context.set_source_rgba(red, green, blue, 1)
 
         context.new_sub_path()
         context.arc(r+x, r+y, r, math.pi, 3 * math.pi /2)
