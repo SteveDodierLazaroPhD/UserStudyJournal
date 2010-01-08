@@ -269,7 +269,7 @@ class CalWidget(gtk.HBox):
         b2.connect("clicked", self.scroll_viewport, port, self.scrollcal, 100)
         self.scrollcal.connect("data-updated", self.scroll_to_end)
         self.pack_start(b1, False, False)
-        self.pack_start(port, True, True)    
+        self.pack_start(port, True, True, 3)    
         self.pack_end(b2, False, False)
            
         self.adj = port.get_hadjustment()    
