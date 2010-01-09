@@ -38,15 +38,22 @@ class ActivityView(gtk.VBox):
         self.daysbox = None
         self.__first_run = True
 
+        self._set_searchbox()
         self._set_today_timestamp()
         self._set_view_type()
-        self.set_timeline()
+        self._set_timeline()
 
         settings.connect("change-view", lambda w, x: self.set_view_type(True))
         settings.connect("toggle-grouping", lambda w: self.set_view_type(True))
         self.set_views()
 
-    def set_timeline(self):
+    def _set_searchbox(self):
+        self.search = SearchEntry()
+        self.searchbox = gtk.HBox()
+        self.searchbox.pack_start(self.search, True, True, 3)
+        self.pack_start(self.searchbox, False, False)
+    
+    def _set_timeline(self):
         
         
         def selection_callback(history, i):
@@ -70,14 +77,17 @@ class ActivityView(gtk.VBox):
     def _set_view_type(self, refresh=False):
 
         for w in self:
-            self.remove(w)
+            if w == self.searchbox:
+                pass
+            else:
+                self.remove(w)
 
         if settings.get("view", "Journal") == "Journal":
             self.daysbox = gtk.HBox(True)
         else:
             self.daysbox = gtk.VBox()
 
-        self.pack_start(self.daysbox, True, True)
+        self.pack_start(self.daysbox, True, True, 6)
         if refresh:
             self.set_views()
         self.daysbox.show_all()

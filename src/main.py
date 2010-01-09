@@ -94,8 +94,9 @@ class Portal(gtk.Window):
         hbox.pack_start(self.rbox, False, False)
         
         btn = gtk.Button()
-        self.vbox.pack_start(btn, True, True, 6)
-        self.vbox.pack_start(hbox, True, True, 6)
+        self.vbox.pack_start(btn, True, True)
+        self.vbox.pack_start(hbox, True, True)
+        self.set_border_width(3)
 
         self.vbox.pack_end(cal, False, False)
         self.vbox.set_border_width(5)

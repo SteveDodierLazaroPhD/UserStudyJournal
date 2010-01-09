@@ -158,7 +158,7 @@ class ScrollCal(gtk.DrawingArea):
         if nitems < 2:
             nitems = 2
         maxheight = maxheight - self.ypad
-        height = int(((float(nitems)/self.largest)*(maxheight-2))) - 12
+        height = int(((float(nitems)/self.largest)*(maxheight-2))) - 6
         
         if height < 2:
             height = 2
