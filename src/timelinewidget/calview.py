@@ -111,7 +111,7 @@ class ScrollCal(gtk.DrawingArea):
             self.queue_draw()
         self.emit("data-updated")
 
-    def expose(self, widget, event, selected = None):        
+    def expose(self, widget, event, selected = None):  
         # Default hilight to the last items
         if selected == None:
             selected = len(self.history) - self.dayrange
@@ -259,13 +259,9 @@ class ScrollCal(gtk.DrawingArea):
         Calls a calback set by connect_selection_callback
         """
         location = int((event.x - self.xincrement) / self.xincrement)
-        if location == 2:
-            self.connect("expose_event", self.expose, 0)
-            self.queue_draw()
-        elif location < len(self.history):
-            self.connect("expose_event", self.expose,
-                location - self.dayrange + 1)
-            self.queue_draw()
+        self.connect("expose_event", self.expose, max(min(location - 2,
+            len(self.history) - self.dayrange), 0))
+        self.queue_draw()
         self.emit("date-set")
         if callable(self.selection_callback):
             self.selection_callback(self.history, location)
