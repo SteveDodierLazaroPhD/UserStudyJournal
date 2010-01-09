@@ -123,7 +123,7 @@ class ScrollCal(gtk.DrawingArea):
         context.clip()
         x = self.xincrement
         y = event.area.height
-        color =  get_gtk_rgba(self.style, "text", 4)
+        color =  get_gtk_rgba(self.style, "text", 3)
         months_positions = []
         for date, nitems in self.history:
             if check_for_new_month(date):
@@ -151,7 +151,7 @@ class ScrollCal(gtk.DrawingArea):
             Example: (0.3, 0.4, 0.8, 1)
         """
         if nitems < 3:
-            nitems = 2
+            nitems = 3
         maxheight = maxheight - self.ypad
         height = ((float(nitems)/self.largest)*(maxheight-2))
         radius = 1.3
@@ -168,6 +168,17 @@ class ScrollCal(gtk.DrawingArea):
             context.rectangle(x, y, self.wcolumn, height)
         context.close_path()
         context.fill()
+        
+        context.set_source_rgba(color[0]*0.6, color[1]*0.6, color[2]*0.6, 1)
+        if nitems > 3:
+            context.arc(radius + x, radius + y, radius, math.pi, 3 * math.pi /2)
+            context.arc(x + self.wcolumn - radius, radius + y, radius, 3 * math.pi / 2, 0)
+            context.rectangle(x, y+radius, self.wcolumn, height)
+        else:
+            context.rectangle(x, y, self.wcolumn, height)
+        context.set_line_width(0.1)
+        context.stroke()
+
 
     def draw_month(self, context, x, height, date):
         """
@@ -200,13 +211,10 @@ class ScrollCal(gtk.DrawingArea):
              hilighting
         - height: The event areas height
         """
-        # Find current position
         x = (i * self.xincrement) + self.xincrement
         y = 0
         
         color = get_gtk_rgba(self.style, "bg", 3)
-        #color = (0.97, 0.97, 0.97, 1)
-        # Prevent drawing additional columns for i > 2
         if x >= 1:
             self.draw_column(context, x, height, self.history[i][1], color)
         if x >= 0:
