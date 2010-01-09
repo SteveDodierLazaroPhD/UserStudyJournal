@@ -123,7 +123,7 @@ class ScrollCal(gtk.DrawingArea):
         context.clip()
         x = self.xincrement
         y = event.area.height
-        color =  get_gtk_rgba(self.style, "text", 4)
+        color =  get_gtk_rgba(self.style, "text", 1)
         
         months_positions = []
         for date, nitems in self.history:
