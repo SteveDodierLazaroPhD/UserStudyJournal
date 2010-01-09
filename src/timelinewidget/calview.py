@@ -32,7 +32,7 @@ import datetime
 
 
 def check_for_new_month(date):
-    if datetime.date.fromtimestamp(date).day == 7:
+    if datetime.date.fromtimestamp(date).day == 1:
         return True
     return False
 
