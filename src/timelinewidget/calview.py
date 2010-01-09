@@ -65,7 +65,7 @@ class ScrollCal(gtk.DrawingArea):
     A calendar which is represented by a list of dimensions and dates
     """
     padding = 3
-    ypad = 20
+    ypad = 30
     wcolumn = 9
     xincrement = wcolumn + padding
     max_width = xincrement
@@ -151,8 +151,8 @@ class ScrollCal(gtk.DrawingArea):
         - color: A RGBA tuple
             Example: (0.3, 0.4, 0.8, 1)
         """
-        if nitems < 3:
-            nitems = 3
+        if nitems < 2:
+            nitems = 2
         maxheight = maxheight - self.ypad
         height = ((float(nitems)/self.largest)*(maxheight-2))
         radius = 1.3
@@ -176,7 +176,7 @@ class ScrollCal(gtk.DrawingArea):
         Draws a line signifying the start of a month
         """
         context.set_source_rgba(*get_gtk_rgba(self.style, "text", 4, 0.7))
-        context.set_line_width(2)
+        context.set_line_width(3)
         context.move_to(x+2, height - self.ypad)
         context.line_to(x+2, height - self.ypad/3)
 
@@ -184,14 +184,15 @@ class ScrollCal(gtk.DrawingArea):
         context.select_font_face(self.font_name, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
         context.set_font_size(12)            
         
+        date = datetime.date.fromtimestamp(date)
         month  = {1:"January", 2:"February", 3:"March", 4:"April",
                   5:"May", 6:"June", 7:"July", 8:"August", 9:"September",
                   10:"October", 11:"November", 12:"December",
-                  }[datetime.date.fromtimestamp(date).month]
-
-        xbearing, ybearing, width, oheight, xadvance, yadvance = context.text_extents(month)
-        context.move_to(x + 10, height - 3)
-        context.show_text(month)
+                  }[date.day]
+        date = "%s, %d" % (month, date.year)
+        xbearing, ybearing, width, oheight, xadvance, yadvance = context.text_extents(date)
+        context.move_to(x + 10, height - self.ypad/3)
+        context.show_text(date)
 
     def draw_selected(self, context, i, height):
         """
@@ -259,12 +260,7 @@ class CalWidget(gtk.HBox):
 
     def __init__(self):
         super(gtk.HBox, self).__init__()
-        port = gtk.Viewport()
-        align = gtk.Alignment(0,0,1,1)
-
-        align.set_padding(0, 0, 0, 0)
-        align.add(port)
-        
+        port = gtk.Viewport()        
         port.set_shadow_type(gtk.SHADOW_NONE)
         port.set_size_request(600,70) 
         self.scrollcal = ScrollCal([[0, 0]])
@@ -286,7 +282,7 @@ class CalWidget(gtk.HBox):
                    self.scrollcal, 3*self.scrollcal.xincrement)
         self.scrollcal.connect("data-updated", self.scroll_to_end)
         self.pack_start(b1, False, False)
-        self.pack_start(align, True, True, 3)    
+        self.pack_start(port, True, True, 3)    
         self.pack_end(b2, False, False)
            
         self.adj = port.get_hadjustment()    
