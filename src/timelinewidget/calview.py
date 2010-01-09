@@ -188,7 +188,8 @@ class ScrollCal(gtk.DrawingArea):
         month  = {1:"January", 2:"February", 3:"March", 4:"April",
                   5:"May", 6:"June", 7:"July", 8:"August", 9:"September",
                   10:"October", 11:"November", 12:"December",
-                  }[date.day]
+                  }[date.month]
+        
         date = "%s, %d" % (month, date.year)
         xbearing, ybearing, width, oheight, xadvance, yadvance = context.text_extents(date)
         context.move_to(x + 10, height - self.ypad/3)

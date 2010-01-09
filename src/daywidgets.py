@@ -99,17 +99,17 @@ class DayWidget(gtk.VBox):
             color = rc_style.bg[gtk.STATE_NORMAL]
             
             if color.red * 102/100 > 65535.0:
-            	color.red = 65535.0
+                color.red = 65535.0
             else:
                 color.red = color.red * 102 / 100
-            	
+                
             if color.green * 102/100 > 65535.0:
-            	color.green = 65535.0
+                color.green = 65535.0
             else:
-            	color.green = color.green * 102 / 100
-            	
+                color.green = color.green * 102 / 100
+                
             if color.blue * 102/100 > 65535.0:
-            	color.blue = 65535.0
+                color.blue = 65535.0
             else:
                 color.blue = color.blue * 102 / 100
                 
