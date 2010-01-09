@@ -84,6 +84,8 @@ class SearchEntry(gtk.Entry):
 
         self.set_property("primary-icon-name", gtk.STOCK_FIND)
         self.set_property("secondary-icon-name", gtk.STOCK_CLEAR)
+        self.set_property("shadow-type", gtk.SHADOW_NONE)
+
 
         self.font_style = self.get_style().font_desc
         self.font_style.set_style(pango.STYLE_ITALIC)
