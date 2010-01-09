@@ -32,7 +32,7 @@ import datetime
 
 
 def check_for_new_month(date):
-    if datetime.date.fromtimestamp(date).day == 1:
+    if datetime.date.fromtimestamp(date).day == 7:
         return True
     return False
 
@@ -128,7 +128,8 @@ class ScrollCal(gtk.DrawingArea):
         for date, nitems in self.history:
             if check_for_new_month(date):
                 # Drawing should be done at this location
-                xmonth = x - self.xincrement
+                xmonth = x - self.xincrement - self.padding
+                self.draw_month_line(context, xmonth, event.area.height, date)
                 print "new month, do drawing here at", xmonth
             if nitems > 0:
                 self.draw_column(context, x, event.area.height, nitems, color)
@@ -165,6 +166,13 @@ class ScrollCal(gtk.DrawingArea):
         context.rectangle(x, y+radius, self.wcolumn, height)
         context.close_path()
         context.fill()
+
+    def draw_month_line(self, context, x, height, date):
+        context.set_source_rgba(*get_gtk_rgba(self.style, "text", 0))
+        context.set_line_width(3)
+        context.move_to(x+2, height - self.ypad)
+        context.line_to(x+2, height)
+        context.stroke()
 
     def draw_selected(self, context, i, height):
         """
