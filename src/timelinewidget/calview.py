@@ -64,8 +64,8 @@ class ScrollCal(gtk.DrawingArea):
     """
     A calendar which is represented by a list of dimensions and dates
     """
-    padding = 3
-    ypad = 30
+    padding = 2
+    ypad = 25
     wcolumn = 9
     xincrement = wcolumn + padding
     max_width = xincrement
@@ -154,7 +154,7 @@ class ScrollCal(gtk.DrawingArea):
         if nitems < 2:
             nitems = 2
         maxheight = maxheight - self.ypad
-        height = int(((float(nitems)/self.largest)*(maxheight-2)))
+        height = int(((float(nitems)/self.largest)*(maxheight-2))) - 3
         
         if height < 2:
             height = 2
@@ -271,6 +271,11 @@ class CalWidget(gtk.HBox):
         self.scrollcal = ScrollCal([[0, 0]])
         port.add(self.scrollcal)
         # Draw buttons
+        
+        align = gtk.Alignment(0,0,1,1)
+        align.set_padding(5, 5, 0, 0)
+        align.add(port)
+        
         b1 = gtk.Button()
         b1.add(gtk.Arrow(gtk.ARROW_LEFT, gtk.SHADOW_NONE))
         b1.set_relief(gtk.RELIEF_NONE)
@@ -287,7 +292,7 @@ class CalWidget(gtk.HBox):
                    self.scrollcal, 3*self.scrollcal.xincrement)
         self.scrollcal.connect("data-updated", self.scroll_to_end)
         self.pack_start(b1, False, False)
-        self.pack_start(port, True, True, 3)    
+        self.pack_start(align, True, True, 3)    
         self.pack_end(b2, False, False)
            
         self.adj = port.get_hadjustment()    
