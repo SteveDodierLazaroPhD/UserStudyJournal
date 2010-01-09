@@ -123,7 +123,7 @@ class ScrollCal(gtk.DrawingArea):
         context.clip()
         x = self.xincrement
         y = event.area.height
-        color =  get_gtk_rgba(self.style, "text", 4)
+        color =  get_gtk_rgba(self.style, "text", 1)
         months_positions = []
         for date, nitems in self.history:
             if check_for_new_month(date):
@@ -168,16 +168,6 @@ class ScrollCal(gtk.DrawingArea):
             context.rectangle(x, y, self.wcolumn, height)
         context.close_path()
         context.fill()
-        
-        context.set_source_rgba(color[0]*0.6, color[1]*0.6, color[2]*0.6, 1)
-        if nitems > 3:
-            context.arc(radius + x, radius + y, radius, math.pi, 3 * math.pi /2)
-            context.arc(x + self.wcolumn - radius, radius + y, radius, 3 * math.pi / 2, 0)
-            context.rectangle(x, y+radius, self.wcolumn, height)
-        else:
-            context.rectangle(x, y, self.wcolumn, height)
-        context.set_line_width(0.1)
-        context.stroke()
 
 
     def draw_month(self, context, x, height, date):
