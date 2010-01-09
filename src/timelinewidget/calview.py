@@ -154,7 +154,11 @@ class ScrollCal(gtk.DrawingArea):
         if nitems < 2:
             nitems = 2
         maxheight = maxheight - self.ypad
-        height = ((float(nitems)/self.largest)*(maxheight-2))
+        height = int(((float(nitems)/self.largest)*(maxheight-2)))
+        
+        if height < 2:
+            height = 2
+        
         radius = 1.3
         y = maxheight - height
         # Draw
@@ -190,7 +194,7 @@ class ScrollCal(gtk.DrawingArea):
                   10:"October", 11:"November", 12:"December",
                   }[date.month]
         
-        date = "%s, %d" % (month, date.year)
+        date = "%s %d" % (month, date.year)
         xbearing, ybearing, width, oheight, xadvance, yadvance = context.text_extents(date)
         context.move_to(x + 10, height - self.ypad/3)
         context.show_text(date)
