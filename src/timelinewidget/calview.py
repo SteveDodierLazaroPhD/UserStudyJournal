@@ -65,7 +65,7 @@ class ScrollCal(gtk.DrawingArea):
     A calendar which is represented by a list of dimensions and dates
     """
     padding = 4
-    ypad = 15
+    ypad = 20
     wcolumn = 10
     xincrement = wcolumn + padding
     max_width = xincrement
@@ -136,7 +136,7 @@ class ScrollCal(gtk.DrawingArea):
         if x > event.area.width: # Check for resize
             self.set_size_request(x+self.xincrement, event.area.height)
         for date, line in months_positions:
-            self.draw_month_line(context, line - self.xincrement - self.padding, event.area.height, date)
+            self.draw_month(context, line - self.xincrement - self.padding, event.area.height, date)
         self.max_width = x # remove me
 
     def draw_column(self, context, x, maxheight, nitems, color):
@@ -166,7 +166,7 @@ class ScrollCal(gtk.DrawingArea):
             context.close_path()
             context.fill()
 
-    def draw_month_line(self, context, x, height, date):
+    def draw_month(self, context, x, height, date):
         """
         Draws a line signifying the start of a month
         """
@@ -176,7 +176,7 @@ class ScrollCal(gtk.DrawingArea):
         context.line_to(x+2, height)
         context.stroke()
         context.select_font_face(self.font_name, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
-        context.set_font_size(10)            
+        context.set_font_size(12)            
         
         month  = {1:"January", 2:"February", 3:"March", 4:"April",
                   5:"May", 6:"June", 7:"July", 8:"August", 9:"September",
@@ -184,7 +184,7 @@ class ScrollCal(gtk.DrawingArea):
                   }[datetime.date.fromtimestamp(date).month]
 
         xbearing, ybearing, width, oheight, xadvance, yadvance = context.text_extents(month)
-        context.move_to(x+10, height-2)
+        context.move_to(x+10, height-3)
         context.show_text(month)
 
     def draw_selected(self, context, i, height):
