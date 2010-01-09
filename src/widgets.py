@@ -26,6 +26,31 @@ import pango
 from ui_utils import *
 #from teamgeist import TeamgeistInterface
 
+class SearchBox(gtk.HBox):
+    def __init__(self):
+        gtk.HBox.__init__(self)
+        self.search = SearchEntry()
+        self.pack_start(self.search)
+        self.set_border_width(3)
+        
+        self.category = {}
+        
+        for source in SUPPORTED_SOURCES.keys():
+            s = SUPPORTED_SOURCES[source]._desc_pl
+            self.category[s] = source
+            
+        self._init_combobox()
+        self.show_all()
+        
+    def _init_combobox(self):
+        self.combobox = gtk.combo_box_new_text()
+        self.pack_end(self.combobox, False, False, 3)
+        self.combobox.append_text("All Activities")
+        self.combobox.set_active(0)
+        for cat in self.category.keys():
+            self.combobox.append_text(cat)
+        
+
 class SearchEntry(gtk.Entry):
 
     __gsignals__ = {
@@ -58,7 +83,7 @@ class SearchEntry(gtk.Entry):
 
         #self.set_property("primary-icon-name", gtk.STOCK_FIND)
         #self.set_property("secondary-icon-name", gtk.STOCK_CLEAR)
-        self.set_has_frame(False)
+        #self.set_has_frame(False)
 
         self.font_style = self.get_style().font_desc
         self.font_style.set_style(pango.STYLE_ITALIC)
