@@ -84,9 +84,10 @@ class ActivityView(gtk.VBox):
 
     def jump(self, offset):
         self.start = self.start+offset
-        diff = self.start - cal.scrollcal.history[0][0]
-        cal.scrollcal.set_selection(diff/86400)
-        self.set_range(self.start, self.end+offset)
+        if time.time() > self.start:
+            diff = self.start - cal.scrollcal.history[0][0]
+            cal.scrollcal.set_selection(diff/86400)
+            self.set_range(self.start, self.end+offset)
 
     def set_range(self, start, end):
         self.start = start
