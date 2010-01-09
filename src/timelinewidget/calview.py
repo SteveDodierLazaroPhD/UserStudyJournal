@@ -32,26 +32,31 @@ import datetime
 
 
 def check_for_new_month(date):
-    print type(date)
-    if datetime.date.fromtimestamp(float(date)).strftime("%d") == 1:
-        print "new month"
+    if datetime.date.fromtimestamp(date).day == 1:
         return True
     return False
 
 
-def get_gtk_rgba(style, palette, i):
+def get_gtk_rgba(style, palette, i, shade = 1):
     """Takes a gtk style and returns a RGB tuple
     
     Arguments:
     - style: a gtk_style object
     - palette: a string representing the palette you want to pull a color from
         Example: "bg", "fg"
+    - shade: how much you want to shade the color
     """
-    f = lambda num: num/65535.0
+    f = lambda num: (num/65535.0) * shade
     
     color = getattr(style, palette)[i]
     if isinstance(color, gtk.gdk.Color):
-        return (f(color.red), f(color.green), f(color.blue), 1)
+        red = f(color.red)
+        green = f(color.green)
+        blue = f(color.blue)
+        
+        return (red if red < 1 else 1, 
+                green if green < 1 else 1,
+                blue if blue < 1 else 1, 1)
     else: raise TypeError("Not a valid gtk.gdk.Color")
 
 
@@ -108,24 +113,8 @@ class ScrollCal(gtk.DrawingArea):
 
         context = widget.window.cairo_create()
         # Set the source to the background color
-        color = get_gtk_rgba(self.style, "bg", 0)
-        
-        if color[0] * 102/100 > 65535.0:
-            c1 = 65535.0
-        else:
-            c1 = color[0] * 102 / 100
-            
-        if color[1] * 102/100 > 65535.0:
-            c2 = 65535.0
-        else:
-            c2 = color[1] * 102 / 100
-            
-        if color[2] * 102/100 > 65535.0:
-            c3 = 65535.0
-        else:
-            c3 = color[2] * 102 / 100
-        
-        context.set_source_rgba(c1, c2, c3, 1)
+        color = get_gtk_rgba(self.style, "bg", 0, 1.02)
+        context.set_source_rgba(*color)
         context.set_operator(cairo.OPERATOR_SOURCE)
         context.paint()
         # set a clip region for the expose event
@@ -137,8 +126,10 @@ class ScrollCal(gtk.DrawingArea):
         color =  get_gtk_rgba(self.style, "text", 4)
         
         for date, nitems in self.history:
-            #if check_for_new_month(date):
-            #    print "new month", date
+            if check_for_new_month(date):
+                # Drawing should be done at this location
+                xmonth = x - self.xincrement
+                print "new month, do drawing here at", xmonth
             if nitems > 0:
                 self.draw_column(context, x, event.area.height, nitems, color)
             x += self.xincrement
@@ -166,7 +157,7 @@ class ScrollCal(gtk.DrawingArea):
         radius = 2.1
         y = maxheight - height
         # Draw
-        context.set_source_rgba(color[0], color[1], color[2], color[3])
+        context.set_source_rgba(*color)
         context.move_to(x + radius, y)
         context.new_sub_path()
         context.arc(radius + x, radius + y, radius, math.pi, 3 * math.pi /2)
@@ -201,7 +192,7 @@ class ScrollCal(gtk.DrawingArea):
         color = get_gtk_rgba(self.style, "text", 1)
         #color = (0.97, 0.97, 0.97, 1)
         # Prevent drawing additional columns for i > 2
-        if x >= 1: 
+        if x >= 1:
             self.draw_column(context, x, height, self.history[i][1], color)
         if x >= 0:
             self.draw_column(context, x + self.xincrement, height, self.history[i+1][1], color)
