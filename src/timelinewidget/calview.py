@@ -200,19 +200,11 @@ class ScrollCal(gtk.DrawingArea):
              hilighting
         - height: The event areas height
         """
-        
-        context.set_source_rgba(*get_gtk_rgba(self.style, "bg", 3))
         # Find current position
         x = (i * self.xincrement) + self.xincrement
         y = 0
-        radius = 3
-
-        context.arc(radius + x - 2, radius + y, radius, math.pi, 3 * math.pi /2)
-        context.arc(x+(3 * self.xincrement) - radius -2, radius + y, radius, 3 * math.pi / 2, 0)
-        context.rectangle(x-2, radius + y, (3 * self.xincrement), height)
-        context.fill()
         
-        color = get_gtk_rgba(self.style, "text", 1)
+        color = get_gtk_rgba(self.style, "bg", 3)
         #color = (0.97, 0.97, 0.97, 1)
         # Prevent drawing additional columns for i > 2
         if x >= 1:
