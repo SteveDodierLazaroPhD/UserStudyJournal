@@ -80,6 +80,7 @@ class ScrollCal(gtk.DrawingArea):
         self.add_events(gtk.gdk.BUTTON_PRESS_MASK)
         self.connect("expose_event", self.expose)
         self.connect("button-press-event", self.clicked)
+        self.font_name = self.style.font_desc.get_family()
         gobject.signal_new("date-set", ScrollCal,
                            gobject.SIGNAL_RUN_LAST,
                            gobject.TYPE_NONE,())
@@ -120,25 +121,20 @@ class ScrollCal(gtk.DrawingArea):
         # set a clip region for the expose event
         context.rectangle(event.area.x, event.area.y, event.area.width, event.area.height)
         context.clip()
-        
         x = self.xincrement
         y = event.area.height
         color =  get_gtk_rgba(self.style, "text", 4)
-        
         months_positions = []
         for date, nitems in self.history:
-            print date
             if check_for_new_month(date):
                 months_positions += [(date, x)]
             if nitems > 0:
                 self.draw_column(context, x, event.area.height, nitems, color)
             x += self.xincrement
-
         # Draw over the selected items
         self.draw_selected(context, selected, event.area.height)
         if x > event.area.width: # Check for resize
             self.set_size_request(x+self.xincrement, event.area.height)
-
         for date, line in months_positions:
             self.draw_month_line(context, line - self.xincrement - self.padding, event.area.height, date)
         self.max_width = x # remove me
@@ -179,6 +175,17 @@ class ScrollCal(gtk.DrawingArea):
         context.move_to(x+2, height - self.ypad)
         context.line_to(x+2, height)
         context.stroke()
+        context.select_font_face(self.font_name, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
+        context.set_font_size(10)            
+        
+        month  = {1:"January", 2:"February", 3:"March", 4:"April",
+                  5:"May", 6:"June", 7:"July", 8:"August", 9:"September",
+                  10:"October", 11:"November", 12:"December",
+                  }[datetime.date.fromtimestamp(date).month]
+
+        xbearing, ybearing, width, oheight, xadvance, yadvance = context.text_extents(month)
+        context.move_to(x+10, height-2)
+        context.show_text(month)
 
     def draw_selected(self, context, i, height):
         """
