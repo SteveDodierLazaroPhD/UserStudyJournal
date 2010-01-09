@@ -218,6 +218,9 @@ class ScrollCal(gtk.DrawingArea):
              hilighting
         - height: The event areas height
         """
+        if i < 0:
+            return # We don't have any data yet
+        
         x = (i * self.xincrement) + self.xincrement
         y = 0
         
