@@ -124,6 +124,7 @@ class ScrollCal(gtk.DrawingArea):
         x = self.xincrement
         y = event.area.height
         color =  get_gtk_rgba(self.style, "text", 4)
+        
         months_positions = []
         for date, nitems in self.history:
             if check_for_new_month(date):
@@ -275,7 +276,7 @@ class CalWidget(gtk.HBox):
         port = gtk.Viewport()
         align = gtk.Alignment(0,0,1,1)
 
-        align.set_padding(5, 10, 0, 0)
+        align.set_padding(0, 0, 0, 0)
         align.add(port)
         
         port.set_shadow_type(gtk.SHADOW_NONE)

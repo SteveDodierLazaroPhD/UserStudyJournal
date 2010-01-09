@@ -107,22 +107,22 @@ class Portal(gtk.Window):
         btn.hide()
     
     def jumpup(self, data=None):
-    	self.activityview._set_today_timestamp()
-    	self.fwdbtn.set_sensitive(False)
-    	self.ffwdbtn.set_sensitive(False)
-    	
+        self.activityview._set_today_timestamp()
+        self.fwdbtn.set_sensitive(False)
+        self.ffwdbtn.set_sensitive(False)
+        
     def moveup(self, data=None):
-	self.activityview.jump(86400)
-	dayinfocus = int(time.mktime(time.strptime(time.strftime("%d %B %Y") , "%d %B %Y")))
-	if (dayinfocus) < self.activityview.end:
-    		self.fwdbtn.set_sensitive(False)
-    		self.ffwdbtn.set_sensitive(False)
-    	
+        self.activityview.jump(86400)
+        dayinfocus = int(time.mktime(time.strptime(time.strftime("%d %B %Y") , "%d %B %Y")))
+        if (dayinfocus) < self.activityview.end:
+            self.fwdbtn.set_sensitive(False)
+            self.ffwdbtn.set_sensitive(False)
+            
     def moveback(self, data=None):
-    	self.activityview.jump(-86400)
-    	self.fwdbtn.set_sensitive(True)
-    	self.ffwdbtn.set_sensitive(True)
-    	
+        self.activityview.jump(-86400)
+        self.fwdbtn.set_sensitive(True)
+        self.ffwdbtn.set_sensitive(True)
+        
     def _request_size(self):
         screen = self._screen.get_monitor_geometry(
             self._screen.get_monitor_at_point(*self.get_position()))
