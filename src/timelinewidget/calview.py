@@ -64,9 +64,9 @@ class ScrollCal(gtk.DrawingArea):
     """
     A calendar which is represented by a list of dimensions and dates
     """
-    padding = 4
+    padding = 3
     ypad = 20
-    wcolumn = 8
+    wcolumn = 9
     xincrement = wcolumn + padding
     max_width = xincrement
 
