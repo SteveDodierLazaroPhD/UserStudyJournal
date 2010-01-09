@@ -163,7 +163,7 @@ class ScrollCal(gtk.DrawingArea):
         if nitems > 4:
             context.arc(radius + x, radius + y, radius, math.pi, 3 * math.pi /2)
             context.arc(x + self.wcolumn - radius, radius + y, radius, 3 * math.pi / 2, 0)
-            context.rectangle(x, y+radius, self.wcolumn, height)
+            context.rectangle(x, y, self.wcolumn, height)
         else:
             context.rectangle(x, y, self.wcolumn, height)
         context.close_path()
@@ -213,7 +213,7 @@ class ScrollCal(gtk.DrawingArea):
         context.arc(x+(3 * self.xincrement) - radius -2, radius + y, radius, 3 * math.pi / 2, 0)
         #context.rectangle(x, y+radius, self.wcolumn, height)        
         #FIXME: height should e measured dynamically without statically subtracting 20
-        context.rectangle(x-2, radius + y, (3 * self.xincrement), height-20)
+        context.rectangle(x-2, radius + y, (3 * self.xincrement), height-22)
         context.fill()
         
         color = get_gtk_rgba(self.style, "text", 1)
