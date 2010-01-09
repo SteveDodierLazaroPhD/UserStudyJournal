@@ -183,22 +183,22 @@ class ScrollCal(gtk.DrawingArea):
         context.set_line_width(3)
         context.move_to(x+2, height - self.ypad)
         context.line_to(x+2, height - self.ypad/3)
-
+        
         context.stroke()
         context.select_font_face(self.font_name, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
         context.set_font_size(12)            
-        
-        date = datetime.date.fromtimestamp(date)
-        month  = {1:"January", 2:"February", 3:"March", 4:"April",
-                  5:"May", 6:"June", 7:"July", 8:"August", 9:"September",
-                  10:"October", 11:"November", 12:"December",
-                  }[date.month]
         
         fg = self.style.fg[gtk.STATE_NORMAL]
         bg = self.style.bg[gtk.STATE_NORMAL]
         red, green, blue = (2*bg.red+fg.red)/3/65535.0, (2*bg.green+fg.green)/3/65535.0, (2*bg.blue+fg.blue)/3/65535.0
         context.set_source_rgba(red, green, blue, 1)
         
+        date = datetime.date.fromtimestamp(date)
+        month  = {1:"January", 2:"February", 3:"March", 4:"April",
+                  5:"May", 6:"June", 7:"July", 8:"August", 9:"September",
+                  10:"October", 11:"November", 12:"December",
+                  }[date.month]
+
         date = "%s %d" % (month, date.year)
         xbearing, ybearing, width, oheight, xadvance, yadvance = context.text_extents(date)
         context.move_to(x + 10, height - self.ypad/3)
