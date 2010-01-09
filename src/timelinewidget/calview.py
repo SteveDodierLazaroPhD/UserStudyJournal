@@ -154,7 +154,7 @@ class ScrollCal(gtk.DrawingArea):
         if nitems < 2:
             nitems = 2
         maxheight = maxheight - self.ypad
-        height = int(((float(nitems)/self.largest)*(maxheight-2))) - 3
+        height = int(((float(nitems)/self.largest)*(maxheight-2))) - 12
         
         if height < 2:
             height = 2
@@ -193,6 +193,11 @@ class ScrollCal(gtk.DrawingArea):
                   5:"May", 6:"June", 7:"July", 8:"August", 9:"September",
                   10:"October", 11:"November", 12:"December",
                   }[date.month]
+        
+        fg = self.style.fg[gtk.STATE_NORMAL]
+        bg = self.style.bg[gtk.STATE_NORMAL]
+        red, green, blue = (2*bg.red+fg.red)/3/65535.0, (2*bg.green+fg.green)/3/65535.0, (2*bg.blue+fg.blue)/3/65535.0
+        context.set_source_rgba(red, green, blue, 1)
         
         date = "%s %d" % (month, date.year)
         xbearing, ybearing, width, oheight, xadvance, yadvance = context.text_extents(date)
@@ -273,7 +278,7 @@ class CalWidget(gtk.HBox):
         # Draw buttons
         
         align = gtk.Alignment(0,0,1,1)
-        align.set_padding(12, 12, 0, 0)
+        align.set_padding(0, 0, 0, 0)
         align.add(port)
         
         b1 = gtk.Button()
