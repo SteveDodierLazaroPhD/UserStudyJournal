@@ -1,20 +1,21 @@
-#!/usr/bin/env python
-
-## Copyright (C) 2009  Randal Barlow
-##
-##
-## This program is free software: you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation, either version 3 of the License, or
-## (at your option) any later version.
-
-## This program is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU General Public License for more details.
-
-## You should have received a copy of the GNU General Public License
-## along with this program.  If not, see <http://www.gnu.org/licenses/
+# -.- coding: utf-8 -.-
+#
+# GNOME Activity Journal
+#
+# Copyright © 2010 Randal Barlow
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """
 Takes a two dementional tuple or list and turns it into a graph based on 
@@ -29,7 +30,6 @@ import gtk
 import math
 import time
 import datetime
-
 
 def check_for_new_month(date):
     if datetime.date.fromtimestamp(date).day == 1:
@@ -70,11 +70,12 @@ class ScrollCal(gtk.DrawingArea):
     xincrement = wcolumn + padding
     max_width = xincrement
 
-    def __init__(self, history):
+    def __init__(self, history, dayrange=0):
         """
         
         Arguments:
         - history: The ScrollCals two dimensional list of dates and nitems
+        - dayrange: the number of days displayed at once
         """
         super(ScrollCal, self).__init__()
         self.add_events(gtk.gdk.BUTTON_PRESS_MASK)
@@ -88,7 +89,10 @@ class ScrollCal(gtk.DrawingArea):
                            gobject.SIGNAL_RUN_LAST,
                            gobject.TYPE_NONE,())
         self.update_data(history, draw = False)
-
+        self.dayrange = dayrange
+    
+    def set_dayrange(self, dayrange):
+        self.dayrange = dayrange
 
     def update_data(self, history = None, draw = True):
         """
@@ -108,9 +112,9 @@ class ScrollCal(gtk.DrawingArea):
         self.emit("data-updated")
 
     def expose(self, widget, event, selected = None):        
-        # Default hilight to the final 3 items
+        # Default hilight to the last items
         if selected == None:
-            selected = len(self.history)-3
+            selected = len(self.history) - self.dayrange
 
         context = widget.window.cairo_create()
         # Set the source to the background color
@@ -218,11 +222,9 @@ class ScrollCal(gtk.DrawingArea):
         y = 0
         
         color = get_gtk_rgba(self.style, "bg", 3)
-        if x >= 1:
-            self.draw_column(context, x, height, self.history[i][1], color)
-        if x >= 0:
-            self.draw_column(context, x + self.xincrement, height, self.history[i+1][1], color)
-        self.draw_column(context, x+(2 * self.xincrement), height, self.history[i+2][1], color)
+        for n in xrange(self.dayrange):
+            self.draw_column(context, x + (n * self.xincrement), height,
+                self.history[i + n][1], color)
     
     def set_selection(self, i):
         self.connect("expose_event", self.expose, i)
@@ -258,14 +260,14 @@ class ScrollCal(gtk.DrawingArea):
             self.connect("expose_event", self.expose, 0)
             self.queue_draw()
         elif location < len(self.history):
-            self.connect("expose_event", self.expose, location - 2)
+            self.connect("expose_event", self.expose,
+                location - self.dayrange + 1)
             self.queue_draw()
         self.emit("date-set")
         if callable(self.selection_callback):
             self.selection_callback(self.history, location)
-    
 
-    
+
 class CalWidget(gtk.HBox):
 
     def __init__(self):
