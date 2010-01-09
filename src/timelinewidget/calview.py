@@ -168,9 +168,9 @@ class ScrollCal(gtk.DrawingArea):
         context.fill()
 
     def draw_month_line(self, context, x, height, date):
-        context.set_source_rgba(*get_gtk_rgba(self.style, "text", 0))
+        context.set_source_rgba(*get_gtk_rgba(self.style, "bg", 0))
         context.set_line_width(3)
-        context.move_to(x+2, height - self.ypad)
+        context.move_to(x+2, 0)
         context.line_to(x+2, height)
         context.stroke()
 
