@@ -26,32 +26,6 @@ import pango
 from ui_utils import *
 #from teamgeist import TeamgeistInterface
 
-class ToggleButton(gtk.ToggleButton):
-    def __init__(self, category):
-        gtk.ToggleButton.__init__(self)
-        self.category = category
-        self.text = SUPPORTED_SOURCES[category].name
-        img = gtk.image_new_from_pixbuf(get_category_icon(SUPPORTED_SOURCES[category].icon, 16))
-        self.set_image(img)
-        self.set_relief(gtk.RELIEF_NONE)
-        self.set_focus_on_click(False)
-        self.connect("toggled", lambda w: settings.toggle_compression(self.category, self.get_active()))
-
-class Tab(gtk.HBox):
-    def __init__(self, text):
-        gtk.HBox.__init__(self)
-        self.label = gtk.Label(text)
-        self.pack_start(self.label)
-
-        self.closebtn= gtk.Button()
-        self.closebtn.set_focus_on_click(False)
-        self.closebtn.set_relief(gtk.RELIEF_NONE)
-        img = gtk.image_new_from_stock("gtk-close", 4)
-        self.closebtn.add(img)
-        self.pack_end(self.closebtn)
-
-        self.show_all()
-
 class SearchEntry(gtk.Entry):
 
     __gsignals__ = {
