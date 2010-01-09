@@ -65,7 +65,7 @@ class ScrollCal(gtk.DrawingArea):
     A calendar which is represented by a list of dimensions and dates
     """
     padding = 4
-    ypad = 10
+    ypad = 15
     wcolumn = 10
     xincrement = wcolumn + padding
     max_width = xincrement
@@ -125,12 +125,11 @@ class ScrollCal(gtk.DrawingArea):
         y = event.area.height
         color =  get_gtk_rgba(self.style, "text", 4)
         
+        months_positions = []
         for date, nitems in self.history:
+            print date
             if check_for_new_month(date):
-                # Drawing should be done at this location
-                xmonth = x - self.xincrement - self.padding
-                self.draw_month_line(context, xmonth, event.area.height, date)
-                print "new month, do drawing here at", xmonth
+                months_positions += [(date, x)]
             if nitems > 0:
                 self.draw_column(context, x, event.area.height, nitems, color)
             x += self.xincrement
@@ -140,7 +139,9 @@ class ScrollCal(gtk.DrawingArea):
         if x > event.area.width: # Check for resize
             self.set_size_request(x+self.xincrement, event.area.height)
 
-        #self.max_width = x # remove me
+        for date, line in months_positions:
+            self.draw_month_line(context, line - self.xincrement - self.padding, event.area.height, date)
+        self.max_width = x # remove me
 
     def draw_column(self, context, x, maxheight, nitems, color):
         """
@@ -154,23 +155,28 @@ class ScrollCal(gtk.DrawingArea):
         - color: A RGBA tuple
             Example: (0.3, 0.4, 0.8, 1)
         """
-        height = ((float(nitems)/self.largest)*maxheight) - self.ypad
-        radius = 2.1
-        y = maxheight - height
-        # Draw
-        context.set_source_rgba(*color)
-        context.move_to(x + radius, y)
-        context.new_sub_path()
-        context.arc(radius + x, radius + y, radius, math.pi, 3 * math.pi /2)
-        context.arc(x + self.wcolumn - radius, radius + y, radius, 3 * math.pi / 2, 0)
-        context.rectangle(x, y+radius, self.wcolumn, height)
-        context.close_path()
-        context.fill()
+        if nitems > 0:
+            maxheight -= self.ypad
+            height = ((float(nitems)/self.largest)*maxheight)
+            radius = 2.1
+            y = maxheight - height
+            # Draw
+            context.set_source_rgba(*color)
+            context.move_to(x + radius, y)
+            context.new_sub_path()
+            context.arc(radius + x, radius + y, radius, math.pi, 3 * math.pi /2)
+            context.arc(x + self.wcolumn - radius, radius + y, radius, 3 * math.pi / 2, 0)
+            context.rectangle(x, y+radius, self.wcolumn, height)
+            context.close_path()
+            context.fill()
 
     def draw_month_line(self, context, x, height, date):
-        context.set_source_rgba(*get_gtk_rgba(self.style, "bg", 0))
+        """
+        Draws a line signifying the start of a month
+        """
+        context.set_source_rgba(*get_gtk_rgba(self.style, "text", 4, 0.5))
         context.set_line_width(3)
-        context.move_to(x+2, 0)
+        context.move_to(x+2, height - self.ypad)
         context.line_to(x+2, height)
         context.stroke()
 
@@ -254,7 +260,7 @@ class CalWidget(gtk.HBox):
         super(gtk.HBox, self).__init__()
         port = gtk.Viewport()
         port.set_shadow_type(gtk.SHADOW_NONE)
-        port.set_size_request(600,60) 
+        port.set_size_request(600,80) 
         self.scrollcal = ScrollCal([[0, 0]])
         port.add(self.scrollcal)
         # Draw buttons
@@ -268,7 +274,6 @@ class CalWidget(gtk.HBox):
         b2.set_relief(gtk.RELIEF_NONE)
         b2.set_focus_on_click(False)
         
-        print 3*self.scrollcal.xincrement
         b1.connect("clicked", self.scroll_viewport, port, 
                    self.scrollcal, -3*self.scrollcal.xincrement)
         b2.connect("clicked", self.scroll_viewport, port, 
@@ -286,7 +291,6 @@ class CalWidget(gtk.HBox):
     def scroll_viewport(self, widget, viewport, scroll_cal, value, *args, **kwargs):
         """Broken for now
         """
-        print value
         adjustment = viewport.get_hadjustment()
         page_size = adjustment.get_page_size()
         if value < 1:
