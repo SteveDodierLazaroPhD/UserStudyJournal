@@ -80,11 +80,11 @@ class SearchEntry(gtk.Entry):
         self.connect("changed", lambda w: self._queue_search())
         self.connect("focus-in-event", self._entry_focus_in)
         self.connect("focus-out-event", self._entry_focus_out)
-        self.connect("icon-press", self._icon_press)
+        #self.connect("icon-press", self._icon_press)
 
-        self.set_property("primary-icon-name", gtk.STOCK_FIND)
-        self.set_property("secondary-icon-name", gtk.STOCK_CLEAR)
-        #self.set_has_frame(False)
+        #self.set_property("primary-icon-name", gtk.STOCK_FIND)
+        #self.set_property("secondary-icon-name", gtk.STOCK_CLEAR)
+        self.set_has_frame(False)
 
         self.font_style = self.get_style().font_desc
         self.font_style.set_style(pango.STYLE_ITALIC)

@@ -103,7 +103,6 @@ class Portal(gtk.Window):
         
         self._request_size()
         
-        
         self.show_all()
         self.connect("configure-event", self._on_size_changed)
         btn.hide()

@@ -50,9 +50,8 @@ class ActivityView(gtk.VBox):
     def _set_searchbox(self):
         self.search = SearchEntry()
         self.searchbox = gtk.HBox()
-        self.searchbox.pack_start(gtk.Label())
-        self.searchbox.pack_start(self.search, False, False, 3)
-        
+        self.searchbox.pack_start(self.search)
+        self.searchbox.set_border_width(3)
         self.pack_start(self.searchbox, False, False)
     
     def _set_timeline(self):
