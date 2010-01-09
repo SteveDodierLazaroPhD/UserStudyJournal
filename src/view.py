@@ -61,7 +61,7 @@ class ActivityView(gtk.VBox):
                 #print "%d day %s has %s events\n" % (i,selection_date, history[i][1])
         
         def date_changed(*args, **kwargs):
-            print "Date Changed"
+            pass #print "Date Changed" # removed as it slows down the widget by poluting stdout
         
         rdate_z.datelist(90, cal.scrollcal.update_data)
         cal.scrollcal.connect_selection_callback(selection_callback)
