@@ -98,6 +98,7 @@ class Portal(gtk.Window):
         self.vbox.pack_start(hbox, True, True, 6)
 
         self.vbox.pack_end(cal, False, False)
+        self.vbox.set_border_width(5)
         
         self._request_size()
         
