@@ -273,7 +273,7 @@ class CalWidget(gtk.HBox):
         # Draw buttons
         
         align = gtk.Alignment(0,0,1,1)
-        align.set_padding(5, 5, 0, 0)
+        align.set_padding(12, 12, 0, 0)
         align.add(port)
         
         b1 = gtk.Button()
