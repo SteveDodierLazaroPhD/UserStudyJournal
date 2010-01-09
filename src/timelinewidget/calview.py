@@ -152,8 +152,8 @@ class ScrollCal(gtk.DrawingArea):
             Example: (0.3, 0.4, 0.8, 1)
         """
         if nitems > 0:
-            maxheight -= self.ypad
-            height = ((float(nitems)/self.largest)*maxheight)
+            maxheight = maxheight - self.ypad
+            height = ((float(nitems)/self.largest)*(maxheight-2))
             radius = 2.1
             y = maxheight - height
             # Draw
