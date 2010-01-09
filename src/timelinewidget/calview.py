@@ -259,6 +259,11 @@ class CalWidget(gtk.HBox):
     def __init__(self):
         super(gtk.HBox, self).__init__()
         port = gtk.Viewport()
+        align = gtk.Alignment(0,0,1,1)
+
+        align.set_padding(5, 10, 0, 0)
+        align.add(port)
+        
         port.set_shadow_type(gtk.SHADOW_NONE)
         port.set_size_request(600,70) 
         self.scrollcal = ScrollCal([[0, 0]])
@@ -280,7 +285,7 @@ class CalWidget(gtk.HBox):
                    self.scrollcal, 3*self.scrollcal.xincrement)
         self.scrollcal.connect("data-updated", self.scroll_to_end)
         self.pack_start(b1, False, False)
-        self.pack_start(port, True, True, 3)    
+        self.pack_start(align, True, True, 3)    
         self.pack_end(b2, False, False)
            
         self.adj = port.get_hadjustment()    
