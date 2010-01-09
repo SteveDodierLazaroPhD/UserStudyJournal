@@ -66,7 +66,7 @@ class ScrollCal(gtk.DrawingArea):
     """
     padding = 4
     ypad = 20
-    wcolumn = 10
+    wcolumn = 8
     xincrement = wcolumn + padding
     max_width = xincrement
 
@@ -128,8 +128,7 @@ class ScrollCal(gtk.DrawingArea):
         for date, nitems in self.history:
             if check_for_new_month(date):
                 months_positions += [(date, x)]
-            if nitems > 0:
-                self.draw_column(context, x, event.area.height, nitems, color)
+            self.draw_column(context, x, event.area.height, nitems, color)
             x += self.xincrement
         # Draw over the selected items
         self.draw_selected(context, selected, event.area.height)
@@ -151,20 +150,24 @@ class ScrollCal(gtk.DrawingArea):
         - color: A RGBA tuple
             Example: (0.3, 0.4, 0.8, 1)
         """
-        if nitems > 0:
-            maxheight = maxheight - self.ypad
-            height = ((float(nitems)/self.largest)*(maxheight-2))
-            radius = 2.1
-            y = maxheight - height
-            # Draw
-            context.set_source_rgba(*color)
-            context.move_to(x + radius, y)
-            context.new_sub_path()
+        if nitems < 3:
+            nitems = 2
+        maxheight = maxheight - self.ypad
+        height = ((float(nitems)/self.largest)*(maxheight-2))
+        radius = 1.3
+        y = maxheight - height
+        # Draw
+        context.set_source_rgba(*color)
+        context.move_to(x + radius, y)
+        context.new_sub_path()
+        if nitems > 4:
             context.arc(radius + x, radius + y, radius, math.pi, 3 * math.pi /2)
             context.arc(x + self.wcolumn - radius, radius + y, radius, 3 * math.pi / 2, 0)
             context.rectangle(x, y+radius, self.wcolumn, height)
-            context.close_path()
-            context.fill()
+        else:
+            context.rectangle(x, y, self.wcolumn, height)
+        context.close_path()
+        context.fill()
 
     def draw_month(self, context, x, height, date):
         """
@@ -206,7 +209,6 @@ class ScrollCal(gtk.DrawingArea):
 
         context.arc(radius + x - 2, radius + y, radius, math.pi, 3 * math.pi /2)
         context.arc(x+(3 * self.xincrement) - radius -2, radius + y, radius, 3 * math.pi / 2, 0)
-        context.rectangle(x, y+radius, self.wcolumn, height)        
         context.rectangle(x-2, radius + y, (3 * self.xincrement), height)
         context.fill()
         
@@ -267,7 +269,7 @@ class CalWidget(gtk.HBox):
         super(gtk.HBox, self).__init__()
         port = gtk.Viewport()
         port.set_shadow_type(gtk.SHADOW_NONE)
-        port.set_size_request(600,80) 
+        port.set_size_request(600,70) 
         self.scrollcal = ScrollCal([[0, 0]])
         port.add(self.scrollcal)
         # Draw buttons
