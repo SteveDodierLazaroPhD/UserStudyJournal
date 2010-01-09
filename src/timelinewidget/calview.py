@@ -174,10 +174,11 @@ class ScrollCal(gtk.DrawingArea):
         """
         Draws a line signifying the start of a month
         """
-        context.set_source_rgba(*get_gtk_rgba(self.style, "text", 4, 0.5))
-        context.set_line_width(3)
+        context.set_source_rgba(*get_gtk_rgba(self.style, "text", 4, 0.7))
+        context.set_line_width(2)
         context.move_to(x+2, height - self.ypad)
-        context.line_to(x+2, height)
+        context.line_to(x+2, height - self.ypad/3)
+
         context.stroke()
         context.select_font_face(self.font_name, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
         context.set_font_size(12)            
@@ -188,7 +189,7 @@ class ScrollCal(gtk.DrawingArea):
                   }[datetime.date.fromtimestamp(date).month]
 
         xbearing, ybearing, width, oheight, xadvance, yadvance = context.text_extents(month)
-        context.move_to(x+10, height-3)
+        context.move_to(x + 10, height - 3)
         context.show_text(month)
 
     def draw_selected(self, context, i, height):
