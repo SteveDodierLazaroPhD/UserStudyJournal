@@ -334,7 +334,7 @@ class Item(gtk.Button):
 
         hbox = gtk.HBox()
         hbox.pack_start(gtk.image_new_from_pixbuf(self.icon), False, False)
-        hbox.pack_start(label, True, True, 9)
+        hbox.pack_start(label, True, True, 6)
 
         label = gtk.Label()
         t = datetime.datetime.fromtimestamp(self.time).strftime("%H:%M")
