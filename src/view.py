@@ -24,6 +24,8 @@ from ui_utils import *
 from daywidgets import *
 from timelinewidget.calview import cal
 from timelinewidget import rdate_z
+import datetime
+import time
 
 class ActivityView(gtk.VBox):
 
@@ -50,7 +52,26 @@ class ActivityView(gtk.VBox):
     def _set_searchbox(self):
         self.searchbox = SearchBox()
         self.pack_start(self.searchbox, False, False)
-    
+        self.searchbox.connect("search", self.handle_search_results)
+        
+    def handle_search_results(self, widget, results):
+        history = cal.calendar.history
+        keys = []
+        for r in results:
+            timestamp =int( int(time.mktime(time.gmtime(r[0])))/86400)
+            keys.append(timestamp*86400)
+        i = 0
+        dates = []
+        for date, nitems in history:
+            print date
+            if int(date) in keys: 
+                dates.append(i)
+            i+=1
+        
+        #INSERT HERE:
+        # dates is the list of indecies
+        
+        
     def _set_timeline(self):
         
         

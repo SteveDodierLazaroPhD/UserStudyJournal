@@ -49,27 +49,38 @@ class TrackerBackend:
         self.iface = dbus.Interface(self.tracker, TRACKER_IFACE)
         self.zg = CLIENT
 
-    def search(self, text):
+    def search_tracker(self, text):
         # Unmarshal the dbus objects in the response
-        return map(lambda x: str(e[0]),
-            self.iface.SparqlQuery(QUERY_BY_TEXT % text))
+        return  [str (e[0]) for e in self.iface.SparqlQuery (QUERY_BY_TEXT % (text)) ]
 
-    def search_zeitgeist(self, uris):
+
+    def search_zeitgeist(self, uris, interpretation, search_callback):
+        
+        def _handle_get_events(events):
+            results = []
+            for event in events:
+                results.append((int(event.timestamp)/1000, event.subjects[0].uri))
+            search_callback(results)
+        
+        def _handle_find_events(ids):
+            self.zg.get_events(ids, _handle_get_events)
+        
         events = []
         for uri in uris:
             subject = Subject.new_for_values(uri=uri)
+            if interpretation:
+                subject.interpretation = interpretation
             event = Event.new_for_values(subjects=[subject])
             events.append(event)
-        self.zg.find_event_ids_for_templates(events, self._handle_find_events,
-            TimeRange.until_now(), num_events=50000,
-            result_type=ResultType.MostPopularSubjects)
-
-    def _handle_find_events(self, ids):
-        self.zg.get_events(ids, self._handle_get_events)
-
-    def _handle_get_events(self, events):
-        for event in events:
-            print event.timestamp, event.subjects[0].uri
+        self.zg.find_event_ids_for_templates(events, _handle_find_events,
+            [0, time.time()*1000], num_events=50000,
+            result_type=0)
+       
+            
+    def search(self, text, interpretation, search_callback):
+        uris = self.search_tracker(text)
+        if len(uris) > 0:
+            tracker.search_zeitgeist(uris, interpretation, search_callback)
 
 """
 Example usage:
@@ -78,3 +89,4 @@ Example usage:
     uris = tracker.search("adam")
     tracker.search_zeitgeist(uris)
 """
+tracker = TrackerBackend()

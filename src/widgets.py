@@ -25,8 +25,21 @@ import gobject
 import pango
 from ui_utils import *
 #from teamgeist import TeamgeistInterface
+from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
+    ResultType
 
-class SearchBox(gtk.EventBox):
+from tracker_wrapper import tracker
+
+class SearchBox(gtk.EventBox):    
+    __gsignals__ = {
+        "clear" : (gobject.SIGNAL_RUN_FIRST,
+                   gobject.TYPE_NONE,
+                   ()),
+        "search" : (gobject.SIGNAL_RUN_FIRST,
+                    gobject.TYPE_NONE,
+                    (gobject.TYPE_PYOBJECT,))
+    }
+
     def __init__(self):
         gtk.EventBox.__init__(self)
         
@@ -46,7 +59,6 @@ class SearchBox(gtk.EventBox):
             self.category[s] = source
             
         self._init_combobox()
-        
         self.show_all()
         
         def change_style(widget, style):
@@ -80,6 +92,7 @@ class SearchBox(gtk.EventBox):
             self.search.modify_text(gtk.STATE_NORMAL, color)
 
         self.hbox.connect("style-set", change_style)
+        self.search.connect("search", self.set_search)
         
     def _init_combobox(self):
         
@@ -103,7 +116,25 @@ class SearchBox(gtk.EventBox):
             
         height = self.search.allocation.height
         self.combobox.set_size_request(-1, height)
+    
+    def set_search(self, widget, text=None):
         
+        def callback(results):
+            self.emit("search", results)
+        
+        if not text:
+            text = self.search.get_text()
+        if text == self.search.default_text or text.strip() == "":
+            pass
+        else:
+            cat = self.combobox.get_active()
+            if cat == 0:
+                interpretation = None
+            else:
+                cat = self.category[self.combobox.get_active_text()]
+                interpretation = self.category[self.combobox.get_active_text()]
+            tracker.search(text, interpretation, callback)
+            
 
 class SearchEntry(gtk.Entry):
 
