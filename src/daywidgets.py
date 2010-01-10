@@ -118,8 +118,14 @@ class DayWidget(gtk.VBox):
         self.connect("style-set", change_style)
 
     def __init_date_label(self):
-
-        daylabel = DayLabel(self.week_day_string, self.date_string+", "+ self.year_string)
+        today = int(time.time() )- 7*86400
+        print self.day_start, today
+        if self.day_start < today:
+            print "-------------------"
+            daylabel = DayLabel(self.date_string, self.week_day_string+", "+ self.year_string)
+        else:
+            print "xxxxxxxxxxx"
+            daylabel = DayLabel(self.week_day_string, self.date_string+", "+ self.year_string)
         #x, y = vbox.get_size_request()
         daylabel.set_size_request(100, 60)
         self.vbox.pack_start(daylabel, False, False)
