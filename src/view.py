@@ -52,9 +52,14 @@ class ActivityView(gtk.VBox):
     def _set_searchbox(self):
         self.searchbox = SearchBox()
         self.pack_start(self.searchbox, False, False)
-        self.searchbox.connect("search", self.handle_search_results)
+        self.searchbox.connect("search", self._handle_search_results)
+        self.searchbox.connect("clear", self._clear_search_results)
         
-    def handle_search_results(self, widget, results):
+    def _clear_search_results(self, widget):
+        print "CLEAR"
+        cal.calendar.set_pinned([])
+        
+    def _handle_search_results(self, widget, results):
         history = cal.calendar.history
         keys = []
         for r in results:
@@ -66,18 +71,9 @@ class ActivityView(gtk.VBox):
             if int(date) in keys: 
                 dates.append(i)
             i+=1
-        
-        
-        #print dates
-        #for date in dates:
-            #cal.calendar.set_selection(date)
-        #INSERT HERE:
-        # dates is the list of indecies
-        
+        cal.calendar.set_pinned(dates)
         
     def _set_timeline(self):
-        
-        
         def selection_callback(history, i):
             #print history, i
             if i < len(history):

@@ -73,6 +73,7 @@ class CairoCalendar(gtk.DrawingArea):
     wcolumn = 9
     xincrement = wcolumn + padding
     max_width = xincrement
+    pinned = []
 
     def __init__(self, history, selected_range=0):
         """
@@ -126,7 +127,8 @@ class CairoCalendar(gtk.DrawingArea):
             selected = range(len(self.history))[-self.selected_range:]
         elif isinstance(selected, int):
             selected = range(selected, selected + self.selected_range)
-            
+        
+    
         context = widget.window.cairo_create()
         # Set the source to the background color
         color = get_gtk_rgba(self.style, "bg", 0, 1.02)
@@ -141,20 +143,25 @@ class CairoCalendar(gtk.DrawingArea):
 
         normalcolor =  get_gtk_rgba(self.style, "text", 1)
         selectedcolor = get_gtk_rgba(self.style, "bg", 3)
+        pinnedcolor = get_gtk_rgba(self.style, "text", 2)
 
         months_positions = []
 
         i = 0
+        print "*****", self.pinned
         for date, nitems in self.history:
             if check_for_new_month(date):
                 months_positions += [(date, x)]
             if i >= selected[0] and i <= selected[-1] and i in selected: 
                 color = selectedcolor
+            elif len(self.pinned)>0 and i >= self.pinned[0] and i <= self.pinned[-1] and i in self.pinned: 
+                color = pinnedcolor
             else:
                 color = normalcolor
             self.draw_column(context, x, event.area.height, nitems, color)
             x += self.xincrement
             i += 1
+
 
         # Draw over the selected items
         if x > event.area.width: # Check for resize
@@ -162,7 +169,7 @@ class CairoCalendar(gtk.DrawingArea):
         for date, line in months_positions:
             self.draw_month(context, line - self.padding, event.area.height, date)
         self.max_width = x # remove me
-
+        
     def draw_column(self, context, x, maxheight, nitems, color):
         """
         Draws a columns at x with height based on nitems, and maxheight
@@ -228,6 +235,11 @@ class CairoCalendar(gtk.DrawingArea):
         self.connect("expose_event", self.expose, i)
         self.queue_draw()
         self.emit("date-set")
+
+    def set_pinned(self, i):
+        self.pinned = i
+        self.connect("expose_event", self.expose)
+        self.queue_draw()
 
     def selection_callback(self, history, i):
         """

@@ -48,6 +48,8 @@ class SearchBox(gtk.EventBox):
     def __init__(self):
         gtk.EventBox.__init__(self)
         
+        self.text = ""
+        
         self.set_border_width(3)
         self.hbox = gtk.HBox()
         self.add(self.hbox)
@@ -98,6 +100,12 @@ class SearchBox(gtk.EventBox):
 
         self.hbox.connect("style-set", change_style)
         self.search.connect("search", self.set_search)
+        self.search.connect("clear", self.clear)
+        
+    def clear(self, widget):
+        if self.text.strip() != "" and self.text.strip() != self.search.default_text:
+            self.text = ""
+            self.emit("clear")
         
     def _init_combobox(self):
         
@@ -123,23 +131,24 @@ class SearchBox(gtk.EventBox):
         self.combobox.set_size_request(-1, height)
     
     def set_search(self, widget, text=None):
-        
-        def callback(results):
-            self.emit("search", results)
-        
-        if not text:
-            text = self.search.get_text()
-        if text == self.search.default_text or text.strip() == "":
-            pass
-        else:
-            cat = self.combobox.get_active()
-            if cat == 0:
-                interpretation = None
+        if not self.text.strip() == text.strip():
+            self.text = text
+            def callback(results):
+                self.emit("search", results)
+            
+            if not text:
+                text = self.search.get_text()
+            if text == self.search.default_text or text.strip() == "":
+                pass
             else:
-                cat = self.category[self.combobox.get_active_text()]
-                interpretation = self.category[self.combobox.get_active_text()]
-	    if "tracker" in globals().keys():
-		tracker.search(text, interpretation, callback)
+                cat = self.combobox.get_active()
+                if cat == 0:
+                    interpretation = None
+                else:
+                    cat = self.category[self.combobox.get_active_text()]
+                    interpretation = self.category[self.combobox.get_active_text()]
+    	    if "tracker" in globals().keys():
+    		tracker.search(text, interpretation, callback)
 
 class SearchEntry(gtk.Entry):
 
