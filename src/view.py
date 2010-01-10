@@ -34,7 +34,7 @@ class ActivityView(gtk.VBox):
         self.days = {}
 
         self.dayrange = 3
-        cal.scrollcal.set_dayrange(3)
+        cal.calendar.set_dayrange(3)
         self.daysbox = None
         self.__first_run = True
 
@@ -68,9 +68,9 @@ class ActivityView(gtk.VBox):
         def date_changed(*args, **kwargs):
             pass #print "Date Changed" # removed as it slows down the widget by poluting stdout
         
-        rdate_z.datelist(90, cal.scrollcal.update_data)
-        cal.scrollcal.connect_selection_callback(selection_callback)
-        cal.scrollcal.connect("date-set", date_changed)
+        rdate_z.datelist(90, cal.calendar.update_data)
+        cal.calendar.connect_selection_callback(selection_callback)
+        cal.calendar.connect("date-set", date_changed)
 
     def _set_view_type(self, refresh=False):
 
@@ -93,8 +93,8 @@ class ActivityView(gtk.VBox):
     def jump(self, offset):
         self.start = self.start+offset
         if time.time() > self.start:
-            diff = self.start - cal.scrollcal.history[0][0]
-            cal.scrollcal.set_selection(diff/86400)
+            diff = self.start - cal.calendar.history[0][0]
+            cal.calendar.set_selection(diff/86400)
             self.set_dayrange(self.start, self.end+offset)
 
     def set_dayrange(self, start, end):

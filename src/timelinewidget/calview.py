@@ -60,7 +60,7 @@ def get_gtk_rgba(style, palette, i, shade = 1):
     else: raise TypeError("Not a valid gtk.gdk.Color")
 
 
-class ScrollCal(gtk.DrawingArea):
+class CairoCalendar(gtk.DrawingArea):
     """
     A calendar which is represented by a list of dimensions and dates
     """
@@ -74,18 +74,18 @@ class ScrollCal(gtk.DrawingArea):
         """
         
         Arguments:
-        - history: The ScrollCals two dimensional list of dates and nitems
+        - history: The.CairoCalendars two dimensional list of dates and nitems
         - dayrange: the number of days displayed at once
         """
-        super(ScrollCal, self).__init__()
+        super(CairoCalendar, self).__init__()
         self.add_events(gtk.gdk.BUTTON_PRESS_MASK)
         self.connect("expose_event", self.expose)
         self.connect("button-press-event", self.clicked)
         self.font_name = self.style.font_desc.get_family()
-        gobject.signal_new("date-set", ScrollCal,
+        gobject.signal_new("date-set",CairoCalendar,
                            gobject.SIGNAL_RUN_LAST,
                            gobject.TYPE_NONE,())
-        gobject.signal_new("data-updated", ScrollCal,
+        gobject.signal_new("data-updated",CairoCalendar,
                            gobject.SIGNAL_RUN_LAST,
                            gobject.TYPE_NONE,())
         self.update_data(history, draw = False)
@@ -274,8 +274,8 @@ class CalWidget(gtk.HBox):
         port = gtk.Viewport()        
         port.set_shadow_type(gtk.SHADOW_NONE)
         port.set_size_request(600,70) 
-        self.scrollcal = ScrollCal([[0, 0]])
-        port.add(self.scrollcal)
+        self.calendar = CairoCalendar([[0, 0]])
+        port.add(self.calendar)
         # Draw buttons
         
         align = gtk.Alignment(0,0,1,1)
@@ -293,18 +293,18 @@ class CalWidget(gtk.HBox):
         b2.set_focus_on_click(False)
         
         b1.connect("clicked", self.scroll_viewport, port, 
-                   self.scrollcal, -3*self.scrollcal.xincrement)
+                   self.calendar, -3*self.calendar.xincrement)
         b2.connect("clicked", self.scroll_viewport, port, 
-                   self.scrollcal, 3*self.scrollcal.xincrement)
-        self.scrollcal.connect("data-updated", self.scroll_to_end)
+                   self.calendar, 3*self.calendar.xincrement)
+        self.calendar.connect("data-updated", self.scroll_to_end)
         self.pack_start(b1, False, False)
         self.pack_start(align, True, True, 3)    
         self.pack_end(b2, False, False)
            
         self.adj = port.get_hadjustment()    
-        self.adj.set_upper(self.scrollcal.max_width)
+        self.adj.set_upper(self.calendar.max_width)
         self.adj.set_value(1)
-        self.adj.set_value(self.scrollcal.max_width - self.adj.page_size)
+        self.adj.set_value(self.calendar.max_width - self.adj.page_size)
 
     def scroll_viewport(self, widget, viewport, scroll_cal, value, *args, **kwargs):
         """Broken for now
@@ -320,8 +320,8 @@ class CalWidget(gtk.HBox):
         adjustment.set_value(newadjval)
         
     def scroll_to_end(self, *args, **kwargs):
-        self.adj.set_upper(self.scrollcal.max_width)
+        self.adj.set_upper(self.calendar.max_width)
         self.adj.set_value(1)
-        self.adj.set_value(self.scrollcal.max_width - self.adj.page_size)
+        self.adj.set_value(self.calendar.max_width - self.adj.page_size)
 
 cal = CalWidget()
