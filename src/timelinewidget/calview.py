@@ -140,7 +140,7 @@ class ScrollCal(gtk.DrawingArea):
         if x > event.area.width: # Check for resize
             self.set_size_request(x+self.xincrement, event.area.height)
         for date, line in months_positions:
-            self.draw_month(context, line - self.xincrement - self.padding, event.area.height, date)
+            self.draw_month(context, line - self.padding, event.area.height, date)
         self.max_width = x # remove me
 
     def draw_column(self, context, x, maxheight, nitems, color):
