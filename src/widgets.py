@@ -26,12 +26,18 @@ import pango
 from ui_utils import *
 #from teamgeist import TeamgeistInterface
 
-class SearchBox(gtk.HBox):
+class SearchBox(gtk.EventBox):
     def __init__(self):
-        gtk.HBox.__init__(self)
-        self.search = SearchEntry()
-        self.pack_start(self.search)
+        gtk.EventBox.__init__(self)
+        
         self.set_border_width(3)
+        self.hbox = gtk.HBox()
+        self.add(self.hbox)
+
+        self.search = SearchEntry()
+        
+        self.hbox.pack_start(self.search)
+        self.hbox.set_border_width(6)
         
         self.category = {}
         
@@ -40,11 +46,54 @@ class SearchBox(gtk.HBox):
             self.category[s] = source
             
         self._init_combobox()
+        
         self.show_all()
         
+        def change_style(widget, style):
+            
+            rc_style = self.style
+            color = rc_style.bg[gtk.STATE_NORMAL]
+            
+            if color.red * 102/100 > 65535.0:
+                color.red = 65535.0
+            else:
+                color.red = color.red * 102 / 100
+                
+            if color.green * 102/100 > 65535.0:
+                color.green = 65535.0
+            else:
+                color.green = color.green * 102 / 100
+                
+            if color.blue * 102/100 > 65535.0:
+                color.blue = 65535.0
+            else:
+                color.blue = color.blue * 102 / 100
+                
+            self.modify_bg(gtk.STATE_NORMAL, color)
+            
+            color = rc_style.bg[gtk.STATE_NORMAL]
+            fcolor = rc_style.fg[gtk.STATE_NORMAL] 
+            color.red = (2*color.red + fcolor.red)/3
+            color.green = (2*color.green + fcolor.green)/3
+            color.blue = (2*color.blue + fcolor.blue)/3
+            
+            self.search.modify_text(gtk.STATE_NORMAL, color)
+
+        self.hbox.connect("style-set", change_style)
+        
     def _init_combobox(self):
+        
+        self.clearbtn = gtk.Button()
+        label = gtk.Label()
+        label.set_markup("<span><b>X</b></span>")
+        self.clearbtn.add(label)
+        self.clearbtn.set_focus_on_click(False)
+        self.clearbtn.set_relief(gtk.RELIEF_NONE)
+        self.hbox.pack_end(self.clearbtn, False, False)
+        
         self.combobox = gtk.combo_box_new_text()
-        self.pack_end(self.combobox, False, False, 3)
+        self.combobox.set_focus_on_click(False)
+        self.hbox.pack_end(self.combobox, False, False, 6)
         self.combobox.append_text("All Activities")
         self.combobox.set_active(0)
         for cat in self.category.keys():
@@ -62,7 +111,7 @@ class SearchEntry(gtk.Entry):
                     (gobject.TYPE_STRING,))
     }
 
-    default_text = _("Search...")
+    default_text = _("Type here to search...")
 
     # The font style of the text in the entry.
     font_style = None
@@ -85,9 +134,9 @@ class SearchEntry(gtk.Entry):
         #self.set_property("secondary-icon-name", gtk.STOCK_CLEAR)
         #self.set_has_frame(False)
 
-        self.font_style = self.get_style().font_desc
-        self.font_style.set_style(pango.STYLE_ITALIC)
-        self.modify_font(self.font_style)
+        self.font_style = self.style.font_desc
+        #self.font_style.set_style(pango.STYLE_ITALIC)
+        #self.modify_font(self.font_style)
 
         self.show_all()
 
