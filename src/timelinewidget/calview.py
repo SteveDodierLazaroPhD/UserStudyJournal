@@ -88,7 +88,6 @@ class ScrollCal(gtk.DrawingArea):
         gobject.signal_new("data-updated", ScrollCal,
                            gobject.SIGNAL_RUN_LAST,
                            gobject.TYPE_NONE,())
-        self.dayrange = dayrange
         self.update_data(history, draw = False)
         self.dayrange = dayrange
     
@@ -102,7 +101,6 @@ class ScrollCal(gtk.DrawingArea):
         """
         if history:
             self.history = history
-            self.len_past_history = len(history) - 1 - self.dayrange
             self.largest = 1
             for date, nitems in self.history:
                 if nitems > self.largest: self.largest = nitems
@@ -132,18 +130,11 @@ class ScrollCal(gtk.DrawingArea):
         color =  get_gtk_rgba(self.style, "text", 1)
         
         months_positions = []
-        for date, nitems in self.history[:-self.dayrange]:
+        for date, nitems in self.history:
             if check_for_new_month(date):
                 months_positions += [(date, x)]
             self.draw_column(context, x, event.area.height, nitems, color)
             x += self.xincrement
-
-        self.xleading_days = x
-        x += self.xincrement        
-        for date, nitems in self.history[-self.dayrange:]:
-            self.draw_column(context, x, event.area.height, nitems, color)
-            x += self.xincrement
-
         # Draw over the selected items
         self.draw_selected(context, selected, event.area.height)
         if x > event.area.width: # Check for resize
@@ -229,18 +220,14 @@ class ScrollCal(gtk.DrawingArea):
         """
         if i < 0:
             return # We don't have any data yet
+        
         x = (i * self.xincrement) + self.xincrement
         y = 0
+        
         color = get_gtk_rgba(self.style, "bg", 3)
-        if i < self.len_past_history:            
-            for n in xrange(self.dayrange):
-                self.draw_column(context, x + (n * self.xincrement), height,
-                                 self.history[i + n][1], color)
-        else:
-            for n in xrange(self.dayrange):
-                self.draw_column(context, x + ((n+1) * self.xincrement), height,
-                                 self.history[i + n][1], color)
-            
+        for n in xrange(self.dayrange):
+            self.draw_column(context, x + (n * self.xincrement), height,
+                self.history[i + n][1], color)
     
     def set_selection(self, i):
         self.connect("expose_event", self.expose, i)
@@ -271,12 +258,9 @@ class ScrollCal(gtk.DrawingArea):
         
         Calls a calback set by connect_selection_callback
         """
-        if event.x < self.xleading_days:
-            location = int((event.x - self.xincrement) / self.xincrement)
-        else:
-            location = self.len_past_history + int((event.x - self.xleading_days) / self.xincrement)
-            location = len(self.history) - 1
-        self.connect("expose_event", self.expose, max(min(location - 2, len(self.history) - self.dayrange), 0))
+        location = int((event.x - self.xincrement) / self.xincrement)
+        self.connect("expose_event", self.expose, max(min(location - 2,
+            len(self.history) - self.dayrange), 0))
         self.queue_draw()
         self.emit("date-set")
         if callable(self.selection_callback):
