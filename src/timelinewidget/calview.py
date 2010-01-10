@@ -148,7 +148,6 @@ class CairoCalendar(gtk.DrawingArea):
         months_positions = []
 
         i = 0
-        print "*****", self.pinned
         for date, nitems in self.history:
             if check_for_new_month(date):
                 months_positions += [(date, x)]

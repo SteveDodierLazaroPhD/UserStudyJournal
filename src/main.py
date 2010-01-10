@@ -84,7 +84,7 @@ class Portal(gtk.Window):
         # by having no padding on the HBox
         self.add(self.vbox)
         self.rbox = gtk.VBox()
-        self.rbox.pack_start(self.ffwdbtn, False, 20)
+        #self.rbox.pack_start(self.ffwdbtn, False, 20)
         self.rbox.pack_start(self.fwdbtn)
         
         hbox = gtk.HBox()

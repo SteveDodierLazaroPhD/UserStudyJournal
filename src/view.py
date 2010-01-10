@@ -40,7 +40,7 @@ class ActivityView(gtk.VBox):
         self.daysbox = None
         self.__first_run = True
 
-        self._set_searchbox()
+        #self._set_searchbox()
         self._set_today_timestamp()
         self._set_view_type()
         self._set_timeline()
@@ -78,8 +78,8 @@ class ActivityView(gtk.VBox):
             #print history, i
             if i < len(history):
                 selection_date = history[i][0]
-                end = selection_date + 86399
-                start = selection_date - (self.dayrange -1)*86400
+                end = selection_date + 86400 + 86399
+                start = selection_date - (self.dayrange -2)*86400
                 self.set_dayrange(start, end)
                 #if isinstance(selection_date, int): 
                     #selection_date = date.fromtimestamp(selection_date).strftime("%d/%B")

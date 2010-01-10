@@ -339,7 +339,7 @@ class Item(gtk.Button):
         label = gtk.Label()
         t = datetime.datetime.fromtimestamp(self.time).strftime("%H:%M")
         label.set_markup("<span>%s</span>" % t)
-        hbox.pack_end(label, False, False)
+        #hbox.pack_end(label, False, False)
         self.add(hbox)
 
         self.connect("clicked", self.launch)
