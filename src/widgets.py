@@ -86,6 +86,7 @@ class SearchBox(gtk.EventBox):
         self.clearbtn = gtk.Button()
         #label = gtk.Label()
         #label.set_markup("<span><b>X</b></span>")
+        
         img = gtk.image_new_from_stock("gtk-close", 4)
         self.clearbtn.add(img)
         self.clearbtn.set_focus_on_click(False)
@@ -99,6 +100,9 @@ class SearchBox(gtk.EventBox):
         self.combobox.set_active(0)
         for cat in self.category.keys():
             self.combobox.append_text(cat)
+            
+        height = self.search.allocation.height
+        self.combobox.set_size_request(-1, height)
         
 
 class SearchEntry(gtk.Entry):
