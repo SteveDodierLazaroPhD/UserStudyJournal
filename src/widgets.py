@@ -84,9 +84,10 @@ class SearchBox(gtk.EventBox):
     def _init_combobox(self):
         
         self.clearbtn = gtk.Button()
-        label = gtk.Label()
-        label.set_markup("<span><b>X</b></span>")
-        self.clearbtn.add(label)
+        #label = gtk.Label()
+        #label.set_markup("<span><b>X</b></span>")
+        img = gtk.image_new_from_stock("gtk-close", 4)
+        self.clearbtn.add(img)
         self.clearbtn.set_focus_on_click(False)
         self.clearbtn.set_relief(gtk.RELIEF_NONE)
         self.hbox.pack_end(self.clearbtn, False, False)
