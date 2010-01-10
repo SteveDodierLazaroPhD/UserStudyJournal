@@ -31,11 +31,15 @@ import math
 import time
 import datetime
 
+month_dict  = {1:"January", 2:"February", 3:"March", 4:"April",
+               5:"May", 6:"June", 7:"July", 8:"August", 9:"September",
+               10:"October", 11:"November", 12:"December",
+               }
+
 def check_for_new_month(date):
     if datetime.date.fromtimestamp(date).day == 1:
         return True
     return False
-
 
 def get_gtk_rgba(style, palette, i, shade = 1):
     """Takes a gtk style and returns a RGB tuple
@@ -183,7 +187,11 @@ class CairoCalendar(gtk.DrawingArea):
         """
         Draws a line signifying the start of a month
         """
-        context.set_source_rgba(*get_gtk_rgba(self.style, "text", 4, 0.7))
+        fg = self.style.fg[gtk.STATE_NORMAL]
+        bg = self.style.bg[gtk.STATE_NORMAL]
+        red, green, blue = (2*bg.red+fg.red)/3/65535.0, (2*bg.green+fg.green)/3/65535.0, (2*bg.blue+fg.blue)/3/65535.0
+        context.set_source_rgba(red, green, blue, 1)
+        
         context.set_line_width(3)
         context.move_to(x+2, height - self.ypad)
         context.line_to(x+2, height - self.ypad/3)
@@ -192,16 +200,8 @@ class CairoCalendar(gtk.DrawingArea):
         context.select_font_face(self.font_name, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
         context.set_font_size(12)
 
-        fg = self.style.fg[gtk.STATE_NORMAL]
-        bg = self.style.bg[gtk.STATE_NORMAL]
-        red, green, blue = (2*bg.red+fg.red)/3/65535.0, (2*bg.green+fg.green)/3/65535.0, (2*bg.blue+fg.blue)/3/65535.0
-        context.set_source_rgba(red, green, blue, 1)
-
         date = datetime.date.fromtimestamp(date)
-        month  = {1:"January", 2:"February", 3:"March", 4:"April",
-                  5:"May", 6:"June", 7:"July", 8:"August", 9:"September",
-                  10:"October", 11:"November", 12:"December",
-                  }[date.month]
+        month  = month_dict[date.month]
 
         date = "%s %d" % (month, date.year)
         xbearing, ybearing, width, oheight, xadvance, yadvance = context.text_extents(date)
