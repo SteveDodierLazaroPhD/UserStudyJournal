@@ -267,7 +267,7 @@ class CairoCalendar(gtk.DrawingArea):
             self.selection_callback(self.history, location)
 
 
-class CalWidget(gtk.HBox):
+class CalendarWidget(gtk.HBox):
 
     def __init__(self):
         super(gtk.HBox, self).__init__()
@@ -324,4 +324,4 @@ class CalWidget(gtk.HBox):
         self.adj.set_value(1)
         self.adj.set_value(self.calendar.max_width - self.adj.page_size)
 
-cal = CalWidget()
+cal = CalendarWidget()
