@@ -138,7 +138,7 @@ class SearchBox(gtk.EventBox):
             else:
                 cat = self.category[self.combobox.get_active_text()]
                 interpretation = self.category[self.combobox.get_active_text()]
-	    if "tracker" in globals().keys:
+	    if "tracker" in globals().keys():
 		tracker.search(text, interpretation, callback)
 
 class SearchEntry(gtk.Entry):
