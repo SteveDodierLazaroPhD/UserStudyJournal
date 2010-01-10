@@ -271,16 +271,16 @@ class CalendarWidget(gtk.HBox):
 
     def __init__(self):
         super(gtk.HBox, self).__init__()
-        port = gtk.Viewport()        
-        port.set_shadow_type(gtk.SHADOW_NONE)
-        port.set_size_request(600,70) 
+        viewport = gtk.Viewport()        
+        viewport.set_shadow_type(gtk.SHADOW_NONE)
+        viewport.set_size_request(600,70) 
         self.calendar = CairoCalendar([[0, 0]])
-        port.add(self.calendar)
+        viewport.add(self.calendar)
         # Draw buttons
         
         align = gtk.Alignment(0,0,1,1)
         align.set_padding(0, 0, 0, 0)
-        align.add(port)
+        align.add(viewport)
         
         b1 = gtk.Button()
         b1.add(gtk.Arrow(gtk.ARROW_LEFT, gtk.SHADOW_NONE))
@@ -292,16 +292,16 @@ class CalendarWidget(gtk.HBox):
         b2.set_relief(gtk.RELIEF_NONE)
         b2.set_focus_on_click(False)
         
-        b1.connect("clicked", self.scroll_viewport, port, 
+        b1.connect("clicked", self.scroll_viewport, viewport, 
                    self.calendar, -3*self.calendar.xincrement)
-        b2.connect("clicked", self.scroll_viewport, port, 
+        b2.connect("clicked", self.scroll_viewport, viewport, 
                    self.calendar, 3*self.calendar.xincrement)
         self.calendar.connect("data-updated", self.scroll_to_end)
         self.pack_start(b1, False, False)
         self.pack_start(align, True, True, 3)    
         self.pack_end(b2, False, False)
            
-        self.adj = port.get_hadjustment()    
+        self.adj = viewport.get_hadjustment()    
         self.adj.set_upper(self.calendar.max_width)
         self.adj.set_value(1)
         self.adj.set_value(self.calendar.max_width - self.adj.page_size)
