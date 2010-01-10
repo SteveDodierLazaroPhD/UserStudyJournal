@@ -28,7 +28,12 @@ from ui_utils import *
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
     ResultType
 
-from tracker_wrapper import tracker
+from dbus.exceptions import DBusException
+try:
+    from tracker_wrapper import tracker
+except DBusException:
+    print "tracker disabled"
+    
 
 class SearchBox(gtk.EventBox):    
     __gsignals__ = {
@@ -133,8 +138,8 @@ class SearchBox(gtk.EventBox):
             else:
                 cat = self.category[self.combobox.get_active_text()]
                 interpretation = self.category[self.combobox.get_active_text()]
-            tracker.search(text, interpretation, callback)
-            
+	    if "tracker" in globals().keys:
+		tracker.search(text, interpretation, callback)
 
 class SearchEntry(gtk.Entry):
 
