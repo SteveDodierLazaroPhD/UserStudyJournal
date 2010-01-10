@@ -63,11 +63,14 @@ class ActivityView(gtk.VBox):
         i = 0
         dates = []
         for date, nitems in history:
-            print date
             if int(date) in keys: 
                 dates.append(i)
             i+=1
         
+        
+        #print dates
+        #for date in dates:
+            #cal.calendar.set_selection(date)
         #INSERT HERE:
         # dates is the list of indecies
         
