@@ -400,16 +400,18 @@ class DayLabel(gtk.DrawingArea):
         context.fill_preserve()
 
 
-class PinBox(gtk.VBox):
+class PinBox(gtk.EventBox):
     def __init__(self):
-        gtk.VBox.__init__(self)
+        gtk.EventBox.__init__(self)
+        self.vbox = gtk.VBox()
         self.view = gtk.VBox()
         self.label = gtk.Label("Pinned")
         self.label.set_alignment(0.03, 0.5)
-        self.pack_start(self.label, False, False, 6)
-        self.pack_start(self.view)
+        self.vbox.pack_start(self.label, False, False, 6)
+        self.vbox.pack_start(self.view)
         self.zg = CLIENT
         self.set_bookmarks()
+        self.add(self.vbox)
         self.show_all()
     
         def change_style(widget, style):
@@ -420,8 +422,16 @@ class PinBox(gtk.VBox):
             color.green = (2*color.green + fcolor.green)/3
             color.blue = (2*color.blue + fcolor.blue)/3
             self.label.modify_fg(gtk.STATE_NORMAL, color)
+            
+            
+            color = rc_style.bg[gtk.STATE_NORMAL]
+            fcolor = rc_style.fg[gtk.STATE_NORMAL] 
+            color.red = (2*color.red + fcolor.red)*0.52
+            color.green = (2*color.green + fcolor.green)*0.52
+            color.blue = (2*color.blue + fcolor.blue)*0.52
+            self.modify_bg(gtk.STATE_NORMAL, color)
                 
-        self.connect("style-set", change_style)
+        self.vbox.connect("style-set", change_style)
         bookmarker.connect("reload", self.set_bookmarks)
         
     def set_bookmarks(self, widget=None, uris=None):
