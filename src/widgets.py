@@ -331,9 +331,11 @@ class Item(gtk.Button):
         label = gtk.Label(self.subject.text)
         label.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
         label.set_alignment(0.0, 0.5)
-
+        
+        img = gtk.image_new_from_pixbuf(self.icon)
+        img.set_alignment(0.5, 0.5)
         hbox = gtk.HBox()
-        hbox.pack_start(gtk.image_new_from_pixbuf(self.icon), False, False, 12)
+        hbox.pack_start(img, False, False, 12)
         hbox.pack_start(label, True, True)
 
         label = gtk.Label()
