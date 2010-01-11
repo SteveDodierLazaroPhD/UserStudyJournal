@@ -255,7 +255,7 @@ class CategoryButton(gtk.HBox):
         #btn.set_sensitive(False)
         btn.set_size_request(21,21)
         
-        hbox.pack_start(btn, False, False)
+        hbox.pack_start(btn, False, False, 12)
         self.active = False
 
         self.pack_start(self.btn)
@@ -333,8 +333,8 @@ class Item(gtk.Button):
         label.set_alignment(0.0, 0.5)
 
         hbox = gtk.HBox()
-        hbox.pack_start(gtk.image_new_from_pixbuf(self.icon), False, False)
-        hbox.pack_start(label, True, True, 6)
+        hbox.pack_start(gtk.image_new_from_pixbuf(self.icon), False, False, 12)
+        hbox.pack_start(label, True, True)
 
         label = gtk.Label()
         t = datetime.datetime.fromtimestamp(self.time).strftime("%H:%M")
