@@ -14,8 +14,8 @@ from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
 CLIENT = ZeitgeistClient()
 
 def datelist(n, callback):
-    today = int(time.time())/86400
-    today = today*86400 - n*86400
+    today =  int(time.mktime(time.strptime(time.strftime("%d %B %Y") , "%d %B %Y")))
+    today = today - n*86400 
     
     x = []
     
