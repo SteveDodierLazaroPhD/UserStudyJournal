@@ -57,7 +57,7 @@ class ActivityView(gtk.VBox):
         
     def _clear_search_results(self, widget):
         print "CLEAR"
-        cal.calendar.set_pinned([])
+        cal.set_selection[[]]
         
     def _handle_search_results(self, widget, results):
         history = cal.calendar.history
@@ -71,7 +71,7 @@ class ActivityView(gtk.VBox):
             if int(date) in keys: 
                 dates.append(i)
             i+=1
-        cal.calendar.set_pinned(dates)
+        cal.calendar.set_selection(dates, True)
         
     def _set_timeline(self):
         def selection_callback(history, i):

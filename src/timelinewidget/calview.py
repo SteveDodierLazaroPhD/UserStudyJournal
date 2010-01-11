@@ -73,7 +73,6 @@ class CairoCalendar(gtk.DrawingArea):
     wcolumn = 9
     xincrement = wcolumn + padding
     max_width = xincrement
-    pinned = []
 
     def __init__(self, history, selected_range=0):
         """
@@ -121,7 +120,7 @@ class CairoCalendar(gtk.DrawingArea):
             self.queue_draw()
         self.emit("data-updated")
 
-    def expose(self, widget, event, selected = None):
+    def expose(self, widget, event, selected = None, alternative_highlight = False):
         # Default hilight to the last items
         if selected == None:
             selected = range(len(self.history))[-self.selected_range:]
@@ -151,10 +150,11 @@ class CairoCalendar(gtk.DrawingArea):
         for date, nitems in self.history:
             if check_for_new_month(date):
                 months_positions += [(date, x)]
-            if i >= selected[0] and i <= selected[-1] and i in selected: 
-                color = selectedcolor
-            elif len(self.pinned)>0 and i >= self.pinned[0] and i <= self.pinned[-1] and i in self.pinned: 
-                color = pinnedcolor
+            if i >= selected[0] and i <= selected[-1] and i in selected:
+                if alternative_highlight:
+                    color = pinnedcolor
+                else:
+                    color = selectedcolor
             else:
                 color = normalcolor
             self.draw_column(context, x, event.area.height, nitems, color)
@@ -230,15 +230,10 @@ class CairoCalendar(gtk.DrawingArea):
         context.move_to(x + 8, height - self.ypad/3)
         context.show_text(date)
 
-    def set_selection(self, i):
-        self.connect("expose_event", self.expose, i)
+    def set_selection(self, i, alternative_highlight = False):
+        self.connect("expose_event", self.expose, i, alternative_highlight)
         self.queue_draw()
         self.emit("date-set")
-
-    def set_pinned(self, i):
-        self.pinned = i
-        self.connect("expose_event", self.expose)
-        self.queue_draw()
 
     def selection_callback(self, history, i):
         """
