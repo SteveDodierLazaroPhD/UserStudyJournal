@@ -405,14 +405,26 @@ class PinBox(gtk.EventBox):
         gtk.EventBox.__init__(self)
         self.vbox = gtk.VBox()
         self.view = gtk.VBox()
-        self.label = gtk.Label("Pinned")
-        self.label.set_alignment(0.03, 0.5)
-        self.vbox.pack_start(self.label, False, False, 6)
+        self.label = gtk.ToggleButton()
+        label = gtk.Label("Pinned")
+        label.set_alignment(0.01, 0.5)
+        self.label.add(label)
+        self.vbox.pack_start(self.label, False, False)
         self.vbox.pack_start(self.view)
         self.zg = CLIENT
         self.set_bookmarks()
         self.add(self.vbox)
         self.show_all()
+        self.label.set_focus_on_click(False)
+        self.label.set_active(True)
+        
+        def _handle_toggle(widget):
+            if self.label.get_active():
+                self.view.show()
+            else:
+                self.view.hide()
+        
+        self.label.connect("toggled", _handle_toggle)
     
         def change_style(widget, style):
             rc_style = self.style
@@ -421,7 +433,7 @@ class PinBox(gtk.EventBox):
             color.red = (2*color.red + fcolor.red)/3
             color.green = (2*color.green + fcolor.green)/3
             color.blue = (2*color.blue + fcolor.blue)/3
-            self.label.modify_fg(gtk.STATE_NORMAL, color)
+            label.modify_fg(gtk.STATE_NORMAL, color)
             
             
             color = rc_style.bg[gtk.STATE_NORMAL]
