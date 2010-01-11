@@ -58,7 +58,8 @@ class DayWidget(gtk.VBox):
         self.__init_widgets()
         self.__init__pinbox()
         self.__init_events()
-        self.pinbox.show_all()
+        gobject.timeout_add_seconds((86400 - (int(time.time() - time.timezone) % 86400)),
+                                    self.__refresh)
 
     def set_date_strings(self):
         self.date_string = date.fromtimestamp(self.day_start).strftime("%d %B")
@@ -71,13 +72,17 @@ class DayWidget(gtk.VBox):
                 self.week_day_string = date.fromtimestamp(self.day_start).strftime("%A")
         self.emit("style-set", None)
 
+    def __refresh(self):
+        self.__init_date_label()
+        self.__init__pinbox()
+
     def __init__pinbox(self):
         if self.day_start <= time.time() < self.day_end:
             print "xxxxxxxxxx"
-            self.view.pack_start(self.pinbox, False, False)
+            self.view.pack_start(pinbox, False, False)
             #self.view.reorder_child(self.pinbox, 0)
         else:
-            self.view.remove(self.pinbox)
+            self.view.remove(pinbox)
 
     def __init_widgets(self):
         self.vbox = gtk.VBox()
@@ -105,7 +110,6 @@ class DayWidget(gtk.VBox):
         self.vbox.pack_start(scroll)
         self.show_all()
         
-        self.pinbox = PinBox()
 
         def change_style(widget, style):
             rc_style = self.style
@@ -146,15 +150,15 @@ class DayWidget(gtk.VBox):
         self.vbox.pack_start(self.daylabel, False, False)
         self.vbox.reorder_child(self.daylabel, 0)
 
-
     def __init_events(self):
         for w in self.view:
-            if not w == self.pinbox:
+            if not w == pinbox:
                 self.view.remove(w)
         for period in self._periods:
             part = DayPartWidget(period[0], period[1], period[2])
             self.view.pack_start(part, False, False)
             part.init_events()
+
 
 class DayPartWidget(gtk.VBox):
     def __init__(self, part, start, end):
@@ -318,7 +322,6 @@ class DayLabel(gtk.DrawingArea):
         context.clip()
         self.draw(context, event)
         self.day_text(context, event)
-        gobject.timeout_add_seconds((int(time.time()) % 86400)+1, self._daily_refresh)
         return False
     
     def day_text(self, context, event):
@@ -396,11 +399,6 @@ class DayLabel(gtk.DrawingArea):
         context.rectangle(0, r, w, h)
         context.fill_preserve()
 
-    def _daily_refresh(self, *args, **kwargs):
-        self.queue_draw()
-        gobject.timeout_add_seconds(86400, self._daily_refresh)
-        if (time.time() % 86400) < 100: return True
-        return False
 
 class PinBox(gtk.VBox):
     def __init__(self):
@@ -409,6 +407,9 @@ class PinBox(gtk.VBox):
         self.label = gtk.Label("Pinned")
         self.label.set_alignment(0.03, 0.5)
         self.pack_start(self.label, False, False, 6)
+        self.pack_start(self.view)
+        self.zg = CLIENT
+        self.set_bookmarks()
         self.show_all()
     
         def change_style(widget, style):
@@ -421,4 +422,73 @@ class PinBox(gtk.VBox):
             self.label.modify_fg(gtk.STATE_NORMAL, color)
                 
         self.connect("style-set", change_style)
+        bookmarker.connect("reload", self.set_bookmarks)
+        
+    def set_bookmarks(self, widget=None, uris=None):
+        if not uris:
+            uris = bookmarker.bookmarks
+        templates = []
+        for b in uris:
+            event = Event()
+            subject = Subject()
+            subject.uri = b
+            event.set_subjects([subject])
+            templates.append(event)
+                   
+        def _handle_find_events(ids):
+            self.zg.get_events(ids, self._handle_get_events)
+        
+        self.zg.find_event_ids_for_templates(templates, _handle_find_events,
+            [0, time.time()*1000], num_events=0,
+            result_type=2)
     
+    def _handle_get_events(self, events):
+        real_count = 0
+
+        def exists(uri):
+            return not uri.startswith("file://") or \
+                os.path.exists(urllib.unquote(str(uri[7:])))
+
+        self.categories = {}
+
+        for widget in self.view:
+            self.view.remove(widget)
+
+        for event in events:
+            subject = event.subjects[0]
+            if exists(subject.uri):
+                real_count += 1
+                if not self.categories.has_key(subject.interpretation):
+                    self.categories[subject.interpretation] = []
+                self.categories[subject.interpretation].append(event)
+        if real_count == 0:
+            self.view.hide_all()
+        else:
+            keys = self.categories.keys()
+            keys.sort()
+
+            temp_keys = []
+            for key in keys:
+                events = self.categories[key]
+                events.reverse()
+                if len(events) > 4:
+                    box = CategoryBox(key, events)
+                    self.view.pack_start(box)
+                else:
+                    temp_keys.append(key)
+            
+            temp_events = []
+            
+            for key in temp_keys:
+                events = self.categories[key]
+                temp_events += events
+            
+            def comp(x, y):
+                return cmp(int(x.timestamp), int(y.timestamp))
+            
+            temp_events.sort(comp)
+            box = CategoryBox(None, temp_events)
+            self.view.pack_start(box)
+            self.view.show()
+
+pinbox = PinBox()

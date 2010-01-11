@@ -61,9 +61,11 @@ class Bookmarker(gobject.GObject):
                 filehandler.close()
             except:
                 self.bookmarks = []
-                
+        
         if not uri in self.bookmarks:
             self.bookmarks.append(uri)
+            
+        print "bookmarking", uri
         
         filehandler = open(self.bookmarks_file, 'w') 
         pickle.dump(self.bookmarks, filehandler)
@@ -86,6 +88,10 @@ class Bookmarker(gobject.GObject):
         pickle.dump(self.bookmarks, filehandler)
         filehandler.close()
         self.emit("reload", self.bookmarks)
+        
+    def is_bookmarked(self, uri):
+        print uri in self.bookmarks
+        return uri in self.bookmarks
         
 bookmarker = Bookmarker()
 bookmarker.bookmark("bla")

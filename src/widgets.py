@@ -27,6 +27,8 @@ from ui_utils import *
 #from teamgeist import TeamgeistInterface
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
     ResultType
+    
+from bookmarker import bookmarker
 
 from dbus.exceptions import DBusException
 try:
@@ -370,18 +372,26 @@ class Item(gtk.Button):
         #open.connect("activate", lambda *discard: self._open_item(item=item))
         open.show()
         menu.append(open)
-        #if item["bookmark"]:
-            #bookmark = gtk.MenuItem(("Unbookmark"))
-        #else:
-            #bookmark = gtk.MenuItem(("Bookmark"))
-        #bookmark.connect("activate", lambda w: self.toggle_bookmark(item=item))
-        #bookmark.show()
-        #menu.append(bookmark)
+        bool = bookmarker.is_bookmarked(self.subject.uri)
+        if bool:
+            bookmark = gtk.MenuItem(("Unbookmark"))
+        else:
+            bookmark = gtk.MenuItem(("Bookmark"))
+        bookmark.connect("activate", lambda x: self.set_bookmarked(bool))
+        bookmark.show()
+        menu.append(bookmark)
                 
         #tag = gtk.MenuItem(("Edit tags..."))
         #tag.connect("activate", lambda w: self.tag_item(item))
         #tag.show()
         #menu.append(tag)
+
+    def set_bookmarked(self, bool):
+        uri = unicode(self.subject.uri)
+        if not bool:
+            bookmarker.bookmark(uri)
+        else:
+            bookmarker.unbookmark(uri)
 
     def launch(self, *discard):
         launcher.launch_uri(self.subject.uri, self.subject.mimetype)
