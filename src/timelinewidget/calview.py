@@ -126,8 +126,9 @@ class CairoCalendar(gtk.DrawingArea):
             selected = range(len(self.history))[-self.selected_range:]
         elif isinstance(selected, int):
             selected = range(selected, selected + self.selected_range)
+        elif isinstance(selected, list) and len(selected) == 0:
+            selected = [-1] # Disable color
         
-    
         context = widget.window.cairo_create()
         # Set the source to the background color
         color = get_gtk_rgba(self.style, "bg", 0, 1.02)
