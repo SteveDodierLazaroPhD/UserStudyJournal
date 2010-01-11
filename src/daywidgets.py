@@ -46,6 +46,7 @@ class DayWidget(gtk.VBox):
         hour = 60*60
         self.day_start = start
         self.day_end = end
+        self.day_label = None
         
         self.set_date_strings()
         self._periods = [
@@ -118,15 +119,20 @@ class DayWidget(gtk.VBox):
         self.connect("style-set", change_style)
 
     def __init_date_label(self):
+        
+        if self.day_label:
+            self.remove(self.daylabel)
+        
         today = int(time.time() )- 7*86400
         print self.day_start, today
         if self.day_start < today:
-            daylabel = DayLabel(self.date_string, self.week_day_string+", "+ self.year_string)
+            self.daylabel = DayLabel(self.date_string, self.week_day_string+", "+ self.year_string)
         else:
-            daylabel = DayLabel(self.week_day_string, self.date_string+", "+ self.year_string)
+            self.daylabel = DayLabel(self.week_day_string, self.date_string+", "+ self.year_string)
         #x, y = vbox.get_size_request()
-        daylabel.set_size_request(100, 60)
-        self.vbox.pack_start(daylabel, False, False)
+        self.daylabel.set_size_request(100, 60)
+        self.vbox.pack_start(self.daylabel, False, False)
+        self.vbox.reorder_child(self.daylabel, 0)
 
 
     def __init_events(self):
@@ -271,7 +277,6 @@ class CategoryBox(gtk.VBox):
             self.view.hide_all()
             self.label.hide_all()
 
-
 class DayLabel(gtk.DrawingArea):
     def __init__(self, day, date):
         if day == "Today":
@@ -384,3 +389,23 @@ class DayLabel(gtk.DrawingArea):
         if (time.time() % 86400) < 100: return True
         return False
 
+class PinBox(gtk.VBox):
+    def __init__(self):
+        self.view = gtk.VBox()
+        self.label = gtk.Label()
+        self.label.set_markup("<span>%s</span>" % "Pinned")
+        self.label.set_alignment(0.03, 0.5)
+        self.pack_start(self.label, False, False, 6)
+    
+        def change_style(widget, style):
+            rc_style = self.style
+            color = rc_style.bg[gtk.STATE_NORMAL]
+            fcolor = rc_style.fg[gtk.STATE_NORMAL] 
+            color.red = (2*color.red + fcolor.red)/3
+            color.green = (2*color.green + fcolor.green)/3
+            color.blue = (2*color.blue + fcolor.blue)/3
+            self.label.modify_fg(gtk.STATE_NORMAL, color)
+                
+        self.connect("style-set", change_style)
+    
+    

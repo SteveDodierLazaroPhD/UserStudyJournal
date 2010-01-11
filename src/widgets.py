@@ -227,8 +227,7 @@ class SearchEntry(gtk.Entry):
 
         self.search_timeout = 0
         return False
-    
-    
+       
 class CategoryButton(gtk.HBox):
 
     __gsignals__ = {
@@ -314,7 +313,6 @@ class CategoryButton(gtk.HBox):
         else:
             self.img.set_markup("<span size='small'><b>+</b></span>")
         self.emit("toggle", self.active)
-
 
 class Item(gtk.Button):
 
