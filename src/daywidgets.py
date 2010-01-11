@@ -221,7 +221,7 @@ class DayPartWidget(gtk.VBox):
             for key in keys:
                 events = self.categories[key]
                 events.reverse()
-                if len(events) > 1:
+                if len(events) > 4:
                     box = CategoryBox(key, events)
                     self.view.pack_start(box)
                 else:
