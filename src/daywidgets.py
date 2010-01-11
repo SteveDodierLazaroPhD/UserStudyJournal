@@ -56,7 +56,9 @@ class DayWidget(gtk.VBox):
         ]
 
         self.__init_widgets()
+        self.__init__pinbox()
         self.__init_events()
+        self.pinbox.show_all()
 
     def set_date_strings(self):
         self.date_string = date.fromtimestamp(self.day_start).strftime("%d %B")
@@ -68,6 +70,14 @@ class DayWidget(gtk.VBox):
         else:
                 self.week_day_string = date.fromtimestamp(self.day_start).strftime("%A")
         self.emit("style-set", None)
+
+    def __init__pinbox(self):
+        if self.day_start <= time.time() < self.day_end:
+            print "xxxxxxxxxx"
+            self.view.pack_start(self.pinbox, False, False)
+            #self.view.reorder_child(self.pinbox, 0)
+        else:
+            self.view.remove(self.pinbox)
 
     def __init_widgets(self):
         self.vbox = gtk.VBox()
@@ -94,6 +104,8 @@ class DayWidget(gtk.VBox):
             w.set_shadow_type(gtk.SHADOW_NONE)
         self.vbox.pack_start(scroll)
         self.show_all()
+        
+        self.pinbox = PinBox()
 
         def change_style(widget, style):
             rc_style = self.style
@@ -119,7 +131,7 @@ class DayWidget(gtk.VBox):
         self.connect("style-set", change_style)
 
     def __init_date_label(self):
-        
+        self.set_date_strings()
         if self.day_label:
             self.remove(self.daylabel)
         
@@ -137,7 +149,8 @@ class DayWidget(gtk.VBox):
 
     def __init_events(self):
         for w in self.view:
-            self.view.remove(w)
+            if not w == self.pinbox:
+                self.view.remove(w)
         for period in self._periods:
             part = DayPartWidget(period[0], period[1], period[2])
             self.view.pack_start(part, False, False)
@@ -391,11 +404,12 @@ class DayLabel(gtk.DrawingArea):
 
 class PinBox(gtk.VBox):
     def __init__(self):
+        gtk.VBox.__init__(self)
         self.view = gtk.VBox()
-        self.label = gtk.Label()
-        self.label.set_markup("<span>%s</span>" % "Pinned")
+        self.label = gtk.Label("Pinned")
         self.label.set_alignment(0.03, 0.5)
         self.pack_start(self.label, False, False, 6)
+        self.show_all()
     
         def change_style(widget, style):
             rc_style = self.style
@@ -407,5 +421,4 @@ class PinBox(gtk.VBox):
             self.label.modify_fg(gtk.STATE_NORMAL, color)
                 
         self.connect("style-set", change_style)
-    
     
