@@ -406,9 +406,9 @@ class PinBox(gtk.VBox):
         self.view = gtk.VBox()
         self.label = gtk.Label("Pinned")
         hbox = gtk.HBox()
-        self.label.set_alignment(0.0, 0.5)
-        hbox.pack_start(self.label, True, True, 7)
-        self.pack_start(hbox, False, False)
+        self.label.set_alignment(0.03, 0.5)
+        self.pack_start(self.label, True, True, 6)
+        #self.pack_start(hbox, False, False, 9)
         self.pack_start(self.view)
         self.zg = CLIENT
         self.set_bookmarks()
