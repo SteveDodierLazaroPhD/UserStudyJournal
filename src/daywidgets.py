@@ -400,33 +400,35 @@ class DayLabel(gtk.DrawingArea):
         context.fill_preserve()
 
 
-class PinBox(gtk.EventBox):
+class PinBox(gtk.VBox):
     def __init__(self):
-        gtk.EventBox.__init__(self)
-        self.vbox = gtk.VBox()
+        gtk.VBox.__init__(self)
         self.view = gtk.VBox()
-        self.label = gtk.ToggleButton()
-        label = gtk.Label("Pinned")
-        label.set_alignment(0.01, 0.5)
-        self.label.add(label)
-        self.vbox.pack_start(self.label, False, False)
-        self.vbox.pack_start(self.view)
+        self.label = gtk.Label("Pinned")
+        hbox = gtk.HBox()
+        self.label.set_alignment(0.0, 0.5)
+        hbox.pack_start(self.label, True, True, 7)
+        self.pack_start(hbox, False, False)
+        self.pack_start(self.view)
         self.zg = CLIENT
         self.set_bookmarks()
-        self.add(self.vbox)
         self.show_all()
-        self.label.set_focus_on_click(False)
-        self.label.set_active(True)
-        
-        def _handle_toggle(widget):
-            if self.label.get_active():
-                self.view.show()
-            else:
-                self.view.hide()
-        
-        self.label.connect("toggled", _handle_toggle)
+        #self.label.set_focus_on_click(False)
+        #self.label.set_active(True)
     
         bookmarker.connect("reload", self.set_bookmarks)
+        
+        
+        def change_style(widget, style):
+            rc_style = self.style
+            color = rc_style.bg[gtk.STATE_NORMAL]
+            fcolor = rc_style.fg[gtk.STATE_NORMAL] 
+            color.red = (2*color.red + fcolor.red)/3
+            color.green = (2*color.green + fcolor.green)/3
+            color.blue = (2*color.blue + fcolor.blue)/3
+            self.label.modify_fg(gtk.STATE_NORMAL, color)
+            
+        self.connect("style-set", change_style)
         
     def set_bookmarks(self, widget=None, uris=None):
         if not uris:
