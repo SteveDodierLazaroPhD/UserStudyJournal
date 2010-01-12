@@ -275,6 +275,9 @@ class CairoCalendar(gtk.DrawingArea):
         else:
             raise TypeError("Callback is not a function")
 
+    def get_data_index_from_cartesian(self, x, y):
+        return int((x - self.xincrement) / self.xincrement)
+
     def clicked(self, widget, event, *args, **kwargs):
         """Handles click events
 
@@ -283,7 +286,7 @@ class CairoCalendar(gtk.DrawingArea):
 
         Calls a calback set by connect_selection_callback
         """
-        location = int((event.x - self.xincrement) / self.xincrement)
+        location = self.get_data_index_from_cartesian(event.x, event.y)
         self.connect("expose_event", self.expose, max(min(location - 2,
             len(self.datastore) - self.selected_range), 0))
         self.queue_draw()
