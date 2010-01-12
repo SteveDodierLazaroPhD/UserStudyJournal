@@ -29,7 +29,7 @@ from config import BASE_PATH
 from widgets import *
 from view import ActivityView
 from ui_utils import settings
-from timelinewidget.calview import cal
+from timelinewidget.calendarview import cal
 
 class Portal(gtk.Window):
 

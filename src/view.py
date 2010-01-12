@@ -22,8 +22,8 @@ import time
 from widgets import *
 from ui_utils import *
 from daywidgets import *
-from timelinewidget.calview import cal
-from timelinewidget import rdate_z
+from timelinewidget.calendarview import cal
+from timelinewidget import calendardata
 import datetime
 import time
 
@@ -86,7 +86,7 @@ class ActivityView(gtk.VBox):
                 start = selection_date - (self.dayrange - 1) * 86400
                 self.set_dayrange(start, end)
         
-        rdate_z.datelist(90, cal.calendar.set_data)
+        calendardata.datelist(90, cal.calendar.set_data)
         cal.calendar.connect_selection_callback(selection_callback)
 
     def _set_view_type(self, refresh=False):

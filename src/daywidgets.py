@@ -194,12 +194,14 @@ class DayPartWidget(gtk.VBox):
             self.notify_insert_handler, self.notify_delete_handler)
         
     def notify_insert_handler(self, time_range, events):
-            self.init_events()
+        print ".............."
+        self.init_events()
         
     def notify_delete_handler(self, time_range, event_ids):
             self.init_events()            
         
     def init_events(self):
+        self.show_all()
         self.zg.find_events_for_templates(self.event_templates,
             self._handle_get_events, [self.start * 1000, self.end * 1000],
             num_events=50000, result_type=ResultType.MostRecentSubjects)
@@ -435,11 +437,8 @@ class PinBox(gtk.VBox):
             subject.uri = b
             event.set_subjects([subject])
             templates.append(event)
-        
-        def _handle_find_events(ids):
-            self.zg.get_events(ids, self._handle_get_events)
-        
-        self.zg.find_events_for_templates(templates, _handle_get_events,
+                
+        self.zg.find_events_for_templates(templates, self._handle_get_events,
             [0, time.time()*1000], num_events=0,
             result_type=2)
     
