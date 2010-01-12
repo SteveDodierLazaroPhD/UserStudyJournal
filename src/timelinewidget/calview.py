@@ -71,9 +71,11 @@ class CairoCalendar(gtk.DrawingArea):
     wcolumn = 9
     xincrement = wcolumn + padding
     max_width = xincrement
+    column_radius = 0.1
+    
     datastore = None
     highlighted = []
-
+    
     bg_color = (1, 1, 1, 1)
     column_color_normal =  (1, 1, 1, 1)
     column_color_selected = (1, 1, 1, 1)
@@ -102,14 +104,14 @@ class CairoCalendar(gtk.DrawingArea):
         self.connect("style-set", self.change_style)
     
     def change_style(self, widget, *args, **kwargs):
-        self.bg_color = get_gtk_rgba(self.style, "bg", 0, 1.02)
-        self.column_color_normal =  get_gtk_rgba(self.style, "text", 1)
+        self.bg_color = get_gtk_rgba(self.style, "text", 1)
+        self.column_color_normal =  get_gtk_rgba(self.style, "text", 4, 0.7)
         self.column_color_selected = get_gtk_rgba(self.style, "bg", 3)
-        self.column_color_selected_alternative = get_gtk_rgba(self.style, "bg", 3, 0.7)
-        self.column_color_alternative = get_gtk_rgba(self.style, "text", 2)
+        self.column_color_selected_alternative = (0, 0.8, 0.2, 1)
+        self.column_color_alternative = (1, 0.54, 0.07, 1)
         fg = self.style.fg[gtk.STATE_NORMAL]
         bg = self.style.bg[gtk.STATE_NORMAL]
-        self.font_color = ((2*bg.red+fg.red)/3/65535.0, (2*bg.green+fg.green)/3/65535.0, (2*bg.blue+fg.blue)/3/65535.0, 1)
+        self.font_color = self.column_color_normal
 
     def set_selected_range(self, selected_range):
         """
@@ -198,21 +200,19 @@ class CairoCalendar(gtk.DrawingArea):
         if height < 2:
             height = 2
 
-        radius = 1.3
         y = maxheight - height
         # Draw
         context.set_source_rgba(*color)
-        context.move_to(x + radius, y)
+        context.move_to(x + self.column_radius, y)
         context.new_sub_path()
         if nitems > 4:
-            context.arc(radius + x, radius + y, radius, math.pi, 3 * math.pi /2)
-            context.arc(x + self.wcolumn - radius, radius + y, radius, 3 * math.pi / 2, 0)
+            context.arc(self.column_radius + x, self.column_radius + y, self.column_radius, math.pi, 3 * math.pi /2)
+            context.arc(x + self.wcolumn - self.column_radius, self.column_radius + y, self.column_radius, 3 * math.pi / 2, 0)
             context.rectangle(x, y, self.wcolumn, height)
         else:
             context.rectangle(x, y, self.wcolumn, height)
         context.close_path()
         context.fill()
-
 
     def draw_month(self, context, x, height, date):
         """
@@ -259,8 +259,9 @@ class CairoCalendar(gtk.DrawingArea):
         """
         A demo callback, either rewrite this or use connect_selection_callback
         """
-        print "day %s has %s events\n" % (datastore[i][0], datastore[i][1])
-
+        # Do stuff here
+        pass
+        
     def connect_selection_callback(self, callback):
         """
         Connect a callback for clicked to call. clicked passes this widget,
@@ -288,6 +289,22 @@ class CairoCalendar(gtk.DrawingArea):
             self.selection_callback(self.datastore, location)
 
 
+class JournalCalendar(CairoCalendar):
+    """
+    A subclass of CairoCalendar with theming to fit into Journal
+    """
+    column_radius = 1.3
+    def change_style(self, widget, *args, **kwargs):
+        self.bg_color = get_gtk_rgba(self.style, "bg", 0, 1.02)
+        self.column_color_normal =  get_gtk_rgba(self.style, "text", 1)
+        self.column_color_selected = get_gtk_rgba(self.style, "bg", 3)
+        self.column_color_selected_alternative = get_gtk_rgba(self.style, "bg", 3, 0.7)
+        self.column_color_alternative = get_gtk_rgba(self.style, "text", 2)
+        fg = self.style.fg[gtk.STATE_NORMAL]
+        bg = self.style.bg[gtk.STATE_NORMAL]
+        self.font_color = ((2*bg.red+fg.red)/3/65535.0, (2*bg.green+fg.green)/3/65535.0, (2*bg.blue+fg.blue)/3/65535.0, 1)
+
+
 class CalendarWidget(gtk.HBox):
     """
     A container for a CairoCalendar
@@ -295,12 +312,11 @@ class CalendarWidget(gtk.HBox):
     def __init__(self):
         super(gtk.HBox, self).__init__()
         viewport = gtk.Viewport()
+        #viewport.set_shadow_type(gtk.SHADOW_IN)
         viewport.set_shadow_type(gtk.SHADOW_NONE)
         viewport.set_size_request(600,70)
-        self.calendar = CairoCalendar()
-        #mini cal setup
-        #self.immediatecalendar = ImmediateCalendar([[0,0]])
-        #self.immediatecalendar.set_size_request(70,70)
+        # self.calendar = CairoCalendar()
+        self.calendar = JournalCalendar()
 
         # viewport work
         viewport.add(self.calendar)
@@ -318,20 +334,16 @@ class CalendarWidget(gtk.HBox):
         b2.add(gtk.Arrow(gtk.ARROW_RIGHT, gtk.SHADOW_NONE))
         b2.set_relief(gtk.RELIEF_NONE)
         b2.set_focus_on_click(False)
-
         b1.connect("clicked", self.scroll_viewport, viewport,
                    self.calendar, -3*self.calendar.xincrement)
         b2.connect("clicked", self.scroll_viewport, viewport,
                    self.calendar, 3*self.calendar.xincrement)
         self.calendar.connect("data-updated", self.scroll_to_end)
-
         self.pack_start(b1, False, False)
         self.pack_start(align, True, True, 3)
-        #self.pack_start(self.immediatecalendar, False, False)
         self.pack_end(b2, False, False)
         # Prepare the adjustment
         self.adjustment = viewport.get_hadjustment()
-        #self.adjustment.set_upper(self.calendar.max_width)
         self.adjustment.set_value(1) # Needs to be set twice to work
         self.adjustment.set_value(self.calendar.max_width - self.adjustment.page_size)
 
@@ -349,7 +361,6 @@ class CalendarWidget(gtk.HBox):
         adjustment.set_value(newadjval)
 
     def scroll_to_end(self, *args, **kwargs):
-        #self.adjustment.set_upper(self.calendar.max_width)
         self.adjustment.set_value(1)
         self.adjustment.set_value(self.calendar.max_width - self.adjustment.page_size)
 
