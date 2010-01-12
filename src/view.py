@@ -35,10 +35,9 @@ class ActivityView(gtk.VBox):
 
         self.days = {}
 
-        self.dayrange = 3
-        cal.calendar.set_dayrange(3)
         self.daysbox = None
         self.__first_run = True
+        self.set_num_days(3)
 
         self._set_searchbox()
         self._set_today_timestamp()
@@ -49,12 +48,17 @@ class ActivityView(gtk.VBox):
         settings.connect("toggle-grouping", lambda w: self.set_view_type(True))
         self.set_views()
 
+    def set_num_days(self, dayrange):
+        self.dayrange = dayrange
+        cal.calendar.set_dayrange(dayrange)
+        self.set_views()
+
     def _set_searchbox(self):
         self.searchbox = SearchBox()
         self.pack_start(self.searchbox, False, False)
         self.searchbox.connect("search", self._handle_search_results)
         self.searchbox.connect("clear", self._clear_search_results)
-        
+    
     def _clear_search_results(self, widget):
         cal.calendar.set_selection([])
     
@@ -67,30 +71,23 @@ class ActivityView(gtk.VBox):
         for r in results:
             timestamp =int(int(time.mktime(time.localtime(r[0])))/86400)
             keys.append(offset + timestamp*86400)
-        i = 0
+
         dates = []
-        for date, nitems in datastore:
+        for i, (date, nitems) in enumerate(datastore):
             if int(date) in keys: 
                 dates.append(i)
-            i+=1
         cal.calendar.set_selection(dates, True)
-        
+
     def _set_timeline(self):
         def selection_callback(datastore, i):
             if i < len(datastore):
                 selection_date = datastore[i][0]
                 end = selection_date  + 86399
-                start = selection_date - (self.dayrange - 1)*86400
+                start = selection_date - (self.dayrange - 1) * 86400
                 self.set_dayrange(start, end)
-                #if isinstance(selection_date, int): 
-                    #selection_date = date.fromtimestamp(selection_date).strftime("%d/%B")
-        
-        def date_changed(*args, **kwargs):
-            pass #print "Date Changed" # removed as it slows down the widget by poluting stdout
         
         rdate_z.datelist(90, cal.calendar.update_data)
         cal.calendar.connect_selection_callback(selection_callback)
-        cal.calendar.connect("selection-set", date_changed)
 
     def _set_view_type(self, refresh=False):
 
@@ -109,10 +106,10 @@ class ActivityView(gtk.VBox):
         self.daysbox.show_all()
 
     def jump(self, offset):
-        self.start = self.start+offset
+        self.start = self.start + offset
         if time.time() > self.start:
             diff = self.start - cal.calendar.datastore[0][0]
-            cal.calendar.set_selection(diff/86400)
+            cal.calendar.set_selection(diff / 86400)
             self.set_dayrange(self.start, self.end+offset)
 
     def set_dayrange(self, start, end):
@@ -127,21 +124,25 @@ class ActivityView(gtk.VBox):
         """
         # For the local timezone
         if not dayinfocus:
-            dayinfocus = int(time.mktime(time.strptime(time.strftime("%d %B %Y") , "%d %B %Y")))
+            dayinfocus = int(time.mktime(time.strptime(
+                time.strftime("%d %B %Y") , "%d %B %Y")))
         self.end = dayinfocus + 86399
         self.start = dayinfocus - (self.dayrange - 1) * 86400
         self.set_views()
 
     def set_views(self):
-        if self.daysbox:
-            for w in self.daysbox:
-                self.daysbox.remove(w)
-            for i in xrange(self.dayrange):
-                if not settings.get("view", "Journal") == "Journal":
-                    i = (self.dayrange - 1) - i
-                ptime =  datetime.datetime.fromtimestamp(self.start + i*86400).strftime("%A, %d %B %Y")
-                if not self.days.has_key(ptime):
-                    dayview = DayWidget(self.start + i*86400, self.start + i*86400 + 86400)
-                    self.days[ptime] = dayview
-                self.daysbox.pack_start(self.days[ptime], True, True, 3)
-                self.days[ptime].set_date_strings()
+        if not self.daysbox:
+            return # nothing to do - TODO: should this be allowed to happen?
+        for w in self.daysbox:
+            self.daysbox.remove(w)
+        for i in xrange(self.dayrange):
+            if not settings.get("view", "Journal") == "Journal":
+                i = (self.dayrange - 1) - i
+            ptime =  datetime.datetime.fromtimestamp(
+                self.start + i*86400).strftime("%A, %d %B %Y")
+            if not self.days.has_key(ptime):
+                dayview = DayWidget(self.start + i*86400,
+                    self.start + i*86400 + 86400)
+                self.days[ptime] = dayview
+            self.daysbox.pack_start(self.days[ptime], True, True, 3)
+            self.days[ptime].set_date_strings()

@@ -52,7 +52,10 @@ class Portal(gtk.Window):
         self.vbox = gtk.VBox()
         #color = gtk.gdk.rgb_get_colormap().alloc_color('#EEEEEC')
         #self.modify_bg(gtk.STATE_NORMAL, color)
+        
         self.activityview = ActivityView()
+        if settings["amount_days"]:
+            self.activityview.set_num_days(settings["amount_days"])
 
         self.backbtn = gtk.Button()
         self.backbtn.add(gtk.Arrow(gtk.ARROW_LEFT, gtk.SHADOW_NONE))
@@ -123,7 +126,7 @@ class Portal(gtk.Window):
         self.activityview.jump(-86400)
         self.fwdbtn.set_sensitive(True)
         self.ffwdbtn.set_sensitive(True)
-        
+    
     def _request_size(self):
         screen = self._screen.get_monitor_geometry(
             self._screen.get_monitor_at_point(*self.get_position()))
@@ -142,6 +145,9 @@ class Portal(gtk.Window):
         if (event.width, event.height) not in self._requested_size:
             settings["window_width"] = event.width
             settings["window_height"] = event.height
+        if not settings["amount_days"]:
+            print event.width
+            self.activityview.set_num_days(4 if event.width >= 1300 else 3)
 
     def toggle_view(self, widget):
         if not self.__togglingview:
