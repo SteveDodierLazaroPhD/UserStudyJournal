@@ -60,12 +60,12 @@ class ActivityView(gtk.VBox):
         self.searchbox.connect("clear", self._clear_search_results)
     
     def _clear_search_results(self, widget):
-        cal.calendar.set_selection([])
+        cal.calendar.set_highlighted([])
     
     def _handle_search_results(self, widget, results):
         datastore = cal.calendar.datastore
         keys = []
-        t = time.time()            
+        t = time.time()
         offset =time.mktime(time.gmtime(t)) - time.mktime(time.localtime(t))
 
         for r in results:
@@ -76,7 +76,7 @@ class ActivityView(gtk.VBox):
         for i, (date, nitems) in enumerate(datastore):
             if int(date) in keys: 
                 dates.append(i)
-        cal.calendar.set_selection(dates, True)
+        cal.calendar.set_highlighted(dates)
 
     def _set_timeline(self):
         def selection_callback(datastore, i):

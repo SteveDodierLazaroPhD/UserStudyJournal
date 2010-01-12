@@ -72,6 +72,7 @@ class CairoCalendar(gtk.DrawingArea):
     xincrement = wcolumn + padding
     max_width = xincrement
     datastore = None
+    highlighted = []
 
     bg_color = (1, 1, 1, 1)
     column_color_normal =  (1, 1, 1, 1)
@@ -104,6 +105,7 @@ class CairoCalendar(gtk.DrawingArea):
         self.bg_color = get_gtk_rgba(self.style, "bg", 0, 1.02)
         self.column_color_normal =  get_gtk_rgba(self.style, "text", 1)
         self.column_color_selected = get_gtk_rgba(self.style, "bg", 3)
+        self.column_color_selected_alternative = get_gtk_rgba(self.style, "bg", 3, 0.7)
         self.column_color_alternative = get_gtk_rgba(self.style, "text", 2)
         fg = self.style.fg[gtk.STATE_NORMAL]
         bg = self.style.bg[gtk.STATE_NORMAL]
@@ -134,7 +136,7 @@ class CairoCalendar(gtk.DrawingArea):
             self.queue_draw()
         self.emit("data-updated")
 
-    def expose(self, widget, event, selected = None, alternative_highlight = False):
+    def expose(self, widget, event, selected = None, highlighted = None):
         # Default hilight to the last items
         if selected == None:
             selected = range(len(self.datastore))[-self.selected_range:]
@@ -156,23 +158,19 @@ class CairoCalendar(gtk.DrawingArea):
         y = event.area.height
 
         months_positions = []
-        
         i = 0
         for date, nitems in self.datastore:
             if check_for_new_month(date):
                 months_positions += [(date, x)]
-            if i >= selected[0] and i <= selected[-1] and i in selected:
-                if alternative_highlight:
-                    color = self.column_color_alternative
-                else:
-                    color = self.column_color_selected
+            if len(self.highlighted) > 0 and i >= self.highlighted[0] and i <= self.highlighted[-1] and i in self.highlighted: 
+                color = self.column_color_selected_alternative if i in selected else self.column_color_alternative
+            elif i >= selected[0] and i <= selected[-1] and i in selected:
+                color = self.column_color_selected
             else:
                 color = self.column_color_normal
             self.draw_column(context, x, event.area.height, nitems, color)
             x += self.xincrement
             i += 1
-
-
         # Draw over the selected items
         if x > event.area.width: # Check for resize
             self.set_size_request(x+self.xincrement, event.area.height)
@@ -240,10 +238,17 @@ class CairoCalendar(gtk.DrawingArea):
         context.move_to(x + 8, height - self.ypad/3)
         context.show_text(date)
 
-    def set_selection(self, i, alternative_highlight = False):
-        self.connect("expose_event", self.expose, i, alternative_highlight)
+    def set_selection(self, i):
+        self.connect("expose_event", self.expose, i)
         self.queue_draw()
         self.emit("selection-set")
+
+    def set_highlighted(self, highlighted):
+        if isinstance(highlighted, list):
+            self.highlighted = highlighted
+        else: raise TypeError("highlighted is not a list")
+        self.connect("expose_event", self.expose)
+        self.queue_draw()
 
     def selection_callback(self, datastore, i):
         """
