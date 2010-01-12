@@ -40,7 +40,7 @@ class ActivityView(gtk.VBox):
         self.daysbox = None
         self.__first_run = True
 
-        #self._set_searchbox()
+        self._set_searchbox()
         self._set_today_timestamp()
         self._set_view_type()
         self._set_timeline()
@@ -61,9 +61,12 @@ class ActivityView(gtk.VBox):
     def _handle_search_results(self, widget, results):
         datastore = cal.calendar.datastore
         keys = []
+        t = time.time()            
+        offset =time.mktime(time.gmtime(t)) - time.mktime(time.localtime(t))
+
         for r in results:
-            timestamp =int( int(time.mktime(time.gmtime(r[0])))/86400)
-            keys.append(timestamp*86400)
+            timestamp =int(int(time.mktime(time.localtime(r[0])))/86400)
+            keys.append(offset + timestamp*86400)
         i = 0
         dates = []
         for date, nitems in datastore:
