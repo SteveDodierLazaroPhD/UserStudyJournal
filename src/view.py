@@ -60,7 +60,7 @@ class ActivityView(gtk.VBox):
         self.searchbox.connect("clear", self._clear_search_results)
     
     def _clear_search_results(self, widget):
-        cal.calendar.set_highlighted([])
+        cal.calendar.clear_highlighted()
     
     def _handle_search_results(self, widget, results):
         datastore = cal.calendar.datastore

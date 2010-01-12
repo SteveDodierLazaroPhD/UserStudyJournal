@@ -250,6 +250,11 @@ class CairoCalendar(gtk.DrawingArea):
         self.connect("expose_event", self.expose)
         self.queue_draw()
 
+    def clear_highlighted(self):
+        self.highlighted = []
+        self.connect("expose_event", self.expose)
+        self.queue_draw()
+
     def selection_callback(self, datastore, i):
         """
         A demo callback, either rewrite this or use connect_selection_callback
