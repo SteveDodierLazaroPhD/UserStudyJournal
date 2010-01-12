@@ -86,7 +86,7 @@ class ActivityView(gtk.VBox):
                 start = selection_date - (self.dayrange - 1) * 86400
                 self.set_dayrange(start, end)
         
-        rdate_z.datelist(90, cal.calendar.update_data)
+        rdate_z.datelist(90, cal.calendar.set_data)
         cal.calendar.connect_selection_callback(selection_callback)
 
     def _set_view_type(self, refresh=False):

@@ -99,7 +99,7 @@ class CairoCalendar(gtk.DrawingArea):
         self.connect("expose_event", self.expose)
         self.connect("button-press-event", self.clicked)
         self.font_name = self.style.font_desc.get_family()
-        self.update_data(datastore if datastore else [], draw = False)
+        self.set_data(datastore if datastore else [], draw = False)
         self.selected_range = selected_range
         self.connect("style-set", self.change_style)
     
@@ -121,7 +121,7 @@ class CairoCalendar(gtk.DrawingArea):
 
     set_dayrange = set_selected_range # Legacy compatibility
 
-    def update_data(self, datastore = None, draw = True):
+    def set_data(self, datastore = None, draw = True):
         """
         Sets the objects datastore attribute or calls update() on the current datastore object
         then queues a draw
@@ -138,6 +138,9 @@ class CairoCalendar(gtk.DrawingArea):
             self.queue_draw()
         self.emit("data-updated")
 
+    def get_data(self):
+        return self.datastore
+    
     def expose(self, widget, event, selected = None, highlighted = None):
         # Default hilight to the last items
         if selected == None:
