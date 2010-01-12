@@ -1,0 +1,4 @@
+gnome-activity-journal
+src/*.py
+src/timelinewidget/*.py
+extra/gnome-activity-journal.desktop.in

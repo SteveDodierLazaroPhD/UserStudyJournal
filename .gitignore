@@ -3,3 +3,4 @@ dep-fungtk
 dep-zeitgeist
 zeitgeist
 build
+po/POTFILES.in

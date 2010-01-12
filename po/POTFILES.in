@@ -1,6 +1,0 @@
-gnome-activity-journal
-src/main.py
-src/ui_utils.py
-src/view.py
-src/widgets.py
-src/daywidgets.py

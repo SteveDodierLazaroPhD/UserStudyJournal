@@ -1,10 +1,40 @@
 #! /usr/bin/env python
+# -.- coding: utf-8 -.-
+#
+# GNOME Activity Journal - Installation script
+#
+# Copyright © 2009-2010 Siegfried Gevatter <siegfried@gevatter.com>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import with_statement
 import os
 from glob import glob
 from distutils.core import setup
 from distutils.command.install import install as orig_install
 from DistUtilsExtra.command import *
+
+if __name__ == "__main__":
+    """ Generate POTFILES.in from POTFILES.in.in. """
+    os.chdir(os.path.realpath(os.path.dirname(__file__)))
+    if os.path.isfile("po/POTFILES.in.in"):
+        lines = []
+        with open("po/POTFILES.in.in") as f:
+            for line in f:
+                lines.extend(glob(line.strip()))
+        with open("po/POTFILES.in", "w") as f:
+            f.write("\n".join(lines) + "\n")
 
 class _install(orig_install):
     
@@ -22,8 +52,6 @@ class _install(orig_install):
             os.mkdir(dir)
     
     def run(self):
-        raise NotImplementedError, "Installation is not yet available."
-        """
         if self.root and self.prefix:
             self._destdir = os.path.join(self.root, self.prefix.strip('/'))
         else:
@@ -33,11 +61,14 @@ class _install(orig_install):
         self._create_directory('bin')
         self._create_directory('share/pixmaps')
         # Create a symlink for the executable file
-        self._create_symlink('share/espeak-gui/espeak-gui', 'bin/espeak-gui')
+        self._create_symlink(
+            'share/gnome-activity-journal/gnome-activity-journal',
+            'bin/gnome-activity-journal')
         # Create a symlink for the icon
-        self._create_symlink('share/espeak-gui/data/espeak-gui.png',
-            'share/pixmaps/espeak-gui.png')
-        """
+        self._create_symlink(
+            'share/gnome-activity-journal/data/icons/hicolor/scalable/'\
+                'gnome-activity-journal.svg',
+            'share/pixmaps/gnome-activity-journal.svg')
 
 setup(
     name = 'GNOME Activity Journal',
@@ -48,9 +79,9 @@ setup(
     url = 'https://launchpad.net/gnome-activity-journal',
     license = 'GPL',
     data_files = [
-        #('share/espeak-gui', ['espeak-gui']),
-        #('share/espeak-gui/data', glob('data/*')),
-        #('share/espeak-gui/src', glob('src/*')),
+        ('share/gnome-activity-journal', ['gnome-activity-journal']),
+        ('share/gnome-activity-journal/data', glob('data/*')),
+        ('share/gnome-activity-journal/src', glob('src/*')),
         ],
     cmdclass = {
         'install': _install,

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GNOME Activity Journal\n"
 "Report-Msgid-Bugs-To: zeitgeist@lists.launchpad.net\n"
-"POT-Creation-Date: 2010-01-08 00:24+0100\n"
+"POT-Creation-Date: 2010-01-13 00:30+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Siegfried-Angel Gevatter Pujals <rainct@ubuntu.com>\n"
 "Language-Team: Siegfried Gevatter <siegfried@gevatter.com>\n"
@@ -11,38 +11,56 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Catalan\n"
 
-#: ../src/main.py:59
-msgid "Go back in time"
-msgstr "Retrocedeix en el temps"
+#: ../src/main.py:68
+msgid "Go Back in Time"
+msgstr "Torna endarrere en el temps"
 
-#: ../src/main.py:64
-msgid "Look into the future"
-msgstr "Avança en el temps"
+#: ../src/main.py:75
+msgid "Look into the Future"
+msgstr "Mira al futur"
 
-#: ../src/widgets.py:66
-msgid "Search..."
-msgstr "Cerca..."
+#: ../src/main.py:83
+msgid "Jump to Today"
+msgstr "Vés a avui"
 
-#: ../src/daywidgets.py:52
+#: ../src/daywidgets.py:53
 msgid "Morning"
 msgstr "Matí"
 
-#: ../src/daywidgets.py:53
+#: ../src/daywidgets.py:54
 msgid "Afternoon"
 msgstr "Tarda"
 
-#: ../src/daywidgets.py:54
+#: ../src/daywidgets.py:55
 msgid "Evening"
 msgstr "Vespre"
 
-#: ../src/daywidgets.py:64
+#: ../src/daywidgets.py:68
 msgid "Today"
 msgstr "Avui"
 
-#: ../src/daywidgets.py:66
+#: ../src/daywidgets.py:70
 msgid "Yesterday"
 msgstr "Ahir"
 
+#: ../src/widgets.py:166
+msgid "Type here to search..."
+msgstr "Escriviu aquí per a cercar..."
+
+#: ../extra/gnome-activity-journal.desktop.in.h:1
+msgid "Activity Journal"
+msgstr "Diari d'activitats"
+
+#: ../extra/gnome-activity-journal.desktop.in.h:2
+msgid "Browse a chronological log of your activities and easily find files, contacts, etc."
+msgstr "Vegeu un registre cronològic de les vostres activitats i trobeu fàcilment fitxers, contactes, etc."
+
+#: ../extra/gnome-activity-journal.desktop.in.h:3
+msgid "Journal"
+msgstr "Diari"
+
+#~ msgid "Search..."
+#~ msgstr "Cerca..."
 #~ msgid "Recent Events"
 #~ msgstr "Esdeveniments recents"
 #~ msgid "Show Options"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: zeitgeist@lists.launchpad.net\n"
-"POT-Creation-Date: 2010-01-08 00:25+0100\n"
+"POT-Creation-Date: 2010-01-13 00:46+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,34 +16,52 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/main.py:59
-msgid "Go back in time"
+#: ../src/main.py:68
+msgid "Go Back in Time"
 msgstr ""
 
-#: ../src/main.py:64
-msgid "Look into the future"
+#: ../src/main.py:75
+msgid "Look into the Future"
 msgstr ""
 
-#: ../src/widgets.py:66
-msgid "Search..."
-msgstr ""
-
-#: ../src/daywidgets.py:52
-msgid "Morning"
+#: ../src/main.py:83
+msgid "Jump to Today"
 msgstr ""
 
 #: ../src/daywidgets.py:53
-msgid "Afternoon"
+msgid "Morning"
 msgstr ""
 
 #: ../src/daywidgets.py:54
+msgid "Afternoon"
+msgstr ""
+
+#: ../src/daywidgets.py:55
 msgid "Evening"
 msgstr ""
 
-#: ../src/daywidgets.py:64
+#: ../src/daywidgets.py:68
 msgid "Today"
 msgstr ""
 
-#: ../src/daywidgets.py:66
+#: ../src/daywidgets.py:70
 msgid "Yesterday"
+msgstr ""
+
+#: ../src/widgets.py:166
+msgid "Type here to search..."
+msgstr ""
+
+#: ../extra/gnome-activity-journal.desktop.in.h:1
+msgid "Activity Journal"
+msgstr ""
+
+#: ../extra/gnome-activity-journal.desktop.in.h:2
+msgid ""
+"Browse a chronological log of your activities and easily find files, "
+"contacts, etc."
+msgstr ""
+
+#: ../extra/gnome-activity-journal.desktop.in.h:3
+msgid "Journal"
 msgstr ""
