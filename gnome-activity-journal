@@ -27,9 +27,6 @@ import gettext
 # Where this file lives
 our_dir = os.path.abspath(os.path.dirname(__file__))
 
-# Make sure references to data files work (FIXME temporary hack!)
-os.chdir(our_dir)
-
 # Check for critical modules from other repositories first.
 # Support side-by-side or nested repositories during development.
 #

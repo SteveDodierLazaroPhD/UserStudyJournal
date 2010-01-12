@@ -25,11 +25,11 @@ import gobject
 import time
 import datetime
 
+from config import BASE_PATH
 from widgets import *
 from view import ActivityView
 from ui_utils import settings
 from timelinewidget.calview import cal
-
 
 class Portal(gtk.Window):
 
@@ -43,11 +43,13 @@ class Portal(gtk.Window):
         self.set_title("Activity Journal")
         self.set_position(gtk.WIN_POS_CENTER)
 
-        self.set_icon_list(gtk.gdk.pixbuf_new_from_file("data/icons/hicolor/16x16/gnome-activity-journal.png"),
-                           gtk.gdk.pixbuf_new_from_file("data/icons/hicolor/24x24/gnome-activity-journal.png"),
-                           gtk.gdk.pixbuf_new_from_file("data/icons/hicolor/32x32/gnome-activity-journal.png"),
-                           gtk.gdk.pixbuf_new_from_file("data/icons/hicolor/48x48/gnome-activity-journal.png"),
-                           gtk.gdk.pixbuf_new_from_file("data/icons/hicolor/scalable/gnome-activity-journal.svg"))
+        self.set_icon_list(*[gtk.gdk.pixbuf_new_from_file(
+            os.path.join(BASE_PATH, name)) for name in (
+                "data/icons/hicolor/16x16/gnome-activity-journal.png",
+                "data/icons/hicolor/24x24/gnome-activity-journal.png",
+                "data/icons/hicolor/32x32/gnome-activity-journal.png",
+                "data/icons/hicolor/48x48/gnome-activity-journal.png",
+                "data/icons/hicolor/scalable/gnome-activity-journal.svg")])
 
         self.vbox = gtk.VBox()
         #color = gtk.gdk.rgb_get_colormap().alloc_color('#EEEEEC')
