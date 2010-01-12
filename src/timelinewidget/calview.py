@@ -73,6 +73,11 @@ class CairoCalendar(gtk.DrawingArea):
     wcolumn = 9
     xincrement = wcolumn + padding
     max_width = xincrement
+    datastore = None
+    __gsignals__ = {
+        "selection-set": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,()),
+        "data-updated":  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,())
+        }
 
     def __init__(self, datastore, selected_range=0):
         """
@@ -86,12 +91,6 @@ class CairoCalendar(gtk.DrawingArea):
         self.connect("expose_event", self.expose)
         self.connect("button-press-event", self.clicked)
         self.font_name = self.style.font_desc.get_family()
-        gobject.signal_new("date-set",CairoCalendar,
-                           gobject.SIGNAL_RUN_LAST,
-                           gobject.TYPE_NONE,())
-        gobject.signal_new("data-updated",CairoCalendar,
-                           gobject.SIGNAL_RUN_LAST,
-                           gobject.TYPE_NONE,())
         self.update_data(datastore, draw = False)
         self.selected_range = selected_range
 
@@ -234,7 +233,7 @@ class CairoCalendar(gtk.DrawingArea):
     def set_selection(self, i, alternative_highlight = False):
         self.connect("expose_event", self.expose, i, alternative_highlight)
         self.queue_draw()
-        self.emit("date-set")
+        self.emit("selection-set")
 
     def selection_callback(self, datastore, i):
         """
@@ -264,7 +263,7 @@ class CairoCalendar(gtk.DrawingArea):
         self.connect("expose_event", self.expose, max(min(location - 2,
             len(self.datastore) - self.selected_range), 0))
         self.queue_draw()
-        self.emit("date-set")
+        self.emit("selection-set")
         if callable(self.selection_callback):
             self.selection_callback(self.datastore, location)
 
@@ -282,7 +281,7 @@ class ImmediateCalendar(gtk.DrawingArea):
         self.connect("expose_event", self.expose)
         self.connect("button-press-event", self.clicked)
         self.font_name = self.style.font_desc.get_family()
-        gobject.signal_new("idate-set",ImmediateCalendar,
+        gobject.signal_new("iselection-set",ImmediateCalendar,
                            gobject.SIGNAL_RUN_LAST,
                            gobject.TYPE_NONE,())
         gobject.signal_new("idata-updated",ImmediateCalendar,
@@ -396,7 +395,7 @@ class ImmediateCalendar(gtk.DrawingArea):
         """
         self.connect("expose_event", self.expose, True)
         self.queue_draw()
-        self.emit("date-set")
+        self.emit("selection-set")
         if callable(self.selection_callback):
             self.selection_callback(self.datastore, 0)
 

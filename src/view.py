@@ -90,7 +90,7 @@ class ActivityView(gtk.VBox):
         
         rdate_z.datelist(90, cal.calendar.update_data)
         cal.calendar.connect_selection_callback(selection_callback)
-        cal.calendar.connect("date-set", date_changed)
+        cal.calendar.connect("selection-set", date_changed)
 
     def _set_view_type(self, refresh=False):
 
