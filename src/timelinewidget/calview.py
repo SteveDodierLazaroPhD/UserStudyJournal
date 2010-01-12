@@ -77,6 +77,7 @@ class CairoCalendar(gtk.DrawingArea):
     column_color_normal =  (1, 1, 1, 1)
     column_color_selected = (1, 1, 1, 1)
     column_color_alternative = (1, 1, 1, 1)
+    font_color = (0, 0, 0, 0)
 
     __gsignals__ = {
         "selection-set": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,()),
@@ -104,6 +105,9 @@ class CairoCalendar(gtk.DrawingArea):
         self.column_color_normal =  get_gtk_rgba(self.style, "text", 1)
         self.column_color_selected = get_gtk_rgba(self.style, "bg", 3)
         self.column_color_alternative = get_gtk_rgba(self.style, "text", 2)
+        fg = self.style.fg[gtk.STATE_NORMAL]
+        bg = self.style.bg[gtk.STATE_NORMAL]
+        self.font_color = ((2*bg.red+fg.red)/3/65535.0, (2*bg.green+fg.green)/3/65535.0, (2*bg.blue+fg.blue)/3/65535.0, 1)
 
     def set_selected_range(self, selected_range):
         """
@@ -218,8 +222,7 @@ class CairoCalendar(gtk.DrawingArea):
         """
         fg = self.style.fg[gtk.STATE_NORMAL]
         bg = self.style.bg[gtk.STATE_NORMAL]
-        red, green, blue = (2*bg.red+fg.red)/3/65535.0, (2*bg.green+fg.green)/3/65535.0, (2*bg.blue+fg.blue)/3/65535.0
-        context.set_source_rgba(red, green, blue, 1)
+        context.set_source_rgba(*self.font_color)
         
         context.set_line_width(2)
         context.move_to(x+1, height - self.ypad)
