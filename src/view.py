@@ -60,30 +60,30 @@ class ActivityView(gtk.VBox):
         cal.set_selection[[]]
         
     def _handle_search_results(self, widget, results):
-        history = cal.calendar.history
+        datastore = cal.calendar.datastore
         keys = []
         for r in results:
             timestamp =int( int(time.mktime(time.gmtime(r[0])))/86400)
             keys.append(timestamp*86400)
         i = 0
         dates = []
-        for date, nitems in history:
+        for date, nitems in datastore:
             if int(date) in keys: 
                 dates.append(i)
             i+=1
         cal.calendar.set_selection(dates, True)
         
     def _set_timeline(self):
-        def selection_callback(history, i):
-            #print history, i
-            if i < len(history):
-                selection_date = history[i][0]
+        def selection_callback(datastore, i):
+            #print datastore, i
+            if i < len(datastore):
+                selection_date = datastore[i][0]
                 end = selection_date  + 86399
                 start = selection_date - (self.dayrange - 1)*86400
                 self.set_dayrange(start, end)
                 #if isinstance(selection_date, int): 
                     #selection_date = date.fromtimestamp(selection_date).strftime("%d/%B")
-                #print "%d day %s has %s events\n" % (i,selection_date, history[i][1])
+                #print "%d day %s has %s events\n" % (i,selection_date, datastore[i][1])
         
         def date_changed(*args, **kwargs):
             pass #print "Date Changed" # removed as it slows down the widget by poluting stdout
@@ -113,7 +113,7 @@ class ActivityView(gtk.VBox):
     def jump(self, offset):
         self.start = self.start+offset
         if time.time() > self.start:
-            diff = self.start - cal.calendar.history[0][0]
+            diff = self.start - cal.calendar.datastore[0][0]
             cal.calendar.set_selection(diff/86400)
             self.set_dayrange(self.start, self.end+offset)
 

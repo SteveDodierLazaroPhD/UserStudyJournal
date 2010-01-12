@@ -19,9 +19,9 @@
 
 """
 Takes a two dementional tuple or list and turns it into a graph based on
-history[n][1]'s size
+datastore[n][1]'s size
 
-# history = [[raw_date, nitems]]
+# datastore = [[raw_date, nitems]]
 """
 
 import cairo
@@ -74,11 +74,11 @@ class CairoCalendar(gtk.DrawingArea):
     xincrement = wcolumn + padding
     max_width = xincrement
 
-    def __init__(self, history, selected_range=0):
+    def __init__(self, datastore, selected_range=0):
         """
 
         Arguments:
-        - history: The.CairoCalendars two dimensional list of dates and nitems
+        - datastore: The.CairoCalendars two dimensional list of dates and nitems
         - selected_range: the number of days displayed at once
         """
         super(CairoCalendar, self).__init__()
@@ -92,7 +92,7 @@ class CairoCalendar(gtk.DrawingArea):
         gobject.signal_new("data-updated",CairoCalendar,
                            gobject.SIGNAL_RUN_LAST,
                            gobject.TYPE_NONE,())
-        self.update_data(history, draw = False)
+        self.update_data(datastore, draw = False)
         self.selected_range = selected_range
 
     def set_selected_range(self, selected_range):
@@ -103,19 +103,19 @@ class CairoCalendar(gtk.DrawingArea):
 
     set_dayrange = set_selected_range # Legacy compatibility
 
-    def update_data(self, history = None, draw = True):
+    def update_data(self, datastore = None, draw = True):
         """
-        Sets the objects history attribute or calls update() on the current history object
+        Sets the objects datastore attribute or calls update() on the current datastore object
         then queues a draw
         """
-        if history:
-            self.history = history
+        if datastore:
+            self.datastore = datastore
             self.largest = 1
-            for date, nitems in self.history:
+            for date, nitems in self.datastore:
                 if nitems > self.largest: self.largest = nitems
-            self.max_width = self.xincrement + (self.xincrement *len(history))
+            self.max_width = self.xincrement + (self.xincrement *len(datastore))
         else:
-            self.history.update()
+            self.datastore.update()
         if draw:
             self.queue_draw()
         self.emit("data-updated")
@@ -123,7 +123,7 @@ class CairoCalendar(gtk.DrawingArea):
     def expose(self, widget, event, selected = None, alternative_highlight = False):
         # Default hilight to the last items
         if selected == None:
-            selected = range(len(self.history))[-self.selected_range:]
+            selected = range(len(self.datastore))[-self.selected_range:]
         elif isinstance(selected, int):
             selected = range(selected, selected + self.selected_range)
         elif isinstance(selected, list) and len(selected) == 0:
@@ -148,7 +148,7 @@ class CairoCalendar(gtk.DrawingArea):
         months_positions = []
 
         i = 0
-        for date, nitems in self.history:
+        for date, nitems in self.datastore:
             if check_for_new_month(date):
                 months_positions += [(date, x)]
             if i >= selected[0] and i <= selected[-1] and i in selected:
@@ -236,16 +236,16 @@ class CairoCalendar(gtk.DrawingArea):
         self.queue_draw()
         self.emit("date-set")
 
-    def selection_callback(self, history, i):
+    def selection_callback(self, datastore, i):
         """
         A demo callback, either rewrite this or use connect_selection_callback
         """
-        print "day %s has %s events\n" % (history[i][0], history[i][1])
+        print "day %s has %s events\n" % (datastore[i][0], datastore[i][1])
 
     def connect_selection_callback(self, callback):
         """
         Connect a callback for clicked to call. clicked passes this widget,
-        a history list, and i to the function
+        a datastore list, and i to the function
         """
         if callable(callback):
             self.selection_callback = callback
@@ -256,17 +256,17 @@ class CairoCalendar(gtk.DrawingArea):
         """Handles click events
 
         By wrapping this and using the returned location you can do nifty stuff
-        with the history object
+        with the datastore object
 
         Calls a calback set by connect_selection_callback
         """
         location = int((event.x - self.xincrement) / self.xincrement)
         self.connect("expose_event", self.expose, max(min(location - 2,
-            len(self.history) - self.selected_range), 0))
+            len(self.datastore) - self.selected_range), 0))
         self.queue_draw()
         self.emit("date-set")
         if callable(self.selection_callback):
-            self.selection_callback(self.history, location)
+            self.selection_callback(self.datastore, location)
 
 
 class ImmediateCalendar(gtk.DrawingArea):
@@ -276,7 +276,7 @@ class ImmediateCalendar(gtk.DrawingArea):
     xincrement = wcolumn + padding
     max_width = xincrement
 
-    def __init__(self, history):
+    def __init__(self, datastore):
         super(ImmediateCalendar, self).__init__()
         self.add_events(gtk.gdk.BUTTON_PRESS_MASK)
         self.connect("expose_event", self.expose)
@@ -288,21 +288,21 @@ class ImmediateCalendar(gtk.DrawingArea):
         gobject.signal_new("idata-updated",ImmediateCalendar,
                            gobject.SIGNAL_RUN_LAST,
                            gobject.TYPE_NONE,())
-        self.update_data(history, draw = False)
+        self.update_data(datastore, draw = False)
         
-    def update_data(self, history = None, draw = True):
+    def update_data(self, datastore = None, draw = True):
         """
-        Sets the objects history attribute or calls update() on the current history object
+        Sets the objects datastore attribute or calls update() on the current datastore object
         then queues a draw
         """
-        if history:
-            self.history = history
+        if datastore:
+            self.datastore = datastore
             self.largest = 1
-            for date, nitems in self.history:
+            for date, nitems in self.datastore:
                 if nitems > self.largest: self.largest = nitems
-            self.max_width = self.xincrement + (self.xincrement *len(history))
+            self.max_width = self.xincrement + (self.xincrement *len(datastore))
         else:
-            self.history.update()
+            self.datastore.update()
         if draw:
             self.queue_draw()
         self.emit("data-updated")
@@ -326,7 +326,7 @@ class ImmediateCalendar(gtk.DrawingArea):
         else:
             color =  get_gtk_rgba(self.style, "text", 1)
 
-        for date, nitems in self.history:
+        for date, nitems in self.datastore:
             self.draw_column(context, x, event.area.height, nitems, color)
             x += self.xincrement
         
@@ -370,16 +370,16 @@ class ImmediateCalendar(gtk.DrawingArea):
         context.close_path()
         context.fill()
 
-    def selection_callback(self, history, i):
+    def selection_callback(self, datastore, i):
         """
         A demo callback, either rewrite this or use connect_selection_callback
         """
-        print "day %s has %s events\n" % (history[i][0], history[i][1])
+        print "day %s has %s events\n" % (datastore[i][0], datastore[i][1])
 
     def connect_selection_callback(self, callback):
         """
         Connect a callback for clicked to call. clicked passes this widget,
-        a history list, and i to the function
+        a datastore list, and i to the function
         """
         if callable(callback):
             self.selection_callback = callback
@@ -390,7 +390,7 @@ class ImmediateCalendar(gtk.DrawingArea):
         """Handles click events
 
         By wrapping this and using the returned location you can do nifty stuff
-        with the history object
+        with the datastore object
 
         Calls a calback set by connect_selection_callback
         """
@@ -398,7 +398,7 @@ class ImmediateCalendar(gtk.DrawingArea):
         self.queue_draw()
         self.emit("date-set")
         if callable(self.selection_callback):
-            self.selection_callback(self.history, 0)
+            self.selection_callback(self.datastore, 0)
 
 class CalendarWidget(gtk.HBox):
     """
