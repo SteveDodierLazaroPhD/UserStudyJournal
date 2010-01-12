@@ -78,9 +78,7 @@ class DayWidget(gtk.VBox):
 
     def __init__pinbox(self):
         if self.day_start <= time.time() < self.day_end:
-            print "xxxxxxxxxx"
             self.view.pack_start(pinbox, False, False)
-            #self.view.reorder_child(self.pinbox, 0)
         else:
             self.view.remove(pinbox)
 
@@ -140,12 +138,10 @@ class DayWidget(gtk.VBox):
             self.remove(self.daylabel)
         
         today = int(time.time() )- 7*86400
-        print self.day_start, today
         if self.day_start < today:
             self.daylabel = DayLabel(self.date_string, self.week_day_string+", "+ self.year_string)
         else:
             self.daylabel = DayLabel(self.week_day_string, self.date_string+", "+ self.year_string)
-        #x, y = vbox.get_size_request()
         self.daylabel.set_size_request(100, 60)
         self.vbox.pack_start(self.daylabel, False, False)
         self.vbox.reorder_child(self.daylabel, 0)

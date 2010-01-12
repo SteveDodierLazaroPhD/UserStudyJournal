@@ -56,7 +56,6 @@ class ActivityView(gtk.VBox):
         self.searchbox.connect("clear", self._clear_search_results)
         
     def _clear_search_results(self, widget):
-        print "CLEAR"
         cal.set_selection[[]]
         
     def _handle_search_results(self, widget, results):
@@ -75,7 +74,6 @@ class ActivityView(gtk.VBox):
         
     def _set_timeline(self):
         def selection_callback(datastore, i):
-            #print datastore, i
             if i < len(datastore):
                 selection_date = datastore[i][0]
                 end = selection_date  + 86399
@@ -83,7 +81,6 @@ class ActivityView(gtk.VBox):
                 self.set_dayrange(start, end)
                 #if isinstance(selection_date, int): 
                     #selection_date = date.fromtimestamp(selection_date).strftime("%d/%B")
-                #print "%d day %s has %s events\n" % (i,selection_date, datastore[i][1])
         
         def date_changed(*args, **kwargs):
             pass #print "Date Changed" # removed as it slows down the widget by poluting stdout
