@@ -56,8 +56,8 @@ class ActivityView(gtk.VBox):
         self.searchbox.connect("clear", self._clear_search_results)
         
     def _clear_search_results(self, widget):
-        cal.set_selection[[]]
-        
+        cal.calendar.set_selection([])
+    
     def _handle_search_results(self, widget, results):
         datastore = cal.calendar.datastore
         keys = []
@@ -95,9 +95,7 @@ class ActivityView(gtk.VBox):
     def _set_view_type(self, refresh=False):
 
         for w in self:
-            if w == self.searchbox:
-                pass
-            else:
+            if w != self.searchbox:
                 self.remove(w)
 
         if settings.get("view", "Journal") == "Journal":

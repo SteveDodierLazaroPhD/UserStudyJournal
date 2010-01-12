@@ -24,7 +24,7 @@ import time
 
 from zeitgeist.client import ZeitgeistClient
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
-    ResultType
+    ResultType, TimeRange
 
 TRACKER = 'org.freedesktop.Tracker1'
 TRACKER_OBJ = '/org/freedesktop/Tracker1/Resources'
@@ -48,18 +48,19 @@ class TrackerBackend:
         self.tracker = bus.get_object(TRACKER, TRACKER_OBJ)
         self.iface = dbus.Interface(self.tracker, TRACKER_IFACE)
         self.zg = CLIENT
-
+ 
     def search_tracker(self, text):
         # Unmarshal the dbus objects in the response
-        return  [str (e[0]) for e in self.iface.SparqlQuery (QUERY_BY_TEXT % (text)) ]
-
+        return [str(x[0]) for x in
+            self.iface.SparqlQuery(QUERY_BY_TEXT % (text))]
 
     def search_zeitgeist(self, uris, interpretation, search_callback):
         
         def _handle_get_events(events):
             results = []
             for event in events:
-                results.append((int(event.timestamp)/1000, event.subjects[0].uri))
+                results.append(
+                    (int(event.timestamp) / 1000, event.subjects[0].uri))
             search_callback(results)
         
         def _handle_find_events(ids):
@@ -73,20 +74,11 @@ class TrackerBackend:
             event = Event.new_for_values(subjects=[subject])
             events.append(event)
         self.zg.find_event_ids_for_templates(events, _handle_find_events,
-            [0, time.time()*1000], num_events=50000,
-            result_type=0)
-       
-            
+            TimeRange.until_now(), result_type=ResultType.MostRecentEvents)
+    
     def search(self, text, interpretation, search_callback):
         uris = self.search_tracker(text)
         if len(uris) > 0:
             tracker.search_zeitgeist(uris, interpretation, search_callback)
 
-"""
-Example usage:
-
-    tracker = TrackerBackend()
-    uris = tracker.search("adam")
-    tracker.search_zeitgeist(uris)
-"""
 tracker = TrackerBackend()
