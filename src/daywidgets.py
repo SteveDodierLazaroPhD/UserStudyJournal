@@ -426,24 +426,6 @@ class PinBox(gtk.EventBox):
         
         self.label.connect("toggled", _handle_toggle)
     
-        def change_style(widget, style):
-            rc_style = self.style
-            color = rc_style.bg[gtk.STATE_NORMAL]
-            fcolor = rc_style.fg[gtk.STATE_NORMAL] 
-            color.red = (2*color.red + fcolor.red)/3
-            color.green = (2*color.green + fcolor.green)/3
-            color.blue = (2*color.blue + fcolor.blue)/3
-            label.modify_fg(gtk.STATE_NORMAL, color)
-            
-            
-            color = rc_style.bg[gtk.STATE_NORMAL]
-            fcolor = rc_style.fg[gtk.STATE_NORMAL] 
-            color.red = (2*color.red + fcolor.red)*0.52
-            color.green = (2*color.green + fcolor.green)*0.52
-            color.blue = (2*color.blue + fcolor.blue)*0.52
-            self.modify_bg(gtk.STATE_NORMAL, color)
-                
-        self.vbox.connect("style-set", change_style)
         bookmarker.connect("reload", self.set_bookmarks)
         
     def set_bookmarks(self, widget=None, uris=None):
@@ -493,7 +475,7 @@ class PinBox(gtk.EventBox):
             for key in keys:
                 events = self.categories[key]
                 events.reverse()
-                if len(events) > 4:
+                if len(events) > 1:
                     box = CategoryBox(key, events)
                     self.view.pack_start(box)
                 else:
