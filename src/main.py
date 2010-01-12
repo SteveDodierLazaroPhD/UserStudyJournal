@@ -56,6 +56,8 @@ class Portal(gtk.Window):
         self.activityview = ActivityView()
         if settings["amount_days"]:
             self.activityview.set_num_days(settings["amount_days"])
+        settings.connect("amount_days", lambda key, value:
+            self.activityview.set_num_days(value or 3))
 
         self.backbtn = gtk.Button()
         self.backbtn.add(gtk.Arrow(gtk.ARROW_LEFT, gtk.SHADOW_NONE))
@@ -146,7 +148,6 @@ class Portal(gtk.Window):
             settings["window_width"] = event.width
             settings["window_height"] = event.height
         if not settings["amount_days"]:
-            print event.width
             self.activityview.set_num_days(4 if event.width >= 1300 else 3)
 
     def toggle_view(self, widget):
