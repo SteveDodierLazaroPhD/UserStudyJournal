@@ -431,16 +431,19 @@ class PinBox(gtk.VBox):
         self.connect("style-set", change_style)
         
     def set_bookmarks(self, widget=None, uris=None):
-        if not uris:
-            uris = bookmarker.bookmarks
         templates = []
-        for b in uris:
+        bookmarks = bookmarker.bookmarks
+        if not bookmarks:
+            # Abort, or we will query with no templates and get lots of
+            # irrelevant events.
+            return
+        for b in bookmarks:
             event = Event()
             subject = Subject()
             subject.uri = b
             event.set_subjects([subject])
             templates.append(event)
-                   
+        
         def _handle_find_events(ids):
             self.zg.get_events(ids, self._handle_get_events)
         
