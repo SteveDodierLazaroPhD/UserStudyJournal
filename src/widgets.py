@@ -262,8 +262,11 @@ class CategoryButton(gtk.HBox):
         self.pack_start(self.btn)
         #self.pack_start(self.img, False, False)
         if category:
-            self.label.set_markup("<span>%s</span>" % \
-                                  SUPPORTED_SOURCES[category].group_label(count))
+            if category in SUPPORTED_SOURCES:
+                label = SUPPORTED_SOURCES[category].group_label(count)
+            else:
+                label = "Unknown (%s)" % category
+            self.label.set_markup("<span>%s</span>" % label)
         self.label.set_ellipsize(pango.ELLIPSIZE_END)
         hbox.pack_start(self.label, True, True, 3)
 
