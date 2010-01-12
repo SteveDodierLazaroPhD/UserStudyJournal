@@ -79,7 +79,7 @@ class CairoCalendar(gtk.DrawingArea):
         "data-updated":  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,())
         }
 
-    def __init__(self, datastore, selected_range=0):
+    def __init__(self, datastore = None, selected_range = 0):
         """
 
         Arguments:
@@ -91,7 +91,7 @@ class CairoCalendar(gtk.DrawingArea):
         self.connect("expose_event", self.expose)
         self.connect("button-press-event", self.clicked)
         self.font_name = self.style.font_desc.get_family()
-        self.update_data(datastore, draw = False)
+        self.update_data(datastore if datastore else [], draw = False)
         self.selected_range = selected_range
 
     def set_selected_range(self, selected_range):
@@ -107,14 +107,14 @@ class CairoCalendar(gtk.DrawingArea):
         Sets the objects datastore attribute or calls update() on the current datastore object
         then queues a draw
         """
-        if datastore:
+        if datastore != None and isinstance(datastore, list):
             self.datastore = datastore
             self.largest = 1
             for date, nitems in self.datastore:
                 if nitems > self.largest: self.largest = nitems
             self.max_width = self.xincrement + (self.xincrement *len(datastore))
-        else:
-            self.datastore.update()
+        elif datastore != None and not isinstance(datastore, list):
+            raise TypeError("Datastore is not a list")
         if draw:
             self.queue_draw()
         self.emit("data-updated")
@@ -268,137 +268,6 @@ class CairoCalendar(gtk.DrawingArea):
             self.selection_callback(self.datastore, location)
 
 
-class ImmediateCalendar(gtk.DrawingArea):
-    padding = 2
-    ypad = 25
-    wcolumn = 9
-    xincrement = wcolumn + padding
-    max_width = xincrement
-
-    def __init__(self, datastore):
-        super(ImmediateCalendar, self).__init__()
-        self.add_events(gtk.gdk.BUTTON_PRESS_MASK)
-        self.connect("expose_event", self.expose)
-        self.connect("button-press-event", self.clicked)
-        self.font_name = self.style.font_desc.get_family()
-        gobject.signal_new("iselection-set",ImmediateCalendar,
-                           gobject.SIGNAL_RUN_LAST,
-                           gobject.TYPE_NONE,())
-        gobject.signal_new("idata-updated",ImmediateCalendar,
-                           gobject.SIGNAL_RUN_LAST,
-                           gobject.TYPE_NONE,())
-        self.update_data(datastore, draw = False)
-        
-    def update_data(self, datastore = None, draw = True):
-        """
-        Sets the objects datastore attribute or calls update() on the current datastore object
-        then queues a draw
-        """
-        if datastore:
-            self.datastore = datastore
-            self.largest = 1
-            for date, nitems in self.datastore:
-                if nitems > self.largest: self.largest = nitems
-            self.max_width = self.xincrement + (self.xincrement *len(datastore))
-        else:
-            self.datastore.update()
-        if draw:
-            self.queue_draw()
-        self.emit("data-updated")
-
-    def expose(self, widget, event, selected = False):
-        # Default hilight to the last items
-        context = widget.window.cairo_create()
-        # Set the source to the background color
-        color = get_gtk_rgba(self.style, "bg", 0, 1.02)
-        context.set_source_rgba(*color)
-        context.set_operator(cairo.OPERATOR_SOURCE)
-        context.paint()
-        # set a clip region for the expose event
-        context.rectangle(event.area.x, event.area.y, event.area.width, event.area.height)
-        context.clip()
-        
-        x = self.xincrement
-        y = event.area.height
-        if selected == True:
-            color = get_gtk_rgba(self.style, "bg", 3)
-        else:
-            color =  get_gtk_rgba(self.style, "text", 1)
-
-        for date, nitems in self.datastore:
-            self.draw_column(context, x, event.area.height, nitems, color)
-            x += self.xincrement
-        
-        # widget size
-        if x > event.area.width: # Check for resize
-            self.set_size_request(x+self.xincrement, event.area.height)
-        self.max_width = x # remove me
-
-    def draw_column(self, context, x, maxheight, nitems, color):
-        """
-        Draws a columns at x with height based on nitems, and maxheight
-
-        Arguments:
-        - context: The drawingarea's cairo context from the expose event
-        - x: The current position in the image
-        - maxheight: The event areas height
-        - nitems: The number of items in the column to be drawn
-        - color: A RGBA tuple
-            Example: (0.3, 0.4, 0.8, 1)
-        """
-        if nitems < 2:
-            nitems = 2
-        maxheight = maxheight - self.ypad
-        height = int(((float(nitems)/self.largest)*(maxheight-2))) - 6
-
-        if height < 2:
-            height = 2
-
-        radius = 1.3
-        y = maxheight - height
-        # Draw
-        context.set_source_rgba(*color)
-        context.move_to(x + radius, y)
-        context.new_sub_path()
-        if nitems > 4:
-            context.arc(radius + x, radius + y, radius, math.pi, 3 * math.pi /2)
-            context.arc(x + self.wcolumn - radius, radius + y, radius, 3 * math.pi / 2, 0)
-            context.rectangle(x, y, self.wcolumn, height)
-        else:
-            context.rectangle(x, y, self.wcolumn, height)
-        context.close_path()
-        context.fill()
-
-    def selection_callback(self, datastore, i):
-        """
-        A demo callback, either rewrite this or use connect_selection_callback
-        """
-        print "day %s has %s events\n" % (datastore[i][0], datastore[i][1])
-
-    def connect_selection_callback(self, callback):
-        """
-        Connect a callback for clicked to call. clicked passes this widget,
-        a datastore list, and i to the function
-        """
-        if callable(callback):
-            self.selection_callback = callback
-        else:
-            raise TypeError("Callback is not a function")
-
-    def clicked(self, widget, event, *args, **kwargs):
-        """Handles click events
-
-        By wrapping this and using the returned location you can do nifty stuff
-        with the datastore object
-
-        Calls a calback set by connect_selection_callback
-        """
-        self.connect("expose_event", self.expose, True)
-        self.queue_draw()
-        self.emit("selection-set")
-        if callable(self.selection_callback):
-            self.selection_callback(self.datastore, 0)
-
 class CalendarWidget(gtk.HBox):
     """
     A container for a CairoCalendar
@@ -408,7 +277,7 @@ class CalendarWidget(gtk.HBox):
         viewport = gtk.Viewport()
         viewport.set_shadow_type(gtk.SHADOW_NONE)
         viewport.set_size_request(600,70)
-        self.calendar = CairoCalendar([[0, 0]])
+        self.calendar = CairoCalendar()
         #mini cal setup
         #self.immediatecalendar = ImmediateCalendar([[0,0]])
         #self.immediatecalendar.set_size_request(70,70)
