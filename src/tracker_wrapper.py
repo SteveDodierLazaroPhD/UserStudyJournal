@@ -56,15 +56,12 @@ class TrackerBackend:
 
     def search_zeitgeist(self, uris, interpretation, search_callback):
         
-        def _handle_get_events(events):
+        def _handle_find_events(events):
             results = []
             for event in events:
                 results.append(
                     (int(event.timestamp) / 1000, event.subjects[0].uri))
             search_callback(results)
-        
-        def _handle_find_events(ids):
-            self.zg.get_events(ids, _handle_get_events)
         
         events = []
         for uri in uris:
@@ -73,12 +70,12 @@ class TrackerBackend:
                 subject.interpretation = interpretation
             event = Event.new_for_values(subjects=[subject])
             events.append(event)
-        self.zg.find_event_ids_for_templates(events, _handle_find_events,
+        self.zg.find_events_for_templates(events, _handle_find_events,
             TimeRange.until_now(), result_type=ResultType.MostRecentEvents)
     
     def search(self, text, interpretation, search_callback):
         uris = self.search_tracker(text)
         if len(uris) > 0:
-            tracker.search_zeitgeist(uris, interpretation, search_callback)
+            self.search_zeitgeist(uris, interpretation, search_callback)
 
 tracker = TrackerBackend()

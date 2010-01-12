@@ -200,18 +200,14 @@ class DayPartWidget(gtk.VBox):
             self.init_events()            
         
     def init_events(self):
-        self.zg.find_event_ids_for_templates(self.event_templates,
-            self._handle_find_events, [self.start * 1000, self.end * 1000],
+        self.zg.find_events_for_templates(self.event_templates,
+            self._handle_get_events, [self.start * 1000, self.end * 1000],
             num_events=50000, result_type=ResultType.MostRecentSubjects)
 
-    def _handle_find_events(self, ids):
-        self.show()
-        if len(ids) > 0:
-            self.zg.get_events(ids, self._handle_get_events)
-        else:
+    def _handle_get_events(self, events):
+        if not events:
             self.hide()
 
-    def _handle_get_events(self, events):
         real_count = 0
 
         def exists(uri):
@@ -443,7 +439,7 @@ class PinBox(gtk.VBox):
         def _handle_find_events(ids):
             self.zg.get_events(ids, self._handle_get_events)
         
-        self.zg.find_event_ids_for_templates(templates, _handle_find_events,
+        self.zg.find_events_for_templates(templates, _handle_get_events,
             [0, time.time()*1000], num_events=0,
             result_type=2)
     
