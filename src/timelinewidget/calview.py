@@ -58,9 +58,7 @@ def get_gtk_rgba(style, palette, i, shade = 1):
         green = f(color.green)
         blue = f(color.blue)
 
-        return (red if red < 1 else 1,
-                green if green < 1 else 1,
-                blue if blue < 1 else 1, 1)
+        return (min(red, 1), min(green, 1), min(blue, 1), 1)
     else: raise TypeError("Not a valid gtk.gdk.Color")
 
 
@@ -74,6 +72,12 @@ class CairoCalendar(gtk.DrawingArea):
     xincrement = wcolumn + padding
     max_width = xincrement
     datastore = None
+
+    bg_color = (1, 1, 1, 1)
+    column_color_normal =  (1, 1, 1, 1)
+    column_color_selected = (1, 1, 1, 1)
+    column_color_alternative = (1, 1, 1, 1)
+
     __gsignals__ = {
         "selection-set": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,()),
         "data-updated":  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,())
@@ -93,6 +97,13 @@ class CairoCalendar(gtk.DrawingArea):
         self.font_name = self.style.font_desc.get_family()
         self.update_data(datastore if datastore else [], draw = False)
         self.selected_range = selected_range
+        self.connect("style-set", self.change_style)
+    
+    def change_style(self, widget, *args, **kwargs):
+        self.bg_color = get_gtk_rgba(self.style, "bg", 0, 1.02)
+        self.column_color_normal =  get_gtk_rgba(self.style, "text", 1)
+        self.column_color_selected = get_gtk_rgba(self.style, "bg", 3)
+        self.column_color_alternative = get_gtk_rgba(self.style, "text", 2)
 
     def set_selected_range(self, selected_range):
         """
@@ -130,8 +141,8 @@ class CairoCalendar(gtk.DrawingArea):
         
         context = widget.window.cairo_create()
         # Set the source to the background color
-        color = get_gtk_rgba(self.style, "bg", 0, 1.02)
-        context.set_source_rgba(*color)
+        
+        context.set_source_rgba(*self.bg_color)
         context.set_operator(cairo.OPERATOR_SOURCE)
         context.paint()
         # set a clip region for the expose event
@@ -140,23 +151,19 @@ class CairoCalendar(gtk.DrawingArea):
         x = self.xincrement
         y = event.area.height
 
-        normalcolor =  get_gtk_rgba(self.style, "text", 1)
-        selectedcolor = get_gtk_rgba(self.style, "bg", 3)
-        pinnedcolor = get_gtk_rgba(self.style, "text", 2)
-
         months_positions = []
-
+        
         i = 0
         for date, nitems in self.datastore:
             if check_for_new_month(date):
                 months_positions += [(date, x)]
             if i >= selected[0] and i <= selected[-1] and i in selected:
                 if alternative_highlight:
-                    color = pinnedcolor
+                    color = self.column_color_alternative
                 else:
-                    color = selectedcolor
+                    color = self.column_color_selected
             else:
-                color = normalcolor
+                color = self.column_color_normal
             self.draw_column(context, x, event.area.height, nitems, color)
             x += self.xincrement
             i += 1
