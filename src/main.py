@@ -113,6 +113,7 @@ class Portal(gtk.Window):
         self.show_all()
         self.connect("configure-event", self._on_size_changed)
         btn.hide()
+        cal.calendar.add_selection_callback(self.handle_fwd_sensitivity)
     
     def jumpup(self, data=None):
         self.activityview._set_today_timestamp()
@@ -125,7 +126,13 @@ class Portal(gtk.Window):
         if (dayinfocus) < self.activityview.end:
             self.fwdbtn.set_sensitive(False)
             self.ffwdbtn.set_sensitive(False)
-            
+        
+    def handle_fwd_sensitivity(self, widget, datastore, i):
+        if i < len(datastore) - 1:
+            self.fwdbtn.set_sensitive(True)
+        else:
+            self.fwdbtn.set_sensitive(False)
+
     def moveback(self, data=None):
         self.activityview.jump(-86400)
         self.fwdbtn.set_sensitive(True)

@@ -79,7 +79,7 @@ class ActivityView(gtk.VBox):
         cal.calendar.set_highlighted(dates)
 
     def _set_timeline(self):
-        def selection_callback(datastore, i):
+        def selection_callback(widget, datastore, i):
             if i < len(datastore):
                 selection_date = datastore[i][0]
                 end = selection_date  + 86399
@@ -87,7 +87,7 @@ class ActivityView(gtk.VBox):
                 self.set_dayrange(start, end)
         
         calendardata.datelist(90, cal.calendar.set_data)
-        cal.calendar.connect_selection_callback(selection_callback)
+        cal.calendar.add_selection_callback(selection_callback)
 
     def _set_view_type(self, refresh=False):
 

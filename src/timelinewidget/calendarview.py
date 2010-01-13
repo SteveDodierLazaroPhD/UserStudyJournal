@@ -75,6 +75,7 @@ class CairoCalendar(gtk.DrawingArea):
     
     datastore = None
     highlighted = []
+    __calbacks = None
     
     bg_color = (1, 1, 1, 1)
     column_color_normal =  (1, 1, 1, 1)
@@ -265,13 +266,16 @@ class CairoCalendar(gtk.DrawingArea):
         # Do stuff here
         pass
         
-    def connect_selection_callback(self, callback):
+    def add_selection_callback(self, callback):
         """
         Connect a callback for clicked to call. clicked passes this widget,
         a datastore list, and i to the function
         """
         if callable(callback):
-            self.selection_callback = callback
+            if not self.__calbacks:
+                self.__calbacks = [callback]
+            elif isinstance(self.__calbacks, list):
+                self.__calbacks.append(callback)
         else:
             raise TypeError("Callback is not a function")
 
@@ -291,8 +295,10 @@ class CairoCalendar(gtk.DrawingArea):
             len(self.datastore) - self.selected_range), 0))
         self.queue_draw()
         self.emit("selection-set")
-        if callable(self.selection_callback):
-            self.selection_callback(self.datastore, location)
+        if isinstance(self.__calbacks, list):
+            for callback in self.__calbacks:
+                if callable(callback):
+                    callback(self, self.datastore, location)
 
 
 class JournalCalendar(CairoCalendar):
