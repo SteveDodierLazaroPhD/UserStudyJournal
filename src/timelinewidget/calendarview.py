@@ -258,18 +258,11 @@ class CairoCalendar(gtk.DrawingArea):
         self.highlighted = []
         self.connect("expose_event", self.expose)
         self.queue_draw()
-
-    def selection_callback(self, datastore, i):
-        """
-        A demo callback, either rewrite this or use connect_selection_callback
-        """
-        # Do stuff here
-        pass
-        
+       
     def add_selection_callback(self, callback):
         """
-        Connect a callback for clicked to call. clicked passes this widget,
-        a datastore list, and i to the function
+        add a callback for clicked to call when a item is clicked. 
+        clicked passes this widget, a datastore list, and i to the function
         """
         if callable(callback):
             if not self.__calbacks:
