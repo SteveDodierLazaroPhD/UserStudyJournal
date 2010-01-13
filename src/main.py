@@ -29,7 +29,7 @@ from config import BASE_PATH
 from widgets import *
 from view import ActivityView
 from ui_utils import settings
-from timelinewidget.calendarview import cal
+from histogramwidget.histogramview import cal
 
 class Portal(gtk.Window):
 
@@ -113,7 +113,7 @@ class Portal(gtk.Window):
         self.show_all()
         self.connect("configure-event", self._on_size_changed)
         btn.hide()
-        cal.calendar.add_selection_callback(self.handle_fwd_sensitivity)
+        cal.histogram.add_selection_callback(self.handle_fwd_sensitivity)
     
     def jumpup(self, data=None):
         self.activityview._set_today_timestamp()

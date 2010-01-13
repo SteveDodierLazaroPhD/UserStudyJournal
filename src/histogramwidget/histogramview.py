@@ -62,9 +62,9 @@ def get_gtk_rgba(style, palette, i, shade = 1):
     else: raise TypeError("Not a valid gtk.gdk.Color")
 
 
-class CairoCalendar(gtk.DrawingArea):
+class CairoHistogram(gtk.DrawingArea):
     """
-    A calendar which is represented by a list of dimensions and dates
+    A histogram which is represented by a list of dimensions and dates
     """
     padding = 2
     ypad = 25
@@ -92,10 +92,10 @@ class CairoCalendar(gtk.DrawingArea):
         """
 
         Arguments:
-        - datastore: The.CairoCalendars two dimensional list of dates and nitems
+        - datastore: The.CairoHistograms two dimensional list of dates and nitems
         - selected_range: the number of days displayed at once
         """
-        super(CairoCalendar, self).__init__()
+        super(CairoHistogram, self).__init__()
         self.add_events(gtk.gdk.BUTTON_PRESS_MASK)
         self.connect("expose_event", self.expose)
         self.connect("button-press-event", self.clicked)
@@ -294,9 +294,9 @@ class CairoCalendar(gtk.DrawingArea):
                     callback(self, self.datastore, location)
 
 
-class JournalCalendar(CairoCalendar):
+class JournalHistogram(CairoHistogram):
     """
-    A subclass of CairoCalendar with theming to fit into Journal
+    A subclass of CairoHistogram with theming to fit into Journal
     """
     column_radius = 1.3
     def change_style(self, widget, *args, **kwargs):
@@ -310,9 +310,9 @@ class JournalCalendar(CairoCalendar):
         self.font_color = ((2*bg.red+fg.red)/3/65535.0, (2*bg.green+fg.green)/3/65535.0, (2*bg.blue+fg.blue)/3/65535.0, 1)
 
 
-class CalendarWidget(gtk.HBox):
+class HistogramWidget(gtk.HBox):
     """
-    A container for a CairoCalendar
+    A container for a CairoHistogram
     """
     def __init__(self):
         super(gtk.HBox, self).__init__()
@@ -320,11 +320,11 @@ class CalendarWidget(gtk.HBox):
         #viewport.set_shadow_type(gtk.SHADOW_IN)
         viewport.set_shadow_type(gtk.SHADOW_NONE)
         viewport.set_size_request(600,70)
-        # self.calendar = CairoCalendar()
-        self.calendar = JournalCalendar()
+        # self.histogram = CairoHistogram()
+        self.histogram = JournalHistogram()
 
         # viewport work
-        viewport.add(self.calendar)
+        viewport.add(self.histogram)
         # Aligning work
         align = gtk.Alignment(0,0,1,1)
         align.set_padding(0, 0, 0, 0)
@@ -340,17 +340,17 @@ class CalendarWidget(gtk.HBox):
         b2.set_relief(gtk.RELIEF_NONE)
         b2.set_focus_on_click(False)
         b1.connect("clicked", self.scroll_viewport, viewport,
-                   self.calendar, -3*self.calendar.xincrement)
+                   self.histogram, -3*self.histogram.xincrement)
         b2.connect("clicked", self.scroll_viewport, viewport,
-                   self.calendar, 3*self.calendar.xincrement)
-        self.calendar.connect("data-updated", self.scroll_to_end)
+                   self.histogram, 3*self.histogram.xincrement)
+        self.histogram.connect("data-updated", self.scroll_to_end)
         self.pack_start(b1, False, False)
         self.pack_start(align, True, True, 3)
         self.pack_end(b2, False, False)
         # Prepare the adjustment
         self.adjustment = viewport.get_hadjustment()
         self.adjustment.set_value(1) # Needs to be set twice to work
-        self.adjustment.set_value(self.calendar.max_width - self.adjustment.page_size)
+        self.adjustment.set_value(self.histogram.max_width - self.adjustment.page_size)
 
     def scroll_viewport(self, widget, viewport, scroll_cal, value, *args, **kwargs):
         """Broken for now
@@ -367,6 +367,6 @@ class CalendarWidget(gtk.HBox):
 
     def scroll_to_end(self, *args, **kwargs):
         self.adjustment.set_value(1)
-        self.adjustment.set_value(self.calendar.max_width - self.adjustment.page_size)
+        self.adjustment.set_value(self.histogram.max_width - self.adjustment.page_size)
 
-cal = CalendarWidget()
+cal = HistogramWidget()
