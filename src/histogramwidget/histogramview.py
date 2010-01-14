@@ -137,8 +137,9 @@ class CairoHistogram(gtk.DrawingArea):
         self.bg_color = get_gtk_rgba(self.style, "text", 1)
         self.column_color_normal =  get_gtk_rgba(self.style, "text", 4, 1.17)
         self.column_color_selected = get_gtk_rgba(self.style, "bg", 3)
-        self.column_color_selected_alternative = (0, 0.8, 0.2, 1)
-        self.column_color_alternative = (1, 0.54, 0.07, 1)
+        pal = get_gtk_rgba(self.style, "bg", 3, 1.2)
+        self.column_color_alternative = (pal[2], pal[1], pal[0], 1)
+        self.column_color_selected_alternative = get_gtk_rgba(self.style, "bg", 3, 0.6)
         fg = self.style.fg[gtk.STATE_NORMAL]
         bg = self.style.bg[gtk.STATE_NORMAL]
         self.font_color = get_gtk_rgba(self.style, "text", 4)
@@ -376,18 +377,17 @@ class HistogramWidget(gtk.HBox):
     """
     A container for a CairoHistogram
     """
-    def __init__(self):
+    def __init__(self, use_themed_histogram = True):
         super(gtk.HBox, self).__init__()
         viewport = gtk.Viewport()
-        # viewport.set_shadow_type(gtk.SHADOW_IN)
-        viewport.set_shadow_type(gtk.SHADOW_NONE)
+        if use_themed_histogram:
+            viewport.set_shadow_type(gtk.SHADOW_NONE)
+            self.histogram = JournalHistogram()
+        else:
+            viewport.set_shadow_type(gtk.SHADOW_IN)
+            self.histogram = CairoHistogram()
         viewport.set_size_request(600,70)
-        # self.histogram = CairoHistogram()
-        self.histogram = JournalHistogram()
-
-        # viewport work
         viewport.add(self.histogram)
-        # Aligning work
         align = gtk.Alignment(0,0,1,1)
         align.set_padding(0, 0, 0, 0)
         align.add(viewport)
