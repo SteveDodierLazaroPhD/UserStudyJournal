@@ -194,7 +194,6 @@ class DayPartWidget(gtk.VBox):
             self.notify_insert_handler, self.notify_delete_handler)
         
     def notify_insert_handler(self, time_range, events):
-        print ".............."
         self.init_events()
         
     def notify_delete_handler(self, time_range, event_ids):
@@ -441,8 +440,6 @@ class PinBox(gtk.VBox):
             result_type=2)
     
     def _handle_get_events(self, events):
-        real_count = 0
-
         def exists(uri):
             return not uri.startswith("file://") or \
                 os.path.exists(urllib.unquote(str(uri[7:])))
@@ -452,6 +449,7 @@ class PinBox(gtk.VBox):
         for widget in self.view:
             self.view.remove(widget)
 
+        real_count = 0
         for event in events:
             subject = event.subjects[0]
             if exists(subject.uri):
@@ -459,32 +457,20 @@ class PinBox(gtk.VBox):
                 if not self.categories.has_key(subject.interpretation):
                     self.categories[subject.interpretation] = []
                 self.categories[subject.interpretation].append(event)
+
         if real_count == 0:
             self.view.hide_all()
         else:
-            keys = self.categories.keys()
-            keys.sort()
-
-            temp_keys = []
-            for key in keys:
+            temp_events = []
+            for key in sorted(self.categories.iterkeys()):
                 events = self.categories[key]
-                events.reverse()
                 if len(events) > 1:
-                    box = CategoryBox(key, events)
+                    box = CategoryBox(key, reversed(events))
                     self.view.pack_start(box)
                 else:
-                    temp_keys.append(key)
-            
-            temp_events = []
-            
-            for key in temp_keys:
-                events = self.categories[key]
-                temp_events += events
-            
-            def comp(x, y):
-                return cmp(int(x.timestamp), int(y.timestamp))
-            
-            temp_events.sort(comp)
+                    temp_events += events
+
+            temp_events.sort(key=lambda x: x.timestamp)
             box = CategoryBox(None, temp_events)
             self.view.pack_start(box)
             self.view.show()
