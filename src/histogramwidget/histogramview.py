@@ -84,7 +84,8 @@ class CairoHistogram(gtk.DrawingArea):
     font_color = (0, 0, 0, 0)
 
     __gsignals__ = {
-        "selection-set": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,()),
+        # the index of the first selected item in the datastore.
+        "selection-set": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,(gobject.TYPE_INT,)),
         "data-updated":  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,())
         }
 
@@ -245,7 +246,10 @@ class CairoHistogram(gtk.DrawingArea):
     def set_selection(self, i):
         self.connect("expose_event", self.expose, i)
         self.queue_draw()
-        self.emit("selection-set")
+        if isinstance(i, int):
+            self.emit("selection-set", max(i, 0))
+        elif isinstance(i, list) and len(list) > 0:
+            self.emit("selection-set", max(i[0], 0))
 
     def set_highlighted(self, highlighted):
         if isinstance(highlighted, list):
@@ -284,10 +288,9 @@ class CairoHistogram(gtk.DrawingArea):
         Calls a calback set by connect_selection_callback
         """
         location = self.get_data_index_from_cartesian(event.x, event.y)
-        self.connect("expose_event", self.expose, max(min(location - 2,
-            len(self.datastore) - self.selected_range), 0))
+        self.connect("expose_event", self.expose, max(location - self.selected_range + 1, 0))
         self.queue_draw()
-        self.emit("selection-set")
+        self.emit("selection-set", max(location - self.selected_range + 1, 0))
         if isinstance(self.__calbacks, list):
             for callback in self.__calbacks:
                 if callable(callback):
@@ -370,3 +373,4 @@ class HistogramWidget(gtk.HBox):
         self.adjustment.set_value(self.histogram.max_width - self.adjustment.page_size)
 
 cal = HistogramWidget()
+
