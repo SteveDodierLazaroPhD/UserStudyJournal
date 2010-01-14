@@ -142,7 +142,7 @@ class CairoHistogram(gtk.DrawingArea):
         fg = self.style.fg[gtk.STATE_NORMAL]
         bg = self.style.bg[gtk.STATE_NORMAL]
         self.font_color = get_gtk_rgba(self.style, "text", 4)
-        self.stroke_color = (0.2,0.2,0.2,0.7)
+        self.stroke_color = get_gtk_rgba(self.style, "text", 4, 0.8)
 
     def set_selected_range(self, selected_range):
         """
@@ -257,8 +257,8 @@ class CairoHistogram(gtk.DrawingArea):
         context.set_source_rgba(*self.stroke_color)
         
         context.set_line_width(1)
-        context.move_to(x+1, 0)
-        context.line_to(x+1, height)
+        context.move_to(x + int(self.padding/2) + 0.5, 0)
+        context.line_to(x + int(self.padding/2) + 0.5, height)
         context.stroke()
 
         context.set_source_rgba(*self.font_color)
@@ -352,19 +352,17 @@ class JournalHistogram(CairoHistogram):
         """
         fg = self.style.fg[gtk.STATE_NORMAL]
         bg = self.style.bg[gtk.STATE_NORMAL]
-        context.set_source_rgba(*self.font_color)
         
+        context.set_source_rgba(*self.font_color)
         context.set_line_width(2)
         context.move_to(x+1, height - self.bottom_padding)
         context.line_to(x+1, height - self.bottom_padding/3)
-
         context.stroke()
+
         context.select_font_face(self.font_name, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
         context.set_font_size(self.font_size)
-
         date = datetime.date.fromtimestamp(date)
         month = calendar.month_name[date.month]
-
         date = "%s %d" % (month, date.year)
         xbearing, ybearing, width, oheight, xadvance, yadvance = context.text_extents(date)
         context.move_to(x + 8, height - self.bottom_padding/3)
@@ -378,10 +376,10 @@ class HistogramWidget(gtk.HBox):
     def __init__(self):
         super(gtk.HBox, self).__init__()
         viewport = gtk.Viewport()
-        #viewport.set_shadow_type(gtk.SHADOW_IN)
+        # viewport.set_shadow_type(gtk.SHADOW_IN)
         viewport.set_shadow_type(gtk.SHADOW_NONE)
         viewport.set_size_request(600,70)
-        #self.histogram = CairoHistogram()
+        # self.histogram = CairoHistogram()
         self.histogram = JournalHistogram()
 
         # viewport work
