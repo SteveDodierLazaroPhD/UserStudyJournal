@@ -98,7 +98,7 @@ class CairoHistogram(gtk.DrawingArea):
         """
         super(CairoHistogram, self).__init__()
         self.add_events(gtk.gdk.BUTTON_PRESS_MASK)
-        self.connect("expose_event", self.expose)
+        self._expose_handler_id = self.connect("expose_event", self.expose)
         self.connect("button-press-event", self.clicked)
         self.font_name = self.style.font_desc.get_family()
         self.set_data(datastore if datastore else [], draw = False)
@@ -267,7 +267,8 @@ class CairoHistogram(gtk.DrawingArea):
         context.show_text(date)
 
     def set_selection(self, i):
-        self.connect("expose_event", self.expose, i)
+        self.disconnect(self._expose_handler_id)
+        self._expose_handler_id = self.connect("expose_event", self.expose, i)
         self.queue_draw()
         if isinstance(i, int):
             self.emit("selection-set", max(i, 0))
@@ -278,12 +279,14 @@ class CairoHistogram(gtk.DrawingArea):
         if isinstance(highlighted, list):
             self.highlighted = highlighted
         else: raise TypeError("highlighted is not a list")
-        self.connect("expose_event", self.expose)
+        self.disconnect(self._expose_handler_id)
+        self._expose_handler_id = self.connect("expose_event", self.expose)
         self.queue_draw()
 
     def clear_highlighted(self):
         self.highlighted = []
-        self.connect("expose_event", self.expose)
+        self.disconnect(self._expose_handler_id)
+        self._expose_handler_id = self.connect("expose_event", self.expose)
         self.queue_draw()
        
     def add_selection_callback(self, callback):
@@ -311,7 +314,9 @@ class CairoHistogram(gtk.DrawingArea):
         Calls a calback set by connect_selection_callback
         """
         location = self.get_data_index_from_cartesian(event.x, event.y)
-        self.connect("expose_event", self.expose, max(location - self.selected_range + 1, 0))
+        self.disconnect(self._expose_handler_id)
+        self._expose_handler_id = self.connect(
+            "expose_event", self.expose, max(location - self.selected_range + 1, 0))
         self.queue_draw()
         self.emit("selection-set", max(location - self.selected_range + 1, 0))
         if isinstance(self.__calbacks, list):
