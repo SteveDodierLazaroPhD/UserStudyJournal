@@ -250,7 +250,7 @@ class CairoHistogram(gtk.DrawingArea):
         self.queue_draw()
         if isinstance(i, int):
             self.emit("selection-set", max(i, 0))
-        elif isinstance(i, list) and len(list) > 0:
+        elif isinstance(i, list) and len(li) > 0:
             self.emit("selection-set", max(i[0], 0))
 
     def set_highlighted(self, highlighted):
