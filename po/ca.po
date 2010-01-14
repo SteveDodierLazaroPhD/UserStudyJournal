@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GNOME Activity Journal\n"
 "Report-Msgid-Bugs-To: zeitgeist@lists.launchpad.net\n"
-"POT-Creation-Date: 2010-01-13 00:30+0100\n"
+"POT-Creation-Date: 2010-01-15 00:51+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Siegfried-Angel Gevatter Pujals <rainct@ubuntu.com>\n"
 "Language-Team: Siegfried Gevatter <siegfried@gevatter.com>\n"
@@ -23,29 +23,34 @@ msgstr "Mira al futur"
 msgid "Jump to Today"
 msgstr "Vés a avui"
 
-#: ../src/daywidgets.py:53
+#: ../src/daywidgets.py:51
 msgid "Morning"
 msgstr "Matí"
 
-#: ../src/daywidgets.py:54
+#: ../src/daywidgets.py:52
 msgid "Afternoon"
 msgstr "Tarda"
 
-#: ../src/daywidgets.py:55
+#: ../src/daywidgets.py:53
 msgid "Evening"
 msgstr "Vespre"
 
-#: ../src/daywidgets.py:68
+#: ../src/daywidgets.py:66
 msgid "Today"
 msgstr "Avui"
 
-#: ../src/daywidgets.py:70
+#: ../src/daywidgets.py:68
 msgid "Yesterday"
 msgstr "Ahir"
 
 #: ../src/widgets.py:166
 msgid "Type here to search..."
 msgstr "Escriviu aquí per a cercar..."
+
+#. TRANSLATORS: Text in the histogram tooltip, "(X items)"
+#: ../src/histogramwidget/histogramview.py:134
+msgid "items"
+msgstr "elements"
 
 #: ../extra/gnome-activity-journal.desktop.in.h:1
 msgid "Activity Journal"

@@ -27,11 +27,11 @@ datastore[n][1]'s size
 
 import cairo
 import gobject
+import gettext
 import gtk
 import math
 import datetime
 import calendar
-
 
 def check_for_new_month(date):
     if datetime.date.fromtimestamp(date).day == 1:
@@ -130,7 +130,8 @@ class CairoHistogram(gtk.DrawingArea):
             # don't show a tooltip
             return False
         date = datetime.date.fromtimestamp(timestamp).strftime("%Y-%m-%d")
-        tooltip.set_text("%s (%i)" %(date, count))
+        # TRANSLATORS: Text in the histogram tooltip, "(X items)"
+        tooltip.set_text("%s (%i %s)" % (date, count, _("items")))
         return True
     
     def change_style(self, widget, *args, **kwargs):
