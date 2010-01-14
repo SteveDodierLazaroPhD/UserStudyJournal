@@ -63,7 +63,7 @@ class CairoHistogram(gtk.DrawingArea):
     """
     A histogram which is represented by a list of dimensions and dates
     """
-    padding = 2
+    padding = 1
     bottom_padding = 0
     top_padding = 14
     wcolumn = 9
@@ -332,6 +332,7 @@ class JournalHistogram(CairoHistogram):
     """
     A subclass of CairoHistogram with theming to fit into Journal
     """
+    padding = 2
     column_radius = 1.3
     font_size = 12
     bottom_padding = 25
