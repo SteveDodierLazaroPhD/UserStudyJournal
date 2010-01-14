@@ -64,7 +64,8 @@ class CairoHistogram(gtk.DrawingArea):
     A histogram which is represented by a list of dimensions and dates
     """
     padding = 2
-    ypad = 0
+    bottom_padding = 0
+    top_padding = 14
     wcolumn = 9
     xincrement = wcolumn + padding
     max_width = xincrement
@@ -227,8 +228,8 @@ class CairoHistogram(gtk.DrawingArea):
         """
         if nitems < 2:
             nitems = 2
-        maxheight = maxheight - self.ypad
-        height = int(((float(nitems)/self.largest)*(maxheight-2))) - 6
+        maxheight = maxheight - self.bottom_padding
+        height = int(((float(nitems)/self.largest)*(maxheight-2))) - self.top_padding
 
         if height < 2:
             height = 2
@@ -333,7 +334,8 @@ class JournalHistogram(CairoHistogram):
     """
     column_radius = 1.3
     font_size = 12
-    ypad = 25
+    bottom_padding = 25
+    top_padding = 6
     def change_style(self, widget, *args, **kwargs):
         self.bg_color = get_gtk_rgba(self.style, "bg", 0, 1.02)
         self.column_color_normal =  get_gtk_rgba(self.style, "text", 1)
@@ -353,8 +355,8 @@ class JournalHistogram(CairoHistogram):
         context.set_source_rgba(*self.font_color)
         
         context.set_line_width(2)
-        context.move_to(x+1, height - self.ypad)
-        context.line_to(x+1, height - self.ypad/3)
+        context.move_to(x+1, height - self.bottom_padding)
+        context.line_to(x+1, height - self.bottom_padding/3)
 
         context.stroke()
         context.select_font_face(self.font_name, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
@@ -365,7 +367,7 @@ class JournalHistogram(CairoHistogram):
 
         date = "%s %d" % (month, date.year)
         xbearing, ybearing, width, oheight, xadvance, yadvance = context.text_extents(date)
-        context.move_to(x + 8, height - self.ypad/3)
+        context.move_to(x + 8, height - self.bottom_padding/3)
         context.show_text(date)
 
 
