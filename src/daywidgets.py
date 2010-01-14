@@ -395,23 +395,20 @@ class DayLabel(gtk.DrawingArea):
 
 
 class PinBox(gtk.VBox):
+
     def __init__(self):
         gtk.VBox.__init__(self)
         self.view = gtk.VBox()
         self.label = gtk.Label("Pinned")
-        hbox = gtk.HBox()
         self.label.set_alignment(0.03, 0.5)
         self.pack_start(self.label, True, True, 6)
-        #self.pack_start(hbox, False, False, 9)
         self.pack_start(self.view)
         self.zg = CLIENT
         self.set_bookmarks()
         self.show_all()
-        #self.label.set_focus_on_click(False)
         #self.label.set_active(True)
     
         bookmarker.connect("reload", self.set_bookmarks)
-        
         
         def change_style(widget, style):
             rc_style = self.style
@@ -423,13 +420,14 @@ class PinBox(gtk.VBox):
             self.label.modify_fg(gtk.STATE_NORMAL, color)
             
         self.connect("style-set", change_style)
-        
+
     def set_bookmarks(self, widget=None, uris=None):
         templates = []
         bookmarks = bookmarker.bookmarks
         if not bookmarks:
             # Abort, or we will query with no templates and get lots of
             # irrelevant events.
+            self._handle_get_events([])
             return
         for b in bookmarks:
             event = Event()
