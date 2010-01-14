@@ -29,14 +29,8 @@ import cairo
 import gobject
 import gtk
 import math
-import time
 import datetime
-
-
-month_dict  = {1:"January", 2:"February", 3:"March", 4:"April",
-               5:"May", 6:"June", 7:"July", 8:"August", 9:"September",
-               10:"October", 11:"November", 12:"December",
-               }
+import calendar
 
 
 def check_for_new_month(date):
@@ -265,7 +259,7 @@ class CairoHistogram(gtk.DrawingArea):
         context.set_font_size(self.font_size)
 
         date = datetime.date.fromtimestamp(date)
-        month  = month_dict[date.month]
+        month = calendar.month_name[date.month]
 
         date = "%s %d" % (month, date.year)
         xbearing, ybearing, width, oheight, xadvance, yadvance = context.text_extents(date)
@@ -360,7 +354,7 @@ class JournalHistogram(CairoHistogram):
         context.set_font_size(self.font_size)
 
         date = datetime.date.fromtimestamp(date)
-        month  = month_dict[date.month]
+        month = calendar.month_name[date.month]
 
         date = "%s %d" % (month, date.year)
         xbearing, ybearing, width, oheight, xadvance, yadvance = context.text_extents(date)
