@@ -72,8 +72,10 @@ class CairoHistogram(gtk.DrawingArea):
     xincrement = wcolumn + padding
     max_width = xincrement
     column_radius = 0.1
+    font_size = 10
     
     datastore = None
+    selected_range = 0
     highlighted = []
     __calbacks = None
     
@@ -107,13 +109,13 @@ class CairoHistogram(gtk.DrawingArea):
     
     def change_style(self, widget, *args, **kwargs):
         self.bg_color = get_gtk_rgba(self.style, "text", 1)
-        self.column_color_normal =  get_gtk_rgba(self.style, "text", 4, 0.7)
+        self.column_color_normal =  get_gtk_rgba(self.style, "text", 4, 1.17)
         self.column_color_selected = get_gtk_rgba(self.style, "bg", 3)
         self.column_color_selected_alternative = (0, 0.8, 0.2, 1)
         self.column_color_alternative = (1, 0.54, 0.07, 1)
         fg = self.style.fg[gtk.STATE_NORMAL]
         bg = self.style.bg[gtk.STATE_NORMAL]
-        self.font_color = self.column_color_normal
+        self.font_color = get_gtk_rgba(self.style, "text", 4)
 
     def set_selected_range(self, selected_range):
         """
@@ -233,7 +235,7 @@ class CairoHistogram(gtk.DrawingArea):
 
         context.stroke()
         context.select_font_face(self.font_name, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
-        context.set_font_size(12)
+        context.set_font_size(self.font_size)
 
         date = datetime.date.fromtimestamp(date)
         month  = month_dict[date.month]
@@ -302,6 +304,7 @@ class JournalHistogram(CairoHistogram):
     A subclass of CairoHistogram with theming to fit into Journal
     """
     column_radius = 1.3
+    font_size = 12
     def change_style(self, widget, *args, **kwargs):
         self.bg_color = get_gtk_rgba(self.style, "bg", 0, 1.02)
         self.column_color_normal =  get_gtk_rgba(self.style, "text", 1)
