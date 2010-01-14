@@ -3,6 +3,7 @@
 # GNOME Activity Journal
 #
 # Copyright © 2010 Randal Barlow
+# Copyright © 2010 Markus Korn
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -109,6 +110,26 @@ class CairoHistogram(gtk.DrawingArea):
         self.set_data(datastore if datastore else [], draw = False)
         self.selected_range = selected_range
         self.connect("style-set", self.change_style)
+        self.set_property("has-tooltip", True)
+        self.connect("query-tooltip", self.query_tooltip)
+        self._saved_tooltip_location = None
+        
+    def query_tooltip(self, widget, x, y, keyboard_mode, tooltip):
+        location = self.get_data_index_from_cartesian(x, y)
+        if location != self._saved_tooltip_location:
+            # don't show the previous tooltip if we moved to another
+            # location
+            self._saved_tooltip_location = location
+            return False
+        try:
+            timestamp, count = self.datastore[location]
+        except IndexError:
+            # there is no bar for at this location
+            # don't show a tooltip
+            return False
+        date = datetime.date.fromtimestamp(timestamp).strftime("%Y-%m-%d")
+        tooltip.set_text("%s (%i)" %(date, count))
+        return True
     
     def change_style(self, widget, *args, **kwargs):
         self.bg_color = get_gtk_rgba(self.style, "text", 1)
