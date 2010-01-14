@@ -31,10 +31,12 @@ import math
 import time
 import datetime
 
+
 month_dict  = {1:"January", 2:"February", 3:"March", 4:"April",
                5:"May", 6:"June", 7:"July", 8:"August", 9:"September",
                10:"October", 11:"November", 12:"December",
                }
+
 
 def check_for_new_month(date):
     if datetime.date.fromtimestamp(date).day == 1:
@@ -403,6 +405,7 @@ class HistogramWidget(gtk.HBox):
     def scroll_to_end(self, *args, **kwargs):
         self.adjustment.set_value(1)
         self.adjustment.set_value(self.histogram.max_width - self.adjustment.page_size)
+
 
 cal = HistogramWidget()
 
