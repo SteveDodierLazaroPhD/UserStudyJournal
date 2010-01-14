@@ -67,7 +67,7 @@ class CairoHistogram(gtk.DrawingArea):
     A histogram which is represented by a list of dimensions and dates
     """
     padding = 2
-    ypad = 25
+    ypad = 0
     wcolumn = 9
     xincrement = wcolumn + padding
     max_width = xincrement
@@ -84,6 +84,7 @@ class CairoHistogram(gtk.DrawingArea):
     column_color_selected = (1, 1, 1, 1)
     column_color_alternative = (1, 1, 1, 1)
     font_color = (0, 0, 0, 0)
+    stroke_color = (1, 1, 1, 0)
 
     __gsignals__ = {
         # the index of the first selected item in the datastore.
@@ -116,6 +117,7 @@ class CairoHistogram(gtk.DrawingArea):
         fg = self.style.fg[gtk.STATE_NORMAL]
         bg = self.style.bg[gtk.STATE_NORMAL]
         self.font_color = get_gtk_rgba(self.style, "text", 4)
+        self.stroke_color = (0.2,0.2,0.2,0.7)
 
     def set_selected_range(self, selected_range):
         """
@@ -227,13 +229,15 @@ class CairoHistogram(gtk.DrawingArea):
         """
         fg = self.style.fg[gtk.STATE_NORMAL]
         bg = self.style.bg[gtk.STATE_NORMAL]
+        context.set_source_rgba(*self.stroke_color)
+        
+        context.set_line_width(1)
+        context.move_to(x+1, 0)
+        context.line_to(x+1, height)
+        context.stroke()
+
         context.set_source_rgba(*self.font_color)
         
-        context.set_line_width(2)
-        context.move_to(x+1, height - self.ypad)
-        context.line_to(x+1, height - self.ypad/3)
-
-        context.stroke()
         context.select_font_face(self.font_name, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
         context.set_font_size(self.font_size)
 
@@ -242,7 +246,7 @@ class CairoHistogram(gtk.DrawingArea):
 
         date = "%s %d" % (month, date.year)
         xbearing, ybearing, width, oheight, xadvance, yadvance = context.text_extents(date)
-        context.move_to(x + 8, height - self.ypad/3)
+        context.move_to(x + 8, oheight+2)
         context.show_text(date)
 
     def set_selection(self, i):
@@ -250,7 +254,7 @@ class CairoHistogram(gtk.DrawingArea):
         self.queue_draw()
         if isinstance(i, int):
             self.emit("selection-set", max(i, 0))
-        elif isinstance(i, list) and len(li) > 0:
+        elif isinstance(i, list) and len(i) > 0:
             self.emit("selection-set", max(i[0], 0))
 
     def set_highlighted(self, highlighted):
@@ -305,6 +309,7 @@ class JournalHistogram(CairoHistogram):
     """
     column_radius = 1.3
     font_size = 12
+    ypad = 25
     def change_style(self, widget, *args, **kwargs):
         self.bg_color = get_gtk_rgba(self.style, "bg", 0, 1.02)
         self.column_color_normal =  get_gtk_rgba(self.style, "text", 1)
@@ -314,6 +319,30 @@ class JournalHistogram(CairoHistogram):
         fg = self.style.fg[gtk.STATE_NORMAL]
         bg = self.style.bg[gtk.STATE_NORMAL]
         self.font_color = ((2*bg.red+fg.red)/3/65535.0, (2*bg.green+fg.green)/3/65535.0, (2*bg.blue+fg.blue)/3/65535.0, 1)
+
+    def draw_month(self, context, x, height, date):
+        """
+        Draws a line signifying the start of a month
+        """
+        fg = self.style.fg[gtk.STATE_NORMAL]
+        bg = self.style.bg[gtk.STATE_NORMAL]
+        context.set_source_rgba(*self.font_color)
+        
+        context.set_line_width(2)
+        context.move_to(x+1, height - self.ypad)
+        context.line_to(x+1, height - self.ypad/3)
+
+        context.stroke()
+        context.select_font_face(self.font_name, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
+        context.set_font_size(self.font_size)
+
+        date = datetime.date.fromtimestamp(date)
+        month  = month_dict[date.month]
+
+        date = "%s %d" % (month, date.year)
+        xbearing, ybearing, width, oheight, xadvance, yadvance = context.text_extents(date)
+        context.move_to(x + 8, height - self.ypad/3)
+        context.show_text(date)
 
 
 class HistogramWidget(gtk.HBox):
@@ -326,7 +355,7 @@ class HistogramWidget(gtk.HBox):
         #viewport.set_shadow_type(gtk.SHADOW_IN)
         viewport.set_shadow_type(gtk.SHADOW_NONE)
         viewport.set_size_request(600,70)
-        # self.histogram = CairoHistogram()
+        #self.histogram = CairoHistogram()
         self.histogram = JournalHistogram()
 
         # viewport work
