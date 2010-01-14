@@ -337,6 +337,8 @@ class JournalHistogram(CairoHistogram):
     font_size = 12
     bottom_padding = 25
     top_padding = 6
+    wcolumn = 9
+    xincrement = wcolumn + padding
     def change_style(self, widget, *args, **kwargs):
         self.bg_color = get_gtk_rgba(self.style, "bg", 0, 1.02)
         self.column_color_normal =  get_gtk_rgba(self.style, "text", 1)
