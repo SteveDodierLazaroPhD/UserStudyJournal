@@ -108,6 +108,13 @@ class CairoHistogram(gtk.DrawingArea):
         self.connect("query-tooltip", self.query_tooltip)
         self._saved_tooltip_location = None
         
+    def reconnect_expose(self, *args):
+        """ disconnects the current expose_event handler and connects to
+        a new one with given arguments
+        """
+        self.disconnect(self._expose_handler_id)
+        self._expose_handler_id = self.connect("expose_event", self.expose, *args)
+        
     def query_tooltip(self, widget, x, y, keyboard_mode, tooltip):
         location = self.get_data_index_from_cartesian(x, y)
         if location != self._saved_tooltip_location:
@@ -267,8 +274,7 @@ class CairoHistogram(gtk.DrawingArea):
         context.show_text(date)
 
     def set_selection(self, i):
-        self.disconnect(self._expose_handler_id)
-        self._expose_handler_id = self.connect("expose_event", self.expose, i)
+        self.reconnect_expose(i)
         self.queue_draw()
         if isinstance(i, int):
             self.emit("selection-set", max(i, 0))
@@ -279,14 +285,12 @@ class CairoHistogram(gtk.DrawingArea):
         if isinstance(highlighted, list):
             self.highlighted = highlighted
         else: raise TypeError("highlighted is not a list")
-        self.disconnect(self._expose_handler_id)
-        self._expose_handler_id = self.connect("expose_event", self.expose)
+        self.reconnect_expose()
         self.queue_draw()
 
     def clear_highlighted(self):
         self.highlighted = []
-        self.disconnect(self._expose_handler_id)
-        self._expose_handler_id = self.connect("expose_event", self.expose)
+        self.reconnect_expose()
         self.queue_draw()
        
     def add_selection_callback(self, callback):
@@ -314,9 +318,7 @@ class CairoHistogram(gtk.DrawingArea):
         Calls a calback set by connect_selection_callback
         """
         location = self.get_data_index_from_cartesian(event.x, event.y)
-        self.disconnect(self._expose_handler_id)
-        self._expose_handler_id = self.connect(
-            "expose_event", self.expose, max(location - self.selected_range + 1, 0))
+        self.reconnect_expose(max(location - self.selected_range + 1, 0))
         self.queue_draw()
         self.emit("selection-set", max(location - self.selected_range + 1, 0))
         if isinstance(self.__calbacks, list):
