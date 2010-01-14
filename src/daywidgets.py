@@ -155,107 +155,6 @@ class DayWidget(gtk.VBox):
             self.view.pack_start(part, False, False)
             part.init_events()
 
-
-class DayPartWidget(gtk.VBox):
-    def __init__(self, part, start, end):
-        gtk.VBox.__init__(self)
-        self.part = part
-        self.start = start
-        self.end = end
-        self.label = gtk.Label()
-        self.label.set_markup("<span>%s</span>" % part)
-        self.label.set_alignment(0.03, 0.5)
-        self.pack_start(self.label, False, False, 6)
-        self.view = gtk.VBox()
-        self.pack_start(self.view)
-        self.zg = CLIENT
-        self.show_all()
-        
-        event = Event()
-        event.set_interpretation(Interpretation.VISIT_EVENT.uri)
-        event2 = Event()
-        event2.set_interpretation(Interpretation.MODIFY_EVENT.uri)
-        
-        self.event_templates = [event, event2]
-        
-        def change_style(widget, style):
-            rc_style = self.style
-            color = rc_style.bg[gtk.STATE_NORMAL]
-            fcolor = rc_style.fg[gtk.STATE_NORMAL] 
-            color.red = (2*color.red + fcolor.red)/3
-            color.green = (2*color.green + fcolor.green)/3
-            color.blue = (2*color.blue + fcolor.blue)/3
-            self.label.modify_fg(gtk.STATE_NORMAL, color)
-                
-
-        self.connect("style-set", change_style)
-        
-        self.zg.install_monitor([self.start*1000, self.end*1000], self.event_templates,
-            self.notify_insert_handler, self.notify_delete_handler)
-        
-    def notify_insert_handler(self, time_range, events):
-        self.init_events()
-        
-    def notify_delete_handler(self, time_range, event_ids):
-            self.init_events()            
-        
-    def init_events(self):
-        self.show_all()
-        self.zg.find_events_for_templates(self.event_templates,
-            self._handle_get_events, [self.start * 1000, self.end * 1000],
-            num_events=50000, result_type=ResultType.MostRecentSubjects)
-
-    def _handle_get_events(self, events):
-        if not events:
-            self.hide()
-
-        real_count = 0
-
-        def exists(uri):
-            return not uri.startswith("file://") or \
-                os.path.exists(urllib.unquote(str(uri[7:])))
-
-        self.categories = {}
-
-        for widget in self.view:
-            self.view.remove(widget)
-
-        for event in events:
-            subject = event.subjects[0]
-            if exists(subject.uri):
-                real_count += 1
-                if not self.categories.has_key(subject.interpretation):
-                    self.categories[subject.interpretation] = []
-                self.categories[subject.interpretation].append(event)
-        if real_count == 0:
-            self.hide_all()
-        else:
-            keys = self.categories.keys()
-            keys.sort()
-
-            temp_keys = []
-            for key in keys:
-                events = self.categories[key]
-                events.reverse()
-                if len(events) > 4:
-                    box = CategoryBox(key, events)
-                    self.view.pack_start(box)
-                else:
-                    temp_keys.append(key)
-            
-            temp_events = []
-            
-            for key in temp_keys:
-                events = self.categories[key]
-                temp_events += events
-            
-            def comp(x, y):
-                return cmp(int(x.timestamp), int(y.timestamp))
-            
-            temp_events.sort(comp)
-            box = CategoryBox(None, temp_events)
-            self.view.pack_start(box)
-
 class CategoryBox(gtk.VBox):
     def __init__(self, category, events):
         gtk.VBox.__init__(self)
@@ -392,8 +291,94 @@ class DayLabel(gtk.DrawingArea):
         context.rectangle(0, r, w, h)
         context.fill_preserve()
 
+class EventGroup(gtk.Box):
 
-class PinBox(gtk.VBox):
+    @staticmethod
+    def event_exists(uri):
+        # TODO: Move this into Zeitgeist's datamodel.py
+        return not uri.startswith("file://") or os.path.exists(
+            urllib.unquote(str(uri[7:])))
+
+    def set_events(self, events):
+        for widget in self.view:
+            self.view.remove(widget)
+
+        categories = {}
+        for event in events:
+            subject = event.subjects[0]
+            if self.event_exists(subject.uri):
+                if not categories.has_key(subject.interpretation):
+                    categories[subject.interpretation] = []
+                categories[subject.interpretation].append(event)
+
+        if not categories:
+            self.hide_all()
+        else:
+            ungrouped_events = []
+            for key in sorted(categories.iterkeys()):
+                events = categories[key]
+                if len(events) > 3:
+                    box = CategoryBox(key, reversed(events))
+                    self.view.pack_start(box)
+                else:
+                    ungrouped_events += events
+
+            ungrouped_events.sort(key=lambda x: x.timestamp)
+            box = CategoryBox(None, ungrouped_events)
+            self.view.pack_start(box)
+            self.view.show()
+
+class DayPartWidget(EventGroup, gtk.VBox):
+
+    def __init__(self, part, start, end):
+        gtk.VBox.__init__(self)
+        self.part = part
+        self.start = start
+        self.end = end
+        self.label = gtk.Label()
+        self.label.set_markup("<span>%s</span>" % part)
+        self.label.set_alignment(0.03, 0.5)
+        self.pack_start(self.label, False, False, 6)
+        self.view = gtk.VBox()
+        self.pack_start(self.view)
+        self.zg = CLIENT
+        self.show_all()
+        
+        event = Event()
+        event.set_interpretation(Interpretation.VISIT_EVENT.uri)
+        event2 = Event()
+        event2.set_interpretation(Interpretation.MODIFY_EVENT.uri)
+        
+        self.event_templates = [event, event2]
+        
+        def change_style(widget, style):
+            rc_style = self.style
+            color = rc_style.bg[gtk.STATE_NORMAL]
+            fcolor = rc_style.fg[gtk.STATE_NORMAL] 
+            color.red = (2*color.red + fcolor.red)/3
+            color.green = (2*color.green + fcolor.green)/3
+            color.blue = (2*color.blue + fcolor.blue)/3
+            self.label.modify_fg(gtk.STATE_NORMAL, color)
+                
+
+        self.connect("style-set", change_style)
+        
+        self.zg.install_monitor([self.start*1000, self.end*1000], self.event_templates,
+            self.notify_insert_handler, self.notify_delete_handler)
+        
+    def notify_insert_handler(self, time_range, events):
+        self.init_events()
+        
+    def notify_delete_handler(self, time_range, event_ids):
+            self.init_events()            
+        
+    def init_events(self):
+        self.show_all()
+        self.zg.find_events_for_templates(self.event_templates,
+            self.set_events, [self.start * 1000, self.end * 1000],
+            num_events=50000, result_type=ResultType.MostRecentSubjects)
+
+class PinBox(EventGroup, gtk.VBox):
 
     def __init__(self):
         gtk.VBox.__init__(self)
@@ -426,7 +411,7 @@ class PinBox(gtk.VBox):
         if not bookmarks:
             # Abort, or we will query with no templates and get lots of
             # irrelevant events.
-            self._handle_get_events([])
+            self.set_events([])
             return
         for b in bookmarks:
             event = Event()
@@ -435,44 +420,8 @@ class PinBox(gtk.VBox):
             event.set_subjects([subject])
             templates.append(event)
                 
-        self.zg.find_events_for_templates(templates, self._handle_get_events,
+        self.zg.find_events_for_templates(templates, self.set_events,
             [0, time.time()*1000], num_events=0,
             result_type=2)
-    
-    def _handle_get_events(self, events):
-        def exists(uri):
-            return not uri.startswith("file://") or \
-                os.path.exists(urllib.unquote(str(uri[7:])))
-
-        self.categories = {}
-
-        for widget in self.view:
-            self.view.remove(widget)
-
-        real_count = 0
-        for event in events:
-            subject = event.subjects[0]
-            if exists(subject.uri):
-                real_count += 1
-                if not self.categories.has_key(subject.interpretation):
-                    self.categories[subject.interpretation] = []
-                self.categories[subject.interpretation].append(event)
-
-        if real_count == 0:
-            self.view.hide_all()
-        else:
-            temp_events = []
-            for key in sorted(self.categories.iterkeys()):
-                events = self.categories[key]
-                if len(events) > 1:
-                    box = CategoryBox(key, reversed(events))
-                    self.view.pack_start(box)
-                else:
-                    temp_events += events
-
-            temp_events.sort(key=lambda x: x.timestamp)
-            box = CategoryBox(None, temp_events)
-            self.view.pack_start(box)
-            self.view.show()
 
 pinbox = PinBox()
