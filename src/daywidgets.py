@@ -4,6 +4,7 @@
 #
 # Copyright © 2009-2010 Seif Lotfy <seif@lotfy.com>
 # Copyright © 2010 Randal Barlow <email.tehk@gmail.com>
+# Copyright © 2010 Siegfried Gevatter <siegfried@gevatter.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -30,7 +31,7 @@ from datetime import date
 
 from zeitgeist.client import ZeitgeistClient
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
-    ResultType
+    ResultType, TimeRange
 
 from ui_utils import *
 from widgets import *
@@ -38,30 +39,27 @@ from widgets import *
 CLIENT = ZeitgeistClient()
 
 class DayWidget(gtk.VBox):
-    # day_start - "time_t"
-    # day_end   - "time_t"
 
     def __init__(self, start, end):
-        gtk.VBox.__init__(self)
+        super(DayWidget, self).__init__()
         hour = 60*60
         self.day_start = start
         self.day_end = end
-        self.day_label = None
         
-        self.set_date_strings()
+        self._set_date_strings()
         self._periods = [
             (_("Morning"), start, start + 12*hour - 1),
             (_("Afternoon"), start + 12*hour, start + 18*hour - 1),
             (_("Evening"), start + 18*hour, end),
         ]
 
-        self.__init_widgets()
-        self.__init__pinbox()
-        self.__init_events()
-        gobject.timeout_add_seconds((86400 - (int(time.time() - time.timezone) % 86400)),
-                                    self.__refresh)
+        self._init_widgets()
+        self._init_pinbox()
+        self._init_events()
+        gobject.timeout_add_seconds(
+            86400 - (int(time.time() - time.timezone) % 86400), self._refresh)
 
-    def set_date_strings(self):
+    def _set_date_strings(self):
         self.date_string = date.fromtimestamp(self.day_start).strftime("%d %B")
         self.year_string = date.fromtimestamp(self.day_start).strftime("%Y")
         if time.time() < self.day_end and time.time() > self.day_start:
@@ -72,24 +70,22 @@ class DayWidget(gtk.VBox):
                 self.week_day_string = date.fromtimestamp(self.day_start).strftime("%A")
         self.emit("style-set", None)
 
-    def __refresh(self):
-        self.__init_date_label()
-        self.__init__pinbox()
+    def _refresh(self):
+        self._init_date_label()
+        self._init_pinbox()
 
-    def __init__pinbox(self):
+    def _init_pinbox(self):
         if self.day_start <= time.time() < self.day_end:
             self.view.pack_start(pinbox, False, False)
-        else:
-            self.view.remove(pinbox)
 
-    def __init_widgets(self):
+    def _init_widgets(self):
         self.vbox = gtk.VBox()
         evbox = gtk.EventBox()
         evbox.add(self.vbox)
 
         self.pack_start(evbox)
 
-        self.__init_date_label()
+        self._init_date_label()
 
         #label.modify_bg(gtk.STATE_SELECTED, style.bg[gtk.STATE_SELECTED])
 
@@ -108,7 +104,6 @@ class DayWidget(gtk.VBox):
         self.vbox.pack_start(scroll)
         self.show_all()
         
-
         def change_style(widget, style):
             rc_style = self.style
             color = rc_style.bg[gtk.STATE_NORMAL]
@@ -132,10 +127,8 @@ class DayWidget(gtk.VBox):
 
         self.connect("style-set", change_style)
 
-    def __init_date_label(self):
-        self.set_date_strings()
-        if self.day_label:
-            self.remove(self.daylabel)
+    def _init_date_label(self):
+        self._set_date_strings()
         
         today = int(time.time() )- 7*86400
         if self.day_start < today:
@@ -146,14 +139,14 @@ class DayWidget(gtk.VBox):
         self.vbox.pack_start(self.daylabel, False, False)
         self.vbox.reorder_child(self.daylabel, 0)
 
-    def __init_events(self):
+    def _init_events(self):
         for w in self.view:
             if not w == pinbox:
                 self.view.remove(w)
         for period in self._periods:
             part = DayPartWidget(period[0], period[1], period[2])
             self.view.pack_start(part, False, False)
-            part.init_events()
+            part.get_events()
 
 class CategoryBox(gtk.VBox):
     def __init__(self, category, events):
@@ -291,7 +284,34 @@ class DayLabel(gtk.DrawingArea):
         context.rectangle(0, r, w, h)
         context.fill_preserve()
 
-class EventGroup(gtk.Box):
+class EventGroup(gtk.VBox):
+
+    def __init__(self, title):
+        super(EventGroup, self).__init__()
+        
+        # Create the title label
+        self.label = gtk.Label(title)
+        self.label.set_alignment(0.03, 0.5)
+        self.pack_start(self.label, False, False, 6)
+        
+        # Create the main container
+        self.view = gtk.VBox()
+        self.pack_start(self.view)
+
+        # Connect to relevant signals
+        self.connect("style-set", self.on_style_change)
+        
+        # Populate the widget with content
+        self.get_events()
+
+    def on_style_change(self, widget, style):
+        """ Update used colors according to the system theme. """
+        color = self.style.bg[gtk.STATE_NORMAL]
+        fcolor = self.style.fg[gtk.STATE_NORMAL] 
+        color.red = (2 * color.red + fcolor.red) / 3
+        color.green = (2 * color.green + fcolor.green) / 3
+        color.blue = (2 * color.blue + fcolor.blue) / 3
+        self.label.modify_fg(gtk.STATE_NORMAL, color)
 
     @staticmethod
     def event_exists(uri):
@@ -328,100 +348,62 @@ class EventGroup(gtk.Box):
             self.view.pack_start(box)
             self.view.show()
 
-class DayPartWidget(EventGroup, gtk.VBox):
+    def get_events(self):
+        if self.event_templates is not None:
+            CLIENT.find_events_for_templates(self.event_templates,
+                self.set_events, self.event_timerange, num_events=50000,
+                result_type=ResultType.MostRecentSubjects)
 
-    def __init__(self, part, start, end):
-        gtk.VBox.__init__(self)
-        self.part = part
-        self.start = start
-        self.end = end
-        self.label = gtk.Label()
-        self.label.set_markup("<span>%s</span>" % part)
-        self.label.set_alignment(0.03, 0.5)
-        self.pack_start(self.label, False, False, 6)
-        self.view = gtk.VBox()
-        self.pack_start(self.view)
-        self.zg = CLIENT
-        self.show_all()
-        
-        event = Event()
-        event.set_interpretation(Interpretation.VISIT_EVENT.uri)
-        event2 = Event()
-        event2.set_interpretation(Interpretation.MODIFY_EVENT.uri)
-        
-        self.event_templates = [event, event2]
-        
-        def change_style(widget, style):
-            rc_style = self.style
-            color = rc_style.bg[gtk.STATE_NORMAL]
-            fcolor = rc_style.fg[gtk.STATE_NORMAL] 
-            color.red = (2*color.red + fcolor.red)/3
-            color.green = (2*color.green + fcolor.green)/3
-            color.blue = (2*color.blue + fcolor.blue)/3
-            self.label.modify_fg(gtk.STATE_NORMAL, color)
-                
+class DayPartWidget(EventGroup):
 
-        self.connect("style-set", change_style)
+    def __init__(self, title, start, end):
+        # Setup event criteria for querying
+        self.event_timerange = [start * 1000, end * 1000]
+        self.event_templates = (
+            Event.new_for_values(interpretation=Interpretation.VISIT_EVENT.uri),
+            Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri)
+        )
         
-        self.zg.install_monitor([self.start*1000, self.end*1000], self.event_templates,
+        # Initialize the widget
+        super(DayPartWidget, self).__init__(title)
+        
+        # FIXME: Move this into EventGroup
+        CLIENT.install_monitor(self.event_timerange, self.event_templates,
             self.notify_insert_handler, self.notify_delete_handler)
-        
-    def notify_insert_handler(self, time_range, events):
-        self.init_events()
-        
-    def notify_delete_handler(self, time_range, event_ids):
-            self.init_events()            
-        
-    def init_events(self):
         self.show_all()
-        self.zg.find_events_for_templates(self.event_templates,
-            self.set_events, [self.start * 1000, self.end * 1000],
-            num_events=50000, result_type=ResultType.MostRecentSubjects)
 
-class PinBox(EventGroup, gtk.VBox):
+    def notify_insert_handler(self, time_range, events):
+        # FIXME: Don't regenerate everything, we already get the
+        # information we need
+        self.get_events()
+
+    def notify_delete_handler(self, time_range, event_ids):
+        # FIXME: Same as above
+        self.get_events()
+
+class PinBox(EventGroup):
 
     def __init__(self):
-        gtk.VBox.__init__(self)
-        self.view = gtk.VBox()
-        self.label = gtk.Label("Pinned")
-        self.label.set_alignment(0.03, 0.5)
-        self.pack_start(self.label, True, True, 6)
-        self.pack_start(self.view)
-        self.zg = CLIENT
-        self.set_bookmarks()
-        self.show_all()
-        #self.label.set_active(True)
-    
-        bookmarker.connect("reload", self.set_bookmarks)
-        
-        def change_style(widget, style):
-            rc_style = self.style
-            color = rc_style.bg[gtk.STATE_NORMAL]
-            fcolor = rc_style.fg[gtk.STATE_NORMAL] 
-            color.red = (2*color.red + fcolor.red)/3
-            color.green = (2*color.green + fcolor.green)/3
-            color.blue = (2*color.blue + fcolor.blue)/3
-            self.label.modify_fg(gtk.STATE_NORMAL, color)
-            
-        self.connect("style-set", change_style)
+        # Setup event criteria for querying
+        self.event_timerange = TimeRange.until_now()
 
-    def set_bookmarks(self, widget=None, uris=None):
-        templates = []
-        bookmarks = bookmarker.bookmarks
-        if not bookmarks:
+        # Initialize the widget
+        super(PinBox, self).__init__("Pinned")
+
+        # Connect to relevant signals
+        bookmarker.connect("reload", lambda widget, uris: self.get_events())
+
+    @property
+    def event_templates(self):
+        if not bookmarker.bookmarks:
             # Abort, or we will query with no templates and get lots of
             # irrelevant events.
-            self.set_events([])
-            return
-        for b in bookmarks:
-            event = Event()
-            subject = Subject()
-            subject.uri = b
-            event.set_subjects([subject])
-            templates.append(event)
-                
-        self.zg.find_events_for_templates(templates, self.set_events,
-            [0, time.time()*1000], num_events=0,
-            result_type=2)
+            return None
+        
+        templates = []
+        for bookmark in bookmarker.bookmarks:
+            templates.append(Event.new_for_values(
+                subjects=[Subject.new_for_values(uri=bookmark)]))
+        return templates
 
 pinbox = PinBox()
