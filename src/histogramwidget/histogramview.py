@@ -66,7 +66,7 @@ class CairoHistogram(gtk.DrawingArea):
     padding = 1
     bottom_padding = 0
     top_padding = 14
-    wcolumn = 9
+    wcolumn = 15
     xincrement = wcolumn + padding
     max_width = xincrement
     column_radius = 0.1
