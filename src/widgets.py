@@ -149,8 +149,8 @@ class SearchBox(gtk.EventBox):
                 else:
                     cat = self.category[self.combobox.get_active_text()]
                     interpretation = self.category[self.combobox.get_active_text()]
-    	    if "tracker" in globals().keys():
-    		tracker.search(text, interpretation, callback)
+            if "tracker" in globals().keys():
+                tracker.search(text, interpretation, callback)
 
 class SearchEntry(gtk.Entry):
 
@@ -284,17 +284,17 @@ class CategoryButton(gtk.HBox):
             color = rc_style.bg[gtk.STATE_NORMAL]
             
             if color.red * 125/100 > 65535.0:
-            	color.red = 65535.0
+                color.red = 65535.0
             else:
                 color.red = color.red * 125 / 100
-            	
+            
             if color.green * 125/100 > 65535.0:
-            	color.green = 65535.0
+                color.green = 65535.0
             else:
-            	color.green = color.green * 125 / 100
-            	
+                color.green = color.green * 125 / 100
+            
             if color.blue * 125/100 > 65535.0:
-            	color.blue = 65535.0
+                color.blue = 65535.0
             else:
                 color.blue = color.blue * 125 / 100
                 
@@ -337,6 +337,7 @@ class Item(gtk.Button):
         
         img = gtk.image_new_from_pixbuf(self.icon)
         img.set_alignment(0.5, 0.5)
+        img.set_size_request(24,24)
         hbox = gtk.HBox()
         hbox.pack_start(img, False, False, 12)
         hbox.pack_start(label, True, True)
