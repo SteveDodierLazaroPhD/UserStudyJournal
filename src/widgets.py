@@ -189,7 +189,7 @@ class SearchEntry(gtk.Entry):
 
         self.set_width_chars(30)
         self.set_text(self.default_text)
-
+        self.set_size_request(-1, 32)
         self.connect("changed", lambda w: self._queue_search())
         self.connect("focus-in-event", self._entry_focus_in)
         self.connect("focus-out-event", self._entry_focus_out)
