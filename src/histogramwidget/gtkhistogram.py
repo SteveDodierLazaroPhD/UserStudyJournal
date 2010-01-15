@@ -133,7 +133,7 @@ class CairoHistogram(gtk.DrawingArea):
         self.connect("button_press_event", self.mouse_interaction)
         self.connect("motion_notify_event", self.mouse_interaction)
         self.font_name = self.style.font_desc.get_family()
-        self.set_data(datastore if datastore else [], draw = False)
+        self.set_data(datastore if datastore else gtk.ListStore(int, int), draw = False)
         self.selected_range = selected_range
         self.connect("style-set", self.change_style)
         
@@ -181,21 +181,26 @@ class CairoHistogram(gtk.DrawingArea):
 
     set_dayrange = set_selected_range # Legacy compatibility
 
-    def set_data(self, datastore = None, draw = True):
+    def set_data(self, datastore, draw = True):
         """
-        Sets the objects datastore attribute or calls update() on the current datastore object
-        then queues a draw
+        Sets the objects datastore attribute using a gtk.ListStore or a list 
+        for compatibility reasons
         """
-        if datastore != None and isinstance(datastore, list):
+        if isinstance(datastore, list):
+            newdatastore = gtk.ListStore(int, int)
+            for item in datastore:
+                newdatastore.append(item)
+            del datastore
+            datastore = newdatastore
+        if isinstance(datastore, gtk.ListStore):
             self.datastore = datastore
             self.largest = 1
             for date, nitems in self.datastore:
                 if nitems > self.largest: self.largest = nitems
             self.max_width = self.xincrement + (self.xincrement *len(datastore))
-        elif datastore != None and not isinstance(datastore, list):
-            raise TypeError("Datastore is not a list")
-        if draw:
-            self.queue_draw()
+        else:
+            raise TypeError("Datastore is not a gtk.ListStore")
+        if draw: self.queue_draw()
         self.emit("data-updated")
 
     def get_data(self):
@@ -219,6 +224,10 @@ class CairoHistogram(gtk.DrawingArea):
         # set a clip region for the expose event
         context.rectangle(event.area.x, event.area.y, event.area.width, event.area.height)
         context.clip()
+        self.draw_columns_from_datastore(context, event, selected, highlighted)
+        
+    def draw_columns_from_datastore(self, context, event, selected, highlighted):
+        print "lol"
         x = self.start_x_padding
         y = event.area.height
 
