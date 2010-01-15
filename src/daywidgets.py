@@ -343,7 +343,7 @@ class EventGroup(gtk.VBox):
             for key in sorted(categories.iterkeys()):
                 events = categories[key]
                 if len(events) > 3:
-                    box = CategoryBox(key, reversed(events))
+                    box = CategoryBox(key, list(reversed(events)))
                     self.view.pack_start(box)
                 else:
                     ungrouped_events += events
