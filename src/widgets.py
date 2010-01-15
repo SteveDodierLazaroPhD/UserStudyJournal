@@ -412,6 +412,7 @@ class Item(gtk.Button):
 
         gtk.Button.__init__(self)
 
+        self.in_search = False
         self.event = event
         self.subject = event.subjects[0]
         self.time = float(event.timestamp) / 1000
@@ -424,10 +425,19 @@ class Item(gtk.Button):
     
     def highlight(self):
         #print len(searchbox.results)
+        rc_style = self.style
         if self.subject.uri in searchbox.results:
-            self.label.set_markup("<span size='x-large'><b>"+self.subject.text+"</b></span>")
+            self.label.set_markup("<span><b>"+self.subject.text+"</b></span>")
+            self.in_search = True
+            color = rc_style.base[gtk.STATE_SELECTED]
+            self.label.modify_fg(gtk.STATE_NORMAL, color)
         else:
             self.label.set_markup("<span>"+self.subject.text+"</span>")
+            self.in_search = False
+            color = rc_style.text[gtk.STATE_NORMAL]
+            self.label.modify_text(gtk.STATE_NORMAL, color)
+            
+
         
     def __init_widget(self):
         self.label = gtk.Label(self.subject.text)
@@ -459,6 +469,13 @@ class Item(gtk.Button):
             color.green = (2*color.green + fcolor.green)/3
             color.blue = (2*color.blue + fcolor.blue)/3
             label.modify_fg(gtk.STATE_NORMAL, color)
+            
+            if self.in_search:
+                color = rc_style.bg[gtk.STATE_SELECTED]
+                self.label.modify_text(gtk.STATE_NORMAL, color)
+            else:
+                color = rc_style.text[gtk.STATE_NORMAL]
+                self.label.modify_text(gtk.STATE_NORMAL, color)
 
         self.connect("style-set", change_style)
         
