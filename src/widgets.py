@@ -338,18 +338,27 @@ class PreviewTooltip(gtk.Window):
     def __init__(self):
         gtk.Window.__init__(self, type=gtk.WINDOW_POPUP)
         
-    def preview(self, uri):
+    def preview(self, subject):
         return True
         
 class StaticPreviewTooltip(PreviewTooltip):
     
-    def __init__(self, subject):
-
+    def __init__(self):
         super(StaticPreviewTooltip, self).__init__()
+        self.__current = None
+        
+    def preview(self, subject):
+        if subject.uri == self.__current:
+            return True
+        self.__current = subject.uri
+        children = self.get_children()
+        if children:
+            self.remove(children[0])
         img = gtk.image_new_from_pixbuf(thumbnailer.get_icon(subject, 200))
         img.set_alignment(0.5, 0.5)
         img.show_all()
         self.add(img)
+        return True
         
 class VideoPreviewTooltip(PreviewTooltip):
     
@@ -374,8 +383,10 @@ class VideoPreviewTooltip(PreviewTooltip):
     def _handle_show(self, widget):
         self.player.set_state(gst.STATE_PLAYING)
         
-    def preview(self, uri):
-        self.player.set_property("uri", uri)
+    def preview(self, subject):
+        if subject.uri == self.player.get_property("uri"):
+            return True
+        self.player.set_property("uri", subject.uri)
         return True
             
     def on_message(self, bus, message):
@@ -400,11 +411,7 @@ class VideoPreviewTooltip(PreviewTooltip):
                 self.show_all()
                 imagesink.set_xwindow_id(self.movie_window.window.xid)
             finally:
-                gtk.gdk.threads_leave()
-
-VideoPreviewTooltip = VideoPreviewTooltip()
-
-        
+                gtk.gdk.threads_leave()      
 
 class Item(gtk.Button):
 
@@ -501,13 +508,13 @@ class Item(gtk.Button):
             if "video-x-generic" in icon_names and gst is not None:
                 self.set_tooltip_window(VideoPreviewTooltip)
             else:
-                self.set_tooltip_window(StaticPreviewTooltip(self.subject))
+                self.set_tooltip_window(StaticPreviewTooltip)
         
     def _handle_tooltip(self, widget, x, y, keyboard_mode, tooltip):
         # nothing to do here, we always show the multimedia tooltip
         # if we like video/sound preview later on we can start them here
         tooltip_window = self.get_tooltip_window()
-        return tooltip_window.preview(self.subject.uri)
+        return tooltip_window.preview(self.subject)
         
     def _show_item_popup(self, widget, ev):
         if ev.button == 3:
@@ -548,3 +555,5 @@ class Item(gtk.Button):
         launcher.launch_uri(self.subject.uri, self.subject.mimetype)
 
 searchbox = SearchBox()
+VideoPreviewTooltip = VideoPreviewTooltip()
+StaticPreviewTooltip = StaticPreviewTooltip()
