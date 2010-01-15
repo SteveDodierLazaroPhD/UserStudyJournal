@@ -325,6 +325,7 @@ class EventGroup(gtk.VBox):
             urllib.unquote(str(uri[7:])))
 
     def set_events(self, events):
+        
         for widget in self.view:
             self.view.remove(widget)
 
@@ -358,6 +359,9 @@ class EventGroup(gtk.VBox):
             CLIENT.find_events_for_templates(self.event_templates,
                 self.set_events, self.event_timerange, num_events=50000,
                 result_type=ResultType.MostRecentSubjects)
+            self.view.show()
+        else:
+            self.view.hide()
 
 class DayPartWidget(EventGroup):
 
