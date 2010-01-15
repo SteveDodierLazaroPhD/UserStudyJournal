@@ -149,35 +149,40 @@ class DayWidget(gtk.VBox):
             part.get_events()
 
 class CategoryBox(gtk.VBox):
+
     def __init__(self, category, events):
-        gtk.VBox.__init__(self)
-        self.btn = CategoryButton(category, len(events))
-        self.btn.connect("toggle", self.toggle)
-        self.pack_start(self.btn, False, False)
+        super(CategoryBox, self).__init__()
+
         self.view = gtk.VBox(True)
         for event in events:
             item = Item(event)
             self.view.pack_start(item)
-        hbox = gtk.HBox()
-        self.label = gtk.Label("    ")
-        hbox.pack_start(self.label, False, False)
-        hbox.pack_start(self.view)
-        self.pack_start(hbox)
-        self.show_all()
-        self.view.hide_all()
-        self.label.hide_all()
 
-        if not category:
-            self.view.show_all()
-            self.btn.hide_all()
-
-    def toggle(self, view, bool):
-        if bool:
-            self.view.show_all()
-            self.label.show_all()
+        # If this isn't a set of ungrouped events, give it a label
+        if category:
+            # Place the items into a box and simulate left padding
+            self.box = gtk.HBox()
+            self.box.pack_start(gtk.Label(" " * 3), False, False)
+            self.box.pack_start(self.view)
+            self.pack_end(self.box)
+            
+            # Add the title button
+            self.btn = CategoryButton(category, len(events))
+            self.btn.connect("toggle", self.on_toggle)
+            self.pack_start(self.btn, False, False)
+            
+            self.show_all()
+            self.box.hide_all()
         else:
-            self.view.hide_all()
-            self.label.hide_all()
+            self.box = self.view
+            self.pack_end(self.box)
+            self.show_all()
+
+    def on_toggle(self, view, bool):
+        if bool:
+            self.box.show_all()
+        else:
+            self.box.hide_all()
 
 class DayLabel(gtk.DrawingArea):
     def __init__(self, day, date):
