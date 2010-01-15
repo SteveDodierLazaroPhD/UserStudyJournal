@@ -213,13 +213,11 @@ class SearchEntry(gtk.Entry):
     def _entry_focus_in(self, widget, x):
         if self.get_text() == self.default_text:
             self.set_text("")
-            self.font_style.set_style(pango.STYLE_NORMAL)
             self.modify_font(self.font_style)
 
     def _entry_focus_out(self, widget, x):
         if self.get_text() == "":
             self.set_text(self.default_text)
-            self.font_style.set_style(pango.STYLE_ITALIC)
             self.modify_font(self.font_style)
 
     def _entry_clear_no_change_handler(self):
