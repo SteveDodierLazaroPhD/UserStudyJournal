@@ -4,6 +4,7 @@
 #
 # Copyright © 2009-2010 Seif Lotfy <seif@lotfy.com>
 # Copyright © 2010 Siegfried Gevatter <siegfried@gevatter.com>
+# Copyright © 2010 Markus Korn <thekorn@gmx.de>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,6 +24,7 @@ import gettext
 import datetime
 import gobject
 import pango
+import gio
 from ui_utils import *
 #from teamgeist import TeamgeistInterface
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
@@ -318,6 +320,15 @@ class CategoryButton(gtk.HBox):
         else:
             self.img.set_markup("<span size='small'><b>+</b></span>")
         self.emit("toggle", self.active)
+        
+class MultimediaTooltip(gtk.Window):
+    
+    def __init__(self, subject):
+        gtk.Window.__init__(self, type=gtk.WINDOW_POPUP)
+        img = gtk.image_new_from_pixbuf(thumbnailer.get_icon(subject, 200))
+        img.set_alignment(0.5, 0.5)
+        img.show_all()
+        self.add(img)
 
 class Item(gtk.Button):
 
@@ -361,6 +372,33 @@ class Item(gtk.Button):
             label.modify_fg(gtk.STATE_NORMAL, color)
 
         self.connect("style-set", change_style)
+        
+        self.init_multimedia_tooltip()
+        
+    def init_multimedia_tooltip(self):        
+        """add multimedia tooltip to multimedia files
+        multimedia tooltip is shown for all images, all videos and pdfs
+        
+        TODO: make loading of multimedia thumbs async
+        """
+        f = gio.File(self.subject.uri)
+        try:
+            info = f.query_info("standard::icon")
+            icon_names = info.get_attribute_object("standard::icon").get_names()
+        except (gio.Error, AttributeError):
+            # cannot query for icon info, don't know how to handle this item
+            return
+        if "video-x-generic" in icon_names or "image-x-generic" in icon_names \
+            or "application-pdf" in icon_names:
+            self.set_property("has-tooltip", True)
+            self.connect("query-tooltip", self._handle_tooltip)
+            self.set_tooltip_window(MultimediaTooltip(self.subject))
+        
+    def _handle_tooltip(self, widget, x, y, keyboard_mode, tooltip):
+        # nothing to do here, we always show the multimedia tooltip
+        # if we like video/sound preview later on we can start them here
+        #~ tooltip_window = self.get_tooltip_window()
+        return True
         
     def _show_item_popup(self, widget, ev):
         if ev.button == 3:
