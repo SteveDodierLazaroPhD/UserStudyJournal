@@ -58,7 +58,33 @@ def get_gtk_rgba(style, palette, i, shade = 1):
         return (min(red, 1), min(green, 1), min(blue, 1), 1)
     else: raise TypeError("Not a valid gtk.gdk.Color")
 
+class TooltipEventBox(gtk.EventBox):
+    _saved_tooltip_location = None
+    def __init__(self, histogram):
+        super(TooltipEventBox, self).__init__()
+        self.add(histogram)
+        self.histogram = histogram
+        self.set_property("has-tooltip", True)
+        self.connect("query-tooltip", self.query_tooltip)
 
+    def query_tooltip(self, widget, x, y, keyboard_mode, tooltip):
+        location = self.histogram.get_data_index_from_cartesian(x, y)
+        if location != self._saved_tooltip_location:
+            # don't show the previous tooltip if we moved to another
+            # location
+            self._saved_tooltip_location = location
+            return False
+        try:
+            timestamp, count = self.histogram.datastore[location]
+        except IndexError:
+            # there is no bar for at this location
+            # don't show a tooltip
+            return False
+        date = datetime.date.fromtimestamp(timestamp).strftime("%Y-%m-%d")
+        tooltip.set_text("%s (%i)" %(date, count))
+        return True
+        
+    
 class CairoHistogram(gtk.DrawingArea):
     """
     A histogram which is represented by a list of dimensions and dates
@@ -105,14 +131,11 @@ class CairoHistogram(gtk.DrawingArea):
         self.set_flags(gtk.CAN_FOCUS)
         self._expose_handler_id = self.connect("expose_event", self.expose)
         self.connect("button_press_event", self.mouse_interaction)
-        # self.connect("motion_notify_event", self.mouse_interaction)
+        self.connect("motion_notify_event", self.mouse_interaction)
         self.font_name = self.style.font_desc.get_family()
         self.set_data(datastore if datastore else [], draw = False)
         self.selected_range = selected_range
         self.connect("style-set", self.change_style)
-        self.set_property("has-tooltip", True)
-        self.connect("query-tooltip", self.query_tooltip)
-        self._saved_tooltip_location = None
         
     def reconnect_expose(self, *args):
         """ disconnects the current expose_event handler and connects to
@@ -318,10 +341,7 @@ class CairoHistogram(gtk.DrawingArea):
    
     def mouse_interaction(self, widget, event, *args, **kwargs):
         """
-        Reacts to mouse moving (while pressed), changing date accordingly.
-        This widget uses an event mask to only listen for BUTTON_MOTION_MASK.
-        So, we can immediately assume that a mouse button is pressed when this
-        event is generated.
+        Reacts to mouse moving (while pressed), and clicks
         """
         location = self.get_data_index_from_cartesian(event.x, event.y)
         if location != self.__last_location:
@@ -396,7 +416,7 @@ class HistogramWidget(gtk.HBox):
     """
     A container for a CairoHistogram
     """
-    def __init__(self, use_themed_histogram = True):
+    def __init__(self, use_themed_histogram = False):
         super(gtk.HBox, self).__init__()
         viewport = gtk.Viewport()
         if use_themed_histogram:
@@ -405,8 +425,10 @@ class HistogramWidget(gtk.HBox):
         else:
             viewport.set_shadow_type(gtk.SHADOW_IN)
             self.histogram = CairoHistogram()
+            
+        self.eventbox = TooltipEventBox(self.histogram)
         viewport.set_size_request(600,70)
-        viewport.add(self.histogram)
+        viewport.add(self.eventbox)
         align = gtk.Alignment(0,0,1,1)
         align.set_padding(0, 0, 0, 0)
         align.add(viewport)
@@ -451,5 +473,5 @@ class HistogramWidget(gtk.HBox):
         self.adjustment.set_value(self.histogram.max_width - self.adjustment.page_size)
 
 
-cal = HistogramWidget()
+cal = HistogramWidget(True)
 
