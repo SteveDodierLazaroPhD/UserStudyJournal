@@ -179,7 +179,7 @@ class SearchEntry(gtk.Entry):
     default_text = _("Type here to search...")
 
     # The font style of the text in the entry.
-    font_style = None
+    #font_style = None
 
     # TODO: What is this?
     search_timeout = 0
@@ -194,15 +194,6 @@ class SearchEntry(gtk.Entry):
         self.connect("focus-in-event", self._entry_focus_in)
         self.connect("focus-out-event", self._entry_focus_out)
         #self.connect("icon-press", self._icon_press)
-
-        #self.set_property("primary-icon-name", gtk.STOCK_FIND)
-        #self.set_property("secondary-icon-name", gtk.STOCK_CLEAR)
-        #self.set_has_frame(False)
-
-        self.font_style = self.style.font_desc
-        #self.font_style.set_style(pango.STYLE_ITALIC)
-        #self.modify_font(self.font_style)
-
         self.show_all()
 
     def _icon_press(self, widget, pos, event):
@@ -213,12 +204,12 @@ class SearchEntry(gtk.Entry):
     def _entry_focus_in(self, widget, x):
         if self.get_text() == self.default_text:
             self.set_text("")
-            self.modify_font(self.font_style)
+            #self.modify_font(self.font_style)
 
     def _entry_focus_out(self, widget, x):
         if self.get_text() == "":
             self.set_text(self.default_text)
-            self.modify_font(self.font_style)
+            #self.modify_font(self.font_style)
 
     def _entry_clear_no_change_handler(self):
         if not self.get_text() == self.default_text:
