@@ -39,6 +39,9 @@ except DBusException:
     print "tracker disabled"
     
 
+
+ITEMS = []
+
 class SearchBox(gtk.EventBox):    
     __gsignals__ = {
         "clear" : (gobject.SIGNAL_RUN_FIRST,
@@ -57,6 +60,8 @@ class SearchBox(gtk.EventBox):
         self.set_border_width(3)
         self.hbox = gtk.HBox()
         self.add(self.hbox)
+
+        self.results = []
 
         self.search = SearchEntry()
         
@@ -109,6 +114,7 @@ class SearchBox(gtk.EventBox):
     def clear(self, widget):
         if self.text.strip() != "" and self.text.strip() != self.search.default_text:
             self.text = ""
+            self.results = []
             self.emit("clear")
         
     def _init_combobox(self):
@@ -138,6 +144,7 @@ class SearchBox(gtk.EventBox):
         if not self.text.strip() == text.strip():
             self.text = text
             def callback(results):
+                self.results = [s[1] for s in results]
                 self.emit("search", results)
             
             if not text:
@@ -342,23 +349,36 @@ class Item(gtk.Button):
         self.icon = thumbnailer.get_icon(self.subject, 24)
         self.set_relief(gtk.RELIEF_NONE)
         self.set_focus_on_click(False)
-        label = gtk.Label(self.subject.text)
-        label.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
-        label.set_alignment(0.0, 0.5)
+        self.__init_widget()
+        
+        ITEMS.append(self)
+    
+    def highlight(self):
+        #print len(searchbox.results)
+        if self.subject.uri in searchbox.results:
+            self.label.set_markup("<span size='x-large'><b>"+self.subject.text+"</b></span>")
+        else:
+            self.label.set_markup("<span>"+self.subject.text+"</span>")
+        
+    def __init_widget(self):
+        self.label = gtk.Label(self.subject.text)
+        self.label.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
+        self.label.set_alignment(0.0, 0.5)
+        
+        self.highlight()
         
         img = gtk.image_new_from_pixbuf(self.icon)
         img.set_alignment(0.5, 0.5)
         img.set_size_request(24,24)
         hbox = gtk.HBox()
         hbox.pack_start(img, False, False, 12)
-        hbox.pack_start(label, True, True)
-
+        hbox.pack_start(self.label, True, True)
         label = gtk.Label()
         t = datetime.datetime.fromtimestamp(self.time).strftime("%H:%M")
         label.set_markup("<span>%s</span>" % t)
         #hbox.pack_end(label, False, False)
         self.add(hbox)
-
+    
         self.connect("clicked", self.launch)
         self.connect("button_press_event", self._show_item_popup)
         
@@ -437,3 +457,5 @@ class Item(gtk.Button):
 
     def launch(self, *discard):
         launcher.launch_uri(self.subject.uri, self.subject.mimetype)
+
+searchbox = SearchBox()

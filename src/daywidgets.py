@@ -359,7 +359,6 @@ class EventGroup(gtk.VBox):
             CLIENT.find_events_for_templates(self.event_templates,
                 self.set_events, self.event_timerange, num_events=50000,
                 result_type=ResultType.MostRecentSubjects)
-            self.view.show()
         else:
             self.view.hide()
 

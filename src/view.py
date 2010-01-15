@@ -54,13 +54,16 @@ class ActivityView(gtk.VBox):
         self.set_views()
 
     def _set_searchbox(self):
-        self.searchbox = SearchBox()
+        self.searchbox = searchbox
         self.pack_start(self.searchbox, False, False)
         self.searchbox.connect("search", self._handle_search_results)
         self.searchbox.connect("clear", self._clear_search_results)
     
     def _clear_search_results(self, widget):
         cal.histogram.clear_highlighted()
+        #print self.searchbox.results
+        for item in ITEMS:
+            item.highlight()
     
     def _handle_search_results(self, widget, results):
         datastore = cal.histogram.datastore
@@ -77,6 +80,10 @@ class ActivityView(gtk.VBox):
             if int(date) in keys: 
                 dates.append(i)
         cal.histogram.set_highlighted(dates)
+        #print self.searchbox.results
+        for item in ITEMS:
+            item.highlight()
+    
 
     def _set_timeline(self):
         def selection_callback(widget, datastore, i):
@@ -145,3 +152,4 @@ class ActivityView(gtk.VBox):
                     self.start + i*86400 + 86400)
                 self.days[ptime] = dayview
             self.daysbox.pack_start(self.days[ptime], True, True, 3)
+       

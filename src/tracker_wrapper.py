@@ -71,7 +71,7 @@ class TrackerBackend:
             event = Event.new_for_values(subjects=[subject])
             events.append(event)
         self.zg.find_events_for_templates(events, _handle_find_events,
-            TimeRange.until_now(), result_type=ResultType.MostRecentEvents)
+            TimeRange.until_now(), num_events=50000, result_type=0)
     
     def search(self, text, interpretation, search_callback):
         uris = self.search_tracker(text)
