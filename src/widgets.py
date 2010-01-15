@@ -127,7 +127,7 @@ class SearchBox(gtk.EventBox):
         #label = gtk.Label()
         #label.set_markup("<span><b>X</b></span>")
         
-        img = gtk.image_new_from_stock("gtk-close", 4)
+        img = gtk.image_new_from_stock("gtk-close", gtk.ICON_SIZE_MENU)
         self.clearbtn.add(img)
         self.clearbtn.set_focus_on_click(False)
         self.clearbtn.set_relief(gtk.RELIEF_NONE)
@@ -141,8 +141,9 @@ class SearchBox(gtk.EventBox):
         for cat in self.category.keys():
             self.combobox.append_text(cat)
             
-        height = self.search.allocation.height
-        self.combobox.set_size_request(-1, height)
+        #self.search.set_size_request(-1, gtk.ICON_SIZE_MENU)
+        #height = self.search.allocation.height
+        #self.combobox.set_size_request(-1, height)
     
     def set_search(self, widget, text=None):
         if not self.text.strip() == text.strip():
