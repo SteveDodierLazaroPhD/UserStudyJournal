@@ -227,7 +227,6 @@ class CairoHistogram(gtk.DrawingArea):
         self.draw_columns_from_datastore(context, event, selected, highlighted)
         
     def draw_columns_from_datastore(self, context, event, selected, highlighted):
-        print "lol"
         x = self.start_x_padding
         y = event.area.height
 
