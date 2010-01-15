@@ -35,6 +35,33 @@ import calendar
 from gtkhistogram import *
 
 
+class TooltipEventBox(gtk.EventBox):
+    _saved_tooltip_location = None
+    def __init__(self, histogram):
+        super(TooltipEventBox, self).__init__()
+        self.add(histogram)
+        self.histogram = histogram
+        self.set_property("has-tooltip", True)
+        self.connect("query-tooltip", self.query_tooltip)
+
+    def query_tooltip(self, widget, x, y, keyboard_mode, tooltip):
+        location = self.histogram.get_data_index_from_cartesian(x, y)
+        if location != self._saved_tooltip_location:
+            # don't show the previous tooltip if we moved to another
+            # location
+            self._saved_tooltip_location = location
+            return False
+        try:
+            timestamp, count = self.histogram.datastore[location]
+        except IndexError:
+            # there is no bar for at this location
+            # don't show a tooltip
+            return False
+        date = datetime.date.fromtimestamp(timestamp).strftime("%Y-%m-%d")
+        tooltip.set_text("%s (%i)" %(date, count))
+        return True
+
+
 class JournalHistogram(CairoHistogram):
     """
     A subclass of CairoHistogram with theming to fit into Journal
@@ -64,7 +91,7 @@ class JournalHistogram(CairoHistogram):
         """
         fg = self.style.fg[gtk.STATE_NORMAL]
         bg = self.style.bg[gtk.STATE_NORMAL]
-        
+
         context.set_source_rgba(*self.font_color)
         context.set_line_width(2)
         context.move_to(x+1, height - self.bottom_padding)
@@ -94,7 +121,7 @@ class HistogramWidget(gtk.HBox):
         else:
             viewport.set_shadow_type(gtk.SHADOW_IN)
             self.histogram = CairoHistogram()
-            
+
         self.eventbox = TooltipEventBox(self.histogram)
         viewport.set_size_request(600,70)
         viewport.add(self.eventbox)

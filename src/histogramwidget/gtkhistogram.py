@@ -19,10 +19,12 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """
-Takes a two dementional tuple or list and turns it into a graph based on
-datastore[n][1]'s size
-
-# datastore = [[raw_date, nitems]]
+Takes a two dementional lis store of ints and turns it into a graph based on
+the first value a int date, and the second value the number of items on that date
+where items are
+datastore = gtk.ListStore(int, int)
+datastore.append(time, nitems)
+CairoHistogram.set_data(datastore)
 """
 
 import cairo
@@ -58,36 +60,10 @@ def get_gtk_rgba(style, palette, i, shade = 1):
         return (min(red, 1), min(green, 1), min(blue, 1), 1)
     else: raise TypeError("Not a valid gtk.gdk.Color")
 
-class TooltipEventBox(gtk.EventBox):
-    _saved_tooltip_location = None
-    def __init__(self, histogram):
-        super(TooltipEventBox, self).__init__()
-        self.add(histogram)
-        self.histogram = histogram
-        self.set_property("has-tooltip", True)
-        self.connect("query-tooltip", self.query_tooltip)
 
-    def query_tooltip(self, widget, x, y, keyboard_mode, tooltip):
-        location = self.histogram.get_data_index_from_cartesian(x, y)
-        if location != self._saved_tooltip_location:
-            # don't show the previous tooltip if we moved to another
-            # location
-            self._saved_tooltip_location = location
-            return False
-        try:
-            timestamp, count = self.histogram.datastore[location]
-        except IndexError:
-            # there is no bar for at this location
-            # don't show a tooltip
-            return False
-        date = datetime.date.fromtimestamp(timestamp).strftime("%Y-%m-%d")
-        tooltip.set_text("%s (%i)" %(date, count))
-        return True
-        
-    
 class CairoHistogram(gtk.DrawingArea):
     """
-    A histogram which is represented by a list of dimensions and dates
+    A histogram which is represented by a liststore of dates, and nitems
     """
     padding = 1
     bottom_padding = 0
@@ -98,12 +74,12 @@ class CairoHistogram(gtk.DrawingArea):
     max_width = xincrement
     column_radius = 0.1
     font_size = 10
-    
+
     datastore = None
     selected_range = 0
     highlighted = []
     __calbacks = None
-    
+
     bg_color = (1, 1, 1, 1)
     column_color_normal =  (1, 1, 1, 1)
     column_color_selected = (1, 1, 1, 1)
@@ -112,7 +88,7 @@ class CairoHistogram(gtk.DrawingArea):
     stroke_color = (1, 1, 1, 0)
 
     __last_location = -1
-    
+
     __gsignals__ = {
         # the index of the first selected item in the datastore.
         "selection-set": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,(gobject.TYPE_INT,)),
@@ -136,14 +112,14 @@ class CairoHistogram(gtk.DrawingArea):
         self.set_data(datastore if datastore else gtk.ListStore(int, int), draw = False)
         self.selected_range = selected_range
         self.connect("style-set", self.change_style)
-        
+
     def reconnect_expose(self, *args):
         """ disconnects the current expose_event handler and connects to
         a new one with given arguments
         """
         self.disconnect(self._expose_handler_id)
         self._expose_handler_id = self.connect("expose_event", self.expose, *args)
-        
+
     def query_tooltip(self, widget, x, y, keyboard_mode, tooltip):
         location = self.get_data_index_from_cartesian(x, y)
         if location != self._saved_tooltip_location:
@@ -160,8 +136,11 @@ class CairoHistogram(gtk.DrawingArea):
         date = datetime.date.fromtimestamp(timestamp).strftime("%Y-%m-%d")
         tooltip.set_text("%s (%i)" %(date, count))
         return True
-    
+
     def change_style(self, widget, *args, **kwargs):
+        """
+        Sets the widgets style and coloring
+        """
         self.bg_color = get_gtk_rgba(self.style, "base", 0)
         self.column_color_normal =  get_gtk_rgba(self.style, "text", 4, 1.17)
         self.column_color_selected = get_gtk_rgba(self.style, "bg", 3)
@@ -183,7 +162,7 @@ class CairoHistogram(gtk.DrawingArea):
 
     def set_data(self, datastore, draw = True):
         """
-        Sets the objects datastore attribute using a gtk.ListStore or a list 
+        Sets the objects datastore attribute using a gtk.ListStore or a list
         for compatibility reasons
         """
         if isinstance(datastore, list):
@@ -205,7 +184,7 @@ class CairoHistogram(gtk.DrawingArea):
 
     def get_data(self):
         return self.datastore
-    
+
     def expose(self, widget, event, selected = None, highlighted = None):
         # Default hilight to the last items
         if selected == None:
@@ -214,18 +193,14 @@ class CairoHistogram(gtk.DrawingArea):
             selected = range(selected, selected + self.selected_range)
         elif isinstance(selected, list) and len(selected) == 0:
             selected = [-1] # Disable color
-        
         context = widget.window.cairo_create()
-        # Set the source to the background color
-        
         context.set_source_rgba(*self.bg_color)
         context.set_operator(cairo.OPERATOR_SOURCE)
         context.paint()
-        # set a clip region for the expose event
         context.rectangle(event.area.x, event.area.y, event.area.width, event.area.height)
         context.clip()
         self.draw_columns_from_datastore(context, event, selected, highlighted)
-        
+
     def draw_columns_from_datastore(self, context, event, selected, highlighted):
         x = self.start_x_padding
         y = event.area.height
@@ -235,7 +210,7 @@ class CairoHistogram(gtk.DrawingArea):
         for date, nitems in self.datastore:
             if check_for_new_month(date):
                 months_positions += [(date, x)]
-            if len(self.highlighted) > 0 and i >= self.highlighted[0] and i <= self.highlighted[-1] and i in self.highlighted: 
+            if len(self.highlighted) > 0 and i >= self.highlighted[0] and i <= self.highlighted[-1] and i in self.highlighted:
                 color = self.column_color_selected_alternative if i in selected else self.column_color_alternative
             elif i >= selected[0] and i <= selected[-1] and i in selected:
                 color = self.column_color_selected
@@ -244,13 +219,12 @@ class CairoHistogram(gtk.DrawingArea):
             self.draw_column(context, x, event.area.height, nitems, color)
             x += self.xincrement
             i += 1
-        # Draw over the selected items
         if x > event.area.width: # Check for resize
             self.set_size_request(x+self.xincrement, event.area.height)
         for date, line in months_positions:
             self.draw_month(context, line - self.padding, event.area.height, date)
         self.max_width = x # remove me
-        
+
     def draw_column(self, context, x, maxheight, nitems, color):
         """
         Draws a columns at x with height based on nitems, and maxheight
@@ -267,12 +241,9 @@ class CairoHistogram(gtk.DrawingArea):
             nitems = 2
         maxheight = maxheight - self.bottom_padding
         height = int(((float(nitems)/self.largest)*(maxheight-2))) - self.top_padding
-
         if height < 2:
             height = 2
-
         y = maxheight - height
-        # Draw
         context.set_source_rgba(*color)
         context.move_to(x + self.column_radius, y)
         context.new_sub_path()
@@ -292,26 +263,25 @@ class CairoHistogram(gtk.DrawingArea):
         fg = self.style.fg[gtk.STATE_NORMAL]
         bg = self.style.bg[gtk.STATE_NORMAL]
         context.set_source_rgba(*self.stroke_color)
-        
         context.set_line_width(1)
         context.move_to(x + int(self.padding/2) + 0.5, 0)
         context.line_to(x + int(self.padding/2) + 0.5, height)
         context.stroke()
-
         context.set_source_rgba(*self.font_color)
-        
         context.select_font_face(self.font_name, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
         context.set_font_size(self.font_size)
-
         date = datetime.date.fromtimestamp(date)
         month = calendar.month_name[date.month]
-
         date = "%s %d" % (month, date.year)
         xbearing, ybearing, width, oheight, xadvance, yadvance = context.text_extents(date)
         context.move_to(x + 8, oheight+2)
         context.show_text(date)
 
     def set_selection(self, i):
+        """
+        Set the selected items using a int or a list of the selections
+        If you pass this method a int it will select the index + selected_range
+        """
         self.reconnect_expose(i)
         self.queue_draw()
         if isinstance(i, int):
@@ -320,6 +290,9 @@ class CairoHistogram(gtk.DrawingArea):
             self.emit("selection-set", max(i[0], 0))
 
     def set_highlighted(self, highlighted):
+        """
+        Sets the widgets which should be highlighted with an alternative color
+        """
         if isinstance(highlighted, list):
             self.highlighted = highlighted
         else: raise TypeError("highlighted is not a list")
@@ -327,13 +300,14 @@ class CairoHistogram(gtk.DrawingArea):
         self.queue_draw()
 
     def clear_highlighted(self):
+        """Clears the highlighted color"""
         self.highlighted = []
         self.reconnect_expose()
         self.queue_draw()
-       
+
     def add_selection_callback(self, callback):
         """
-        add a callback for clicked to call when a item is clicked. 
+        add a callback for clicked to call when a item is clicked.
         clicked passes this widget, a datastore list, and i to the function
         """
         if callable(callback):
@@ -346,7 +320,7 @@ class CairoHistogram(gtk.DrawingArea):
 
     def get_data_index_from_cartesian(self, x, y):
         return int((x - self.start_x_padding) / self.xincrement)
-   
+
     def mouse_interaction(self, widget, event, *args, **kwargs):
         """
         Reacts to mouse moving (while pressed), and clicks
