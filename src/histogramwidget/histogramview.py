@@ -36,6 +36,10 @@ from gtkhistogram import *
 
 
 class TooltipEventBox(gtk.EventBox):
+    """
+    A event box housing the tool tip logic that can be used for a CairoHistogram.
+    Otherwise it interferes with the scrubbing mask code
+    """
     _saved_tooltip_location = None
     def __init__(self, histogram):
         super(TooltipEventBox, self).__init__()
@@ -91,13 +95,11 @@ class JournalHistogram(CairoHistogram):
         """
         fg = self.style.fg[gtk.STATE_NORMAL]
         bg = self.style.bg[gtk.STATE_NORMAL]
-
         context.set_source_rgba(*self.font_color)
         context.set_line_width(2)
         context.move_to(x+1, height - self.bottom_padding)
         context.line_to(x+1, height - self.bottom_padding/3)
         context.stroke()
-
         context.select_font_face(self.font_name, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
         context.set_font_size(self.font_size)
         date = datetime.date.fromtimestamp(date)
@@ -110,24 +112,27 @@ class JournalHistogram(CairoHistogram):
 
 class HistogramWidget(gtk.HBox):
     """
-    A container for a CairoHistogram
+    A container for a CairoHistogram which allows you to scroll
     """
     def __init__(self, use_themed_histogram = False):
+        """
+        Arguments:
+        - used_themed_histogram: if true use JournalHistogram over CairoHistogram
+        """
         super(gtk.HBox, self).__init__()
-        viewport = gtk.Viewport()
+        self.viewport = gtk.Viewport()
         if use_themed_histogram:
-            viewport.set_shadow_type(gtk.SHADOW_NONE)
+            self.viewport.set_shadow_type(gtk.SHADOW_NONE)
             self.histogram = JournalHistogram()
         else:
-            viewport.set_shadow_type(gtk.SHADOW_IN)
+            self.viewport.set_shadow_type(gtk.SHADOW_IN)
             self.histogram = CairoHistogram()
-
         self.eventbox = TooltipEventBox(self.histogram)
-        viewport.set_size_request(600,70)
-        viewport.add(self.eventbox)
+        self.viewport.set_size_request(600,70)
+        self.viewport.add(self.eventbox)
         align = gtk.Alignment(0,0,1,1)
         align.set_padding(0, 0, 0, 0)
-        align.add(viewport)
+        align.add(self.viewport)
         # Back button
         b1 = gtk.Button()
         b1.add(gtk.Arrow(gtk.ARROW_LEFT, gtk.SHADOW_NONE))
@@ -138,33 +143,39 @@ class HistogramWidget(gtk.HBox):
         b2.add(gtk.Arrow(gtk.ARROW_RIGHT, gtk.SHADOW_NONE))
         b2.set_relief(gtk.RELIEF_NONE)
         b2.set_focus_on_click(False)
-        b1.connect("clicked", self.scroll_viewport, viewport,
-                   self.histogram, -30*self.histogram.xincrement)
-        b2.connect("clicked", self.scroll_viewport, viewport,
-                   self.histogram, 30*self.histogram.xincrement)
+        b1.connect("clicked", self.scroll_viewport, -30*self.histogram.xincrement)
+        b2.connect("clicked", self.scroll_viewport, 30*self.histogram.xincrement)
         self.histogram.connect("data-updated", self.scroll_to_end)
         self.pack_start(b1, False, False)
         self.pack_start(align, True, True, 3)
         self.pack_end(b2, False, False)
         # Prepare the adjustment
-        self.adjustment = viewport.get_hadjustment()
+        self.adjustment = self.viewport.get_hadjustment()
         self.adjustment.set_value(1) # Needs to be set twice to work
         self.adjustment.set_value(self.histogram.max_width - self.adjustment.page_size)
 
-    def scroll_viewport(self, widget, viewport, scroll_cal, value, *args, **kwargs):
-        """Broken for now
+    def scroll_viewport(self, widget, value, *args, **kwargs):
         """
-        adjustment = viewport.get_hadjustment()
+        Scrolls the viewport over value number of days
+        
+        Arguments:
+        - value: the number of pixels to scroll
+          Use negative to scroll towards the left
+        """
+        adjustment = self.viewport.get_hadjustment()
         page_size = adjustment.get_page_size()
         if value < 1:
             newadjval = 0 if value > adjustment.value else (adjustment.value + value)
-        elif adjustment.value + page_size > scroll_cal.max_width - value:
-            newadjval = scroll_cal.max_width - page_size
+        elif adjustment.value + page_size > self.histogram.max_width - value:
+            newadjval = self.histogram.max_width - page_size
         else:
             newadjval = adjustment.value + value
         adjustment.set_value(newadjval)
 
     def scroll_to_end(self, *args, **kwargs):
+        """
+        Scroll to the end of the drawing area's viewport
+        """
         self.adjustment.set_value(1)
         self.adjustment.set_value(self.histogram.max_width - self.adjustment.page_size)
 

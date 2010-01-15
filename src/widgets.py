@@ -40,13 +40,12 @@ from dbus.exceptions import DBusException
 try:
     from tracker_wrapper import tracker
 except DBusException:
-    print "tracker disabled"
-    
-
+    print "Tracker disabled."
 
 ITEMS = []
 
-class SearchBox(gtk.EventBox):    
+class SearchBox(gtk.EventBox):
+
     __gsignals__ = {
         "clear" : (gobject.SIGNAL_RUN_FIRST,
                    gobject.TYPE_NONE,
