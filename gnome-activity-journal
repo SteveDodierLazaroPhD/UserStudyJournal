@@ -77,4 +77,5 @@ from src.main import Portal
 
 if __name__ == "__main__":
     portal = Portal()
+    gtk.gdk.threads_init()
     gtk.main()

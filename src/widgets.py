@@ -25,6 +25,10 @@ import datetime
 import gobject
 import pango
 import gio
+try:
+    import gst
+except ImportError:
+    gst = None
 from ui_utils import *
 #from teamgeist import TeamgeistInterface
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
@@ -328,14 +332,79 @@ class CategoryButton(gtk.HBox):
             self.img.set_markup("<span size='small'><b>+</b></span>")
         self.emit("toggle", self.active)
         
-class MultimediaTooltip(gtk.Window):
+
+class PreviewTooltip(gtk.Window):
+    
+    def __init__(self):
+        gtk.Window.__init__(self, type=gtk.WINDOW_POPUP)
+        
+    def preview(self, uri):
+        return True
+        
+class StaticPreviewTooltip(PreviewTooltip):
     
     def __init__(self, subject):
-        gtk.Window.__init__(self, type=gtk.WINDOW_POPUP)
+
+        super(StaticPreviewTooltip, self).__init__()
         img = gtk.image_new_from_pixbuf(thumbnailer.get_icon(subject, 200))
         img.set_alignment(0.5, 0.5)
         img.show_all()
         self.add(img)
+        
+class VideoPreviewTooltip(PreviewTooltip):
+    
+    def __init__(self):
+        PreviewTooltip.__init__(self)
+        hbox = gtk.HBox()
+        self.movie_window = gtk.DrawingArea()
+        hbox.pack_start(self.movie_window)
+        self.add(hbox)
+        self.player = gst.element_factory_make("playbin", "player")
+        bus = self.player.get_bus()
+        bus.add_signal_watch()
+        bus.enable_sync_message_emission()
+        bus.connect("message", self.on_message)
+        bus.connect("sync-message::element", self.on_sync_message)
+        self.connect("hide", self._handle_hide)
+        self.connect("show", self._handle_show)
+        
+    def _handle_hide(self, widget):
+        self.player.set_state(gst.STATE_NULL)
+        
+    def _handle_show(self, widget):
+        self.player.set_state(gst.STATE_PLAYING)
+        
+    def preview(self, uri):
+        self.player.set_property("uri", uri)
+        return True
+            
+    def on_message(self, bus, message):
+        t = message.type
+        if t == gst.MESSAGE_EOS:
+            self.player.set_state(gst.STATE_NULL)
+            self.hide_all()
+        elif t == gst.MESSAGE_ERROR:
+            self.player.set_state(gst.STATE_NULL)
+            err, debug = message.parse_error()
+            print "Error: %s" % err, debug
+            
+    def on_sync_message(self, bus, message):
+        if message.structure is None:
+            return
+        message_name = message.structure.get_name()
+        if message_name == "prepare-xwindow-id":
+            imagesink = message.src
+            imagesink.set_property("force-aspect-ratio", True)
+            gtk.gdk.threads_enter()
+            try:
+                self.show_all()
+                imagesink.set_xwindow_id(self.movie_window.window.xid)
+            finally:
+                gtk.gdk.threads_leave()
+
+VideoPreviewTooltip = VideoPreviewTooltip()
+
+        
 
 class Item(gtk.Button):
 
@@ -412,13 +481,16 @@ class Item(gtk.Button):
             or "application-pdf" in icon_names:
             self.set_property("has-tooltip", True)
             self.connect("query-tooltip", self._handle_tooltip)
-            self.set_tooltip_window(MultimediaTooltip(self.subject))
+            if "video-x-generic" in icon_names and gst is not None:
+                self.set_tooltip_window(VideoPreviewTooltip)
+            else:
+                self.set_tooltip_window(StaticPreviewTooltip(self.subject))
         
     def _handle_tooltip(self, widget, x, y, keyboard_mode, tooltip):
         # nothing to do here, we always show the multimedia tooltip
         # if we like video/sound preview later on we can start them here
-        #~ tooltip_window = self.get_tooltip_window()
-        return True
+        tooltip_window = self.get_tooltip_window()
+        return tooltip_window.preview(self.subject.uri)
         
     def _show_item_popup(self, widget, ev):
         if ev.button == 3:

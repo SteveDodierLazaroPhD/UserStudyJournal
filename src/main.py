@@ -29,7 +29,7 @@ from config import BASE_PATH
 from widgets import *
 from view import ActivityView
 from ui_utils import settings
-from histogramwidget.histogramview import cal
+from histogramwidget import cal
 
 class Portal(gtk.Window):
 

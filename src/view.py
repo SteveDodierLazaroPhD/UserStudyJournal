@@ -22,8 +22,7 @@ import time
 from widgets import *
 from ui_utils import *
 from daywidgets import *
-from histogramwidget.histogramview import cal
-from histogramwidget import histogramdata
+from histogramwidget import histogramdata, cal
 import datetime
 import time
 

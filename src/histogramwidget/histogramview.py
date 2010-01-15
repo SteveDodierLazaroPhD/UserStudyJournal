@@ -443,9 +443,9 @@ class HistogramWidget(gtk.HBox):
         b2.set_relief(gtk.RELIEF_NONE)
         b2.set_focus_on_click(False)
         b1.connect("clicked", self.scroll_viewport, viewport,
-                   self.histogram, -3*self.histogram.xincrement)
+                   self.histogram, -30*self.histogram.xincrement)
         b2.connect("clicked", self.scroll_viewport, viewport,
-                   self.histogram, 3*self.histogram.xincrement)
+                   self.histogram, 30*self.histogram.xincrement)
         self.histogram.connect("data-updated", self.scroll_to_end)
         self.pack_start(b1, False, False)
         self.pack_start(align, True, True, 3)
@@ -471,7 +471,4 @@ class HistogramWidget(gtk.HBox):
     def scroll_to_end(self, *args, **kwargs):
         self.adjustment.set_value(1)
         self.adjustment.set_value(self.histogram.max_width - self.adjustment.page_size)
-
-
-cal = HistogramWidget(True)
 
