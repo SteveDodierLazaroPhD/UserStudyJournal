@@ -27,11 +27,11 @@ datastore[n][1]'s size
 
 import cairo
 import gobject
-import gettext
 import gtk
 import math
 import datetime
 import calendar
+
 
 def check_for_new_month(date):
     if datetime.date.fromtimestamp(date).day == 1:
@@ -68,6 +68,7 @@ class CairoHistogram(gtk.DrawingArea):
     top_padding = 14
     wcolumn = 15
     xincrement = wcolumn + padding
+    start_x_padding = 2
     max_width = xincrement
     column_radius = 0.1
     font_size = 10
@@ -84,6 +85,8 @@ class CairoHistogram(gtk.DrawingArea):
     font_color = (0, 0, 0, 0)
     stroke_color = (1, 1, 1, 0)
 
+    __last_location = -1
+    
     __gsignals__ = {
         # the index of the first selected item in the datastore.
         "selection-set": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,(gobject.TYPE_INT,)),
@@ -98,9 +101,11 @@ class CairoHistogram(gtk.DrawingArea):
         - selected_range: the number of days displayed at once
         """
         super(CairoHistogram, self).__init__()
-        self.add_events(gtk.gdk.BUTTON_PRESS_MASK)
+        self.set_events(gtk.gdk.BUTTON_MOTION_MASK | gtk.gdk.POINTER_MOTION_HINT_MASK | gtk.gdk.BUTTON_RELEASE_MASK | gtk.gdk.BUTTON_PRESS_MASK)
+        self.set_flags(gtk.CAN_FOCUS)
         self._expose_handler_id = self.connect("expose_event", self.expose)
-        self.connect("button-press-event", self.clicked)
+        self.connect("button_press_event", self.mouse_interaction)
+        # self.connect("motion_notify_event", self.mouse_interaction)
         self.font_name = self.style.font_desc.get_family()
         self.set_data(datastore if datastore else [], draw = False)
         self.selected_range = selected_range
@@ -130,12 +135,11 @@ class CairoHistogram(gtk.DrawingArea):
             # don't show a tooltip
             return False
         date = datetime.date.fromtimestamp(timestamp).strftime("%Y-%m-%d")
-        # TRANSLATORS: Text in the histogram tooltip, "(X items)"
-        tooltip.set_text("%s (%i %s)" % (date, count, _("items")))
+        tooltip.set_text("%s (%i)" %(date, count))
         return True
     
     def change_style(self, widget, *args, **kwargs):
-        self.bg_color = get_gtk_rgba(self.style, "text", 1)
+        self.bg_color = get_gtk_rgba(self.style, "base", 0)
         self.column_color_normal =  get_gtk_rgba(self.style, "text", 4, 1.17)
         self.column_color_selected = get_gtk_rgba(self.style, "bg", 3)
         pal = get_gtk_rgba(self.style, "bg", 3, 1.2)
@@ -192,7 +196,7 @@ class CairoHistogram(gtk.DrawingArea):
         # set a clip region for the expose event
         context.rectangle(event.area.x, event.area.y, event.area.width, event.area.height)
         context.clip()
-        x = self.xincrement
+        x = self.start_x_padding
         y = event.area.height
 
         months_positions = []
@@ -310,9 +314,22 @@ class CairoHistogram(gtk.DrawingArea):
             raise TypeError("Callback is not a function")
 
     def get_data_index_from_cartesian(self, x, y):
-        return int((x - self.xincrement) / self.xincrement)
+        return int((x - self.start_x_padding) / self.xincrement)
+   
+    def mouse_interaction(self, widget, event, *args, **kwargs):
+        """
+        Reacts to mouse moving (while pressed), changing date accordingly.
+        This widget uses an event mask to only listen for BUTTON_MOTION_MASK.
+        So, we can immediately assume that a mouse button is pressed when this
+        event is generated.
+        """
+        location = self.get_data_index_from_cartesian(event.x, event.y)
+        if location != self.__last_location:
+            self.change_location(location)
+        self.__last_location = location
+        return True
 
-    def clicked(self, widget, event, *args, **kwargs):
+    def change_location(self, location):
         """Handles click events
 
         By wrapping this and using the returned location you can do nifty stuff
@@ -320,7 +337,6 @@ class CairoHistogram(gtk.DrawingArea):
 
         Calls a calback set by connect_selection_callback
         """
-        location = self.get_data_index_from_cartesian(event.x, event.y)
         self.reconnect_expose(max(location - self.selected_range + 1, 0))
         self.queue_draw()
         self.emit("selection-set", max(location - self.selected_range + 1, 0))
@@ -341,6 +357,8 @@ class JournalHistogram(CairoHistogram):
     top_padding = 6
     wcolumn = 9
     xincrement = wcolumn + padding
+    start_x_padding = xincrement
+
     def change_style(self, widget, *args, **kwargs):
         self.bg_color = get_gtk_rgba(self.style, "bg", 0, 1.02)
         self.column_color_normal =  get_gtk_rgba(self.style, "text", 1)
