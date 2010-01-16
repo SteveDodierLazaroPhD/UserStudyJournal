@@ -73,7 +73,7 @@ class CairoHistogram(gtk.DrawingArea):
     xincrement = wcolumn + padding
     start_x_padding = 2
     max_width = xincrement
-    column_radius = 0.1
+    column_radius = 0
     font_size = 10
 
     datastore = None
@@ -245,7 +245,7 @@ class CairoHistogram(gtk.DrawingArea):
         if nitems > 4:
             context.arc(self.column_radius + x, self.column_radius + y, self.column_radius, math.pi, 3 * math.pi /2)
             context.arc(x + self.wcolumn - self.column_radius, self.column_radius + y, self.column_radius, 3 * math.pi / 2, 0)
-            context.rectangle(x, y, self.wcolumn, height)
+            context.rectangle(x, y + self.column_radius, self.wcolumn, height - self.column_radius)
         else:
             context.rectangle(x, y, self.wcolumn, height)
         context.close_path()

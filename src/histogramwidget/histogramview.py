@@ -83,6 +83,7 @@ class JournalHistogram(CairoHistogram):
     wcolumn = 9
     xincrement = wcolumn + padding
     start_x_padding = xincrement
+    column_radius = 2
 
     def change_style(self, widget, *args, **kwargs):
         self.bg_color = get_gtk_rgba(self.style, "bg", 0, 1.02)
