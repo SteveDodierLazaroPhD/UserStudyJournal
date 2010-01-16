@@ -65,6 +65,7 @@ class CairoHistogram(gtk.DrawingArea):
     """
     A histogram which is represented by a liststore of dates, and nitems
     """
+    _selected = 0
     padding = 1
     bottom_padding = 0
     top_padding = 14
@@ -104,24 +105,13 @@ class CairoHistogram(gtk.DrawingArea):
         super(CairoHistogram, self).__init__()
         self.set_events(gtk.gdk.BUTTON_MOTION_MASK | gtk.gdk.POINTER_MOTION_HINT_MASK | gtk.gdk.BUTTON_RELEASE_MASK | gtk.gdk.BUTTON_PRESS_MASK)
         self.set_flags(gtk.CAN_FOCUS)
-        self._expose_handler_id = self.connect("expose_event", self.expose)
+        self.connect("expose_event", self.expose)
         self.connect("button_press_event", self.mouse_interaction)
         self.connect("motion_notify_event", self.mouse_interaction)
         self.font_name = self.style.font_desc.get_family()
         self.set_data(datastore if datastore else gtk.ListStore(int, int), draw = False)
         self.selected_range = selected_range
         self.connect("style-set", self.change_style)
-
-    def reconnect_expose(self, *args):
-        """
-        Disconnects the current expose_event handler and connects to
-        a new one with given arguments
-
-        Arguments:
-        -*args: the arguments for the expose event
-        """
-        self.disconnect(self._expose_handler_id)
-        self._expose_handler_id = self.connect("expose_event", self.expose, *args)
 
     def change_style(self, widget, *args, **kwargs):
         """
@@ -172,13 +162,13 @@ class CairoHistogram(gtk.DrawingArea):
             self.max_width = self.xincrement + (self.xincrement *len(datastore))
         else:
             raise TypeError("Datastore is not a gtk.ListStore")
-        if draw: self.queue_draw()
         self.emit("data-updated")
+        self.set_selection(len(datastore) - self.selected_range)
 
     def get_data(self):
         return self.datastore
 
-    def expose(self, widget, event, selected = None, highlighted = None):
+    def expose(self, widget, event):
         """
         The major drawing method
         
@@ -189,21 +179,21 @@ class CairoHistogram(gtk.DrawingArea):
         - highlighted: a list of the highlighted columns
         """
         # Default hilight to the last items
-        if selected == None:
-            selected = range(len(self.datastore))[-self.selected_range:]
-        elif isinstance(selected, int):
-            selected = range(selected, selected + self.selected_range)
-        elif isinstance(selected, list) and len(selected) == 0:
-            selected = [-1] # Disable color
+        if self._selected == None:
+            self._selected = range(len(self.datastore))[-self.selected_range:]
+        elif isinstance(self._selected, int):
+            self._selected = range(self._selected, self._selected + self.selected_range)
+        elif isinstance(self._selected, list) and len(self._selected) == 0:
+            self._selected = [-1] # Disable color
         context = widget.window.cairo_create()
         context.set_source_rgba(*self.bg_color)
         context.set_operator(cairo.OPERATOR_SOURCE)
         context.paint()
         context.rectangle(event.area.x, event.area.y, event.area.width, event.area.height)
         context.clip()
-        self.draw_columns_from_datastore(context, event, selected, highlighted)
+        self.draw_columns_from_datastore(context, event, self._selected)
 
-    def draw_columns_from_datastore(self, context, event, selected, highlighted):
+    def draw_columns_from_datastore(self, context, event, selected):
         """
         Draws columns from a datastore
         Arguments:
@@ -298,12 +288,21 @@ class CairoHistogram(gtk.DrawingArea):
         Arguments:
         - i: a list or a int where the int will select i + selected_range
         """
-        self.reconnect_expose(i)
+        self._selected = i
         self.queue_draw()
         if isinstance(i, int):
+            self._selected = range(self._selected, self._selected + self.selected_range)
             self.emit("selection-set", max(i, 0))
-        elif isinstance(i, list) and len(i) > 0:
+        elif isinstance(self._selected, list) and len(self._selected) == 0:
             self.emit("selection-set", max(i[0], 0))
+            self._selected = [-1] # Disable color
+
+    def clear_selection(self):
+        """
+        clears the selected items
+        """
+        self._selected = range(len(self.datastore))[-self.selected_range:]
+        self.queue_draw()
 
     def set_highlighted(self, highlighted):
         """
@@ -314,14 +313,12 @@ class CairoHistogram(gtk.DrawingArea):
         if isinstance(highlighted, list):
             self.highlighted = highlighted
         else: raise TypeError("highlighted is not a list")
-        self.reconnect_expose()
-        self.queue_draw()
+        self.clear_selection()
 
     def clear_highlighted(self):
         """Clears the highlighted color"""
         self.highlighted = []
-        self.reconnect_expose()
-        self.queue_draw()
+        self.clear_selection()
 
     def add_selection_callback(self, callback):
         """
@@ -365,9 +362,7 @@ class CairoHistogram(gtk.DrawingArea):
         """
         if location < 0:
             return False
-        self.reconnect_expose(max(location - self.selected_range + 1, 0))
-        self.queue_draw()
-        self.emit("selection-set", max(location - self.selected_range + 1, 0))
+        self.set_selection(max(location - self.selected_range + 1, 0))
         if isinstance(self.__calbacks, list):
             for callback in self.__calbacks:
                 if callable(callback):
