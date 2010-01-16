@@ -257,6 +257,7 @@ class HistogramWidget(gtk.HBox):
         b1.connect("released", self.__release_handler)
         b2.connect("released", self.__release_handler)
         self.histogram.connect("selection-set", self.__scrubing_fix)
+        self.histogram.queue_draw()
         
     def __release_handler(self, *args, **kwargs):
         self.__pressed = False
