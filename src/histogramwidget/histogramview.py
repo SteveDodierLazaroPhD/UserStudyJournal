@@ -65,8 +65,8 @@ class TooltipEventBox(gtk.EventBox):
             # there is no bar for at this location
             # don't show a tooltip
             return False
-        date = datetime.date.fromtimestamp(timestamp).strftime("%Y-%m-%d")
-        tooltip.set_text("%s (%i %s)" % (date, count,
+        date = datetime.date.fromtimestamp(timestamp).strftime("%A, %d %B, %Y")
+        tooltip.set_text("%s\n(%i %s)" % (date, count,
             gettext.ngettext("item", "items", count)))
         return True
 
