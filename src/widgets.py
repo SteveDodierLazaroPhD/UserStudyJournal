@@ -132,6 +132,7 @@ class SearchBox(gtk.EventBox):
         self.clearbtn.set_relief(gtk.RELIEF_NONE)
         self.hbox.pack_end(self.clearbtn, False, False)
         self.clearbtn.connect("clicked", lambda button: self.hide())
+        self.clearbtn.connect("clicked", lambda button: self.search.set_text(""))
         
         self.combobox = gtk.combo_box_new_text()
         self.combobox.set_focus_on_click(False)
@@ -415,8 +416,9 @@ class Item(gtk.HBox):
         else:
             self.label.set_markup("<span>"+self.subject.text+"</span>")
             self.in_search = False
-            color = rc_style.text[gtk.STATE_NORMAL]
-            self.label.modify_text(gtk.STATE_NORMAL, color)
+            color = rc_style.text[gtk.STATE_NORMAL]            
+            self.label.modify_fg(gtk.STATE_NORMAL, color)
+
             
 
     def __init_widget(self):
@@ -437,6 +439,7 @@ class Item(gtk.HBox):
         label = gtk.Label()
         t = datetime.datetime.fromtimestamp(self.time).strftime("%H:%M")
         label.set_markup("<span>%s</span>" % t)
+        self.hbox = hbox
         #hbox.pack_end(label, False, False)
         
         img = gtk.image_new_from_file("data/pin.png")
@@ -469,6 +472,7 @@ class Item(gtk.HBox):
             else:
                 color = rc_style.text[gtk.STATE_NORMAL]
                 self.label.modify_text(gtk.STATE_NORMAL, color)
+            self.highlight()
 
         self.connect("style-set", change_style)
         #bookmarker.connect("reload", lambda x, y: self.set_bookmark_widget())
