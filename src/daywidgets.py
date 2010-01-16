@@ -157,33 +157,35 @@ class CategoryBox(gtk.VBox):
         for event in events:
             item = Item(event)
             hbox = gtk.HBox ()
-            hbox.pack_start(gtk.Label(""), False, False, 9)
+            #hbox.pack_start(gtk.Label(""), False, False)
             hbox.pack_start(item, True, True, 0)
             self.view.pack_start(hbox, False, False, 0)
-            hbox.show_all()
+            hbox.show()
 
         # If this isn't a set of ungrouped events, give it a label
         if category:
             # Place the items into a box and simulate left padding
             self.box = gtk.HBox()
-            self.box.pack_start(gtk.Label(""), False, False, 9)
+            label = gtk.Label("")
+            self.box.pack_start(label, False, False, 9)
             self.box.pack_start(self.view)
             self.pack_end(self.box)
-            
-            
             
             # Add the title button
             self.btn = CategoryButton(category, len(events))
             self.btn.connect("toggle", self.on_toggle)
             hbox = gtk.HBox ()
-            hbox.pack_start(gtk.Label(""), False, False, 9)
+            #hbox.pack_start(gtk.Label(""), False, False, 9)
             hbox.pack_start(self.btn, True, True, 0)
             self.pack_start(hbox, False, False)
             
-            
-            self.show_all()
+            self.show()
+            hbox.show_all()
+            label.show_all()
+            self.btn.show_all()
             self.box.hide()
             self.view.show()
+
         else:
             self.box = self.view
             self.pack_end(self.box)
@@ -396,7 +398,7 @@ class DayPartWidget(EventGroup):
         # FIXME: Move this into EventGroup
         CLIENT.install_monitor(self.event_timerange, self.event_templates,
             self.notify_insert_handler, self.notify_delete_handler)
-        self.show_all()
+        #self.show()
 
     def notify_insert_handler(self, time_range, events):
         # FIXME: Don't regenerate everything, we already get the

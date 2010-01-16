@@ -274,24 +274,6 @@ class CategoryButton(gtk.HBox):
         
         def change_style(widget, style):
             rc_style = self.style
-            color = rc_style.bg[gtk.STATE_NORMAL]
-            
-            if color.red * 125/100 > 65535.0:
-                color.red = 65535.0
-            else:
-                color.red = color.red * 125 / 100
-            
-            if color.green * 125/100 > 65535.0:
-                color.green = 65535.0
-            else:
-                color.green = color.green * 125 / 100
-            
-            if color.blue * 125/100 > 65535.0:
-                color.blue = 65535.0
-            else:
-                color.blue = color.blue * 125 / 100
-                
-            btn.modify_bg(gtk.STATE_NORMAL, color)
             
             color = rc_style.bg[gtk.STATE_NORMAL]
             fcolor = rc_style.fg[gtk.STATE_NORMAL] 
