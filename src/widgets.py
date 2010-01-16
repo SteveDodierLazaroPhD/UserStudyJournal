@@ -463,6 +463,7 @@ class Item(gtk.HBox):
         img = gtk.image_new_from_file("data/bookmark-new.svg")
         self.pin = gtk.Button()
         self.pin.add(img)
+        self.pin.set_tooltip_text("Remove Pin")
         self.pin.set_focus_on_click(False)
         self.pin.set_relief(gtk.RELIEF_NONE)
         self.pack_end(self.pin, False, False)
@@ -557,9 +558,9 @@ class Item(gtk.HBox):
         menu.append(open)
         bool = bookmarker.is_bookmarked(self.subject.uri)
         if bool:
-            bookmark = gtk.MenuItem(("Unbookmark"))
+            bookmark = gtk.MenuItem(("Remove Pin"))
         else:
-            bookmark = gtk.MenuItem(("Bookmark"))
+            bookmark = gtk.MenuItem(("Pin to Today"))
         bookmark.connect("activate", lambda x: self.set_bookmarked(not bool))
         bookmark.show()
         menu.append(bookmark)

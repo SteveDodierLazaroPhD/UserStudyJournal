@@ -171,8 +171,9 @@ class CategoryBox(gtk.VBox):
             self.btn.connect("toggle", self.on_toggle)
             self.pack_start(self.btn, False, False)
             
-            self.show_all()
+            self.show()
             self.box.hide()
+            self.view.show()
         else:
             self.box = self.view
             self.pack_end(self.box)
@@ -181,9 +182,9 @@ class CategoryBox(gtk.VBox):
 
     def on_toggle(self, view, bool):
         if bool:
-            self.box.show_all()
+            self.box.show()
         else:
-            self.box.hide_all()
+            self.box.hide()
 
 class DayLabel(gtk.DrawingArea):
 
