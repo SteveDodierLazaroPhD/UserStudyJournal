@@ -80,6 +80,9 @@ class ShadowedJournalHistogram(CairoHistogram):
     font_size = 10
     bottom_padding = 18
     top_padding = 2
+    xincrement = wcolumn + padding
+    start_x_padding = 2
+    column_radius = 2
     
     def change_style(self, widget, *args, **kwargs):
         """
