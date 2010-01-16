@@ -269,7 +269,7 @@ class CategoryButton(gtk.HBox):
                 label = "Unknown (%s)" % category
             self.label.set_markup("<span>%s</span>" % label)
         self.label.set_ellipsize(pango.ELLIPSIZE_END)
-        hbox.pack_start(self.label, True, True, 3)
+        hbox.pack_start(self.label, True, True, 0)
 
         label = gtk.Label()
         label.set_markup("<span>(%d)</span>" % count)
