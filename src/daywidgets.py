@@ -175,7 +175,6 @@ class CategoryBox(gtk.VBox):
             self.btn = CategoryButton(category, len(events))
             self.btn.connect("toggle", self.on_toggle)
             hbox = gtk.HBox ()
-            #hbox.pack_start(gtk.Label(""), False, False, 9)
             hbox.pack_start(self.btn, True, True, 0)
             self.pack_start(hbox, False, False)
             
