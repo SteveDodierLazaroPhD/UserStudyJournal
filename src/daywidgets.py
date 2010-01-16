@@ -79,6 +79,7 @@ class DayWidget(gtk.VBox):
     def _init_pinbox(self):
         if self.day_start <= time.time() < self.day_end:
             self.view.pack_start(pinbox, False, False)
+        
             
     def _init_widgets(self):
         self.vbox = gtk.VBox()
@@ -378,7 +379,10 @@ class EventGroup(gtk.VBox):
             box = CategoryBox(None, ungrouped_events)
             self.view.pack_start(box)
             self.view.show()
-        pinbox.show_all()
+        if len(bookmarker.bookmarks) > 0:
+            pinbox.show_all()
+        else:
+            pinbox.hide_all()
 
     def get_events(self):
         if self.event_templates is not None:
@@ -437,6 +441,10 @@ class PinBox(EventGroup):
         for bookmark in bookmarker.bookmarks:
             templates.append(Event.new_for_values(
                 subjects=[Subject.new_for_values(uri=bookmark)]))
+        if len(templates) > 0:
+            self.show_all()
+        else:
+            self.hide_all()
         return templates
 
 pinbox = PinBox()
