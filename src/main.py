@@ -29,7 +29,7 @@ from config import BASE_PATH
 from widgets import *
 from view import ActivityView
 from ui_utils import settings
-from histogramwidget.histogramview import HistogramWidget, JournalHistogram
+from histogramwidget.histogramview import HistogramWidget, JournalHistogram, ShadowedJournalHistogram
 
 class Portal(gtk.Window):
 
@@ -54,7 +54,10 @@ class Portal(gtk.Window):
         self.vbox = gtk.VBox()
         #color = gtk.gdk.rgb_get_colormap().alloc_color('#EEEEEC')
         #self.modify_bg(gtk.STATE_NORMAL, color)
-        self.cal = HistogramWidget(JournalHistogram)
+        if settings["accessibility"]:
+            self.cal = HistogramWidget(ShadowedJournalHistogram)
+        else:
+            self.cal = HistogramWidget(JournalHistogram)
         self.activityview = ActivityView(self.cal)
         if settings["amount_days"]:
             self.activityview.set_num_days(settings["amount_days"])
