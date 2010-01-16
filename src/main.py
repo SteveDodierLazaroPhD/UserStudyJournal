@@ -29,7 +29,7 @@ from config import BASE_PATH
 from widgets import *
 from view import ActivityView
 from ui_utils import settings
-from histogramwidget import cal
+from histogramwidget.histogramview import HistogramWidget, JournalHistogram
 
 class Portal(gtk.Window):
 
@@ -54,8 +54,8 @@ class Portal(gtk.Window):
         self.vbox = gtk.VBox()
         #color = gtk.gdk.rgb_get_colormap().alloc_color('#EEEEEC')
         #self.modify_bg(gtk.STATE_NORMAL, color)
-        
-        self.activityview = ActivityView()
+        self.cal = HistogramWidget(JournalHistogram)
+        self.activityview = ActivityView(self.cal)
         if settings["amount_days"]:
             self.activityview.set_num_days(settings["amount_days"])
         settings.connect("amount_days", lambda key, value:
@@ -103,7 +103,7 @@ class Portal(gtk.Window):
         self.vbox.pack_start(hbox, True, True)
         self.set_border_width(3)
 
-        self.vbox.pack_end(cal, False, False)
+        self.vbox.pack_end(self.cal, False, False)
         self.vbox.set_border_width(5)
         
         self._request_size()
@@ -117,7 +117,7 @@ class Portal(gtk.Window):
         self.activityview.searchbox.hide()
         self.connect("configure-event", self._on_size_changed)
         self.connect("key-press-event", self._global_keypress_handler)
-        cal.histogram.add_selection_callback(self.handle_fwd_sensitivity)
+        self.cal.histogram.add_selection_callback(self.handle_fwd_sensitivity)
 
     def _global_keypress_handler(self, widget, event):
         if event.state & gtk.gdk.CONTROL_MASK:

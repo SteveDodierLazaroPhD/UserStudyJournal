@@ -22,16 +22,18 @@ import time
 from widgets import *
 from ui_utils import *
 from daywidgets import *
-from histogramwidget import histogramdata, cal
+from histogramwidget import histogramdata
 import datetime
 import time
 
 class ActivityView(gtk.VBox):
 
-    def __init__(self):
+    def __init__(self, cal):
 
         gtk.VBox.__init__(self)
-
+        
+        self.cal = cal
+        
         self.days = {}
 
         self.daysbox = None
@@ -49,7 +51,7 @@ class ActivityView(gtk.VBox):
 
     def set_num_days(self, dayrange):
         self.dayrange = dayrange
-        cal.histogram.set_dayrange(dayrange)
+        self.cal.histogram.set_dayrange(dayrange)
         self.set_views()
 
     def _set_searchbox(self):
@@ -59,12 +61,12 @@ class ActivityView(gtk.VBox):
         self.searchbox.connect("clear", self._clear_search_results)
     
     def _clear_search_results(self, widget):
-        cal.histogram.clear_highlighted()
+        self.cal.histogram.clear_highlighted()
         for item in ITEMS:
             item.highlight()
     
     def _handle_search_results(self, widget, results):
-        datastore = cal.histogram.datastore
+        datastore = self.cal.histogram.datastore
         keys = []
         t = time.time()
         offset =time.mktime(time.gmtime(t)) - time.mktime(time.localtime(t))
@@ -77,7 +79,7 @@ class ActivityView(gtk.VBox):
         for i, (date, nitems) in enumerate(datastore):
             if int(date) in keys: 
                 dates.append(i)
-        cal.histogram.set_highlighted(dates)
+        self.cal.histogram.set_highlighted(dates)
         for item in ITEMS:
             item.highlight()
 
@@ -89,8 +91,8 @@ class ActivityView(gtk.VBox):
                 start = selection_date - (self.dayrange - 1) * 86400
                 self.set_dayrange(start, end)
         
-        histogramdata.datelist(90, cal.histogram.set_data)
-        cal.histogram.add_selection_callback(selection_callback)
+        histogramdata.datelist(90, self.cal.histogram.set_data)
+        self.cal.histogram.add_selection_callback(selection_callback)
 
     def _set_view_type(self, refresh=False):
 
@@ -111,8 +113,8 @@ class ActivityView(gtk.VBox):
     def jump(self, offset):
         self.start = self.start + offset
         if time.time() > self.start:
-            diff = self.start - cal.histogram.datastore[0][0]
-            cal.histogram.set_selection(diff / 86400)
+            diff = self.start - self.cal.histogram.datastore[0][0]
+            self.cal.histogram.set_selection(diff / 86400)
             self.set_dayrange(self.start, self.end+offset)
 
     def set_dayrange(self, start, end):
