@@ -159,21 +159,25 @@ class CategoryBox(gtk.VBox):
             hbox = gtk.HBox ()
             hbox.pack_start(gtk.Label(""), False, False, 9)
             hbox.pack_start(item, True, True, 0)
-            self.view.pack_start(hbox)
+            self.view.pack_start(hbox, False, False, 0)
             hbox.show_all()
 
         # If this isn't a set of ungrouped events, give it a label
         if category:
             # Place the items into a box and simulate left padding
             self.box = gtk.HBox()
-            self.box.pack_start(gtk.Label(" " * 3), False, False)
+            self.box.pack_start(gtk.Label("edwd"), False, False, 9)
             self.box.pack_start(self.view)
             self.pack_end(self.box)
             
             # Add the title button
             self.btn = CategoryButton(category, len(events))
             self.btn.connect("toggle", self.on_toggle)
-            self.pack_start(self.btn, False, False)
+            hbox = gtk.HBox ()
+            hbox.pack_start(gtk.Label(""), False, False, 9)
+            hbox.pack_start(self.btn, True, True, 0)
+            self.pack_start(hbox, False, False)
+            hbox.show_all()
             
             self.show()
             self.box.hide()

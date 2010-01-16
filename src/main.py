@@ -154,13 +154,17 @@ class Portal(gtk.Window):
         screen = self._screen.get_monitor_geometry(
             self._screen.get_monitor_at_point(*self.get_position()))
 
-        size = [int(screen[2] * 0.80), int(screen[3] * 0.75)]
+        min_size = (1024, 600) # minimum netbook size
+        size = [
+            min(max(int(screen[2] * 0.80), min_size[0]), screen[2]),
+            min(max(int(screen[3] * 0.75), min_size[1]), screen[3])
+            ]
         if settings["window_width"] and settings["window_width"] <= screen[2]:
             size[0] = settings['window_width']
         if settings["window_height"] and settings["window_height"] <= screen[3]:
             size[1] = settings["window_height"]
 
-        self.set_geometry_hints(min_width=1024, min_height=600) # minimum netbook size
+        self.set_geometry_hints(min_width=800, min_height=360)
         self.resize(size[0], size[1])
         self._requested_size = size
     
