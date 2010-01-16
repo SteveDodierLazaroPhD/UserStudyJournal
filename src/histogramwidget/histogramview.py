@@ -84,6 +84,22 @@ class JournalHistogram(CairoHistogram):
     xincrement = wcolumn + padding
     start_x_padding = xincrement
     column_radius = 2
+    
+    def expose(self, widget, event, context):
+        """
+        The major drawing method
+        
+        Arguments:
+        - widget: the widget
+        - event: a gtk event with x and y values
+        - context: The drawingarea's cairo context from the expose event
+        """
+        context.set_source_rgba(*self.bg_color)
+        context.set_operator(cairo.OPERATOR_SOURCE)
+        context.paint()
+        context.rectangle(event.area.x, event.area.y, event.area.width, event.area.height)
+        context.clip()
+        self.draw_columns_from_datastore(context, event, self._selected)
 
     def change_style(self, widget, *args, **kwargs):
         self.bg_color = get_gtk_rgba(self.style, "bg", 0, 1.02)

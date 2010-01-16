@@ -105,7 +105,7 @@ class CairoHistogram(gtk.DrawingArea):
         super(CairoHistogram, self).__init__()
         self.set_events(gtk.gdk.BUTTON_MOTION_MASK | gtk.gdk.POINTER_MOTION_HINT_MASK | gtk.gdk.BUTTON_RELEASE_MASK | gtk.gdk.BUTTON_PRESS_MASK)
         self.set_flags(gtk.CAN_FOCUS)
-        self.connect("expose_event", self.expose)
+        self.connect("expose_event", self.__expose__)
         self.connect("button_press_event", self.mouse_interaction)
         self.connect("motion_notify_event", self.mouse_interaction)
         self.font_name = self.style.font_desc.get_family()
@@ -168,17 +168,26 @@ class CairoHistogram(gtk.DrawingArea):
     def get_data(self):
         return self.datastore
 
-    def expose(self, widget, event):
+    def __expose__(self, widget, event):
+        """
+        The major drawing method that the expose event calls directly
+        
+        Arguments:
+        - widget: the widget
+        - event: a gtk event with x and y values
+        """
+        context = widget.window.cairo_create()
+        self.expose(widget, event, context)
+
+    def expose(self, widget, event, context):
         """
         The major drawing method
         
         Arguments:
-        - context: The drawingarea's cairo context from the expose event
+        - widget: the widget
         - event: a gtk event with x and y values
-        - selected: a list of the selected columns or a int
-        - highlighted: a list of the highlighted columns
+        - context: The drawingarea's cairo context from the expose event
         """
-        context = widget.window.cairo_create()
         context.set_source_rgba(*self.bg_color)
         context.set_operator(cairo.OPERATOR_SOURCE)
         context.paint()
