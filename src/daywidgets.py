@@ -180,14 +180,15 @@ class CategoryBox(gtk.VBox):
             self.btn = CategoryButton(category, len(events))
             self.btn.connect("toggle", self.on_toggle)
             hbox = gtk.HBox ()
-            hbox.pack_start(gtk.Label(""), False, False, 8)
+            lbl = gtk.Label("")
+            hbox.pack_start(lbl, False, False, 8)
             hbox.pack_start(self.btn, True, True, 0)
             self.pack_start(hbox, False, False)
             
             self.show()
-            hbox.show_all()
+            hbox.show()
             label.show_all()
-            self.btn.show_all()
+            self.btn.show()
             self.box.hide()
             self.view.show()
 
