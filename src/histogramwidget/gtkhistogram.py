@@ -178,13 +178,6 @@ class CairoHistogram(gtk.DrawingArea):
         - selected: a list of the selected columns or a int
         - highlighted: a list of the highlighted columns
         """
-        # Default hilight to the last items
-        if self._selected == None:
-            self._selected = range(len(self.datastore))[-self.selected_range:]
-        elif isinstance(self._selected, int):
-            self._selected = range(self._selected, self._selected + self.selected_range)
-        elif isinstance(self._selected, list) and len(self._selected) == 0:
-            self._selected = [-1] # Disable color
         context = widget.window.cairo_create()
         context.set_source_rgba(*self.bg_color)
         context.set_operator(cairo.OPERATOR_SOURCE)
@@ -212,6 +205,8 @@ class CairoHistogram(gtk.DrawingArea):
                 months_positions += [(date, x)]
             if len(self.highlighted) > 0 and i >= self.highlighted[0] and i <= self.highlighted[-1] and i in self.highlighted:
                 color = self.column_color_selected_alternative if i in selected else self.column_color_alternative
+            elif not selected:
+                color = self.column_color_normal
             elif i >= selected[0] and i <= selected[-1] and i in selected:
                 color = self.column_color_selected
             else:
@@ -221,8 +216,8 @@ class CairoHistogram(gtk.DrawingArea):
             i += 1
         if x > event.area.width: # Check for resize
             self.set_size_request(x+self.xincrement, event.area.height)
-        for date, line in months_positions:
-            self.draw_month(context, line - self.padding, event.area.height, date)
+        for date, xpos in months_positions:
+            self.draw_month(context, xpos - self.padding, event.area.height, date)
         self.max_width = x # remove me
 
     def draw_column(self, context, x, maxheight, nitems, color):
@@ -293,9 +288,10 @@ class CairoHistogram(gtk.DrawingArea):
         if isinstance(i, int):
             self._selected = range(self._selected, self._selected + self.selected_range)
             self.emit("selection-set", max(i, 0))
-        elif isinstance(self._selected, list) and len(self._selected) == 0:
+        elif isinstance(self._selected, list):
+            if len(self._selected) == 0:
+                self._selected = [-1] # Disable color
             self.emit("selection-set", max(i[0], 0))
-            self._selected = [-1] # Disable color
 
     def clear_selection(self):
         """
