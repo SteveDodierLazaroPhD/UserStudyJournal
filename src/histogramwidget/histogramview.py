@@ -213,16 +213,16 @@ class HistogramWidget(gtk.HBox):
     """
     __pressed = False
     
-    def __init__(self, use_themed_histogram = False):
+    def __init__(self, histo_type = None):
         """
         Arguments:
         - used_themed_histogram: if true use JournalHistogram over CairoHistogram
         """
         super(gtk.HBox, self).__init__()
         self.viewport = gtk.Viewport()
-        if use_themed_histogram:
+        if histo_type:
             self.viewport.set_shadow_type(gtk.SHADOW_NONE)
-            self.histogram = JournalHistogram()
+            self.histogram = histo_type()
         else:
             self.viewport.set_shadow_type(gtk.SHADOW_IN)
             self.histogram = CairoHistogram()

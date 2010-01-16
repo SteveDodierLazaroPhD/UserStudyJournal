@@ -1,3 +1,4 @@
+import gtkhistogram
 import histogramview
 
-cal = histogramview.HistogramWidget(True)
+cal = histogramview.HistogramWidget(histogramview.JournalHistogram)
