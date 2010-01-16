@@ -136,7 +136,7 @@ class SearchBox(gtk.EventBox):
         self.combobox = gtk.combo_box_new_text()
         self.combobox.set_focus_on_click(False)
         self.hbox.pack_end(self.combobox, False, False, 6)
-        self.combobox.append_text("All Activities")
+        self.combobox.append_text("All activities")
         self.combobox.set_active(0)
         for cat in self.category.keys():
             self.combobox.append_text(cat)
