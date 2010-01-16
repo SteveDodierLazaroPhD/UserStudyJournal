@@ -267,7 +267,7 @@ class CategoryButton(gtk.HBox):
         label = gtk.Label()
         label.set_markup("<span>(%d)</span>" % count)
         label.set_alignment(1.0,0.5)
-        hbox.pack_end(label, False, False)
+        hbox.pack_end(label, False, False, 2)
         self.show_all()
 
         self.btn.connect("clicked", self.toggle)
