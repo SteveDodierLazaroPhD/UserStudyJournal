@@ -379,11 +379,8 @@ class EventGroup(gtk.VBox):
             box = CategoryBox(None, ungrouped_events)
             self.view.pack_start(box)
             self.view.show()
-        
-        if len(categories) > 0:
+            box.show()
             self.show()
-        else:
-            self.hide()
         
         if len(bookmarker.bookmarks) > 0:
             pinbox.show_all()
@@ -414,7 +411,7 @@ class DayPartWidget(EventGroup):
         # FIXME: Move this into EventGroup
         CLIENT.install_monitor(self.event_timerange, self.event_templates,
             self.notify_insert_handler, self.notify_delete_handler)
-        #self.show()
+        self.show_all()
 
     def notify_insert_handler(self, time_range, events):
         # FIXME: Don't regenerate everything, we already get the
