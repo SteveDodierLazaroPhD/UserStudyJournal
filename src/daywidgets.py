@@ -403,7 +403,7 @@ class PinBox(EventGroup):
         self.event_timerange = TimeRange.until_now()
 
         # Initialize the widget
-        super(PinBox, self).__init__("Pinned")
+        super(PinBox, self).__init__("Pinned items")
 
         # Connect to relevant signals
         bookmarker.connect("reload", lambda widget, uris: self.get_events())
