@@ -256,11 +256,11 @@ class DayLabel(gtk.DrawingArea):
             
         xbearing, ybearing, width, height, xadvance, yadvance = context.text_extents(self.day)
         a = (x-width)/2
-        b = y - height - 15
+        b = y - 35
         context.move_to(a, b)
         
         context.show_text(self.day)
-        self.date_text(context, event, height)
+        self.date_text(context, event, 20)
 
 
     def date_text(self, context, event, last_text_height):
@@ -280,7 +280,7 @@ class DayLabel(gtk.DrawingArea):
 
         xbearing, ybearing, width, height, xadvance, yadvance = context.text_extents(self.date)
         a = (x-width)/2
-        b = last_text_height + height + 15
+        b = last_text_height  + 25
         context.move_to(a, b)
         
         context.show_text(self.date)
