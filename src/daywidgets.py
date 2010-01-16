@@ -172,11 +172,12 @@ class CategoryBox(gtk.VBox):
             self.pack_start(self.btn, False, False)
             
             self.show_all()
-            self.box.hide_all()
+            self.box.hide()
         else:
             self.box = self.view
             self.pack_end(self.box)
-            self.show_all()
+            self.box.show()
+            self.show()
 
     def on_toggle(self, view, bool):
         if bool:

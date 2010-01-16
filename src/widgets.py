@@ -399,21 +399,25 @@ class VideoPreviewTooltip(PreviewTooltip):
             finally:
                 gtk.gdk.threads_leave()      
 
-class Item(gtk.Button):
+class Item(gtk.HBox):
 
     def __init__(self, event):
 
-        gtk.Button.__init__(self)
+        gtk.HBox.__init__(self)
+        self.set_border_width(2)
 
+        self.btn = gtk.Button()
         self.in_search = False
         self.event = event
         self.subject = event.subjects[0]
         self.time = float(event.timestamp) / 1000
         self.icon = thumbnailer.get_icon(self.subject, 24)
-        self.set_relief(gtk.RELIEF_NONE)
-        self.set_focus_on_click(False)
+        self.btn.set_relief(gtk.RELIEF_NONE)
+        self.btn.set_focus_on_click(False)
         self.__init_widget()
-        
+        self.show_all()
+        self.set_bookmark_widget()
+        self.pin.connect("clicked", lambda x: self.set_bookmarked(False))
         ITEMS.append(self)
     
     def highlight(self):
@@ -431,7 +435,6 @@ class Item(gtk.Button):
             self.label.modify_text(gtk.STATE_NORMAL, color)
             
 
-        
     def __init_widget(self):
         self.label = gtk.Label(self.subject.text)
         self.label.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
@@ -449,10 +452,20 @@ class Item(gtk.Button):
         t = datetime.datetime.fromtimestamp(self.time).strftime("%H:%M")
         label.set_markup("<span>%s</span>" % t)
         #hbox.pack_end(label, False, False)
-        self.add(hbox)
+        
+        img = gtk.image_new_from_file("data/bookmark-new.svg")
+        self.pin = gtk.Button()
+        self.pin.add(img)
+        self.pin.set_focus_on_click(False)
+        self.pin.set_relief(gtk.RELIEF_NONE)
+        self.pack_end(self.pin, False, False)
+        #hbox.pack_end(img, False, False)
+        
+        self.btn.add(hbox)
+        self.pack_start(self.btn)
     
-        self.connect("clicked", self.launch)
-        self.connect("button_press_event", self._show_item_popup)
+        self.btn.connect("clicked", self.launch)
+        self.btn.connect("button_press_event", self._show_item_popup)
         
         def change_style(widget, style):
             rc_style = self.style
@@ -471,9 +484,17 @@ class Item(gtk.Button):
                 self.label.modify_text(gtk.STATE_NORMAL, color)
 
         self.connect("style-set", change_style)
+        bookmarker.connect("reload", lambda x, y: self.set_bookmark_widget())
         
         self.init_multimedia_tooltip()
         
+    def set_bookmark_widget(self):        
+        bool = bookmarker.is_bookmarked(self.subject.uri)
+        if bool:
+            self.pin.show()
+        else:
+            self.pin.hide()
+
     def init_multimedia_tooltip(self):        
         """add multimedia tooltip to multimedia files
         multimedia tooltip is shown for all images, all videos and pdfs
@@ -521,7 +542,7 @@ class Item(gtk.Button):
             bookmark = gtk.MenuItem(("Unbookmark"))
         else:
             bookmark = gtk.MenuItem(("Bookmark"))
-        bookmark.connect("activate", lambda x: self.set_bookmarked(bool))
+        bookmark.connect("activate", lambda x: self.set_bookmarked(not bool))
         bookmark.show()
         menu.append(bookmark)
                 
@@ -532,10 +553,11 @@ class Item(gtk.Button):
 
     def set_bookmarked(self, bool):
         uri = unicode(self.subject.uri)
-        if not bool:
+        if bool:
             bookmarker.bookmark(uri)
         else:
             bookmarker.unbookmark(uri)
+        self.set_bookmark_widget()
 
     def launch(self, *discard):
         launcher.launch_uri(self.subject.uri, self.subject.mimetype)
