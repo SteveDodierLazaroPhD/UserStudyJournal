@@ -439,7 +439,7 @@ class Item(gtk.HBox):
         label.set_markup("<span>%s</span>" % t)
         #hbox.pack_end(label, False, False)
         
-        img = gtk.image_new_from_file("data/bookmark-new.svg")
+        img = gtk.image_new_from_file("data/pin.png")
         self.pin = gtk.Button()
         self.pin.add(img)
         self.pin.set_tooltip_text("Remove Pin")
