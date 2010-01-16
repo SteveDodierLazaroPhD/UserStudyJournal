@@ -217,8 +217,12 @@ class DayLabel(gtk.DrawingArea):
     
     def day_text(self, context, event):
         context.select_font_face(self.font_name, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
-        
-        x, y = event.area.width, event.area.height
+        actual_y = self.get_size_request()[1]
+        if actual_y > event.area.height:
+            y = actual_y
+        else:
+            y = event.area.height
+        x = event.area.width
         context.set_font_size(20)
         if self.leading:
             fg = self.style.text[gtk.STATE_SELECTED]

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GNOME Activity Journal\n"
 "Report-Msgid-Bugs-To: zeitgeist@lists.launchpad.net\n"
-"POT-Creation-Date: 2010-01-15 00:51+0100\n"
+"POT-Creation-Date: 2010-01-16 00:50+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Siegfried-Angel Gevatter Pujals <rainct@ubuntu.com>\n"
 "Language-Team: Siegfried Gevatter <siegfried@gevatter.com>\n"
@@ -10,6 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Catalan\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
 
 #: ../src/main.py:68
 msgid "Go Back in Time"
@@ -36,6 +37,7 @@ msgid "Evening"
 msgstr "Vespre"
 
 #: ../src/daywidgets.py:66
+#: ../src/daywidgets.py:190
 msgid "Today"
 msgstr "Avui"
 
@@ -43,14 +45,15 @@ msgstr "Avui"
 msgid "Yesterday"
 msgstr "Ahir"
 
-#: ../src/widgets.py:166
+#: ../src/widgets.py:176
 msgid "Type here to search..."
 msgstr "Escriviu aquí per a cercar..."
 
-#. TRANSLATORS: Text in the histogram tooltip, "(X items)"
-#: ../src/histogramwidget/histogramview.py:134
-msgid "items"
-msgstr "elements"
+#: ../src/histogramwidget/histogramview.py:69
+msgid "item"
+msgid_plural "items"
+msgstr[0] "element"
+msgstr[1] "elements"
 
 #: ../extra/gnome-activity-journal.desktop.in.h:1
 msgid "Activity Journal"

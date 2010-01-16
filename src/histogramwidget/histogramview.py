@@ -2,8 +2,9 @@
 #
 # GNOME Activity Journal
 #
-# Copyright © 2010 Randal Barlow
-# Copyright © 2010 Markus Korn
+# Copyright © 2010 Randal Barlow <email.tehk@gmail.com>
+# Copyright © 2010 Markus Korn <thekorn@gmx.de>
+# Copyright © 2010 Siegfried Gevatter <siegfried@gevatter.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -27,10 +28,13 @@ datastore[n][1]'s size
 
 import cairo
 import gobject
+import gettext
 import gtk
 import math
 import datetime
 import calendar
+import time
+import threading
 
 from gtkhistogram import *
 
@@ -62,7 +66,8 @@ class TooltipEventBox(gtk.EventBox):
             # don't show a tooltip
             return False
         date = datetime.date.fromtimestamp(timestamp).strftime("%Y-%m-%d")
-        tooltip.set_text("%s (%i)" %(date, count))
+        tooltip.set_text("%s (%i %s)" % (date, count,
+            gettext.ngettext("item", "items", count)))
         return True
 
 
@@ -114,6 +119,8 @@ class HistogramWidget(gtk.HBox):
     """
     A container for a CairoHistogram which allows you to scroll
     """
+    __pressed = False
+    
     def __init__(self, use_themed_histogram = False):
         """
         Arguments:
@@ -143,8 +150,10 @@ class HistogramWidget(gtk.HBox):
         b2.add(gtk.Arrow(gtk.ARROW_RIGHT, gtk.SHADOW_NONE))
         b2.set_relief(gtk.RELIEF_NONE)
         b2.set_focus_on_click(False)
-        b1.connect("clicked", self.scroll_viewport, -30*self.histogram.xincrement)
-        b2.connect("clicked", self.scroll_viewport, 30*self.histogram.xincrement)
+        b1.connect("pressed", self.smooth_scroll, b1, int(-self.histogram.xincrement/2))
+        b2.connect("pressed", self.smooth_scroll, b2, int(self.histogram.xincrement/2))
+        #b1.connect("clicked", self.scroll_viewport, -30*self.histogram.xincrement)
+        #b2.connect("clicked", self.scroll_viewport, 30*self.histogram.xincrement)
         self.histogram.connect("data-updated", self.scroll_to_end)
         self.pack_start(b1, False, False)
         self.pack_start(align, True, True, 3)
@@ -153,6 +162,20 @@ class HistogramWidget(gtk.HBox):
         self.adjustment = self.viewport.get_hadjustment()
         self.adjustment.set_value(1) # Needs to be set twice to work
         self.adjustment.set_value(self.histogram.max_width - self.adjustment.page_size)
+        b1.connect("released", self.__release_handler)
+        b2.connect("released", self.__release_handler)
+        self.histogram.connect("selection-set", self.__scrubing_fix)
+        
+    def __release_handler(self, *args, **kwargs):
+        self.__pressed = False
+        
+    def smooth_scroll(self, widget, button, value):
+        self.__pressed = True
+        def _f(self, button, value):
+            self.scroll_viewport(widget, value)
+            if self.__pressed: return True
+            return False
+        gobject.timeout_add(10, _f, self, button, value)
 
     def scroll_viewport(self, widget, value, *args, **kwargs):
         """
@@ -178,4 +201,12 @@ class HistogramWidget(gtk.HBox):
         """
         self.adjustment.set_value(1)
         self.adjustment.set_value(self.histogram.max_width - self.adjustment.page_size)
+
+    def __scrubing_fix(self, widget, i, *args, **kwargs):
+        proposed_xa = ((i) * self.histogram.xincrement) + self.histogram.start_x_padding
+        proposed_xb = ((i + self.histogram.selected_range) * self.histogram.xincrement) + self.histogram.start_x_padding
+        if proposed_xa < self.adjustment.value:
+            self.adjustment.set_value(proposed_xa)
+        elif proposed_xb > self.adjustment.value + self.adjustment.page_size:
+            self.adjustment.set_value(proposed_xb - self.adjustment.page_size)
 

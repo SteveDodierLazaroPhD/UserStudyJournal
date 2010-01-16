@@ -121,8 +121,9 @@ class Portal(gtk.Window):
 
     def _global_keypress_handler(self, widget, event):
         if event.state & gtk.gdk.CONTROL_MASK:
-            if gtk.gdk.keyval_name(event.keyval) == 'f':
+            if gtk.gdk.keyval_name(event.keyval) == "f":
                 self.activityview.searchbox.show()
+                self.set_focus(self.activityview.searchbox.search)
                 return True
         return False
     

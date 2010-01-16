@@ -349,10 +349,10 @@ class CairoHistogram(gtk.DrawingArea):
         """
         Reacts to mouse moving (while pressed), and clicks
         """
-        location = self.get_data_index_from_cartesian(event.x, event.y)
+        location = min((self.get_data_index_from_cartesian(event.x, event.y), len(self.datastore) - 1))
         if location != self.__last_location:
             self.change_location(location)
-        self.__last_location = location
+            self.__last_location = location
         return True
 
     def change_location(self, location):
@@ -363,6 +363,8 @@ class CairoHistogram(gtk.DrawingArea):
 
         Calls a calback set by connect_selection_callback
         """
+        if location < 0:
+            return False
         self.reconnect_expose(max(location - self.selected_range + 1, 0))
         self.queue_draw()
         self.emit("selection-set", max(location - self.selected_range + 1, 0))
