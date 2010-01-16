@@ -82,6 +82,7 @@ class CairoHistogram(gtk.DrawingArea):
     __calbacks = None
 
     bg_color = (1, 1, 1, 1)
+    base_color = (1, 1, 1, 1)
     column_color_normal =  (1, 1, 1, 1)
     column_color_selected = (1, 1, 1, 1)
     column_color_alternative = (1, 1, 1, 1)
@@ -117,7 +118,8 @@ class CairoHistogram(gtk.DrawingArea):
         """
         Sets the widgets style and coloring
         """
-        self.bg_color = get_gtk_rgba(self.style, "base", 0)
+        self.bg_color = get_gtk_rgba(self.style, "bg", 0)
+        self.base_color = get_gtk_rgba(self.style, "base", 0)
         self.column_color_normal =  get_gtk_rgba(self.style, "text", 4, 1.17)
         self.column_color_selected = get_gtk_rgba(self.style, "bg", 3)
         pal = get_gtk_rgba(self.style, "bg", 3, 1.2)
@@ -188,7 +190,7 @@ class CairoHistogram(gtk.DrawingArea):
         - event: a gtk event with x and y values
         - context: The drawingarea's cairo context from the expose event
         """
-        context.set_source_rgba(*self.bg_color)
+        context.set_source_rgba(*self.base_color)
         context.set_operator(cairo.OPERATOR_SOURCE)
         context.paint()
         context.rectangle(event.area.x, event.area.y, event.area.width, event.area.height)

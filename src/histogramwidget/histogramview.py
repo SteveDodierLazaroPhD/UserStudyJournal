@@ -77,13 +77,29 @@ class JournalHistogram(CairoHistogram):
     """
     padding = 2
     column_radius = 1.3
-    font_size = 12
-    bottom_padding = 25
-    top_padding = 6
-    wcolumn = 9
+    font_size = 10
+    bottom_padding = 18
+    top_padding = 2
+    wcolumn = 12
     xincrement = wcolumn + padding
     start_x_padding = xincrement
     column_radius = 2
+    
+    def change_style(self, widget, *args, **kwargs):
+        """
+        Sets the widgets style and coloring
+        """
+        self.bg_color = get_gtk_rgba(self.style, "bg", 0)
+        self.base_color = get_gtk_rgba(self.style, "base", 0)
+        self.column_color_normal =  get_gtk_rgba(self.style, "text", 4, 1.17)
+        self.column_color_selected = get_gtk_rgba(self.style, "bg", 3)
+        pal = get_gtk_rgba(self.style, "bg", 3, 1.2)
+        self.column_color_alternative = (pal[2], pal[1], pal[0], 1)
+        self.column_color_selected_alternative = get_gtk_rgba(self.style, "bg", 3, 0.6)
+        fg = self.style.fg[gtk.STATE_NORMAL]
+        bg = self.style.bg[gtk.STATE_NORMAL]
+        self.font_color = get_gtk_rgba(self.style, "text", 4, 0.8)
+        self.stroke_color = get_gtk_rgba(self.style, "text", 4)
     
     def expose(self, widget, event, context):
         """
@@ -94,22 +110,19 @@ class JournalHistogram(CairoHistogram):
         - event: a gtk event with x and y values
         - context: The drawingarea's cairo context from the expose event
         """
-        context.set_source_rgba(*self.bg_color)
+        context.set_source_rgba(*self.base_color)
         context.set_operator(cairo.OPERATOR_SOURCE)
         context.paint()
         context.rectangle(event.area.x, event.area.y, event.area.width, event.area.height)
         context.clip()
+        context.set_source_rgba(*self.bg_color)
+        context.rectangle(event.area.x, event.area.height - self.bottom_padding, event.area.width, event.area.height)
+        context.fill()
         self.draw_columns_from_datastore(context, event, self._selected)
-
-    def change_style(self, widget, *args, **kwargs):
-        self.bg_color = get_gtk_rgba(self.style, "bg", 0, 1.02)
-        self.column_color_normal =  get_gtk_rgba(self.style, "text", 1)
-        self.column_color_selected = get_gtk_rgba(self.style, "bg", 3)
-        self.column_color_selected_alternative = get_gtk_rgba(self.style, "bg", 3, 0.7)
-        self.column_color_alternative = get_gtk_rgba(self.style, "text", 2)
-        fg = self.style.fg[gtk.STATE_NORMAL]
-        bg = self.style.bg[gtk.STATE_NORMAL]
-        self.font_color = ((2*bg.red+fg.red)/3/65535.0, (2*bg.green+fg.green)/3/65535.0, (2*bg.blue+fg.blue)/3/65535.0, 1)
+        context.set_line_width(1)
+        context.set_source_rgba(*self.font_color)
+        context.rectangle(event.area.x+0.5, event.area.y+0.5, event.area.width-1, event.area.height - self.bottom_padding)
+        context.stroke()
 
     def draw_month(self, context, x, height, date):
         """
@@ -117,11 +130,12 @@ class JournalHistogram(CairoHistogram):
         """
         fg = self.style.fg[gtk.STATE_NORMAL]
         bg = self.style.bg[gtk.STATE_NORMAL]
-        context.set_source_rgba(*self.font_color)
-        context.set_line_width(2)
-        context.move_to(x+1, height - self.bottom_padding)
-        context.line_to(x+1, height - self.bottom_padding/3)
+        context.set_source_rgba(*self.stroke_color)
+        context.set_line_width(1)
+        context.move_to(x+0.5, 0)
+        context.line_to(x+0.5, height - self.bottom_padding)
         context.stroke()
+        context.set_source_rgba(*self.font_color)
         context.select_font_face(self.font_name, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
         context.set_font_size(self.font_size)
         date = datetime.date.fromtimestamp(date)
@@ -152,7 +166,7 @@ class HistogramWidget(gtk.HBox):
             self.viewport.set_shadow_type(gtk.SHADOW_IN)
             self.histogram = CairoHistogram()
         self.eventbox = TooltipEventBox(self.histogram)
-        self.viewport.set_size_request(600,70)
+        self.viewport.set_size_request(600,75)
         self.viewport.add(self.eventbox)
         align = gtk.Alignment(0,0,1,1)
         align.set_padding(0, 0, 0, 0)
@@ -211,6 +225,7 @@ class HistogramWidget(gtk.HBox):
         else:
             newadjval = adjustment.value + value
         adjustment.set_value(newadjval)
+        self.histogram.queue_draw()
 
     def scroll_to_end(self, *args, **kwargs):
         """
