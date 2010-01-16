@@ -423,9 +423,10 @@ class Item(gtk.HBox):
         self.btn.set_focus_on_click(False)
         self.__init_widget()
         self.show_all()
-        self.set_bookmark_widget()
+        #self.set_bookmark_widget()
         self.pin.connect("clicked", lambda x: self.set_bookmarked(False))
         ITEMS.append(self)
+        self.pin.hide()
     
     def highlight(self):
         #print len(searchbox.results)
@@ -492,7 +493,7 @@ class Item(gtk.HBox):
                 self.label.modify_text(gtk.STATE_NORMAL, color)
 
         self.connect("style-set", change_style)
-        bookmarker.connect("reload", lambda x, y: self.set_bookmark_widget())
+        #bookmarker.connect("reload", lambda x, y: self.set_bookmark_widget())
         
         self.init_multimedia_tooltip()
         
@@ -576,7 +577,7 @@ class Item(gtk.HBox):
             bookmarker.bookmark(uri)
         else:
             bookmarker.unbookmark(uri)
-        self.set_bookmark_widget()
+        #self.set_bookmark_widget()
 
     def launch(self, *discard):
         launcher.launch_uri(self.subject.uri, self.subject.mimetype)

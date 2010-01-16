@@ -77,7 +77,7 @@ class DayWidget(gtk.VBox):
     def _init_pinbox(self):
         if self.day_start <= time.time() < self.day_end:
             self.view.pack_start(pinbox, False, False)
-
+            
     def _init_widgets(self):
         self.vbox = gtk.VBox()
         evbox = gtk.EventBox()
@@ -360,6 +360,7 @@ class EventGroup(gtk.VBox):
             box = CategoryBox(None, ungrouped_events)
             self.view.pack_start(box)
             self.view.show()
+        pinbox.show_all()
 
     def get_events(self):
         if self.event_templates is not None:
@@ -407,7 +408,6 @@ class PinBox(EventGroup):
 
         # Connect to relevant signals
         bookmarker.connect("reload", lambda widget, uris: self.get_events())
-
     @property
     def event_templates(self):
         if not bookmarker.bookmarks:
