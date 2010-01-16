@@ -166,9 +166,11 @@ class CategoryBox(gtk.VBox):
         if category:
             # Place the items into a box and simulate left padding
             self.box = gtk.HBox()
-            self.box.pack_start(gtk.Label("aaa"), False, False, 9)
+            self.box.pack_start(gtk.Label(""), False, False, 9)
             self.box.pack_start(self.view)
             self.pack_end(self.box)
+            
+            
             
             # Add the title button
             self.btn = CategoryButton(category, len(events))
@@ -177,9 +179,9 @@ class CategoryBox(gtk.VBox):
             hbox.pack_start(gtk.Label(""), False, False, 9)
             hbox.pack_start(self.btn, True, True, 0)
             self.pack_start(hbox, False, False)
-            hbox.show_all()
             
-            self.show()
+            
+            self.show_all()
             self.box.hide()
             self.view.show()
         else:
