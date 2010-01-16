@@ -156,7 +156,11 @@ class CategoryBox(gtk.VBox):
         self.view = gtk.VBox(True)
         for event in events:
             item = Item(event)
-            self.view.pack_start(item)
+            hbox = gtk.HBox ()
+            hbox.pack_start(gtk.Label(""), False, False, 9)
+            hbox.pack_start(item, True, True, 0)
+            self.view.pack_start(hbox)
+            hbox.show_all()
 
         # If this isn't a set of ungrouped events, give it a label
         if category:
