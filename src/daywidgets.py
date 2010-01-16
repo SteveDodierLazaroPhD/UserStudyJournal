@@ -185,8 +185,9 @@ class CategoryBox(gtk.VBox):
             self.box.hide_all()
 
 class DayLabel(gtk.DrawingArea):
+
     def __init__(self, day, date):
-        if day == "Today":
+        if day == _("Today"):
             self.leading = True
         else:
             self.leading = False

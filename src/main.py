@@ -100,8 +100,6 @@ class Portal(gtk.Window):
         hbox.pack_start(self.activityview)
         hbox.pack_start(self.rbox, False, False)
         
-        btn = gtk.Button()
-        self.vbox.pack_start(btn, True, True)
         self.vbox.pack_start(hbox, True, True)
         self.set_border_width(3)
 
@@ -110,10 +108,23 @@ class Portal(gtk.Window):
         
         self._request_size()
         
+        # FIXME: We give focus to the text entry so that it doesn't go to the
+        # "go back" button. Ideally it would be on the first event of the
+        # current day.
+        self.set_focus(self.activityview.searchbox.search)
+        
         self.show_all()
+        self.activityview.searchbox.hide()
         self.connect("configure-event", self._on_size_changed)
-        btn.hide()
+        self.connect("key-press-event", self._global_keypress_handler)
         cal.histogram.add_selection_callback(self.handle_fwd_sensitivity)
+
+    def _global_keypress_handler(self, widget, event):
+        if event.state & gtk.gdk.CONTROL_MASK:
+            if gtk.gdk.keyval_name(event.keyval) == 'f':
+                self.activityview.searchbox.show()
+                return True
+        return False
     
     def jumpup(self, data=None):
         self.activityview._set_today_timestamp()

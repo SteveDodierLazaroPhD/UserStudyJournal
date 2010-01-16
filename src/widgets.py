@@ -113,7 +113,7 @@ class SearchBox(gtk.EventBox):
         self.hbox.connect("style-set", change_style)
         self.search.connect("search", self.set_search)
         self.search.connect("clear", self.clear)
-        
+    
     def clear(self, widget):
         if self.text.strip() != "" and self.text.strip() != self.search.default_text:
             self.text = ""
@@ -131,6 +131,7 @@ class SearchBox(gtk.EventBox):
         self.clearbtn.set_focus_on_click(False)
         self.clearbtn.set_relief(gtk.RELIEF_NONE)
         self.hbox.pack_end(self.clearbtn, False, False)
+        self.clearbtn.connect("clicked", lambda button: self.hide())
         
         self.combobox = gtk.combo_box_new_text()
         self.combobox.set_focus_on_click(False)
@@ -139,10 +140,6 @@ class SearchBox(gtk.EventBox):
         self.combobox.set_active(0)
         for cat in self.category.keys():
             self.combobox.append_text(cat)
-            
-        #self.search.set_size_request(-1, gtk.ICON_SIZE_MENU)
-        #height = self.search.allocation.height
-        #self.combobox.set_size_request(-1, height)
     
     def set_search(self, widget, text=None):
         if not self.text.strip() == text.strip():
@@ -231,7 +228,7 @@ class SearchEntry(gtk.Entry):
 
         self.search_timeout = 0
         return False
-       
+
 class CategoryButton(gtk.HBox):
 
     __gsignals__ = {
