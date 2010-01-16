@@ -243,20 +243,13 @@ class CategoryButton(gtk.HBox):
 
         self.btn = gtk.Button()
         self.btn.set_relief(gtk.RELIEF_NONE)
-        self.btn.set_size_request(32,32)
+
         self.btn.set_focus_on_click(False)
         self.btn.add(hbox)
-
-        self.img = gtk.Label()
-        self.img.set_markup("<span size='small'><b>+</b></span>")
-        self.img.set_alignment(0.5, 0.5)
-        btn = gtk.Button()
-        btn.add(self.img)
-        #btn.set_sensitive(False)
-        btn.set_size_request(21,21)
-        
+        self.img = gtk.Image()
+        self.img.set_from_stock("gtk-add", 24)
         hbox.pack_start(gtk.Label(""), False, False, 1)
-        hbox.pack_start(btn, False, False, 0)
+        hbox.pack_start(self.img, False, False, 0)
         hbox.pack_start(gtk.Label(""), False, False, 3)
         self.active = False
 
@@ -278,7 +271,6 @@ class CategoryButton(gtk.HBox):
         self.show_all()
 
         self.btn.connect("clicked", self.toggle)
-        btn.set_relief(gtk.RELIEF_HALF)
         
         def change_style(widget, style):
             rc_style = self.style
@@ -315,9 +307,9 @@ class CategoryButton(gtk.HBox):
     def toggle(self, widget):
         self.active = not self.active
         if self.active:
-            self.img.set_markup("<span size='small'><b>-</b></span>")
+            self.img.set_from_stock("gtk-remove", 24)
         else:
-            self.img.set_markup("<span size='small'><b>+</b></span>")
+            self.img.set_from_stock("gtk-add", 24)
         self.emit("toggle", self.active)
         
 

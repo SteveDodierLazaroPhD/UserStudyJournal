@@ -166,7 +166,7 @@ class CategoryBox(gtk.VBox):
         if category:
             # Place the items into a box and simulate left padding
             self.box = gtk.HBox()
-            self.box.pack_start(gtk.Label("edwd"), False, False, 9)
+            self.box.pack_start(gtk.Label("aaa"), False, False, 9)
             self.box.pack_start(self.view)
             self.pack_end(self.box)
             
