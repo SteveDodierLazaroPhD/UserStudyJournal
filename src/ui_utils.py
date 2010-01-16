@@ -26,6 +26,10 @@ import os
 import gtk
 import gnome.ui
 import gettext
+import zipfile
+
+from tempfile import NamedTemporaryFile
+
 from fungtk.quickconf import QuickConf
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation
 
@@ -287,18 +291,60 @@ class IconFactory():
         return mythumb
 
 class Thumbnailer:
+    
+    @staticmethod
+    def _add_background(pixbuf, color=0xffffffff):
+        result = gtk.gdk.Pixbuf(pixbuf.get_colorspace(),
+                                True,
+                                pixbuf.get_bits_per_sample(),
+                                pixbuf.get_width(),
+                                pixbuf.get_height())
+        result.fill(color)
+        pixbuf.composite(result, 0, 0,
+                            pixbuf.get_width(), pixbuf.get_height(),
+                            0, 0,
+                            1, 1,
+                            gtk.gdk.INTERP_NEAREST,
+                            255)
+        return result
+    
+    @staticmethod
+    def create_opendocument_thumb(uri, icon_size=None, timestamp=0):
+        thumb = NamedTemporaryFile()
+        try:
+            f = zipfile.ZipFile(uri, mode="r")
+            try:
+                thumb.write(f.read("Thumbnails/thumbnail.png"))
+            finally:
+                f.close()
+        except IOError:
+            thumb.close()
+            return None
+        thumb.flush()
+        thumb.seek(0)
+        image = gtk.image_new_from_file(thumb.name)
+        thumb.close()
+        try:
+            pixbuf = image.get_pixbuf()
+            pixbuf = Thumbnailer._add_background(pixbuf)
+            thumb_factory.save_thumbnail(pixbuf, uri, timestamp)
+            return icon_factory.make_icon_frame(pixbuf, icon_size)
+        except ValueError:
+            return None
 
     def __init__(self):
         self.icon_dict={}
 
-    def get_icon(self, subject, icon_size, timestamp = 0):
+    def get_icon(self, subject, icon_size, timestamp = 0, icon_factory=None):
 
         uri = subject.uri
         if not self.icon_dict.get(uri+str(icon_size)):
-            cached_icon = self._lookup_or_make_thumb(uri, subject.mimetype,
-                icon_size, timestamp)
+            if icon_factory is None:
+                cached_icon = self._lookup_or_make_thumb(uri, subject.mimetype,
+                    icon_size, timestamp)
+            else:
+                cached_icon = icon_factory(subject.uri, icon_size, timestamp)
             self.icon_dict[uri+str(icon_size)] = cached_icon
-
         return self.icon_dict[uri+str(icon_size)]
 
     def _lookup_or_make_thumb(self, uri, mimetype, icon_size, timestamp):
