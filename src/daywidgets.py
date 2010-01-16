@@ -105,7 +105,7 @@ class DayWidget(gtk.VBox):
         for w in scroll.get_children():
             w.set_shadow_type(gtk.SHADOW_NONE)
         self.vbox.pack_start(scroll)
-        #self.show_all()
+        self.show_all()
         
         def change_style(widget, style):
             rc_style = self.style
