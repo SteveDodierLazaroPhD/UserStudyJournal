@@ -255,7 +255,9 @@ class CategoryButton(gtk.HBox):
         #btn.set_sensitive(False)
         btn.set_size_request(21,21)
         
-        hbox.pack_start(btn, False, False, 12)
+        hbox.pack_start(gtk.Label(""), False, False, 1)
+        hbox.pack_start(btn, False, False, 0)
+        hbox.pack_start(gtk.Label(""), False, False, 3)
         self.active = False
 
         self.pack_start(self.btn)
