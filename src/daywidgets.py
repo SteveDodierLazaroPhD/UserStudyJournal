@@ -185,9 +185,8 @@ class CategoryBox(gtk.VBox):
             hbox.pack_start(self.btn, True, True, 0)
             self.pack_start(hbox, False, False)
             
-            lbl.show()
             self.show()
-            hbox.show()
+            hbox.show_all()
             label.show_all()
             self.btn.show()
             self.box.hide()
