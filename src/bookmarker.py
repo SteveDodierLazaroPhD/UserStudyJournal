@@ -56,14 +56,12 @@ class Bookmarker(gobject.GObject):
     def bookmark(self, uri):
         if not uri in self.bookmarks:
             self.bookmarks.append(uri)
-        
         self._save()
         self.emit("reload", self.bookmarks)
 
     def unbookmark(self, uri):
         if uri in self.bookmarks:
             self.bookmarks.remove(uri)
-        
         self._save()
         self.emit("reload", self.bookmarks)
     

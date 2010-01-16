@@ -59,7 +59,7 @@ class DayWidget(gtk.VBox):
         gobject.timeout_add_seconds(
             86400 - (int(time.time() - time.timezone) % 86400), self._refresh)
         
-        self.show_all()
+        self.show()
 
     def _set_date_strings(self):
         self.date_string = date.fromtimestamp(self.day_start).strftime("%d %B")
@@ -379,6 +379,12 @@ class EventGroup(gtk.VBox):
             box = CategoryBox(None, ungrouped_events)
             self.view.pack_start(box)
             self.view.show()
+        
+        if len(categories) > 0:
+            self.show()
+        else:
+            self.hide()
+        
         if len(bookmarker.bookmarks) > 0:
             pinbox.show_all()
         else:
@@ -430,6 +436,14 @@ class PinBox(EventGroup):
 
         # Connect to relevant signals
         bookmarker.connect("reload", lambda widget, uris: self.get_events())
+        bookmarker.connect("reload", self.check_is_visible)
+
+    def check_is_visible(self, widget, bookmarks):
+        if len(bookmarks) > 0:
+            self.show_all()
+        else:
+            self.hide_all()
+
     @property
     def event_templates(self):
         if not bookmarker.bookmarks:
