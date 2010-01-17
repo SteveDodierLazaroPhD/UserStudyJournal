@@ -49,7 +49,7 @@ class Portal(gtk.Window):
                 "data/icons/hicolor/24x24/gnome-activity-journal.png",
                 "data/icons/hicolor/32x32/gnome-activity-journal.png",
                 "data/icons/hicolor/48x48/gnome-activity-journal.png",
-                "data/icons/hicolor/scalable/gnome-activity-journal.svg")])
+                "data/icons/hicolor/256x256/gnome-activity-journal.png")])
 
         self.vbox = gtk.VBox()
         #color = gtk.gdk.rgb_get_colormap().alloc_color('#EEEEEC')
@@ -81,7 +81,6 @@ class Portal(gtk.Window):
         self.ffwdbtn.set_sensitive(False)
         self.ffwdbtn.set_relief(gtk.RELIEF_NONE)
         self.ffwdbtn.add(gtk.Arrow(gtk.ARROW_RIGHT, gtk.SHADOW_NONE))
-        #self.ffwdbtn.add(gtk.Arrow(gtk.ARROW_DOWN, gtk.SHADOW_NONE))
         self.ffwdbtn.set_focus_on_click(False)
         self.ffwdbtn.set_tooltip_text(_("Jump to Today"))
         
@@ -104,10 +103,10 @@ class Portal(gtk.Window):
         hbox.pack_start(self.rbox, False, False)
         
         self.vbox.pack_start(hbox, True, True)
-        self.set_border_width(3)
+        self.set_border_width(0)
 
         self.vbox.pack_end(self.cal, False, False)
-        self.vbox.set_border_width(5)
+
         
         self._request_size()
         
