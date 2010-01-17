@@ -429,18 +429,9 @@ class Item(gtk.HBox):
         self.label.set_alignment(0.0, 0.5)
         
         img = gtk.image_new_from_pixbuf(self.icon)
-        img.set_alignment(0.5, 0.5)
-        img.set_size_request(24,24)
         hbox = gtk.HBox()
-        hbox.pack_start(gtk.Label(""), False, False, 1)
-        hbox.pack_start(img, False, False, 0)
-        hbox.pack_start(gtk.Label(""), False, False, 3)
-        hbox.pack_start(self.label, True, True)
-        label = gtk.Label()
-        t = datetime.datetime.fromtimestamp(self.time).strftime("%H:%M")
-        label.set_markup("<span>%s</span>" % t)
-        self.hbox = hbox
-        #hbox.pack_end(label, False, False)
+        hbox.pack_start(img, False, False, 1)
+        hbox.pack_start(self.label, True, True, 4)
         
         img = gtk.image_new_from_file("data/pin.png")
         self.pin = gtk.Button()
@@ -464,7 +455,6 @@ class Item(gtk.HBox):
             color.red = (2*color.red + fcolor.red)/3
             color.green = (2*color.green + fcolor.green)/3
             color.blue = (2*color.blue + fcolor.blue)/3
-            label.modify_fg(gtk.STATE_NORMAL, color)
             
             if self.in_search:
                 color = rc_style.bg[gtk.STATE_SELECTED]
