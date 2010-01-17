@@ -149,7 +149,6 @@ class ActivityView(gtk.VBox):
             ptime =  datetime.datetime.fromtimestamp(
                 self.start + i*86400).strftime("%A, %d %B %Y")
             if not self.days.has_key(ptime):
-                print "lol"
                 dayview = DayWidget(self.start + i*86400,
                     self.start + i*86400 + 86400)
                 self.days[ptime] = dayview
