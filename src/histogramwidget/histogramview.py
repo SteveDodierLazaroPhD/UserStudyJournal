@@ -263,8 +263,9 @@ class HistogramWidget(gtk.HBox):
     def __check_for_today__(self, widget, datastore, i):
         if i == len(datastore) -  1:
             self.__today_text = ""
-        else:
-            self.__today_text = "Today »"            
+            self.histogram.queue_draw()
+        elif len(self.__today_text) == 0:
+            self.__today_text = "Today »"
     
     def __release_handler(self, *args, **kwargs):
         self.__pressed = False
