@@ -391,6 +391,7 @@ class Item(gtk.HBox):
         self.set_border_width(2)
 
         self.btn = gtk.Button()
+        self.search_results = []
         self.in_search = False
         self.event = event
         self.subject = event.subjects[0]
@@ -400,6 +401,7 @@ class Item(gtk.HBox):
         self.btn.set_focus_on_click(False)
         self.__init_widget()
         self.show_all()
+        self.markup = None
         #self.set_bookmark_widget()
         self.pin.connect("clicked", lambda x: self.set_bookmarked(False))
         ITEMS.append(self)
@@ -407,26 +409,24 @@ class Item(gtk.HBox):
     
     def highlight(self):
         #print len(searchbox.results)
-        rc_style = self.style
-        if self.subject.uri in searchbox.results:
-            self.label.set_markup("<span><b>"+self.subject.text+"</b></span>")
-            self.in_search = True
-            color = rc_style.base[gtk.STATE_SELECTED]
-            self.label.modify_fg(gtk.STATE_NORMAL, color)
-        else:
-            self.label.set_markup("<span>"+self.subject.text+"</span>")
-            self.in_search = False
-            color = rc_style.text[gtk.STATE_NORMAL]            
-            self.label.modify_fg(gtk.STATE_NORMAL, color)
-
-            
+        if self.search_results != searchbox.results:
+            self.search_results = searchbox.results
+            rc_style = self.style
+            if self.subject.uri in searchbox.results:
+                self.label.set_markup("<span><b>"+self.subject.text+"</b></span>")
+                self.in_search = True
+                color = rc_style.base[gtk.STATE_SELECTED]
+                self.label.modify_fg(gtk.STATE_NORMAL, color)
+            else:
+                self.label.set_markup("<span>"+self.subject.text+"</span>")
+                self.in_search = False
+                color = rc_style.text[gtk.STATE_NORMAL]            
+                self.label.modify_fg(gtk.STATE_NORMAL, color)
 
     def __init_widget(self):
         self.label = gtk.Label(self.subject.text)
         self.label.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
         self.label.set_alignment(0.0, 0.5)
-        
-        self.highlight()
         
         img = gtk.image_new_from_pixbuf(self.icon)
         img.set_alignment(0.5, 0.5)
@@ -479,13 +479,6 @@ class Item(gtk.HBox):
         
         self.init_multimedia_tooltip()
         
-    def set_bookmark_widget(self):        
-        bool = bookmarker.is_bookmarked(self.subject.uri)
-        if bool:
-            self.pin.show()
-        else:
-            self.pin.hide()
-
     def init_multimedia_tooltip(self):        
         """add multimedia tooltip to multimedia files
         multimedia tooltip is shown for all images, all videos and pdfs
