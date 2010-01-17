@@ -37,6 +37,7 @@ from ui_utils import *
 from widgets import *
 
 CLIENT = ZeitgeistClient()
+_ACCESSIBILITY = settings["accessibility"]
 
 class DayWidget(gtk.VBox):
 
@@ -109,23 +110,25 @@ class DayWidget(gtk.VBox):
         
         def change_style(widget, style):
             rc_style = self.style
-            color = rc_style.bg[gtk.STATE_NORMAL]
-            
-            if color.red * 102/100 > 65535.0:
-                color.red = 65535.0
+            if _ACCESSIBILITY:
+                color = rc_style.base[gtk.STATE_NORMAL]
             else:
-                color.red = color.red * 102 / 100
+                color = rc_style.bg[gtk.STATE_NORMAL]
                 
-            if color.green * 102/100 > 65535.0:
-                color.green = 65535.0
-            else:
-                color.green = color.green * 102 / 100
-                
-            if color.blue * 102/100 > 65535.0:
-                color.blue = 65535.0
-            else:
-                color.blue = color.blue * 102 / 100
-                
+                if color.red * 102/100 > 65535.0:
+                    color.red = 65535.0
+                else:
+                    color.red = color.red * 102 / 100
+                    
+                if color.green * 102/100 > 65535.0:
+                    color.green = 65535.0
+                else:
+                    color.green = color.green * 102 / 100
+                    
+                if color.blue * 102/100 > 65535.0:
+                    color.blue = 65535.0
+                else:
+                    color.blue = color.blue * 102 / 100                
             evbox2.modify_bg(gtk.STATE_NORMAL, color)
 
         self.connect("style-set", change_style)
@@ -297,7 +300,7 @@ class DayLabel(gtk.DrawingArea):
         
         # Draw
         x = 0; y = 0
-        r = 5
+        r = 5 if not _ACCESSIBILITY else 0
         w, h = event.area.width, event.area.height
         # Temporary color, I will fix this later when I have a chance to sleep. 
         #grad = cairo.LinearGradient(0, 3*event.area.height, 0, 0)

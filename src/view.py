@@ -32,6 +32,7 @@ class ActivityView(gtk.VBox):
 
         gtk.VBox.__init__(self)
         
+        self._accessibility = settings["accessibility"]
         self.cal = cal
         
         self.days = {}
@@ -148,5 +149,11 @@ class ActivityView(gtk.VBox):
             if not self.days.has_key(ptime):
                 dayview = DayWidget(self.start + i*86400,
                     self.start + i*86400 + 86400)
-                self.days[ptime] = dayview
+                if self._accessibility:
+                    frame = gtk.Frame()
+                    frame.set_shadow_type(gtk.SHADOW_IN)
+                    frame.add(dayview)
+                    self.days[ptime] = frame
+                else:
+                    self.days[ptime] = dayview
             self.daysbox.pack_start(self.days[ptime], True, True, 3)
