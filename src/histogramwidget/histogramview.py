@@ -100,7 +100,8 @@ class ShadowedJournalHistogram(CairoHistogram):
         bg = self.style.bg[gtk.STATE_NORMAL]
         self.font_color = get_gtk_rgba(self.style, "text", 4, 0.6)
         self.stroke_color = get_gtk_rgba(self.style, "text", 4)
-    
+        self.shadow_color = get_gtk_rgba(self.style, "text", 4)
+
     def expose(self, widget, event, context):
         """
         The major drawing method
@@ -120,7 +121,7 @@ class ShadowedJournalHistogram(CairoHistogram):
         context.fill()
         self.draw_columns_from_datastore(context, event, self._selected)
         context.set_line_width(1)
-        context.set_source_rgba(*self.stroke_color)
+        context.set_source_rgba(*self.shadow_color)
         context.rectangle(event.area.x+0.5, event.area.y+0.5, event.area.width-1, event.area.height - self.bottom_padding)
         context.stroke()
 
@@ -131,7 +132,7 @@ class ShadowedJournalHistogram(CairoHistogram):
         fg = self.style.fg[gtk.STATE_NORMAL]
         bg = self.style.bg[gtk.STATE_NORMAL]
         context.set_source_rgba(*self.stroke_color)
-        context.set_line_width(1)
+        context.set_line_width(self.stroke_width + self.stroke_offset)
         context.move_to(x+0.5, 0)
         context.line_to(x+0.5, height - self.bottom_padding)
         context.stroke()
@@ -146,7 +147,36 @@ class ShadowedJournalHistogram(CairoHistogram):
         context.show_text(date)
 
 
-class JournalHistogram(CairoHistogram):
+class JournalHistogram(ShadowedJournalHistogram):
+    """
+    A subclass of CairoHistogram with theming to fit into Journal
+    """
+    padding = 2
+    column_radius = 1.3
+    top_padding = 6
+    wcolumn = 10
+    xincrement = wcolumn + padding
+    start_x_padding = xincrement
+    column_radius = 2
+    stroke_width = 2
+    stroke_offset = 0.5
+    
+    def change_style(self, widget, *args, **kwargs):
+        self.bg_color = get_gtk_rgba(self.style, "bg", 0)
+        self.base_color = get_gtk_rgba(self.style, "base", 0)
+        self.column_color_normal =  get_gtk_rgba(self.style, "bg", 1)
+        self.column_color_selected = get_gtk_rgba(self.style, "bg", 3)
+        self.column_color_selected_alternative = get_gtk_rgba(self.style, "bg", 3, 0.7)
+        self.column_color_alternative = get_gtk_rgba(self.style, "text", 2)
+        # fg = self.style.fg[gtk.STATE_NORMAL]
+        # bg = self.style.bg[gtk.STATE_NORMAL]
+        # self.font_color = ((2*bg.red+fg.red)/3/65535.0, (2*bg.green+fg.green)/3/65535.0, (2*bg.blue+fg.blue)/3/65535.0, 1)
+        self.font_color = get_gtk_rgba(self.style, "text", 4, 0.6)
+        self.stroke_color = get_gtk_rgba(self.style, "bg", 0)
+        self.shadow_color = get_gtk_rgba(self.style, "bg", 0, 0.98)
+
+
+class OldJournalHistogram(CairoHistogram):
     """
     A subclass of CairoHistogram with theming to fit into Journal
     """
@@ -240,6 +270,7 @@ class HistogramWidget(gtk.HBox):
             self.histogram.connect("expose-event", self.__today_expose__)
             self.histogram.connect("outer-click", self.__today_clicked__)
             self.histogram.add_selection_callback(self.__check_for_today__)
+            self.histogram.connect("data-updated", self.scroll_to_end)
         # Back button
         b1 = gtk.Button()
         b1.add(gtk.Arrow(gtk.ARROW_LEFT, gtk.SHADOW_NONE))

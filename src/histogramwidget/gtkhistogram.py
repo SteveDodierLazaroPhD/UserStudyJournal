@@ -75,6 +75,8 @@ class CairoHistogram(gtk.DrawingArea):
     max_width = xincrement
     column_radius = 0
     font_size = 10
+    stroke_width = 1
+    stroke_offset = 0
 
     datastore = None
     selected_range = 0
@@ -88,6 +90,7 @@ class CairoHistogram(gtk.DrawingArea):
     column_color_alternative = (1, 1, 1, 1)
     font_color = (0, 0, 0, 0)
     stroke_color = (1, 1, 1, 0)
+    shadow_color = (1, 1, 1, 0)
 
     __last_location = -1
 
@@ -274,7 +277,7 @@ class CairoHistogram(gtk.DrawingArea):
         fg = self.style.fg[gtk.STATE_NORMAL]
         bg = self.style.bg[gtk.STATE_NORMAL]
         context.set_source_rgba(*self.stroke_color)
-        context.set_line_width(1)
+        context.set_line_width(self.stroke_width + self.stroke_offset)
         context.move_to(x + int(self.padding/2) + 0.5, 0)
         context.line_to(x + int(self.padding/2) + 0.5, height)
         context.stroke()
