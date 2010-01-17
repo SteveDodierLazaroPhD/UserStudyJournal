@@ -212,7 +212,7 @@ class HistogramWidget(gtk.HBox):
         if isinstance(self.histogram, SectionedHistogram):
             self.histogram.connect("expose-event", self.__today_expose__)
             self.histogram.connect("outer-click", self.__today_clicked__)
-            self.histogram.add_selection_callback(self.__check_for_today__)
+            self.histogram.connect("selection-set", self.__check_for_today__)
             self.histogram.connect("data-updated", self.scroll_to_end)
         # Back button
         b1 = gtk.Button()
@@ -260,8 +260,8 @@ class HistogramWidget(gtk.HBox):
         if x > self.adjustment.value + self.adjustment.page_size - self.__today_width:
             self.histogram.change_location(len(self.histogram.get_data()) - 1)
 
-    def __check_for_today__(self, widget, datastore, i):
-        if i == len(datastore) -  1:
+    def __check_for_today__(self, widget, i):
+        if i + self.histogram.selected_range == len(self.histogram.get_data()):
             self.__today_text = ""
             self.histogram.queue_draw()
         elif len(self.__today_text) == 0:
