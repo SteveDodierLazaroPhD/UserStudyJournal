@@ -256,8 +256,26 @@ class HistogramWidget(gtk.HBox):
         self.adjustment.set_value(self.histogram.max_width - self.adjustment.page_size)
         b1.connect("released", self.__release_handler)
         b2.connect("released", self.__release_handler)
+        if isinstance(self.histogram, ShadowedJournalHistogram):
+            self.histogram.connect("expose-event", self.__viewport_expose__)
         self.histogram.connect("selection-set", self.__scrubing_fix)
         self.histogram.queue_draw()
+        self.viewport.queue_draw()
+        
+    def __viewport_expose__(self, widget, event, *args, **kwargs):
+        today = "today>>"
+        context = widget.window.cairo_create()
+        context.select_font_face(widget.font_name, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
+        context.set_font_size(widget.font_size)
+        xbearing, ybearing, width, oheight, xadvance, yadvance = context.text_extents(today)
+        context.set_source_rgba(*widget.bg_color)
+        context.rectangle(self.adjustment.value + self.adjustment.page_size - width - 10, 
+                          event.area.height - widget.bottom_padding + 1,
+                          event.area.width, event.area.height)
+        context.fill()
+        context.set_source_rgba(*widget.font_color)
+        context.move_to(self.adjustment.value + self.adjustment.page_size - width -5, event.area.height - widget.bottom_padding/3)
+        context.show_text(today)
         
     def __release_handler(self, *args, **kwargs):
         self.__pressed = False
