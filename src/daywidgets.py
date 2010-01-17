@@ -391,10 +391,13 @@ class EventGroup(gtk.VBox):
         else:
             pinbox.hide_all()
 
+    def _handle_find_events(self, ids):
+        CLIENT.get_events(ids, self.set_events)
+
     def get_events(self):
         if self.event_templates is not None:
-            CLIENT.find_events_for_templates(self.event_templates,
-                self.set_events, self.event_timerange, num_events=50000,
+            CLIENT.find_event_ids_for_templates(self.event_templates,
+                self._handle_find_events, self.event_timerange, num_events=50000,
                 result_type=ResultType.MostRecentSubjects)
         else:
             self.view.hide()
