@@ -62,6 +62,10 @@ class DayWidget(gtk.VBox):
         
         self.show_all()
 
+    def refresh(self):
+        for w in self.view:
+            w.on_style_change(None, None)
+
     def _set_date_strings(self):
         self.date_string = date.fromtimestamp(self.day_start).strftime("%d %B")
         self.year_string = date.fromtimestamp(self.day_start).strftime("%Y")
