@@ -65,7 +65,7 @@ class CairoHistogram(gtk.DrawingArea):
     """
     A histogram which is represented by a liststore of dates, and nitems
     """
-    _selected = 0
+    _selected = (0,)
     padding = 1
     bottom_padding = 0
     top_padding = 14
@@ -308,6 +308,9 @@ class CairoHistogram(gtk.DrawingArea):
                 self._selected = [-1] # Disable color
             self.emit("selection-set", max(i[0], 0))
 
+    def get_selected(self):
+        return self._selected
+    
     def clear_selection(self):
         """
         clears the selected items
