@@ -45,11 +45,11 @@ class Portal(gtk.Window):
 
         self.set_icon_list(*[gtk.gdk.pixbuf_new_from_file(
             os.path.join(BASE_PATH, name)) for name in (
-                "data/icons/hicolor/16x16/gnome-activity-journal.png",
-                "data/icons/hicolor/24x24/gnome-activity-journal.png",
-                "data/icons/hicolor/32x32/gnome-activity-journal.png",
-                "data/icons/hicolor/48x48/gnome-activity-journal.png",
-                "data/icons/hicolor/256x256/gnome-activity-journal.png")])
+                "data/icons/hicolor/16x16/apps/gnome-activity-journal.png",
+                "data/icons/hicolor/24x24/apps/gnome-activity-journal.png",
+                "data/icons/hicolor/32x32/apps/gnome-activity-journal.png",
+                "data/icons/hicolor/48x48/apps/gnome-activity-journal.png",
+                "data/icons/hicolor/256x256/apps/gnome-activity-journal.png")])
 
         self.vbox = gtk.VBox()
         #color = gtk.gdk.rgb_get_colormap().alloc_color('#EEEEEC')
