@@ -26,13 +26,15 @@ from histogramwidget import histogramdata
 import datetime
 import time
 
+_ACCESSIBILITY = settings["accessibility"]
+
+
 class ActivityView(gtk.VBox):
 
     def __init__(self, cal):
 
         gtk.VBox.__init__(self)
         
-        self._accessibility = settings["accessibility"]
         self.cal = cal
         
         self.days = {}
@@ -147,13 +149,8 @@ class ActivityView(gtk.VBox):
             ptime =  datetime.datetime.fromtimestamp(
                 self.start + i*86400).strftime("%A, %d %B %Y")
             if not self.days.has_key(ptime):
+                print "lol"
                 dayview = DayWidget(self.start + i*86400,
                     self.start + i*86400 + 86400)
-                if self._accessibility:
-                    frame = gtk.Frame()
-                    frame.set_shadow_type(gtk.SHADOW_IN)
-                    frame.add(dayview)
-                    self.days[ptime] = frame
-                else:
-                    self.days[ptime] = dayview
+                self.days[ptime] = dayview
             self.daysbox.pack_start(self.days[ptime], True, True, 3)
