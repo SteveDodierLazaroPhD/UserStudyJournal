@@ -253,7 +253,7 @@ class HistogramWidget(gtk.HBox):
                           event.area.width, event.area.height)
         context.fill()
         context.set_source_rgba(*widget.font_color)
-        context.move_to(self.adjustment.value + self.adjustment.page_size - width -5, event.area.height - widget.bottom_padding/3)
+        context.move_to(self.adjustment.value + self.adjustment.page_size - width -5, event.area.height - widget.text_pad)
         context.show_text(today)
         
     def __today_clicked__(self, widget, x, y):
