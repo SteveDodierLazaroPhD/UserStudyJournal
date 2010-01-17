@@ -385,6 +385,7 @@ class EventGroup(gtk.VBox):
             self.view.show()
             box.show()
             self.show()
+            self.label.show()
         
         if len(bookmarker.bookmarks) > 0:
             pinbox.show_all()
