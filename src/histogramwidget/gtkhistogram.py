@@ -94,7 +94,8 @@ class CairoHistogram(gtk.DrawingArea):
     __gsignals__ = {
         # the index of the first selected item in the datastore.
         "selection-set": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,(gobject.TYPE_INT,)),
-        "data-updated":  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,())
+        "data-updated":  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,()),
+        "outer-click": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,(gobject.TYPE_INT,gobject.TYPE_INT))
         }
 
     def __init__(self, datastore = None, selected_range = 0):
@@ -353,12 +354,14 @@ class CairoHistogram(gtk.DrawingArea):
         """
         Reacts to mouse moving (while pressed), and clicks
         """
-        location = min((self.get_data_index_from_cartesian(event.x, event.y), len(self.datastore) - 1))
-        if location != self.__last_location:
-            self.change_location(location)
-            self.__last_location = location
+        if event.y < self.get_size_request()[1] - self.bottom_padding:
+            location = min((self.get_data_index_from_cartesian(event.x, event.y), len(self.datastore) - 1))
+            if location != self.__last_location:
+                self.change_location(location)
+                self.__last_location = location
+        else: self.emit("outer-click", event.x, event.y)
         return True
-
+        
     def change_location(self, location):
         """Handles click events
 

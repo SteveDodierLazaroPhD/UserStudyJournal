@@ -212,6 +212,8 @@ class HistogramWidget(gtk.HBox):
     A container for a CairoHistogram which allows you to scroll
     """
     __pressed = False
+    __first_run = True
+    __today_width = 0
     
     def __init__(self, histo_type = None):
         """
@@ -226,12 +228,16 @@ class HistogramWidget(gtk.HBox):
         else:
             self.viewport.set_shadow_type(gtk.SHADOW_IN)
             self.histogram = CairoHistogram()
+            
         self.eventbox = TooltipEventBox(self.histogram)
         self.viewport.set_size_request(600,75)
         self.viewport.add(self.eventbox)
         align = gtk.Alignment(0,0,1,1)
         align.set_padding(0, 0, 0, 0)
         align.add(self.viewport)
+        if isinstance(self.histogram, ShadowedJournalHistogram):
+            self.histogram.connect("expose-event", self.__today_expose__)
+            self.histogram.connect("outer-click", self.__today_clicked__)
         # Back button
         b1 = gtk.Button()
         b1.add(gtk.Arrow(gtk.ARROW_LEFT, gtk.SHADOW_NONE))
@@ -244,8 +250,6 @@ class HistogramWidget(gtk.HBox):
         b2.set_focus_on_click(False)
         b1.connect("pressed", self.smooth_scroll, b1, int(-self.histogram.xincrement/2))
         b2.connect("pressed", self.smooth_scroll, b2, int(self.histogram.xincrement/2))
-        #b1.connect("clicked", self.scroll_viewport, -30*self.histogram.xincrement)
-        #b2.connect("clicked", self.scroll_viewport, 30*self.histogram.xincrement)
         self.histogram.connect("data-updated", self.scroll_to_end)
         self.pack_start(b1, False, False)
         self.pack_start(align, True, True, 3)
@@ -256,19 +260,18 @@ class HistogramWidget(gtk.HBox):
         self.adjustment.set_value(self.histogram.max_width - self.adjustment.page_size)
         b1.connect("released", self.__release_handler)
         b2.connect("released", self.__release_handler)
-        if isinstance(self.histogram, ShadowedJournalHistogram):
-            self.histogram.connect("expose-event", self.__viewport_expose__)
         self.histogram.connect("selection-set", self.__scrubing_fix)
         self.histogram.queue_draw()
         self.viewport.queue_draw()
-        
-    def __viewport_expose__(self, widget, event, *args, **kwargs):
-        today = "today>>"
+
+    def __today_expose__(self, widget, event, *args, **kwargs):
+        today = "today >>"
         context = widget.window.cairo_create()
         context.select_font_face(widget.font_name, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
         context.set_font_size(widget.font_size)
         xbearing, ybearing, width, oheight, xadvance, yadvance = context.text_extents(today)
         context.set_source_rgba(*widget.bg_color)
+        self.__today_width = width + 10
         context.rectangle(self.adjustment.value + self.adjustment.page_size - width - 10, 
                           event.area.height - widget.bottom_padding + 1,
                           event.area.width, event.area.height)
@@ -277,6 +280,10 @@ class HistogramWidget(gtk.HBox):
         context.move_to(self.adjustment.value + self.adjustment.page_size - width -5, event.area.height - widget.bottom_padding/3)
         context.show_text(today)
         
+    def __today_clicked__(self, widget, x, y):
+        if x > self.adjustment.value + self.adjustment.page_size - self.__today_width: 
+            self.histogram.set_selection(len(self.histogram.get_data()) - self.histogram.selected_range) 
+            
     def __release_handler(self, *args, **kwargs):
         self.__pressed = False
         
