@@ -98,7 +98,7 @@ class ShadowedJournalHistogram(CairoHistogram):
         self.column_color_selected_alternative = get_gtk_rgba(self.style, "bg", 3, 0.6)
         fg = self.style.fg[gtk.STATE_NORMAL]
         bg = self.style.bg[gtk.STATE_NORMAL]
-        self.font_color = get_gtk_rgba(self.style, "text", 0)
+        self.font_color = get_gtk_rgba(self.style, "text", 4, 0.6)
         self.stroke_color = get_gtk_rgba(self.style, "text", 4)
     
     def expose(self, widget, event, context):
