@@ -327,13 +327,13 @@ class CairoHistogram(gtk.DrawingArea):
         if isinstance(highlighted, list):
             self.highlighted = highlighted
         else: raise TypeError("highlighted is not a list")
-        self.clear_selection()
+        self.queue_draw()
 
     def clear_highlighted(self):
         """Clears the highlighted color"""
         self.highlighted = []
-        self.clear_selection()
-
+        self.queue_draw()
+        
     def add_selection_callback(self, callback):
         """
         add a callback for clicked to call when a item is clicked.

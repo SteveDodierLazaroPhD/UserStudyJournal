@@ -22,8 +22,14 @@ from __future__ import with_statement
 import os
 import cPickle
 import gobject
+import urllib
 
 from config import DATA_PATH
+
+def event_exists(uri):
+        # TODO: Move this into Zeitgeist's datamodel.py
+        return not uri.startswith("file://") or os.path.exists(
+            urllib.unquote(str(uri[7:])))
 
 class Bookmarker(gobject.GObject):
 
@@ -46,6 +52,12 @@ class Bookmarker(gobject.GObject):
             try:
                 with open(self.bookmarks_file) as f:
                     self.bookmarks = cPickle.load(f)
+                    removable = []
+                    for bookmark in self.bookmarks:
+                        if not event_exists(bookmark):
+                            removable.append(bookmark)
+                    for uri in removable:
+                        self.bookmarks.remove(uri)
             except BadPickleGet:
                 print "Pin database is corrupt."
     
@@ -54,7 +66,7 @@ class Bookmarker(gobject.GObject):
             cPickle.dump(self.bookmarks, f)
     
     def bookmark(self, uri):
-        if not uri in self.bookmarks:
+        if not uri in self.bookmarks and event_exists(uri):
             self.bookmarks.append(uri)
         self._save()
         self.emit("reload", self.bookmarks)

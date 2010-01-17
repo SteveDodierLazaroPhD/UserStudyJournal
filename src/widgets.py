@@ -320,7 +320,7 @@ class StaticPreviewTooltip(PreviewTooltip):
             # hack to force the tooltip to have the exact same size
             # as the child image
             self.resize(1,1)
-        pixbuf = thumbnailer.get_icon(subject, 200, icon_factory=icon_factory)
+        pixbuf = thumbnailer.get_icon(subject, 128, icon_factory=icon_factory)
         if pixbuf is None:
             self.__current = None
             return False
