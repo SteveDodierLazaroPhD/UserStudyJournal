@@ -214,6 +214,7 @@ class HistogramWidget(gtk.HBox):
     __pressed = False
     __first_run = True
     __today_width = 0
+    __today_text = ""
     
     def __init__(self, histo_type = None):
         """
@@ -238,6 +239,7 @@ class HistogramWidget(gtk.HBox):
         if isinstance(self.histogram, ShadowedJournalHistogram):
             self.histogram.connect("expose-event", self.__today_expose__)
             self.histogram.connect("outer-click", self.__today_clicked__)
+            self.histogram.add_selection_callback(self.__check_for_today__)
         # Back button
         b1 = gtk.Button()
         b1.add(gtk.Arrow(gtk.ARROW_LEFT, gtk.SHADOW_NONE))
@@ -265,7 +267,7 @@ class HistogramWidget(gtk.HBox):
         self.viewport.queue_draw()
 
     def __today_expose__(self, widget, event, *args, **kwargs):
-        today = "today >>"
+        today = self.__today_text
         context = widget.window.cairo_create()
         context.select_font_face(widget.font_name, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
         context.set_font_size(widget.font_size)
@@ -282,8 +284,14 @@ class HistogramWidget(gtk.HBox):
         
     def __today_clicked__(self, widget, x, y):
         if x > self.adjustment.value + self.adjustment.page_size - self.__today_width:
-            self.histogram.set_selection(len(self.histogram.get_data()) - self.histogram.selected_range)
-            
+            self.histogram.change_location(len(self.histogram.get_data()) - 1)
+
+    def __check_for_today__(self, widget, datastore, i):
+        if i == len(datastore) -  1:
+            self.__today_text = ""
+        else:
+            self.__today_text = ">>|"            
+    
     def __release_handler(self, *args, **kwargs):
         self.__pressed = False
         

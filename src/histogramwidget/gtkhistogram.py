@@ -300,12 +300,6 @@ class CairoHistogram(gtk.DrawingArea):
         if isinstance(i, int):
             self._selected = range(self._selected, self._selected + self.selected_range)
             self.emit("selection-set", max(i, 0))
-            if isinstance(self.__calbacks, list):
-                '''
-                for callback in self.__calbacks:
-                    if callable(callback):
-                        callback(self, self.datastore, max((i + self.selected_range - 1, 0)))
-                '''
         elif isinstance(self._selected, list):
             if len(self._selected) == 0:
                 self._selected = [-1] # Disable color
