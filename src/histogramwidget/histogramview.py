@@ -71,7 +71,7 @@ class TooltipEventBox(gtk.EventBox):
         return True
 
 
-class ShadowedJournalHistogram(CairoHistogram):
+class SectionedHistogram(CairoHistogram):
     """
     A subclass of CairoHistogram with theming to fit into Journal with a background colored bottom bar
     """
@@ -148,7 +148,7 @@ class ShadowedJournalHistogram(CairoHistogram):
         context.show_text(date)
 
 
-class JournalHistogram(ShadowedJournalHistogram):
+class JournalHistogram(SectionedHistogram):
     """
     A subclass of CairoHistogram with theming to fit into Journal
     """
@@ -209,7 +209,7 @@ class HistogramWidget(gtk.HBox):
         align = gtk.Alignment(0,0,1,1)
         align.set_padding(0, 0, 0, 0)
         align.add(self.viewport)
-        if isinstance(self.histogram, ShadowedJournalHistogram):
+        if isinstance(self.histogram, SectionedHistogram):
             self.histogram.connect("expose-event", self.__today_expose__)
             self.histogram.connect("outer-click", self.__today_clicked__)
             self.histogram.add_selection_callback(self.__check_for_today__)
@@ -264,7 +264,7 @@ class HistogramWidget(gtk.HBox):
         if i == len(datastore) -  1:
             self.__today_text = ""
         else:
-            self.__today_text = ">>|"            
+            self.__today_text = "Today »"            
     
     def __release_handler(self, *args, **kwargs):
         self.__pressed = False

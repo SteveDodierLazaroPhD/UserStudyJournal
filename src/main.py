@@ -29,7 +29,7 @@ from config import BASE_PATH
 from widgets import *
 from view import ActivityView
 from ui_utils import settings
-from histogramwidget.histogramview import HistogramWidget, JournalHistogram, ShadowedJournalHistogram
+from histogramwidget.histogramview import HistogramWidget, JournalHistogram, SectionedHistogram
 
 class Portal(gtk.Window):
 
@@ -55,7 +55,7 @@ class Portal(gtk.Window):
         #color = gtk.gdk.rgb_get_colormap().alloc_color('#EEEEEC')
         #self.modify_bg(gtk.STATE_NORMAL, color)
         if settings["accessibility"]:
-            self.cal = HistogramWidget(ShadowedJournalHistogram)
+            self.cal = HistogramWidget(SectionedHistogram)
         else:
             self.cal = HistogramWidget(JournalHistogram)
         self.activityview = ActivityView(self.cal)
