@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: zeitgeist@lists.launchpad.net\n"
-"POT-Creation-Date: 2010-01-17 19:21+0000\n"
+"POT-Creation-Date: 2010-01-17 22:55+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,10 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: ../src/main.py:43 ../extra/gnome-activity-journal.desktop.in.h:1
+msgid "Activity Journal"
+msgstr ""
 
 #: ../src/main.py:71
 msgid "Go Back in Time"
@@ -31,6 +35,14 @@ msgstr ""
 
 #: ../src/widgets.py:177
 msgid "Type here to search..."
+msgstr ""
+
+#: ../src/widgets.py:527
+msgid "Remove Pin"
+msgstr ""
+
+#: ../src/widgets.py:529
+msgid "Pin to Today"
 msgstr ""
 
 #: ../src/daywidgets.py:52
@@ -53,14 +65,64 @@ msgstr ""
 msgid "Yesterday"
 msgstr ""
 
+#. Initialize the widget
+#: ../src/daywidgets.py:436
+msgid "Pinned items"
+msgstr ""
+
+#. TODO: Please change this description stuff. To give a single reason,
+#. saying "videos watched" is a lie because you may have edited them, or
+#. it may just be a "bookmark event".
+#.
+#. Also, how this is implemented now won't work fine with i18n.
+#: ../src/ui_utils.py:426
+msgid "Worked with a Video"
+msgstr ""
+
+#: ../src/ui_utils.py:426
+msgid "Worked with Videos"
+msgstr ""
+
+#: ../src/ui_utils.py:427
+msgid "Worked with Audio"
+msgstr ""
+
+#: ../src/ui_utils.py:428
+msgid "Worked with an Image"
+msgstr ""
+
+#: ../src/ui_utils.py:428
+msgid "Worked with Images"
+msgstr ""
+
+#: ../src/ui_utils.py:429
+msgid "Edited or Read Document"
+msgstr ""
+
+#: ../src/ui_utils.py:429
+msgid "Edited or Read Documents"
+msgstr ""
+
+#: ../src/ui_utils.py:430
+msgid "Edited or Read Code"
+msgstr ""
+
+#: ../src/ui_utils.py:431
+msgid "Other Activity"
+msgstr ""
+
+#: ../src/ui_utils.py:431
+msgid "Other Activities"
+msgstr ""
+
 #: ../src/histogramwidget/histogramview.py:70
 msgid "item"
 msgid_plural "items"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../extra/gnome-activity-journal.desktop.in.h:1
-msgid "Activity Journal"
+#: ../src/histogramwidget/histogramview.py:268
+msgid "Today "
 msgstr ""
 
 #: ../extra/gnome-activity-journal.desktop.in.h:2

@@ -40,7 +40,7 @@ class Portal(gtk.Window):
         self._requested_size = None
 
         self.connect("destroy", self.quit)
-        self.set_title("Activity Journal")
+        self.set_title(_("Activity Journal"))
         self.set_position(gtk.WIN_POS_CENTER)
 
         self.set_icon_list(*[gtk.gdk.pixbuf_new_from_file(
@@ -103,7 +103,7 @@ class Portal(gtk.Window):
         hbox.pack_start(self.rbox, False, False)
         
         self.vbox.pack_start(hbox, True, True)
-        self.set_border_width(0)
+        self.set_border_width(3)
 
         self.vbox.pack_end(self.cal, False, False)
 

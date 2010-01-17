@@ -433,10 +433,10 @@ class Item(gtk.HBox):
         hbox.pack_start(img, False, False, 1)
         hbox.pack_start(self.label, True, True, 4)
         
-        img = gtk.image_new_from_file("data/pin.png")
+        img = gtk.image_new_from_file("data/icons/hicolor/24x24/status/pin.png") # todo: get the name "pin" from theme when icons are properly installed
         self.pin = gtk.Button()
         self.pin.add(img)
-        self.pin.set_tooltip_text("Remove Pin")
+        self.pin.set_tooltip_text(_("Remove Pin"))
         self.pin.set_focus_on_click(False)
         self.pin.set_relief(gtk.RELIEF_NONE)
         self.pack_end(self.pin, False, False)
@@ -524,9 +524,9 @@ class Item(gtk.HBox):
         menu.append(open)
         bool = bookmarker.is_bookmarked(self.subject.uri)
         if bool:
-            bookmark = gtk.MenuItem(("Remove Pin"))
+            bookmark = gtk.MenuItem(_("Remove Pin"))
         else:
-            bookmark = gtk.MenuItem(("Pin to Today"))
+            bookmark = gtk.MenuItem(_("Pin to Today"))
         bookmark.connect("activate", lambda x: self.set_bookmarked(not bool))
         bookmark.show()
         menu.append(bookmark)

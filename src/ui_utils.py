@@ -423,10 +423,10 @@ SUPPORTED_SOURCES = {
     # it may just be a "bookmark event".
     #
     # Also, how this is implemented now won't work fine with i18n.
-    Interpretation.VIDEO.uri: Source(Interpretation.VIDEO, "gnome-mime-video", "Worked with a Video", "Worked with Videos"),
-    Interpretation.MUSIC.uri: Source(Interpretation.MUSIC, "gnome-mime-audio", "Worked with Audio", "Worked with Audio"),
-    Interpretation.IMAGE.uri: Source(Interpretation.IMAGE, "image", "Worked with an Image", "Worked with Images"),
-    Interpretation.DOCUMENT.uri: Source(Interpretation.DOCUMENT, "stock_new-presentation", "Edited or Read Document", "Edited or Read Documents"),
-    Interpretation.SOURCECODE.uri: Source(Interpretation.SOURCECODE, "applications-development", "Edited or Read Code", "Edited or Read Code"),
-    Interpretation.UNKNOWN.uri: Source(Interpretation.UNKNOWN, "applications-other", "Other Activity", "Other Activities"),
+    Interpretation.VIDEO.uri: Source(Interpretation.VIDEO, "gnome-mime-video", _("Worked with a Video"), _("Worked with Videos")),
+    Interpretation.MUSIC.uri: Source(Interpretation.MUSIC, "gnome-mime-audio", _("Worked with Audio"), _("Worked with Audio")),
+    Interpretation.IMAGE.uri: Source(Interpretation.IMAGE, "image", _("Worked with an Image"), _("Worked with Images")),
+    Interpretation.DOCUMENT.uri: Source(Interpretation.DOCUMENT, "stock_new-presentation", _("Edited or Read Document"), _("Edited or Read Documents")),
+    Interpretation.SOURCECODE.uri: Source(Interpretation.SOURCECODE, "applications-development", _("Edited or Read Code"), _("Edited or Read Code")),
+    Interpretation.UNKNOWN.uri: Source(Interpretation.UNKNOWN, "applications-other", _("Other Activity"), _("Other Activities")),
 }
