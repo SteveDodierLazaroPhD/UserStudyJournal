@@ -77,8 +77,8 @@ class ShadowedJournalHistogram(CairoHistogram):
     """
     padding = 2
     column_radius = 1.3
-    font_size = 10
-    bottom_padding = 18
+    font_size = 12
+    bottom_padding = 23
     top_padding = 2
     wcolumn = 12
     xincrement = wcolumn + padding
@@ -132,9 +132,9 @@ class ShadowedJournalHistogram(CairoHistogram):
         fg = self.style.fg[gtk.STATE_NORMAL]
         bg = self.style.bg[gtk.STATE_NORMAL]
         context.set_source_rgba(*self.stroke_color)
-        context.set_line_width(self.stroke_width + self.stroke_offset)
-        context.move_to(x+0.5, 0)
-        context.line_to(x+0.5, height - self.bottom_padding)
+        context.set_line_width(2)
+        context.move_to(x+1, 0)
+        context.line_to(x+1, height - self.bottom_padding)
         context.stroke()
         context.set_source_rgba(*self.font_color)
         context.select_font_face(self.font_name, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
@@ -143,7 +143,7 @@ class ShadowedJournalHistogram(CairoHistogram):
         month = calendar.month_name[date.month]
         date = "%s %d" % (month, date.year)
         xbearing, ybearing, width, oheight, xadvance, yadvance = context.text_extents(date)
-        context.move_to(x + 8, height - self.bottom_padding/3)
+        context.move_to(x + 3, height - self.bottom_padding + 17)
         context.show_text(date)
 
 
