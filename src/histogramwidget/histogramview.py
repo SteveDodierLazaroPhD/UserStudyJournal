@@ -155,7 +155,7 @@ class JournalHistogram(CairoHistogram):
     font_size = 12
     bottom_padding = 25
     top_padding = 6
-    wcolumn = 9
+    wcolumn = 10
     xincrement = wcolumn + padding
     start_x_padding = xincrement
     column_radius = 2
@@ -177,8 +177,8 @@ class JournalHistogram(CairoHistogram):
         self.draw_columns_from_datastore(context, event, self._selected)
 
     def change_style(self, widget, *args, **kwargs):
-        self.bg_color = get_gtk_rgba(self.style, "bg", 0, 1.02)
-        self.column_color_normal =  get_gtk_rgba(self.style, "text", 1)
+        self.bg_color = get_gtk_rgba(self.style, "text", 1, 1.02)
+        self.column_color_normal =  get_gtk_rgba(self.style, "bg", 1)
         self.column_color_selected = get_gtk_rgba(self.style, "bg", 3)
         self.column_color_selected_alternative = get_gtk_rgba(self.style, "bg", 3, 0.7)
         self.column_color_alternative = get_gtk_rgba(self.style, "text", 2)
@@ -195,7 +195,7 @@ class JournalHistogram(CairoHistogram):
         context.set_source_rgba(*self.font_color)
         context.set_line_width(2)
         context.move_to(x+1, height - self.bottom_padding)
-        context.line_to(x+1, height - self.bottom_padding/3)
+        context.line_to(x+1, height - self.bottom_padding + 30)
         context.stroke()
         context.select_font_face(self.font_name, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
         context.set_font_size(self.font_size)
@@ -203,7 +203,7 @@ class JournalHistogram(CairoHistogram):
         month = calendar.month_name[date.month]
         date = "%s %d" % (month, date.year)
         xbearing, ybearing, width, oheight, xadvance, yadvance = context.text_extents(date)
-        context.move_to(x + 8, height - self.bottom_padding/3)
+        context.move_to(x + 10, height - self.bottom_padding/3)
         context.show_text(date)
 
 
