@@ -281,8 +281,8 @@ class HistogramWidget(gtk.HBox):
         context.show_text(today)
         
     def __today_clicked__(self, widget, x, y):
-        if x > self.adjustment.value + self.adjustment.page_size - self.__today_width: 
-            self.histogram.set_selection(len(self.histogram.get_data()) - self.histogram.selected_range) 
+        if x > self.adjustment.value + self.adjustment.page_size - self.__today_width:
+            self.histogram.set_selection(len(self.histogram.get_data()) - self.histogram.selected_range)
             
     def __release_handler(self, *args, **kwargs):
         self.__pressed = False
