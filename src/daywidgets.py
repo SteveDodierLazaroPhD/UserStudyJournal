@@ -60,7 +60,7 @@ class DayWidget(gtk.VBox):
         gobject.timeout_add_seconds(
             86400 - (int(time.time() - time.timezone) % 86400), self._refresh)
         
-        self.show()
+        self.show_all()
 
     def _set_date_strings(self):
         self.date_string = date.fromtimestamp(self.day_start).strftime("%d %B")
