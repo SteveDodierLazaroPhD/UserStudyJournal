@@ -92,7 +92,7 @@ class CairoHistogram(gtk.DrawingArea):
     stroke_color = (1, 1, 1, 0)
     shadow_color = (1, 1, 1, 0)
 
-    __last_location = -1
+    __last_location__ = -1
 
     __gsignals__ = {
         # the index of the first selected item in the datastore.
@@ -112,6 +112,7 @@ class CairoHistogram(gtk.DrawingArea):
         self.set_flags(gtk.CAN_FOCUS)
         self.connect("expose_event", self.__expose__)
         self.connect("button_press_event", self.mouse_interaction)
+        self.connect("button_release_event", self.mouse_interaction_release)
         self.connect("motion_notify_event", self.mouse_interaction)
         self.font_name = self.style.font_desc.get_family()
         self.set_data(datastore if datastore else [], draw = False)
@@ -368,14 +369,17 @@ class CairoHistogram(gtk.DrawingArea):
         """
         Reacts to mouse moving (while pressed), and clicks
         """
-        if event.y < self.get_size_request()[1] - self.bottom_padding:
-            location = min((self.get_data_index_from_cartesian(event.x, event.y), len(self.datastore) - 1))
-            if location != self.__last_location:
-                self.change_location(location)
-                self.__last_location = location
-        else: self.emit("outer-click", event.x, event.y)
+        location = min((self.get_data_index_from_cartesian(event.x, event.y), len(self.datastore) - 1))
+        if location != self.__last_location__:
+            self.change_location(location)
+            self.__last_location__ = location
         return True
-        
+
+    def mouse_interaction_release(self, widget, event, *args, **kwargs):
+        if (event.y > self.get_size_request()[1] - self.bottom_padding and 
+            event.y < self.get_size_request()[1]):
+            self.emit("outer-click", event.x, event.y)
+
     def change_location(self, location):
         """Handles click events
 
