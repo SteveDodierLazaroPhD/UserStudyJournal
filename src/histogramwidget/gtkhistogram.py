@@ -22,7 +22,7 @@
 Takes a two dementional lis store of ints and turns it into a graph based on
 the first value a int date, and the second value the number of items on that date
 where items are
-datastore = gtk.ListStore(int, int)
+datastore = []
 datastore.append(time, nitems)
 CairoHistogram.set_data(datastore)
 """
@@ -63,7 +63,7 @@ def get_gtk_rgba(style, palette, i, shade = 1):
 
 class CairoHistogram(gtk.DrawingArea):
     """
-    A histogram which is represented by a liststore of dates, and nitems
+    A histogram which is represented by a list of dates, and nitems
     """
     _selected = (0,)
     padding = 1
@@ -114,7 +114,7 @@ class CairoHistogram(gtk.DrawingArea):
         self.connect("button_press_event", self.mouse_interaction)
         self.connect("motion_notify_event", self.mouse_interaction)
         self.font_name = self.style.font_desc.get_family()
-        self.set_data(datastore if datastore else gtk.ListStore(int, int), draw = False)
+        self.set_data(datastore if datastore else [], draw = False)
         self.selected_range = selected_range
         self.connect("style-set", self.change_style)
 
@@ -147,32 +147,37 @@ class CairoHistogram(gtk.DrawingArea):
 
     def set_data(self, datastore, draw = True):
         """
-        Sets the objects datastore attribute using a gtk.ListStore or a list
-        for compatibility reasons
+        Sets the objects datastore attribute using a list
         
         Arguments:
-        -datastore: A gtk.ListStore that is comprised of rows containing
+        -datastore: A list that is comprised of rows containing
           a int time and a int nitems
         """
         if isinstance(datastore, list):
-            newdatastore = gtk.ListStore(int, int)
-            for item in datastore:
-                newdatastore.append(item)
-            del datastore
-            datastore = newdatastore
-        if isinstance(datastore, gtk.ListStore):
             self.datastore = datastore
             self.largest = 1
             for date, nitems in self.datastore:
                 if nitems > self.largest: self.largest = nitems
             self.max_width = self.xincrement + (self.xincrement *len(datastore))
         else:
-            raise TypeError("Datastore is not a gtk.ListStore")
+            raise TypeError("Datastore is not a <list>")
         self.emit("data-updated")
         self.set_selection(len(datastore) - self.selected_range)
 
     def get_data(self):
         return self.datastore
+    
+    def prepend_data(self, newdatastore):
+        """
+        Adds the items of a new list before the items of the current datastore
+        
+        Arguments:
+        - newdatastore: the new list to be prepended
+        
+        ## WARNING SELECTION WILL CHANGE WHEN DOING THIS TO BE FIXED ##
+        """
+        self.datastore = newdatastore + self.datastore
+        self.queue_draw()
 
     def __expose__(self, widget, event):
         """
