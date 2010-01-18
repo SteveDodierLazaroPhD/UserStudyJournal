@@ -220,7 +220,7 @@ class HistogramWidget(gtk.HBox):
         self.adjustment.set_value(self.histogram.max_width - self.adjustment.page_size)
         self.backward_button.connect("released", self.__release_handler)
         self.forward_button.connect("released", self.__release_handler)
-        self.histogram.connect("selection-set", self.__scrubing_fix)
+        self.histogram.connect("selection-set", self.__scrubbing_fix__)
         self.histogram.queue_draw()
         self.viewport.queue_draw()
 
@@ -302,7 +302,7 @@ class HistogramWidget(gtk.HBox):
         self.adjustment.set_value(1)
         self.adjustment.set_value(self.histogram.max_width - self.adjustment.page_size)
 
-    def __scrubing_fix(self, widget, i, *args, **kwargs):
+    def __scrubbing_fix__(self, widget, i, *args, **kwargs):
         """
         Allows scrubbing to scroll the scroll window
         """
