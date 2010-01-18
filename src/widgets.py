@@ -299,7 +299,7 @@ class CategoryButton(gtk.HBox):
 
 class PreviewTooltip(gtk.Window):
     
-    TOOLTIP_SIZE = SIZE_NORMAL
+    TOOLTIP_SIZE = SIZE_LARGE
     
     def __init__(self):
         gtk.Window.__init__(self, type=gtk.WINDOW_POPUP)
