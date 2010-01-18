@@ -402,7 +402,7 @@ class Item(gtk.HBox):
         self.gio_file = GioFile.create(self.subject.uri)
         if self.gio_file is not None:
             self.time = float(event.timestamp) / 1000
-            self.icon = self.gio_file.get_icon(can_thumb=True, border=1)
+            self.icon = self.gio_file.get_icon(can_thumb=False, border=1)
             self.btn.set_relief(gtk.RELIEF_NONE)
             self.btn.set_focus_on_click(False)
             self.__init_widget()
