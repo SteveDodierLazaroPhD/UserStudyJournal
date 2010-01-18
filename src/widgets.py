@@ -399,19 +399,20 @@ class Item(gtk.HBox):
         self.in_search = False
         self.event = event
         self.subject = event.subjects[0]
-        self.gio_file = GioFile.create(self.subject.uri)
+        self.gio_file = GioFile.create(self.subject.uri)            
+        self.time = float(event.timestamp) / 1000
+
         if self.gio_file is not None:
-            self.time = float(event.timestamp) / 1000
-            self.icon = self.gio_file.get_icon(can_thumb=False, border=1)
-            self.btn.set_relief(gtk.RELIEF_NONE)
-            self.btn.set_focus_on_click(False)
-            self.__init_widget()
-            self.show_all()
-            self.markup = None
-            #self.set_bookmark_widget()
-            self.pin.connect("clicked", lambda x: self.set_bookmarked(False))
-            ITEMS.append(self)
-            self.pin.hide()
+            self.icon = self.gio_file.get_icon(can_thumb=False, border=0)
+        self.btn.set_relief(gtk.RELIEF_NONE)
+        self.btn.set_focus_on_click(False)
+        self.__init_widget()
+        self.show_all()
+        self.markup = None
+        #self.set_bookmark_widget()
+        self.pin.connect("clicked", lambda x: self.set_bookmarked(False))
+        ITEMS.append(self)
+        self.pin.hide()
     
     def highlight(self):
         #print len(searchbox.results)
