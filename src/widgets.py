@@ -406,7 +406,8 @@ class Item(gtk.HBox):
         self.time = float(event.timestamp) / 1000
 
         if self.gio_file is not None:
-            self.icon = self.gio_file.get_icon(can_thumb=False, border=0)
+            self.icon = self.gio_file.get_icon(
+                can_thumb=settings.get('small_thumbnails', False), border=0)
         self.btn.set_relief(gtk.RELIEF_NONE)
         self.btn.set_focus_on_click(False)
         self.__init_widget()
