@@ -169,7 +169,7 @@ class GioFile(object):
         except AttributeError:
             return list()
         
-    def get_thumbnail(self, size=SIZE_NORMAL, border=None):
+    def get_thumbnail(self, size=SIZE_NORMAL, border=0):
         assert size in ICON_SIZES
         try:
             thumb = THUMBS[size][self.uri]
@@ -208,7 +208,8 @@ class GioFile(object):
     def thumbnail(self):
         return self.get_thumbnail()
         
-    def get_icon(self, size=24, can_thumb=False):
+    def get_icon(self, size=24, can_thumb=False, border=0):
+        icon = None
         if can_thumb:
             # let's try to find a thumbnail
             # we only allow thumbnails as icons for a few content types
@@ -224,22 +225,22 @@ class GioFile(object):
                     height = thumb.get_height()
                     scale = min(s/width, s/height)
                     icon = thumb.scale_simple(int(width*scale), int(height*scale), gtk.gdk.INTERP_NEAREST)
-                    ICONS[size][self.uri] = icon
-                    return icon
-        try:
-            return ICONS[size][self.uri]
-        except KeyError:
-            icon = None
-            for icon in self.icon_names:
-                info = ICON_THEME.lookup_icon(icon, size, gtk.ICON_LOOKUP_USE_BUILTIN)
-                if info is None:
-                    continue
-                location = info.get_filename()
-                icon = gtk.gdk.pixbuf_new_from_file_at_size(location, size, size)
-                if icon:
-                    break
-            ICONS[size][self.uri] = icon
-            return icon
+        if icon is None:
+            try:
+                return ICONS[size][self.uri]
+            except KeyError:
+                for icon in self.icon_names:
+                    info = ICON_THEME.lookup_icon(icon, size, gtk.ICON_LOOKUP_USE_BUILTIN)
+                    if info is None:
+                        continue
+                    location = info.get_filename()
+                    icon = gtk.gdk.pixbuf_new_from_file_at_size(location, size, size)
+                    if icon:
+                        break
+        ICONS[size][self.uri] = icon
+        if icon is not None and border:
+            icon = make_icon_frame(icon, border=border, color=0x00000080)
+        return icon
         
     @property
     def icon(self):
