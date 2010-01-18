@@ -30,6 +30,8 @@ from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
 CLIENT = ZeitgeistClient()
 
 def datelist(n, callback):
+    if n == -1:
+        n = int(time.time()/86400)
     today = int(time.mktime(time.strptime(time.strftime("%d %B %Y"), "%d %B %Y")))
     today = today - n*86400 
     
