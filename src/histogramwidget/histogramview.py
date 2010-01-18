@@ -103,7 +103,7 @@ class SectionedHistogram(CairoHistogram):
 
     def expose(self, widget, event, context):
         """
-        The major drawing method
+        The minor drawing method
         
         Arguments:
         - widget: the widget
@@ -170,9 +170,6 @@ class JournalHistogram(SectionedHistogram):
         self.column_color_selected = get_gtk_rgba(self.style, "bg", 3)
         self.column_color_selected_alternative = get_gtk_rgba(self.style, "bg", 3, 0.7)
         self.column_color_alternative = get_gtk_rgba(self.style, "text", 2)
-        # fg = self.style.fg[gtk.STATE_NORMAL]
-        # bg = self.style.bg[gtk.STATE_NORMAL]
-        # self.font_color = ((2*bg.red+fg.red)/3/65535.0, (2*bg.green+fg.green)/3/65535.0, (2*bg.blue+fg.blue)/3/65535.0, 1)
         self.font_color = get_gtk_rgba(self.style, "text", 4, 0.6)
         self.stroke_color = get_gtk_rgba(self.style, "bg", 0)
         self.shadow_color = get_gtk_rgba(self.style, "bg", 0, 0.98)
@@ -182,10 +179,9 @@ class HistogramWidget(gtk.HBox):
     """
     A container for a CairoHistogram which allows you to scroll
     """
-    __pressed = False
-    __first_run = True
-    __today_width = 0
-    __today_text = ""
+    __pressed__ = False
+    __today_width__ = 0
+    __today_text__ = ""
     
     def __init__(self, histo_type = None):
         """
@@ -194,13 +190,8 @@ class HistogramWidget(gtk.HBox):
         """
         super(gtk.HBox, self).__init__()
         self.viewport = gtk.Viewport()
-        if histo_type:
-            self.viewport.set_shadow_type(gtk.SHADOW_NONE)
-            self.histogram = histo_type()
-        else:
-            self.viewport.set_shadow_type(gtk.SHADOW_IN)
-            self.histogram = CairoHistogram()
-            
+        self.viewport.set_shadow_type(gtk.SHADOW_NONE)
+        self.histogram = histo_type()
         self.eventbox = TooltipEventBox(self.histogram)
         self.viewport.set_size_request(600,75)
         self.viewport.add(self.eventbox)
@@ -212,28 +203,25 @@ class HistogramWidget(gtk.HBox):
             self.histogram.connect("outer-click", self.__today_clicked__)
             self.histogram.connect("selection-set", self.__check_for_today__)
             self.histogram.connect("data-updated", self.scroll_to_end)
-        # Back button
-        b1 = gtk.Button()
-        b1.add(gtk.Arrow(gtk.ARROW_LEFT, gtk.SHADOW_NONE))
-        b1.set_relief(gtk.RELIEF_NONE)
-        b1.set_focus_on_click(False)
-        # Forward button
-        b2 = gtk.Button()
-        b2.add(gtk.Arrow(gtk.ARROW_RIGHT, gtk.SHADOW_NONE))
-        b2.set_relief(gtk.RELIEF_NONE)
-        b2.set_focus_on_click(False)
-        b1.connect("pressed", self.smooth_scroll, b1, int(-self.histogram.xincrement/2))
-        b2.connect("pressed", self.smooth_scroll, b2, int(self.histogram.xincrement/2))
+        self.backward_button = gtk.Button()
+        self.backward_button.add(gtk.Arrow(gtk.ARROW_LEFT, gtk.SHADOW_NONE))
+        self.backward_button.set_relief(gtk.RELIEF_NONE)
+        self.backward_button.set_focus_on_click(False)
+        self.forward_button = gtk.Button()
+        self.forward_button.add(gtk.Arrow(gtk.ARROW_RIGHT, gtk.SHADOW_NONE))
+        self.forward_button.set_relief(gtk.RELIEF_NONE)
+        self.forward_button.set_focus_on_click(False)
+        self.backward_button.connect("pressed", self.smooth_scroll, self.backward_button, int(-self.histogram.xincrement/2))
+        self.forward_button.connect("pressed", self.smooth_scroll, self.forward_button, int(self.histogram.xincrement/2))
         self.histogram.connect("data-updated", self.scroll_to_end)
-        self.pack_start(b1, False, False)
+        self.pack_start(self.backward_button, False, False)
         self.pack_start(align, True, True, 3)
-        self.pack_end(b2, False, False)
-        # Prepare the adjustment
+        self.pack_end(self.forward_button, False, False)
         self.adjustment = self.viewport.get_hadjustment()
         self.adjustment.set_value(1) # Needs to be set twice to work
         self.adjustment.set_value(self.histogram.max_width - self.adjustment.page_size)
-        b1.connect("released", self.__release_handler)
-        b2.connect("released", self.__release_handler)
+        self.backward_button.connect("released", self.__release_handler)
+        self.forward_button.connect("released", self.__release_handler)
         self.histogram.connect("selection-set", self.__scrubing_fix)
         self.histogram.queue_draw()
         self.viewport.queue_draw()
@@ -243,27 +231,24 @@ class HistogramWidget(gtk.HBox):
         A double drawing hack to draw twice on a drawing areas window. It should
         draw today on the drawing area window
         """
-        today = self.__today_text
         context = widget.window.cairo_create()
         context.select_font_face(widget.font_name, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
         context.set_font_size(widget.font_size)
-        xbearing, ybearing, width, oheight, xadvance, yadvance = context.text_extents(today)
+        xbearing, ybearing, width, oheight, xadvance, yadvance = context.text_extents(self.__today_text__)
         context.set_source_rgba(*widget.bg_color)
-        self.__today_width = width + 10
-        context.rectangle(self.adjustment.value + self.adjustment.page_size - width - 10, 
-                          event.area.height - widget.bottom_padding + 1,
-                          event.area.width, event.area.height)
+        self.__today_width__ = width + 10
+        context.rectangle(self.adjustment.value + self.adjustment.page_size - width - 10, event.area.height - widget.bottom_padding + 1, event.area.width, event.area.height)
         context.fill()
         context.set_source_rgba(*widget.font_color)
         context.move_to(self.adjustment.value + self.adjustment.page_size - width -5, event.area.height - widget.text_pad)
-        context.show_text(today)
+        context.show_text(self.__today_text__)
         
     def __today_clicked__(self, widget, x, y):
         """
         Handles all rejected clicks from the outer-click signal and checks to
         see if they were inside of the today text
         """
-        if x > self.adjustment.value + self.adjustment.page_size - self.__today_width:
+        if x > self.adjustment.value + self.adjustment.page_size - self.__today_width__:
             self.histogram.change_location(len(self.histogram.get_data()) - 1)
 
     def __check_for_today__(self, widget, i):
@@ -271,25 +256,25 @@ class HistogramWidget(gtk.HBox):
         Changes today to a empty string if the selected item is not today
         """
         if i + self.histogram.selected_range == len(self.histogram.get_data()):
-            self.__today_text = ""
+            self.__today_text__ = ""
             self.histogram.queue_draw()
-        elif len(self.__today_text) == 0:
-            self.__today_text = _("Today ") + "»"
+        elif len(self.__today_text__) == 0:
+            self.__today_text__ = _("Today ") + "»"
     
     def __release_handler(self, *args, **kwargs):
         """
         Clears scroll the button press varible
         """
-        self.__pressed = False
+        self.__pressed__ = False
         
     def smooth_scroll(self, widget, button, value):
         """
-        Scrolls using a timeout while __pressed
+        Scrolls using a timeout while __pressed__
         """
-        self.__pressed = True
+        self.__pressed__ = True
         def _f(self, button, value):
             self.scroll_viewport(widget, value)
-            if self.__pressed: return True
+            if self.__pressed__: return True
             return False
         gobject.timeout_add(10, _f, self, button, value)
 
