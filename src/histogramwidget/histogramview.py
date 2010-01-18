@@ -99,6 +99,8 @@ class SectionedHistogram(CairoHistogram):
         self.font_color = get_gtk_rgba(self.style, "text", 4, 0.6)
         self.stroke_color = get_gtk_rgba(self.style, "text", 4)
         self.shadow_color = get_gtk_rgba(self.style, "text", 4)
+        self.font_size = self.style.font_desc.get_size()/1024 + 2
+        self.bottom_padding = self.font_size + 9
 
     def expose(self, widget, event, context):
         """
@@ -171,6 +173,8 @@ class JournalHistogram(SectionedHistogram):
         self.font_color = get_gtk_rgba(self.style, "text", 4, 0.6)
         self.stroke_color = get_gtk_rgba(self.style, "bg", 0)
         self.shadow_color = get_gtk_rgba(self.style, "bg", 0, 0.98)
+        self.font_size = self.style.font_desc.get_size()/1024 + 2
+        self.bottom_padding = self.font_size + 9
 
 
 class HistogramWidget(gtk.HBox):

@@ -134,6 +134,7 @@ class CairoHistogram(gtk.DrawingArea):
         bg = self.style.bg[gtk.STATE_NORMAL]
         self.font_color = get_gtk_rgba(self.style, "text", 4)
         self.stroke_color = get_gtk_rgba(self.style, "text", 4, 0.8)
+        self.font_size = self.style.font_desc.get_size()/1024 + 2
 
     def set_selected_range(self, selected_range):
         """
