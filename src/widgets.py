@@ -299,6 +299,8 @@ class CategoryButton(gtk.HBox):
 
 class PreviewTooltip(gtk.Window):
     
+    TOOLTIP_SIZE = SIZE_NORMAL
+    
     def __init__(self):
         gtk.Window.__init__(self, type=gtk.WINDOW_POPUP)
         
@@ -324,7 +326,7 @@ class StaticPreviewTooltip(PreviewTooltip):
         if gio_file.uri == self.__current:
             return bool(self.__current)
         self.__current = gio_file.uri
-        pixbuf = gio_file.get_thumbnail(size=SIZE_NORMAL, border=1)
+        pixbuf = gio_file.get_thumbnail(size=self.TOOLTIP_SIZE, border=1)
         if pixbuf is None:
             self.__current = None
             return False
@@ -350,6 +352,7 @@ class VideoPreviewTooltip(PreviewTooltip):
         bus.connect("sync-message::element", self.on_sync_message)
         self.connect("hide", self._handle_hide)
         self.connect("show", self._handle_show)
+        self.set_default_size(*self.TOOLTIP_SIZE)
         
     def _handle_hide(self, widget):
         self.player.set_state(gst.STATE_NULL)
