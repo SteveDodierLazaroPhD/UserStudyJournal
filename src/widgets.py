@@ -30,6 +30,7 @@ try:
 except ImportError:
     gst = None
 from ui_utils import *
+from gio_file import GioFile, SIZE_NORMAL, SIZE_LARGE
 #from teamgeist import TeamgeistInterface
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
     ResultType
@@ -301,8 +302,8 @@ class PreviewTooltip(gtk.Window):
     def __init__(self):
         gtk.Window.__init__(self, type=gtk.WINDOW_POPUP)
         
-    def preview(self, subject, icon_factory=None):
-        return True
+    def preview(self, gio_file):
+        return False
         
 class StaticPreviewTooltip(PreviewTooltip):
     
@@ -310,24 +311,27 @@ class StaticPreviewTooltip(PreviewTooltip):
         super(StaticPreviewTooltip, self).__init__()
         self.__current = None
         
-    def preview(self, subject, icon_factory=None):
-        if subject.uri == self.__current:
-            return bool(self.__current)
-        self.__current = subject.uri
+    def replace_content(self, content):
         children = self.get_children()
         if children:
             self.remove(children[0])
             # hack to force the tooltip to have the exact same size
             # as the child image
             self.resize(1,1)
-        pixbuf = thumbnailer.get_icon(subject, 128, icon_factory=icon_factory)
+        self.add(content)
+        
+    def preview(self, gio_file):
+        if gio_file.uri == self.__current:
+            return bool(self.__current)
+        self.__current = gio_file.uri
+        pixbuf = gio_file.get_thumbnail(size=SIZE_NORMAL, border=1)
         if pixbuf is None:
             self.__current = None
             return False
         img = gtk.image_new_from_pixbuf(pixbuf)
         img.set_alignment(0.5, 0.5)
         img.show_all()
-        self.add(img)
+        self.replace_content(img)
         return True
         
 class VideoPreviewTooltip(PreviewTooltip):
@@ -353,10 +357,10 @@ class VideoPreviewTooltip(PreviewTooltip):
     def _handle_show(self, widget):
         self.player.set_state(gst.STATE_PLAYING)
         
-    def preview(self, subject, icon_factory=None):
-        if subject.uri == self.player.get_property("uri"):
+    def preview(self, gio_file):
+        if gio_file.uri == self.player.get_property("uri"):
             return True
-        self.player.set_property("uri", subject.uri)
+        self.player.set_property("uri", gio_file.uri)
         return True
             
     def on_message(self, bus, message):
@@ -395,17 +399,19 @@ class Item(gtk.HBox):
         self.in_search = False
         self.event = event
         self.subject = event.subjects[0]
-        self.time = float(event.timestamp) / 1000
-        self.icon = thumbnailer.get_icon(self.subject, 24)
-        self.btn.set_relief(gtk.RELIEF_NONE)
-        self.btn.set_focus_on_click(False)
-        self.__init_widget()
-        self.show_all()
-        self.markup = None
-        #self.set_bookmark_widget()
-        self.pin.connect("clicked", lambda x: self.set_bookmarked(False))
-        ITEMS.append(self)
-        self.pin.hide()
+        self.gio_file = GioFile.create(self.subject.uri)
+        if self.gio_file is not None:
+            self.time = float(event.timestamp) / 1000
+            self.icon = self.gio_file.get_icon(can_thumb=True)
+            self.btn.set_relief(gtk.RELIEF_NONE)
+            self.btn.set_focus_on_click(False)
+            self.__init_widget()
+            self.show_all()
+            self.markup = None
+            #self.set_bookmark_widget()
+            self.pin.connect("clicked", lambda x: self.set_bookmarked(False))
+            ITEMS.append(self)
+            self.pin.hide()
     
     def highlight(self):
         #print len(searchbox.results)
@@ -475,38 +481,20 @@ class Item(gtk.HBox):
         
         TODO: make loading of multimedia thumbs async
         """
-        self.__icon_factory = None
-        f = gio.File(self.subject.uri)
-        try:
-            info = f.query_info("standard::icon")
-            icon_names = info.get_attribute_object("standard::icon").get_names()
-        except (gio.Error, AttributeError):
-            # cannot query for icon info, don't know how to handle this item
-            return
-        is_opendocument = bool(
-            filter(lambda name: "application-vnd.oasis.opendocument" in name, icon_names))
-        if "video-x-generic" in icon_names or "image-x-generic" in icon_names \
-            or "application-pdf" in icon_names or is_opendocument:
+        if self.gio_file.has_preview():
+            icon_names = self.gio_file.icon_names
             self.set_property("has-tooltip", True)
             self.connect("query-tooltip", self._handle_tooltip)
             if "video-x-generic" in icon_names and gst is not None:
                 self.set_tooltip_window(VideoPreviewTooltip)
             else:
-                self.set_tooltip_window(StaticPreviewTooltip)
-                self.__icon_factory = None
-                if is_opendocument:
-                    # OMG this is a dirty hack to get the path of the file
-                    # python's zipfile modul cannot handle uris it needs
-                    # unix paths
-                    self.__icon_factory = \
-                        lambda uri, icon_size, timestamp: thumbnailer.create_opendocument_thumb(f.get_path(), icon_size, timestamp)
-                
+                self.set_tooltip_window(StaticPreviewTooltip)                
         
     def _handle_tooltip(self, widget, x, y, keyboard_mode, tooltip):
         # nothing to do here, we always show the multimedia tooltip
         # if we like video/sound preview later on we can start them here
         tooltip_window = self.get_tooltip_window()
-        return tooltip_window.preview(self.subject, icon_factory=self.__icon_factory)
+        return tooltip_window.preview(self.gio_file)
         
     def _show_item_popup(self, widget, ev):
         if ev.button == 3:
@@ -545,7 +533,7 @@ class Item(gtk.HBox):
         #self.set_bookmark_widget()
 
     def launch(self, *discard):
-        launcher.launch_uri(self.subject.uri, self.subject.mimetype)
+        self.gio_file.launch()
 
 searchbox = SearchBox()
 VideoPreviewTooltip = VideoPreviewTooltip()
