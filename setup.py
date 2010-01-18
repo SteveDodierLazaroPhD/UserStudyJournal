@@ -70,6 +70,23 @@ class _install(orig_install):
                 'gnome-activity-journal.svg',
             'share/pixmaps/gnome-activity-journal.svg')
 
+def recursive_install(dst, directory):
+    l = []
+    this = []
+    for name in glob('%s/*' % directory):
+        if os.path.isdir(name):
+            l.extend(recursive_install(dst, name))
+        else:
+            this.append(name)
+    l.append((os.path.join(dst, directory), this))
+    return l
+
+def list_from_lists(*args):
+    l = []
+    for arg in args:
+        l.extend(arg)
+    return l
+
 setup(
     name = 'GNOME Activity Journal',
     version = '0.1',
@@ -78,11 +95,11 @@ setup(
     author_email = 'zeitgeist@lists.launchpad.net',
     url = 'https://launchpad.net/gnome-activity-journal',
     license = 'GPL',
-    data_files = [
-        ('share/gnome-activity-journal', ['gnome-activity-journal']),
-        ('share/gnome-activity-journal/data', glob('data/*')),
-        ('share/gnome-activity-journal/src', glob('src/*')),
-        ],
+    data_files = list_from_lists(
+        [('share/gnome-activity-journal', ['gnome-activity-journal'])],
+        recursive_install('share/gnome-activity-journal', 'data/'),
+        recursive_install('share/gnome-activity-journal', 'src/')
+        ),
     cmdclass = {
         'install': _install,
         'build': build_extra.build_extra,
