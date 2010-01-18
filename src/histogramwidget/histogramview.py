@@ -241,6 +241,10 @@ class HistogramWidget(gtk.HBox):
         self.viewport.queue_draw()
 
     def __today_expose__(self, widget, event, *args, **kwargs):
+        """
+        A double drawing hack to draw twice on a drawing areas window. It should
+        draw today on the drawing area window
+        """
         today = self.__today_text
         context = widget.window.cairo_create()
         context.select_font_face(widget.font_name, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
@@ -257,10 +261,17 @@ class HistogramWidget(gtk.HBox):
         context.show_text(today)
         
     def __today_clicked__(self, widget, x, y):
+        """
+        Handles all rejected clicks from the outer-click signal and checks to
+        see if they were inside of the today text
+        """
         if x > self.adjustment.value + self.adjustment.page_size - self.__today_width:
             self.histogram.change_location(len(self.histogram.get_data()) - 1)
 
     def __check_for_today__(self, widget, i):
+        """
+        Changes today to a empty string if the selected item is not today
+        """
         if i + self.histogram.selected_range == len(self.histogram.get_data()):
             self.__today_text = ""
             self.histogram.queue_draw()
@@ -268,9 +279,15 @@ class HistogramWidget(gtk.HBox):
             self.__today_text = _("Today ") + "»"
     
     def __release_handler(self, *args, **kwargs):
+        """
+        Clears scroll the button press varible
+        """
         self.__pressed = False
         
     def smooth_scroll(self, widget, button, value):
+        """
+        Scrolls using a timeout while __pressed
+        """
         self.__pressed = True
         def _f(self, button, value):
             self.scroll_viewport(widget, value)
@@ -305,6 +322,9 @@ class HistogramWidget(gtk.HBox):
         self.adjustment.set_value(self.histogram.max_width - self.adjustment.page_size)
 
     def __scrubing_fix(self, widget, i, *args, **kwargs):
+        """
+        Allows scrubbing to scroll the scroll window
+        """
         proposed_xa = ((i) * self.histogram.xincrement) + self.histogram.start_x_padding
         proposed_xb = ((i + self.histogram.selected_range) * self.histogram.xincrement) + self.histogram.start_x_padding
         if proposed_xa < self.adjustment.value:
