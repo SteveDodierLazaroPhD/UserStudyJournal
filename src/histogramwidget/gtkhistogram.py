@@ -162,7 +162,7 @@ class CairoHistogram(gtk.DrawingArea):
         else:
             raise TypeError("Datastore is not a <list>")
         self.emit("data-updated")
-        self.set_selection(len(datastore) - self.selected_range)
+        self.set_selected(len(datastore) - self.selected_range)
 
     def get_data(self):
         return self.datastore
@@ -176,8 +176,10 @@ class CairoHistogram(gtk.DrawingArea):
         
         ## WARNING SELECTION WILL CHANGE WHEN DOING THIS TO BE FIXED ##
         """
+        selected = self.get_selected()[-1]
         self.datastore = newdatastore + self.datastore
         self.queue_draw()
+        self.set_selected(len(newdatastore) + selected)
 
     def __expose__(self, widget, event):
         """
@@ -192,7 +194,7 @@ class CairoHistogram(gtk.DrawingArea):
 
     def expose(self, widget, event, context):
         """
-        The major drawing method
+        The minor drawing method
         
         Arguments:
         - widget: the widget
@@ -209,6 +211,7 @@ class CairoHistogram(gtk.DrawingArea):
     def draw_columns_from_datastore(self, context, event, selected):
         """
         Draws columns from a datastore
+        
         Arguments:
         - context: The drawingarea's cairo context from the expose event
         - event: a gtk event with x and y values
@@ -296,7 +299,7 @@ class CairoHistogram(gtk.DrawingArea):
         context.move_to(x + 8, oheight+2)
         context.show_text(date)
 
-    def set_selection(self, i):
+    def set_selected(self, i):
         """
         Set the selected items using a int or a list of the selections
         If you pass this method a int it will select the index + selected_range
@@ -383,7 +386,7 @@ class CairoHistogram(gtk.DrawingArea):
         """
         if location < 0:
             return False
-        self.set_selection(max(location - self.selected_range + 1, 0))
+        self.set_selected(max(location - self.selected_range + 1, 0))
         if isinstance(self.__calbacks, list):
             for callback in self.__calbacks:
                 if callable(callback):

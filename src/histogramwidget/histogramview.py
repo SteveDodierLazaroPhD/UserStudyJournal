@@ -30,11 +30,9 @@ import cairo
 import gobject
 import gettext
 import gtk
-import math
 import datetime
 import calendar
 import time
-import threading
 
 from gtkhistogram import *
 
