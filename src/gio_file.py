@@ -196,8 +196,8 @@ class GioFile(object):
             factory = THUMBNAIL_FACTORIES[size]
             location = factory.lookup(self.uri, self.mtime)
             if location:
-                thumb = THUMBS[size][self.uri] = \
-                    gtk.gdk.pixbuf_new_from_file(location)
+                thumb, mtime = THUMBS[size][self.uri] = \
+                    (gtk.gdk.pixbuf_new_from_file(location), self.mtime)
             else:
                 if factory.has_valid_failed_thumbnail(self.uri, self.mtime):
                     thumb = THUMBS[size][self.uri] = None
@@ -216,9 +216,14 @@ class GioFile(object):
                         if width > size[0] or height > size[1]:
                             scale = min(float(size[0])/width, float(size[1])/height)
                             thumb = gnome.ui.thumbnail_scale_down_pixbuf(
-                                thumb, int(scale*width), int(scale*height)) 
-                        THUMBS[size][self.uri] = thumb
-                        factory.save_thumbnail(thumb, self.uri, self.mtime)
+                                thumb, int(scale*width), int(scale*height))
+                        factory.save_thumbnail(thumb, self.uri, self.mtime) 
+                        THUMBS[size][self.uri] = (thumb, self.mtime)
+        else:
+            if thumb[1] != self.mtime:
+                del THUMBS[size][self.uri]
+                return self.get_thumbnail(size, border)
+            thumb = thumb[0]
         if thumb is not None and border:
             thumb = make_icon_frame(thumb, border=border, color=0x00000080)
         return thumb
@@ -226,6 +231,13 @@ class GioFile(object):
     @property
     def thumbnail(self):
         return self.get_thumbnail()
+        
+    def get_monitor(self):
+        return self._file_object.monitor_file()
+        
+    def refresh(self):
+        self._file_info = self._file_object.query_info(
+            "standard::content-type,standard::icon,time::modified")
         
     def get_icon(self, size=24, can_thumb=False, border=0):
         icon = None
@@ -285,4 +297,8 @@ class GioFile(object):
             or "image-x-generic" in icon_names \
             or "application-pdf" in icon_names \
             or is_opendocument
-
+    
+    def __eq__(self, other):
+        if not isinstance(other, GioFile):
+            return False
+        return self.uri == other.uri

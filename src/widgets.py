@@ -315,6 +315,7 @@ class StaticPreviewTooltip(PreviewTooltip):
     def __init__(self):
         super(StaticPreviewTooltip, self).__init__()
         self.__current = None
+        self.__monitor = None
         
     def replace_content(self, content):
         children = self.get_children()
@@ -326,9 +327,13 @@ class StaticPreviewTooltip(PreviewTooltip):
         self.add(content)
         
     def preview(self, gio_file):
-        if gio_file.uri == self.__current:
+        if gio_file == self.__current:
             return bool(self.__current)
-        self.__current = gio_file.uri
+        if self.__monitor is not None:
+            self.__monitor.cancel()
+        self.__current = gio_file
+        self.__monitor = gio_file.get_monitor()
+        self.__monitor.connect("changed", self._do_update_preview)
         # for text previews we are always using SIZE_LARGE
         if "text-x-generic" in gio_file.icon_names:
             size = SIZE_LARGE
@@ -343,6 +348,13 @@ class StaticPreviewTooltip(PreviewTooltip):
         img.show_all()
         self.replace_content(img)
         return True
+        
+    def _do_update_preview(self, monitor, file, other_file, event_type):
+        if event_type == gio.FILE_MONITOR_EVENT_CHANGES_DONE_HINT:
+            if self.__current is not None:
+                self.__current.refresh()
+            self.__current = None
+            gtk.tooltip_trigger_tooltip_query(gtk.gdk.display_get_default())
         
 class VideoPreviewTooltip(PreviewTooltip):
     
