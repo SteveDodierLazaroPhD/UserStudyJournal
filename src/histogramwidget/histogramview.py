@@ -80,7 +80,6 @@ class SectionedHistogram(CairoHistogram):
     top_padding = 2
     wcolumn = 12
     xincrement = wcolumn + padding
-    start_x_padding = xincrement
     column_radius = 0
     text_pad = bottom_padding/3
     
@@ -156,7 +155,6 @@ class JournalHistogram(SectionedHistogram):
     bottom_padding = 23
     wcolumn = 10
     xincrement = wcolumn + padding
-    start_x_padding = xincrement
     column_radius = 2
     stroke_width = 2
     stroke_offset = 1
