@@ -24,6 +24,7 @@ import pango
 import gobject
 import time
 import datetime
+import os
 
 from config import BASE_PATH
 from widgets import *

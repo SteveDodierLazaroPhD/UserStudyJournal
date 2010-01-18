@@ -26,6 +26,8 @@ import gettext
 import cairo
 import pango
 import math
+import os
+import urllib
 
 from datetime import date
 

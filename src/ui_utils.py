@@ -5,6 +5,7 @@
 # Copyright © 2009-2010 Seif Lotfy <seif@lotfy.com>
 # Copyright © 2009-2010 Siegfried Gevatter <siegfried@gevatter.com>
 # Copyright © 2007 Alex Graveley <alex@beatniksoftware.com>
+# Copyright © 2010 Markus Korn <thekorn@gmx.de>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,16 +20,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import os.path
-import gobject
-import urllib
-import os
-import gtk
-import gnome.ui
 import gettext
-import zipfile
-
-from tempfile import NamedTemporaryFile
 
 from fungtk.quickconf import QuickConf
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation

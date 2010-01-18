@@ -299,7 +299,10 @@ class CategoryButton(gtk.HBox):
 
 class PreviewTooltip(gtk.Window):
     
-    TOOLTIP_SIZE = SIZE_LARGE
+    # per default we are using thumbs at a size of 128 * 128 px
+    # in tooltips. For preview of text files we are using 256 * 256 px
+    # which is dynamically defined in StaticPreviewTooltip.preview()
+    TOOLTIP_SIZE = SIZE_NORMAL
     
     def __init__(self):
         gtk.Window.__init__(self, type=gtk.WINDOW_POPUP)
@@ -326,7 +329,12 @@ class StaticPreviewTooltip(PreviewTooltip):
         if gio_file.uri == self.__current:
             return bool(self.__current)
         self.__current = gio_file.uri
-        pixbuf = gio_file.get_thumbnail(size=self.TOOLTIP_SIZE, border=1)
+        # for text previews we are always using SIZE_LARGE
+        if "text-x-generic" in gio_file.icon_names:
+            size = SIZE_LARGE
+        else:
+            size = self.TOOLTIP_SIZE
+        pixbuf = gio_file.get_thumbnail(size=size, border=1)
         if pixbuf is None:
             self.__current = None
             return False
