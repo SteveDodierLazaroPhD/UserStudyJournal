@@ -219,7 +219,11 @@ class GioFile(object):
                     thumb_size = SIZE_LARGE
                 thumb = self.get_thumbnail(size=thumb_size)
                 if thumb:
-                    icon = thumb.scale_simple(size, size, gtk.gdk.INTERP_NEAREST)
+                    s = float(size)
+                    width = thumb.get_width()
+                    height = thumb.get_height()
+                    scale = min(s/width, s/height)
+                    icon = thumb.scale_simple(int(width*scale), int(height*scale), gtk.gdk.INTERP_NEAREST)
                     ICONS[size][self.uri] = icon
                     return icon
         try:
