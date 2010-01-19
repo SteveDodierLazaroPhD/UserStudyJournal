@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GNOME Activity Journal\n"
 "Report-Msgid-Bugs-To: zeitgeist@lists.launchpad.net\n"
-"POT-Creation-Date: 2010-01-16 00:50+0100\n"
+"POT-Creation-Date: 2010-01-19 15:47+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Siegfried-Angel Gevatter Pujals <rainct@ubuntu.com>\n"
 "Language-Team: Siegfried Gevatter <siegfried@gevatter.com>\n"
@@ -12,17 +12,63 @@ msgstr ""
 "X-Poedit-Language: Catalan\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
-#: ../src/main.py:68
+#: ../src/main.py:43
+#: ../extra/gnome-activity-journal.desktop.in.h:1
+msgid "Activity Journal"
+msgstr "Diari d'activitats"
+
+#: ../src/main.py:74
 msgid "Go Back in Time"
 msgstr "Torna endarrere en el temps"
 
-#: ../src/main.py:75
+#: ../src/main.py:81
 msgid "Look into the Future"
 msgstr "Mira al futur"
 
-#: ../src/main.py:83
+#: ../src/main.py:88
 msgid "Jump to Today"
 msgstr "Vés a avui"
+
+#. TODO: Move this into Zeitgeist's library, implemented properly
+#: ../src/sources.py:40
+msgid "Worked with a Video"
+msgstr ""
+
+#: ../src/sources.py:40
+msgid "Worked with Videos"
+msgstr "Vídeos amb que s'ha treballat"
+
+#: ../src/sources.py:41
+msgid "Worked with Audio"
+msgstr ""
+
+#: ../src/sources.py:42
+msgid "Worked with an Image"
+msgstr ""
+
+#: ../src/sources.py:42
+msgid "Worked with Images"
+msgstr "Imatges amb que s'ha treballat"
+
+#: ../src/sources.py:43
+msgid "Edited or Read Document"
+msgstr ""
+
+#: ../src/sources.py:43
+msgid "Edited or Read Documents"
+msgstr "Documents llegits o modificats"
+
+#: ../src/sources.py:44
+msgid "Edited or Read Code"
+msgstr "Codi llegit o modificat"
+
+#: ../src/sources.py:45
+msgid "Other Activity"
+msgstr ""
+
+#: ../src/sources.py:45
+msgid "Other Activities"
+msgstr "Altres actiivtats"
 
 #: ../src/daywidgets.py:51
 msgid "Morning"
@@ -36,37 +82,46 @@ msgstr "Tarda"
 msgid "Evening"
 msgstr "Vespre"
 
-#: ../src/daywidgets.py:66
-#: ../src/daywidgets.py:190
+#: ../src/daywidgets.py:72
+#: ../src/daywidgets.py:214
+#: ../src/histogramwidget/histogramview.py:290
 msgid "Today"
 msgstr "Avui"
 
-#: ../src/daywidgets.py:68
+#: ../src/daywidgets.py:74
 msgid "Yesterday"
 msgstr "Ahir"
 
-#: ../src/widgets.py:176
+#. Initialize the widget
+#: ../src/daywidgets.py:412
+msgid "Pinned items"
+msgstr ""
+
+#: ../src/widgets.py:178
 msgid "Type here to search..."
 msgstr "Escriviu aquí per a cercar..."
 
-#: ../src/histogramwidget/histogramview.py:69
+#: ../src/widgets.py:472
+#: ../src/widgets.py:542
+msgid "Remove Pin"
+msgstr ""
+
+#: ../src/widgets.py:544
+msgid "Pin to Today"
+msgstr ""
+
+#: ../src/histogramwidget/histogramview.py:80
 msgid "item"
 msgid_plural "items"
 msgstr[0] "element"
 msgstr[1] "elements"
 
-#: ../extra/gnome-activity-journal.desktop.in.h:1
-msgid "Activity Journal"
-msgstr "Diari d'activitats"
-
 #: ../extra/gnome-activity-journal.desktop.in.h:2
 msgid "Browse a chronological log of your activities and easily find files, contacts, etc."
 msgstr "Vegeu un registre cronològic de les vostres activitats i trobeu fàcilment fitxers, contactes, etc."
 
-#: ../extra/gnome-activity-journal.desktop.in.h:3
-msgid "Journal"
-msgstr "Diari"
-
+#~ msgid "Journal"
+#~ msgstr "Diari"
 #~ msgid "Search..."
 #~ msgstr "Cerca..."
 #~ msgid "Recent Events"
