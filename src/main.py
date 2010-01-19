@@ -138,10 +138,10 @@ class Portal(gtk.Window):
                 self.activityview.searchbox.show()
                 self.set_focus(self.activityview.searchbox.search)
                 return True
-	elif event.keyval == gtk.keysyms.Home:
-	    i  = len(self.cal.histogram.get_data()) - 1
-	    self.cal.histogram.change_location(i)
-	    return True
+        elif event.keyval == gtk.keysyms.Home:
+            i  = len(self.cal.histogram.get_data()) - 1
+            self.cal.histogram.change_location(i)
+            return True
         return False
     
     def jumpup(self, data=None):
