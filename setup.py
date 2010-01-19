@@ -118,7 +118,8 @@ setup(
         recursive_install('share/icons/hicolor', 'data/icons/hicolor/', '',
             ext=['.png', '.svg']),
         recursive_install('share/gnome-activity-journal', 'src/', ext=['.py']),
-        [('share/man/man1/', ['extra/gnome-activity-journal.1'])]
+        [('share/man/man1/', ['extra/gnome-activity-journal.1'])],
+        [('share/gnome-activity-journal/fungtk', glob('fungtk/*.py'))],
         ),
     cmdclass = {
         'install': _install,
