@@ -269,6 +269,8 @@ class GioFile(object):
                     icon = gtk.gdk.pixbuf_new_from_file_at_size(location, size, size)
                     if icon:
                         break
+        if not isinstance(icon, gtk.gdk.Pixbuf):
+            icon = None
         ICONS[size][self.uri] = icon
         if icon is not None and border:
             icon = make_icon_frame(icon, border=border, color=0x00000080)
