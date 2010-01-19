@@ -94,7 +94,7 @@ class SectionedHistogram(CairoHistogram):
     padding = 2
     column_radius = 1.3
     font_size = 10
-    bottom_padding = 18
+    bottom_padding = 23
     top_padding = 2
     wcolumn = 12
     xincrement = wcolumn + padding
@@ -178,7 +178,7 @@ class JournalHistogram(SectionedHistogram):
     padding = 2
     column_radius = 1.3
     top_padding = 6
-    bottom_padding = 23
+    bottom_padding = 29
     wcolumn = 10
     xincrement = wcolumn + padding
     column_radius = 2

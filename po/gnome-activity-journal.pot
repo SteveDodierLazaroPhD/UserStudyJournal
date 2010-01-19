@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: zeitgeist@lists.launchpad.net\n"
-"POT-Creation-Date: 2010-01-19 20:00+0100\n"
+"POT-Creation-Date: 2010-01-19 20:57+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,22 +27,6 @@ msgstr ""
 
 #: ../gnome-activity-journal:82
 msgid "Unable to connect to Zeitgeist:"
-msgstr ""
-
-#: ../src/main.py:43 ../extra/gnome-activity-journal.desktop.in.h:1
-msgid "Activity Journal"
-msgstr ""
-
-#: ../src/main.py:74
-msgid "Go Back in Time"
-msgstr ""
-
-#: ../src/main.py:81
-msgid "Look into the Future"
-msgstr ""
-
-#: ../src/main.py:88
-msgid "Jump to Today"
 msgstr ""
 
 #. TODO: Move this into Zeitgeist's library, implemented properly
@@ -86,6 +70,34 @@ msgstr ""
 msgid "Other Activities"
 msgstr ""
 
+#: ../src/main.py:43 ../extra/gnome-activity-journal.desktop.in.h:1
+msgid "Activity Journal"
+msgstr ""
+
+#: ../src/main.py:75
+msgid "Go Back in Time"
+msgstr ""
+
+#: ../src/main.py:82
+msgid "Look into the Future"
+msgstr ""
+
+#: ../src/main.py:89
+msgid "Jump to Today"
+msgstr ""
+
+#: ../src/widgets.py:178
+msgid "Type here to search..."
+msgstr ""
+
+#: ../src/widgets.py:472 ../src/widgets.py:542
+msgid "Remove Pin"
+msgstr ""
+
+#: ../src/widgets.py:544
+msgid "Pin to Today"
+msgstr ""
+
 #: ../src/daywidgets.py:51
 msgid "Morning"
 msgstr ""
@@ -110,18 +122,6 @@ msgstr ""
 #. Initialize the widget
 #: ../src/daywidgets.py:412
 msgid "Pinned items"
-msgstr ""
-
-#: ../src/widgets.py:178
-msgid "Type here to search..."
-msgstr ""
-
-#: ../src/widgets.py:472 ../src/widgets.py:542
-msgid "Remove Pin"
-msgstr ""
-
-#: ../src/widgets.py:544
-msgid "Pin to Today"
 msgstr ""
 
 #: ../src/histogramwidget/histogramview.py:82
