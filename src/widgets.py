@@ -428,6 +428,8 @@ class Item(gtk.HBox):
         if self.gio_file is not None:
             self.icon = self.gio_file.get_icon(
                 can_thumb=settings.get('small_thumbnails', False), border=0)
+        else:
+            self.icon = None
         self.btn.set_relief(gtk.RELIEF_NONE)
         self.btn.set_focus_on_click(False)
         self.__init_widget()
@@ -506,7 +508,7 @@ class Item(gtk.HBox):
         
         TODO: make loading of multimedia thumbs async
         """
-        if self.gio_file.has_preview():
+        if self.gio_file is not None and self.gio_file.has_preview():
             icon_names = self.gio_file.icon_names
             self.set_property("has-tooltip", True)
             self.connect("query-tooltip", self._handle_tooltip)
@@ -558,7 +560,8 @@ class Item(gtk.HBox):
         #self.set_bookmark_widget()
 
     def launch(self, *discard):
-        self.gio_file.launch()
+        if self.gio_file is not None:
+            self.gio_file.launch()
 
 searchbox = SearchBox()
 VideoPreviewTooltip = VideoPreviewTooltip()
