@@ -192,24 +192,5 @@ class Portal(gtk.Window):
         if not settings["amount_days"]:
             self.activityview.set_num_days(4 if event.width >= 1300 else 3)
 
-    def toggle_view(self, widget):
-        if not self.__togglingview:
-            self.__togglingview = True
-            if widget == self.horviewbtn:
-                if self.horviewbtn.get_active():
-                    self.verviewbtn.set_active(False)
-                else:
-                    self.horviewbtn.set_active(True)
-                if not settings.view == "Journal":
-                    settings.set_view("Journal")
-            else:
-                if self.verviewbtn.get_active():
-                    self.horviewbtn.set_active(False)
-                else:
-                    self.verviewbtn.set_active(True)
-                if settings.view == "Journal":
-                    settings.set_view("List")
-            self.__togglingview = False
-
     def quit(self, widget):
         gtk.main_quit()

@@ -4,3 +4,4 @@ recursive-include data *
 recursive-include po *
 recursive-include src *.py
 recursive-include fungtk *.py README*
+exclude src/hamster_graphics/*
