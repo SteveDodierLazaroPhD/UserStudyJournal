@@ -4,3 +4,5 @@ dep-zeitgeist
 zeitgeist
 build
 po/POTFILES.in
+dist
+MANIFEST

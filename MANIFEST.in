@@ -1,0 +1,6 @@
+include gnome-activity-journal AUTHORS
+recursive-include extra *
+recursive-include data *
+recursive-include po *
+recursive-include src *.py
+recursive-include fungtk *.py README*

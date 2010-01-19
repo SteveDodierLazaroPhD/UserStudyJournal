@@ -87,14 +87,21 @@ def list_from_lists(*args):
         l.extend(arg)
     return l
 
+from src.config import VERSION
+
 setup(
-    name = 'GNOME Activity Journal',
-    version = '0.1',
-    description = 'Zeitgeist GUI',
+    name = 'gnome-activity-journal',
+    version = VERSION,
+    description = 'GUI to browse and search your Zeitgeist activities',
+    long_description = \
+        'GNOME Activity Journal is a tool for easily browsing and finding '\
+        'files on your computer. It shows a chronological journal of all '\
+        'file activity and supports full-text search through Tracker.',
     author = 'GNOME Activity Journal Developers',
     author_email = 'zeitgeist@lists.launchpad.net',
     url = 'https://launchpad.net/gnome-activity-journal',
-    license = 'GPL',
+    license = 'GPLv3+',
+    platforms = ['GNU/Linux'],
     data_files = list_from_lists(
         [('share/gnome-activity-journal', ['gnome-activity-journal'])],
         recursive_install('share/gnome-activity-journal', 'data/'),

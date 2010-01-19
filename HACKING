@@ -1,0 +1,36 @@
+Release Tasks
+------------------------------------------
+
+1. Bump the VERSION number in src/config.py.
+
+2. Update the NEWS file, and ensure it lists all changes (hint: bzr log).
+
+3. Generate the tarball:
+
+    python setup.py sdist
+
+4. Manually check the contents of the generated tarball (you'll find it
+   in dist/) to ensure there's no file missing or too much, and try
+   installing and running it.
+   
+   If you find a problem, fix it, commit the fix, and start again from 1.
+   Hint: In case of a missing file or a useless file being there, edit
+   the MANIFEST.in file.
+
+5. Create a datached signature for the tarball, with:
+
+    gpg --armor --sign --detach-sig \
+        dist/gnome-activity-journal-$(python -c \
+        'import src.config; print src.config.VERSION').tar.gz
+
+6. Upload the tarball and the generated *.asc GPG signature to the right
+   milestone on Launchpad.
+
+7. Write an announcement e-mail and send it to the following mailing lists:
+
+    + zeitgeist@lists.launchpad.net
+    + gnome-zeitgeist-users@lists.launchpad.net
+    + gnome-announce-list@gnome.org
+
+10. Post an announcement on the Launchpad project page based the e-mail.
+
