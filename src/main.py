@@ -46,7 +46,7 @@ class Portal(gtk.Window):
         # Detect when we are maximized
         self.connect("window-state-event", self._on_window_state_changed)
 
-        self.set_icon_name("gnome-activity-jornal")
+        self.set_icon_name("gnome-activity-journal")
         self.set_icon_list(*[gtk.gdk.pixbuf_new_from_file(
             os.path.join(BASE_PATH, name)) for name in (
                 "data/icons/hicolor/16x16/apps/gnome-activity-journal.png",
