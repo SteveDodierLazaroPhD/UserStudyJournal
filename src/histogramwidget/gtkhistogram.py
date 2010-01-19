@@ -121,7 +121,7 @@ class CairoHistogram(gtk.DrawingArea):
         self.set_data(datastore if datastore else [], draw = False)
         self.selected_range = selected_range
         self.connect("style-set", self.change_style)
-
+        
     def change_style(self, widget, *args, **kwargs):
         """
         Sets the widgets style and coloring

@@ -149,7 +149,7 @@ class SectionedHistogram(CairoHistogram):
         context.fill()
         self.draw_columns_from_datastore(context, event, self._selected)
         context.set_line_width(1)
-        context.set_source_rgba(*self.shadow_color)
+        context.set_source_rgba(*self.shadow_color if not self.is_focus() else self.column_color_selected)
         context.rectangle(event.area.x+0.5, event.area.y+0.5, event.area.width-1, event.area.height - self.bottom_padding)
         context.stroke()
 
@@ -256,7 +256,7 @@ class HistogramWidget(gtk.HBox):
         self.histogram.connect("selection-set", self.__scrubbing_fix__)
         self.histogram.queue_draw()
         self.viewport.queue_draw()
-        self.set_focus_chain((self.backward_button, self.histogram, self.forward_button))
+        self.set_focus_chain((self.backward_button, self.forward_button, self.histogram))
 
     def __today_expose__(self, widget, event, *args, **kwargs):
         """
