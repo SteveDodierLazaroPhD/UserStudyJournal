@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GNOME Activity Journal\n"
 "Report-Msgid-Bugs-To: zeitgeist@lists.launchpad.net\n"
-"POT-Creation-Date: 2010-01-19 15:47+0100\n"
+"POT-Creation-Date: 2010-01-19 16:12+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Siegfried-Angel Gevatter Pujals <rainct@ubuntu.com>\n"
 "Language-Team: Siegfried Gevatter <siegfried@gevatter.com>\n"
@@ -11,6 +11,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Catalan\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#: ../gnome-activity-journal:74
+msgid "print additional debugging information"
+msgstr "mostra informació extra de depuració"
+
+#: ../gnome-activity-journal:81
+msgid "ERROR"
+msgstr "Error"
+
+#: ../gnome-activity-journal:81
+msgid "Unable to connect to Zeitgeist:"
+msgstr "No s'ha pogut establir connexió amb el Zeitgeist:"
 
 #: ../src/main.py:43
 #: ../extra/gnome-activity-journal.desktop.in.h:1
@@ -31,28 +43,32 @@ msgstr "Vés a avui"
 
 #. TODO: Move this into Zeitgeist's library, implemented properly
 #: ../src/sources.py:40
+#, fuzzy
 msgid "Worked with a Video"
-msgstr ""
+msgstr "S'està obrint el dispositiu de vídeo %s amb el controlador %s"
 
 #: ../src/sources.py:40
 msgid "Worked with Videos"
 msgstr "Vídeos amb que s'ha treballat"
 
 #: ../src/sources.py:41
+#, fuzzy
 msgid "Worked with Audio"
-msgstr ""
+msgstr "Reproductor de CD d'àudio %s"
 
 #: ../src/sources.py:42
+#, fuzzy
 msgid "Worked with an Image"
-msgstr ""
+msgstr "Obre la imatge amb"
 
 #: ../src/sources.py:42
 msgid "Worked with Images"
 msgstr "Imatges amb que s'ha treballat"
 
 #: ../src/sources.py:43
+#, fuzzy
 msgid "Edited or Read Document"
-msgstr ""
+msgstr "El document és només de lectura."
 
 #: ../src/sources.py:43
 msgid "Edited or Read Documents"
@@ -63,8 +79,9 @@ msgid "Edited or Read Code"
 msgstr "Codi llegit o modificat"
 
 #: ../src/sources.py:45
+#, fuzzy
 msgid "Other Activity"
-msgstr ""
+msgstr "Indicador d'activitat"
 
 #: ../src/sources.py:45
 msgid "Other Activities"
@@ -94,8 +111,9 @@ msgstr "Ahir"
 
 #. Initialize the widget
 #: ../src/daywidgets.py:412
+#, fuzzy
 msgid "Pinned items"
-msgstr ""
+msgstr "Elements incompatibles"
 
 #: ../src/widgets.py:178
 msgid "Type here to search..."
@@ -103,12 +121,14 @@ msgstr "Escriviu aquí per a cercar..."
 
 #: ../src/widgets.py:472
 #: ../src/widgets.py:542
+#, fuzzy
 msgid "Remove Pin"
-msgstr ""
+msgstr "Interval de pin_g:"
 
 #: ../src/widgets.py:544
+#, fuzzy
 msgid "Pin to Today"
-msgstr ""
+msgstr "Vés a avui"
 
 #: ../src/histogramwidget/histogramview.py:80
 msgid "item"
@@ -120,6 +140,9 @@ msgstr[1] "elements"
 msgid "Browse a chronological log of your activities and easily find files, contacts, etc."
 msgstr "Vegeu un registre cronològic de les vostres activitats i trobeu fàcilment fitxers, contactes, etc."
 
+#, fuzzy
+#~ msgid "%s: %s"
+#~ msgstr "%s: %s"
 #~ msgid "Journal"
 #~ msgstr "Diari"
 #~ msgid "Search..."

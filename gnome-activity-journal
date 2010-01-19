@@ -20,9 +20,11 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import os, sys
+import os
+import sys
 import gtk
 import gettext
+import optparse
 
 # Where this file lives
 our_dir = os.path.abspath(os.path.dirname(__file__))
@@ -46,7 +48,8 @@ try:
     from imp import load_module, find_module
     for module in other_repos:
         m = find_module(module, repo_paths + sys.path)
-        print 'Using the "%s" module from %s' % (module, os.path.abspath(m[1]))
+        if "--debug" in sys.argv: # OptParse isn't instantiated yet, here!
+            print "Using the \"%s\" module from %s" % (module, os.path.abspath(m[1]))
         load_module(module, *m)
 
 except ImportError, e:
@@ -65,11 +68,18 @@ from zeitgeist import datamodel
 
 gettext.install('gnome-activity-journal', 'build/mo', unicode=True)
 
+from src.config import VERSION
+parser = optparse.OptionParser(version=VERSION)
+parser.add_option("--debug",
+	action = "store_true", default=False, dest="debug",
+	help = _("print additional debugging information"))
+options, arguments = parser.parse_args()
+
 try:
     from zeitgeist.client import ZeitgeistClient
     CLIENT = ZeitgeistClient()
 except RuntimeError, e:
-    print "ERROR: Unable to connect to Zeitgeist:"
+    print "%s: %s" % (_("ERROR"), _("Unable to connect to Zeitgeist:"))
     print "%s" % e
     sys.exit(1)
 

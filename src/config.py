@@ -25,6 +25,7 @@ from fungtk.quickconf import QuickConf
 
 # Installation details
 BASE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+VERSION = "0.3.2"
 
 # Configuration and user data
 DATA_PATH = BaseDirectory.save_data_path("gnome-activity-journal")
