@@ -335,7 +335,7 @@ class StaticPreviewTooltip(PreviewTooltip):
         self.__monitor = gio_file.get_monitor()
         self.__monitor.connect("changed", self._do_update_preview)
         # for text previews we are always using SIZE_LARGE
-        if "text-x-generic" in gio_file.icon_names:
+        if "text-x-generic" in gio_file.icon_names or "text-x-script" in gio_file.icon_names:
             size = SIZE_LARGE
         else:
             size = self.TOOLTIP_SIZE

@@ -207,7 +207,7 @@ class GioFile(object):
                         # maybe we are able to use a custom thumbnailer here
                         if filter(lambda name: "application-vnd.oasis.opendocument" in name, self.icon_names):
                             thumb = create_opendocument_thumb(self._file_object.get_path())
-                        elif "text-x-generic" in self.icon_names:
+                        elif "text-x-generic" in self.icon_names or "text-x-script" in self.icon_names:
                             thumb = create_text_thumb(self, size, 1)
                     if thumb is None:
                         factory.create_failed_thumbnail(self.uri, self.mtime)
@@ -220,10 +220,11 @@ class GioFile(object):
                         factory.save_thumbnail(thumb, self.uri, self.mtime) 
                         THUMBS[size][self.uri] = (thumb, self.mtime)
         else:
-            if thumb[1] != self.mtime:
-                del THUMBS[size][self.uri]
-                return self.get_thumbnail(size, border)
-            thumb = thumb[0]
+            if thumb is not None:
+                if thumb[1] != self.mtime:
+                    del THUMBS[size][self.uri]
+                    return self.get_thumbnail(size, border)
+                thumb = thumb[0]
         if thumb is not None and border:
             thumb = make_icon_frame(thumb, border=border, color=0x00000080)
         return thumb
@@ -287,7 +288,7 @@ class GioFile(object):
         return "video-x-generic" in icon_names \
             or "image-x-generic" in icon_names \
             or "application-pdf" in icon_names \
-            or ("text-x-generic" in icon_names and pygments is not None) \
+            or (("text-x-generic" in icon_names or "text-x-script" in icon_names) and pygments is not None) \
             or is_opendocument
             
     def thumb_icon_allowed(self):
