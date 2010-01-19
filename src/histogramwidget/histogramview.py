@@ -38,6 +38,17 @@ import time
 from gtkhistogram import *
 
 
+def get_gc_from_colormap(widget, shade):
+    gc = widget.style.text_gc[gtk.STATE_INSENSITIVE]
+    color = widget.style.text[4]
+    f = lambda num: min((num * shade, 65535.0))
+    color.red = f(color.red)
+    color.green = f(color.green)
+    color.blue = f(color.blue)
+    gc.set_rgb_fg_color(color)
+    return gc
+
+
 class TooltipEventBox(gtk.EventBox):
     """
     A event box housing the tool tip logic that can be used for a CairoHistogram.
@@ -106,7 +117,7 @@ class SectionedHistogram(CairoHistogram):
         self.pangofont = pango.FontDescription(self.font_name + " %d" % self.font_size)
         self.pangofont.set_weight(pango.WEIGHT_BOLD)
         self.bottom_padding = self.font_size + 9
-        self.gc = self.style.text_gc[gtk.STATE_NORMAL]
+        self.gc = get_gc_from_colormap(widget, 0.6)
 
     def expose(self, widget, event, context):
         """
@@ -121,7 +132,7 @@ class SectionedHistogram(CairoHistogram):
             self.pangofont = pango.FontDescription(self.font_name + " %d" % self.font_size)
             self.pangofont.set_weight(pango.WEIGHT_BOLD)
         if not self.gc:
-            self.gc = self.style.text_gc[gtk.STATE_NORMAL]
+            self.gc = get_gc_from_colormap(widget, 0.6)
         context.set_source_rgba(*self.base_color)
         context.set_operator(cairo.OPERATOR_SOURCE)
         context.paint()
@@ -256,7 +267,7 @@ class HistogramWidget(gtk.HBox):
             widget.pangofont = pango.FontDescription(self.font_name + " %d" % self.font_size)
             widget.pangofont.set_weight(pango.WEIGHT_BOLD)
         if not widget.gc:
-            widget.gc = self.style.text_gc[gtk.STATE_NORMAL]
+            widget.gc = get_gc_from_colormap(widget, 0.6)
         widget.window.draw_layout(widget.gc, int(self.adjustment.value + self.adjustment.page_size - w -5),
                                   int(event.area.height - h), layout)
 
