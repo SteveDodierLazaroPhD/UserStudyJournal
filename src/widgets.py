@@ -25,19 +25,19 @@ import datetime
 import gobject
 import pango
 import gio
+from dbus.exceptions import DBusException
 try:
     import gst
 except ImportError:
     gst = None
-from ui_utils import *
-from gio_file import GioFile, SIZE_NORMAL, SIZE_LARGE
-#from teamgeist import TeamgeistInterface
+
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
     ResultType
-    
-from bookmarker import bookmarker
 
-from dbus.exceptions import DBusException
+from config import settings
+from sources import Source, SUPPORTED_SOURCES
+from gio_file import GioFile, SIZE_NORMAL, SIZE_LARGE
+from bookmarker import bookmarker
 try:
     from tracker_wrapper import tracker
 except DBusException:

@@ -21,9 +21,17 @@
 import os
 from xdg import BaseDirectory
 
+from fungtk.quickconf import QuickConf
+
 # Installation details
 BASE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
 # Configuration and user data
 DATA_PATH = BaseDirectory.save_data_path("gnome-activity-journal")
 
+# GConf
+settings = QuickConf('/apps/gnome-activity-journal')
+
+# GConf keys only updated at startup and globally useful
+# (TODO: shouldn't we always connect to changes?)
+ACCESSIBILITY = settings.get("accessibility", False)

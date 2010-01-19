@@ -22,7 +22,6 @@
 
 import gettext
 
-from fungtk.quickconf import QuickConf
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation
 
 class Source:
@@ -37,11 +36,7 @@ class Source:
         return gettext.ngettext(self._desc_sing, self._desc_pl, num)
 
 SUPPORTED_SOURCES = {
-    # TODO: Please change this description stuff. To give a single reason,
-    # saying "videos watched" is a lie because you may have edited them, or
-    # it may just be a "bookmark event".
-    #
-    # Also, how this is implemented now won't work fine with i18n.
+    # TODO: Move this into Zeitgeist's library, implemented properly
     Interpretation.VIDEO.uri: Source(Interpretation.VIDEO, "gnome-mime-video", _("Worked with a Video"), _("Worked with Videos")),
     Interpretation.MUSIC.uri: Source(Interpretation.MUSIC, "gnome-mime-audio", _("Worked with Audio"), _("Worked with Audio")),
     Interpretation.IMAGE.uri: Source(Interpretation.IMAGE, "image", _("Worked with an Image"), _("Worked with Images")),
@@ -50,4 +45,3 @@ SUPPORTED_SOURCES = {
     Interpretation.UNKNOWN.uri: Source(Interpretation.UNKNOWN, "applications-other", _("Other Activity"), _("Other Activities")),
 }
 
-settings = QuickConf('/apps/gnome-activity-journal')

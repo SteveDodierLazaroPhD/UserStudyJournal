@@ -28,18 +28,15 @@ import pango
 import math
 import os
 import urllib
-
 from datetime import date
 
 from zeitgeist.client import ZeitgeistClient
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
     ResultType, TimeRange
 
-from ui_utils import *
 from widgets import *
 
 CLIENT = ZeitgeistClient()
-_ACCESSIBILITY = settings["accessibility"]
 
 class DayWidget(gtk.VBox):
 

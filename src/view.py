@@ -19,15 +19,12 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import time
+import datetime
+
 from widgets import *
-from ui_utils import *
 from daywidgets import *
 from histogramwidget import histogramdata
-import datetime
-import time
-
-_ACCESSIBILITY = settings["accessibility"]
-
+from config import settings
 
 class ActivityView(gtk.VBox):
 

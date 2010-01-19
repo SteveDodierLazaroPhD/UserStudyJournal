@@ -26,10 +26,9 @@ import time
 import datetime
 import os
 
-from config import BASE_PATH
+from config import BASE_PATH, ACCESSIBILITY, settings
 from widgets import *
 from view import ActivityView
-from ui_utils import settings
 from histogramwidget.histogramview import HistogramWidget, JournalHistogram, SectionedHistogram
 
 class Portal(gtk.Window):
@@ -58,7 +57,7 @@ class Portal(gtk.Window):
         self.vbox = gtk.VBox()
         #color = gtk.gdk.rgb_get_colormap().alloc_color('#EEEEEC')
         #self.modify_bg(gtk.STATE_NORMAL, color)
-        if settings["accessibility"]:
+        if ACCESSIBILITY:
             self.cal = HistogramWidget(SectionedHistogram)
         else:
             self.cal = HistogramWidget(JournalHistogram)

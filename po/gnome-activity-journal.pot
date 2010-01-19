@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: zeitgeist@lists.launchpad.net\n"
-"POT-Creation-Date: 2010-01-17 22:55+0000\n"
+"POT-Creation-Date: 2010-01-19 15:47+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,109 +21,102 @@ msgstr ""
 msgid "Activity Journal"
 msgstr ""
 
-#: ../src/main.py:71
+#: ../src/main.py:74
 msgid "Go Back in Time"
 msgstr ""
 
-#: ../src/main.py:78
+#: ../src/main.py:81
 msgid "Look into the Future"
 msgstr ""
 
-#: ../src/main.py:85
+#: ../src/main.py:88
 msgid "Jump to Today"
 msgstr ""
 
-#: ../src/widgets.py:177
-msgid "Type here to search..."
+#. TODO: Move this into Zeitgeist's library, implemented properly
+#: ../src/sources.py:40
+msgid "Worked with a Video"
 msgstr ""
 
-#: ../src/widgets.py:527
-msgid "Remove Pin"
+#: ../src/sources.py:40
+msgid "Worked with Videos"
 msgstr ""
 
-#: ../src/widgets.py:529
-msgid "Pin to Today"
+#: ../src/sources.py:41
+msgid "Worked with Audio"
 msgstr ""
 
-#: ../src/daywidgets.py:52
+#: ../src/sources.py:42
+msgid "Worked with an Image"
+msgstr ""
+
+#: ../src/sources.py:42
+msgid "Worked with Images"
+msgstr ""
+
+#: ../src/sources.py:43
+msgid "Edited or Read Document"
+msgstr ""
+
+#: ../src/sources.py:43
+msgid "Edited or Read Documents"
+msgstr ""
+
+#: ../src/sources.py:44
+msgid "Edited or Read Code"
+msgstr ""
+
+#: ../src/sources.py:45
+msgid "Other Activity"
+msgstr ""
+
+#: ../src/sources.py:45
+msgid "Other Activities"
+msgstr ""
+
+#: ../src/daywidgets.py:51
 msgid "Morning"
 msgstr ""
 
-#: ../src/daywidgets.py:53
+#: ../src/daywidgets.py:52
 msgid "Afternoon"
 msgstr ""
 
-#: ../src/daywidgets.py:54
+#: ../src/daywidgets.py:53
 msgid "Evening"
 msgstr ""
 
-#: ../src/daywidgets.py:73 ../src/daywidgets.py:215
+#: ../src/daywidgets.py:72 ../src/daywidgets.py:214
+#: ../src/histogramwidget/histogramview.py:290
 msgid "Today"
 msgstr ""
 
-#: ../src/daywidgets.py:75
+#: ../src/daywidgets.py:74
 msgid "Yesterday"
 msgstr ""
 
 #. Initialize the widget
-#: ../src/daywidgets.py:436
+#: ../src/daywidgets.py:412
 msgid "Pinned items"
 msgstr ""
 
-#. TODO: Please change this description stuff. To give a single reason,
-#. saying "videos watched" is a lie because you may have edited them, or
-#. it may just be a "bookmark event".
-#.
-#. Also, how this is implemented now won't work fine with i18n.
-#: ../src/ui_utils.py:426
-msgid "Worked with a Video"
+#: ../src/widgets.py:178
+msgid "Type here to search..."
 msgstr ""
 
-#: ../src/ui_utils.py:426
-msgid "Worked with Videos"
+#: ../src/widgets.py:472 ../src/widgets.py:542
+msgid "Remove Pin"
 msgstr ""
 
-#: ../src/ui_utils.py:427
-msgid "Worked with Audio"
+#: ../src/widgets.py:544
+msgid "Pin to Today"
 msgstr ""
 
-#: ../src/ui_utils.py:428
-msgid "Worked with an Image"
-msgstr ""
-
-#: ../src/ui_utils.py:428
-msgid "Worked with Images"
-msgstr ""
-
-#: ../src/ui_utils.py:429
-msgid "Edited or Read Document"
-msgstr ""
-
-#: ../src/ui_utils.py:429
-msgid "Edited or Read Documents"
-msgstr ""
-
-#: ../src/ui_utils.py:430
-msgid "Edited or Read Code"
-msgstr ""
-
-#: ../src/ui_utils.py:431
-msgid "Other Activity"
-msgstr ""
-
-#: ../src/ui_utils.py:431
-msgid "Other Activities"
-msgstr ""
-
-#: ../src/histogramwidget/histogramview.py:70
+#: ../src/histogramwidget/histogramview.py:80
 msgid "item"
 msgid_plural "items"
 msgstr[0] ""
 msgstr[1] ""
-
-#: ../src/histogramwidget/histogramview.py:268
-msgid "Today "
-msgstr ""
 
 #: ../extra/gnome-activity-journal.desktop.in.h:2
 msgid ""
