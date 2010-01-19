@@ -391,7 +391,6 @@ class CairoHistogram(gtk.DrawingArea):
         return True
 
     def mouse_interaction_release(self, widget, event, *args, **kwargs):
-        self.grab_focus()
         if (event.y > self.get_size_request()[1] - self.bottom_padding and 
             event.y < self.get_size_request()[1]):
             self.emit("outer-click", event.x, event.y)
