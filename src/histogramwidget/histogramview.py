@@ -140,6 +140,11 @@ class SectionedHistogram(CairoHistogram):
         """
         Draws a line signifying the start of a month
         """
+        context.set_source_rgba(*self.stroke_color)
+        context.set_line_width(self.stroke_width)
+        context.move_to(x+self.stroke_offset, 0)
+        context.line_to(x+self.stroke_offset, height - self.bottom_padding)
+        context.stroke()
         date = datetime.date.fromtimestamp(date)
         month = calendar.month_name[date.month]
         date = "%s %d" % (month, date.year)
