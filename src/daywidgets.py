@@ -238,60 +238,33 @@ class DayLabel(gtk.DrawingArea):
         # set a clip region for the expose event
         context.rectangle(event.area.x, event.area.y, event.area.width, event.area.height)
         context.clip()
-        self.draw(context, event)
-        self.day_text(context, event)
+        self.draw(widget, event, context)
+        self.day_text(widget, event, context)
         return False
-    
-    def day_text(self, context, event):
-        context.select_font_face(self.font_name, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
+
+    def day_text(self, widget, event, context):
         actual_y = self.get_size_request()[1]
         if actual_y > event.area.height:
             y = actual_y
         else:
             y = event.area.height
         x = event.area.width
-        context.set_font_size(20)
-        if self.leading:
-            fg = self.style.text[gtk.STATE_SELECTED]
-            red, green, blue = fg.red/65535.0, fg.green/65535.0, fg.blue/65535.0
-            context.set_source_rgba(red, green, blue, 1)
-        else:
-            fg = self.style.fg[gtk.STATE_NORMAL]
-            red, green, blue = fg.red/65535.0, fg.green/65535.0, fg.blue/65535.0
-            context.set_source_rgba(red, green, blue, 1)
-            
-        xbearing, ybearing, width, height, xadvance, yadvance = context.text_extents(self.day)
-        a = (x-width)/2
-        b = y - 32
-        context.move_to(a, b)
+        gc = self.style.fg_gc[gtk.STATE_SELECTED if self.leading else gtk.STATE_NORMAL]        
+        layout = widget.create_pango_layout(self.day)
+        layout.set_font_description(pango.FontDescription(self.font_name + " Bold 15"))
+        w, h = layout.get_pixel_size()
+        widget.window.draw_layout(gc, (x-w)/2, (y)/2 - h + 5, layout)
+        self.date_text(widget, event, context, (y)/2 + 5)
+
+    def date_text(self, widget, event, context, lastfontheight):
+        gc = self.style.text_gc[gtk.STATE_SELECTED if self.leading else gtk.STATE_INSENSITIVE]
+        layout = widget.create_pango_layout(self.date)
+        layout.set_font_description(pango.FontDescription(self.font_name + " 10"))
+        w, h = layout.get_pixel_size()
+        widget.window.draw_layout(gc, (event.area.width-w)/2, lastfontheight, layout)
+
         
-        context.show_text(self.day)
-        self.date_text(context, event, 20)
-
-
-    def date_text(self, context, event, last_text_height):
-        context.select_font_face(self.font_name, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_NORMAL)
-
-        x, y = event.area.width, event.area.height
-        context.set_font_size(12)
-        if self.leading:
-            fg = self.style.text[gtk.STATE_SELECTED]
-            red, green, blue = fg.red/65535.0, fg.green/65535.0, fg.blue/65535.0
-            context.set_source_rgba(red, green, blue, 1)
-        else:
-            fg = self.style.fg[gtk.STATE_NORMAL]
-            bg = self.style.bg[gtk.STATE_NORMAL]
-            red, green, blue = (2*bg.red+fg.red)/3/65535.0, (2*bg.green+fg.green)/3/65535.0, (2*bg.blue+fg.blue)/3/65535.0
-            context.set_source_rgba(red, green, blue, 1)
-
-        xbearing, ybearing, width, height, xadvance, yadvance = context.text_extents(self.date)
-        a = (x-width)/2
-        b = last_text_height  + 27
-        context.move_to(a, b)
-        
-        context.show_text(self.date)
-    
-    def draw(self, context, event):
+    def draw(self, widget, event, context):
         if self.leading:
             bg = self.style.bg[3]
             red, green, blue = bg.red/65535.0, bg.green/65535.0, bg.blue/65535.0

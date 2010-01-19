@@ -30,6 +30,7 @@ import cairo
 import gobject
 import gettext
 import gtk
+import pango
 import datetime
 import calendar
 import time
@@ -82,7 +83,9 @@ class SectionedHistogram(CairoHistogram):
     xincrement = wcolumn + padding
     column_radius = 0
     text_pad = bottom_padding/3
-    
+    gc = None
+    pangofont = None
+
     def change_style(self, widget, *args, **kwargs):
         """
         Sets the widgets style and coloring
@@ -96,21 +99,29 @@ class SectionedHistogram(CairoHistogram):
         self.column_color_selected_alternative = get_gtk_rgba(self.style, "bg", 3, 0.6)
         fg = self.style.fg[gtk.STATE_NORMAL]
         bg = self.style.bg[gtk.STATE_NORMAL]
-        self.font_color = get_gtk_rgba(self.style, "text", 4, 0.6)
+        #self.font_color = get_gtk_rgba(self.style, "text", 4, 0.6)
         self.stroke_color = get_gtk_rgba(self.style, "text", 4)
         self.shadow_color = get_gtk_rgba(self.style, "text", 4)
-        self.font_size = self.style.font_desc.get_size()/1024 + 2
+        self.font_size = self.style.font_desc.get_size()/1024
+        self.pangofont = pango.FontDescription(self.font_name + " %d" % self.font_size)
+        self.pangofont.set_weight(pango.WEIGHT_BOLD)
         self.bottom_padding = self.font_size + 9
+        self.gc = self.style.text_gc[gtk.STATE_NORMAL]
 
     def expose(self, widget, event, context):
         """
         The minor drawing method
-        
+
         Arguments:
         - widget: the widget
         - event: a gtk event with x and y values
         - context: The drawingarea's cairo context from the expose event
         """
+        if not self.pangofont:
+            self.pangofont = pango.FontDescription(self.font_name + " %d" % self.font_size)
+            self.pangofont.set_weight(pango.WEIGHT_BOLD)
+        if not self.gc:
+            self.gc = self.style.text_gc[gtk.STATE_NORMAL]
         context.set_source_rgba(*self.base_color)
         context.set_operator(cairo.OPERATOR_SOURCE)
         context.paint()
@@ -129,22 +140,13 @@ class SectionedHistogram(CairoHistogram):
         """
         Draws a line signifying the start of a month
         """
-        fg = self.style.fg[gtk.STATE_NORMAL]
-        bg = self.style.bg[gtk.STATE_NORMAL]
-        context.set_source_rgba(*self.stroke_color)
-        context.set_line_width(self.stroke_width)
-        context.move_to(x+self.stroke_offset, 0)
-        context.line_to(x+self.stroke_offset, height - self.bottom_padding)
-        context.stroke()
-        context.set_source_rgba(*self.font_color)
-        context.select_font_face(self.font_name, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
-        context.set_font_size(self.font_size)
         date = datetime.date.fromtimestamp(date)
         month = calendar.month_name[date.month]
         date = "%s %d" % (month, date.year)
-        xbearing, ybearing, width, oheight, xadvance, yadvance = context.text_extents(date)
-        context.move_to(x + 3, height - self.text_pad)
-        context.show_text(date)
+        layout = self.create_pango_layout(date)
+        layout.set_font_description(self.pangofont)
+        w, h = layout.get_pixel_size()
+        self.window.draw_layout(self.gc, int(x + 3), int(height - h), layout)
 
 
 class JournalHistogram(SectionedHistogram):
@@ -162,7 +164,7 @@ class JournalHistogram(SectionedHistogram):
     stroke_offset = 1
     font_size = 12
     text_pad = 5
-    
+
     def change_style(self, widget, *args, **kwargs):
         self.bg_color = get_gtk_rgba(self.style, "bg", 0)
         self.base_color = get_gtk_rgba(self.style, "base", 0)
@@ -170,11 +172,14 @@ class JournalHistogram(SectionedHistogram):
         self.column_color_selected = get_gtk_rgba(self.style, "bg", 3)
         self.column_color_selected_alternative = get_gtk_rgba(self.style, "bg", 3, 0.7)
         self.column_color_alternative = get_gtk_rgba(self.style, "text", 2)
-        self.font_color = get_gtk_rgba(self.style, "text", 4, 0.6)
+        #self.font_color = get_gtk_rgba(self.style, "text", 4, 0.6)
         self.stroke_color = get_gtk_rgba(self.style, "bg", 0)
         self.shadow_color = get_gtk_rgba(self.style, "bg", 0, 0.98)
-        self.font_size = self.style.font_desc.get_size()/1024 + 2
+        self.font_size = self.style.font_desc.get_size()/1024
         self.bottom_padding = self.font_size + 9
+        self.gc = self.style.text_gc[gtk.STATE_NORMAL]
+        self.pangofont = pango.FontDescription(self.font_name + " %d" % self.font_size)
+        self.pangofont.set_weight(pango.WEIGHT_BOLD)
 
 
 class HistogramWidget(gtk.HBox):
@@ -184,7 +189,7 @@ class HistogramWidget(gtk.HBox):
     __pressed__ = False
     __today_width__ = 0
     __today_text__ = ""
-    
+
     def __init__(self, histo_type = None):
         """
         Arguments:
@@ -234,17 +239,22 @@ class HistogramWidget(gtk.HBox):
         draw today on the drawing area window
         """
         context = widget.window.cairo_create()
-        context.select_font_face(widget.font_name, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
-        context.set_font_size(widget.font_size)
-        xbearing, ybearing, width, oheight, xadvance, yadvance = context.text_extents(self.__today_text__)
         context.set_source_rgba(*widget.bg_color)
-        self.__today_width__ = width + 10
-        context.rectangle(self.adjustment.value + self.adjustment.page_size - width - 10, event.area.height - widget.bottom_padding + 1, event.area.width, event.area.height)
+        layout = widget.create_pango_layout(self.__today_text__)
+        layout.set_font_description(widget.pangofont)
+        w, h = layout.get_pixel_size()
+        self.__today_width__ = w + 10
+        context.rectangle(self.adjustment.value + self.adjustment.page_size - self.__today_width__,
+                          event.area.height - widget.bottom_padding + 1, event.area.width, event.area.height)
         context.fill()
-        context.set_source_rgba(*widget.font_color)
-        context.move_to(self.adjustment.value + self.adjustment.page_size - width -5, event.area.height - widget.text_pad)
-        context.show_text(self.__today_text__)
-        
+        if not widget.pangofont:
+            widget.pangofont = pango.FontDescription(self.font_name + " %d" % self.font_size)
+            widget.pangofont.set_weight(pango.WEIGHT_BOLD)
+        if not widget.gc:
+            widget.gc = self.style.text_gc[gtk.STATE_NORMAL]
+        widget.window.draw_layout(widget.gc, int(self.adjustment.value + self.adjustment.page_size - w -5),
+                                  int(event.area.height - h), layout)
+
     def __today_clicked__(self, widget, x, y):
         """
         Handles all rejected clicks from the outer-click signal and checks to
@@ -262,13 +272,13 @@ class HistogramWidget(gtk.HBox):
             self.histogram.queue_draw()
         elif len(self.__today_text__) == 0:
             self.__today_text__ = _("Today") + " »"
-    
+
     def __release_handler(self, *args, **kwargs):
         """
         Clears scroll the button press varible
         """
         self.__pressed__ = False
-        
+
     def smooth_scroll(self, widget, button, value):
         """
         Scrolls using a timeout while __pressed__
@@ -283,7 +293,7 @@ class HistogramWidget(gtk.HBox):
     def scroll_viewport(self, widget, value, *args, **kwargs):
         """
         Scrolls the viewport over value number of days
-        
+
         Arguments:
         - value: the number of pixels to scroll
           Use negative to scroll towards the left
