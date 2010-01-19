@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GNOME Activity Journal\n"
 "Report-Msgid-Bugs-To: zeitgeist@lists.launchpad.net\n"
-"POT-Creation-Date: 2010-01-19 16:12+0100\n"
+"POT-Creation-Date: 2010-01-19 18:54+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Siegfried-Angel Gevatter Pujals <rainct@ubuntu.com>\n"
 "Language-Team: Siegfried Gevatter <siegfried@gevatter.com>\n"
@@ -12,15 +12,15 @@ msgstr ""
 "X-Poedit-Language: Catalan\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
-#: ../gnome-activity-journal:74
+#: ../gnome-activity-journal:75
 msgid "print additional debugging information"
 msgstr "mostra informació extra de depuració"
 
-#: ../gnome-activity-journal:81
+#: ../gnome-activity-journal:82
 msgid "ERROR"
 msgstr "Error"
 
-#: ../gnome-activity-journal:81
+#: ../gnome-activity-journal:82
 msgid "Unable to connect to Zeitgeist:"
 msgstr "No s'ha pogut establir connexió amb el Zeitgeist:"
 
@@ -101,7 +101,7 @@ msgstr "Vespre"
 
 #: ../src/daywidgets.py:72
 #: ../src/daywidgets.py:214
-#: ../src/histogramwidget/histogramview.py:290
+#: ../src/histogramwidget/histogramview.py:299
 msgid "Today"
 msgstr "Avui"
 
@@ -130,15 +130,51 @@ msgstr "Interval de pin_g:"
 msgid "Pin to Today"
 msgstr "Vés a avui"
 
-#: ../src/histogramwidget/histogramview.py:80
+#: ../src/histogramwidget/histogramview.py:82
 msgid "item"
 msgid_plural "items"
 msgstr[0] "element"
 msgstr[1] "elements"
 
+#: ../src/histogramwidget/histogramview.py:84
+msgid "Click today to return to today"
+msgstr "Feu clic sobre «Avui» per a tornar a avui"
+
 #: ../extra/gnome-activity-journal.desktop.in.h:2
 msgid "Browse a chronological log of your activities and easily find files, contacts, etc."
 msgstr "Vegeu un registre cronològic de les vostres activitats i trobeu fàcilment fitxers, contactes, etc."
+
+#: ../extra/gnome-activity-journal.schemas.in.h:1
+msgid "Accessibility"
+msgstr "Accessibilitat"
+
+#: ../extra/gnome-activity-journal.schemas.in.h:2
+msgid "Amount of visible days"
+msgstr "Nombre de dies visibles"
+
+#: ../extra/gnome-activity-journal.schemas.in.h:3
+msgid "Customized height for the main window, in pixels (requires restart). Can't be bigger than the desktop's size."
+msgstr "Alçada de la finestra personalitzada, en píxels (necessita reiniciar). No pot ser superior a la mida de l'escriptori."
+
+#: ../extra/gnome-activity-journal.schemas.in.h:4
+msgid "Customized width for the main window, in pixels (requires restart). Can't be bigger than the desktop's size."
+msgstr "Amplada de la finestra personalitzada, en píxels (necessita reiniciar). No pot ser superior a la mida de l'escriptori."
+
+#: ../extra/gnome-activity-journal.schemas.in.h:5
+msgid "The amount of days to show at once."
+msgstr "El nombre de dies a mostrar alhora."
+
+#: ../extra/gnome-activity-journal.schemas.in.h:6
+msgid "Whether special accessibility options should be enabled (requires restart)."
+msgstr "Si les opcions especials d'accessibilitat s'han d'habilitar (necessita reiniciar)."
+
+#: ../extra/gnome-activity-journal.schemas.in.h:7
+msgid "Window height"
+msgstr "Alçada de la finestra"
+
+#: ../extra/gnome-activity-journal.schemas.in.h:8
+msgid "Window width"
+msgstr "Amplada de la finestra"
 
 #, fuzzy
 #~ msgid "%s: %s"

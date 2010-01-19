@@ -2,3 +2,4 @@ gnome-activity-journal
 src/*.py
 src/histogramwidget/*.py
 extra/gnome-activity-journal.desktop.in
+extra/gnome-activity-journal.schemas.in

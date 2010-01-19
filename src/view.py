@@ -45,8 +45,6 @@ class ActivityView(gtk.VBox):
         self._set_view_type()
         self._set_timeline()
 
-        settings.connect("change-view", lambda w, x: self.set_view_type(True))
-        settings.connect("toggle-grouping", lambda w: self.set_view_type(True))
         self.set_views()
 
     def set_num_days(self, dayrange):

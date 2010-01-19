@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: zeitgeist@lists.launchpad.net\n"
-"POT-Creation-Date: 2010-01-19 18:22+0100\n"
+"POT-Creation-Date: 2010-01-19 18:54+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -131,11 +131,48 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: ../src/histogramwidget/histogramview.py:84
-msgid "Click to go back to today"
+msgid "Click today to return to today"
 msgstr ""
 
 #: ../extra/gnome-activity-journal.desktop.in.h:2
 msgid ""
 "Browse a chronological log of your activities and easily find files, "
 "contacts, etc."
+msgstr ""
+
+#: ../extra/gnome-activity-journal.schemas.in.h:1
+msgid "Accessibility"
+msgstr ""
+
+#: ../extra/gnome-activity-journal.schemas.in.h:2
+msgid "Amount of visible days"
+msgstr ""
+
+#: ../extra/gnome-activity-journal.schemas.in.h:3
+msgid ""
+"Customized height for the main window, in pixels (requires restart). Can't "
+"be bigger than the desktop's size."
+msgstr ""
+
+#: ../extra/gnome-activity-journal.schemas.in.h:4
+msgid ""
+"Customized width for the main window, in pixels (requires restart). Can't be "
+"bigger than the desktop's size."
+msgstr ""
+
+#: ../extra/gnome-activity-journal.schemas.in.h:5
+msgid "The amount of days to show at once."
+msgstr ""
+
+#: ../extra/gnome-activity-journal.schemas.in.h:6
+msgid ""
+"Whether special accessibility options should be enabled (requires restart)."
+msgstr ""
+
+#: ../extra/gnome-activity-journal.schemas.in.h:7
+msgid "Window height"
+msgstr ""
+
+#: ../extra/gnome-activity-journal.schemas.in.h:8
+msgid "Window width"
 msgstr ""
