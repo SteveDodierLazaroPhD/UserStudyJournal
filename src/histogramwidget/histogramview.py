@@ -55,29 +55,35 @@ class TooltipEventBox(gtk.EventBox):
     Otherwise it interferes with the scrubbing mask code
     """
     _saved_tooltip_location = None
-    def __init__(self, histogram):
+    def __init__(self, histogram, container):
         super(TooltipEventBox, self).__init__()
         self.add(histogram)
         self.histogram = histogram
+        self.container = container
         self.set_property("has-tooltip", True)
         self.connect("query-tooltip", self.query_tooltip)
 
     def query_tooltip(self, widget, x, y, keyboard_mode, tooltip):
-        location = self.histogram.get_data_index_from_cartesian(x, y)
-        if location != self._saved_tooltip_location:
-            # don't show the previous tooltip if we moved to another
-            # location
-            self._saved_tooltip_location = location
+        if y < self.histogram.get_size_request()[1] - self.histogram.bottom_padding:
+            location = self.histogram.get_data_index_from_cartesian(x, y)
+            if location != self._saved_tooltip_location:
+                # don't show the previous tooltip if we moved to another
+                # location
+                self._saved_tooltip_location = location
+                return False
+            try:
+                timestamp, count = self.histogram.datastore[location]
+            except IndexError:
+                # there is no bar for at this location
+                # don't show a tooltip
+                return False
+            date = datetime.date.fromtimestamp(timestamp).strftime("%A, %d %B, %Y")
+            tooltip.set_text("%s\n%i %s" % (date, count,
+                                            gettext.ngettext("item", "items", count)))
+        elif len(self.container.__today_text__) > 0:
+            tooltip.set_text(_("Click to go back to today"))
+        else:
             return False
-        try:
-            timestamp, count = self.histogram.datastore[location]
-        except IndexError:
-            # there is no bar for at this location
-            # don't show a tooltip
-            return False
-        date = datetime.date.fromtimestamp(timestamp).strftime("%A, %d %B, %Y")
-        tooltip.set_text("%s\n%i %s" % (date, count,
-            gettext.ngettext("item", "items", count)))
         return True
 
 
@@ -215,7 +221,7 @@ class HistogramWidget(gtk.HBox):
         self.viewport = gtk.Viewport()
         self.viewport.set_shadow_type(gtk.SHADOW_NONE)
         self.histogram = histo_type()
-        self.eventbox = TooltipEventBox(self.histogram)
+        self.eventbox = TooltipEventBox(self.histogram, self)
         self.viewport.set_size_request(600,75)
         self.viewport.add(self.eventbox)
         align = gtk.Alignment(0,0,1,1)
