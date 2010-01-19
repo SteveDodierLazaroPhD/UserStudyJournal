@@ -81,7 +81,7 @@ class TooltipEventBox(gtk.EventBox):
             tooltip.set_text("%s\n%i %s" % (date, count,
                                             gettext.ngettext("item", "items", count)))
         elif len(self.container.__today_text__) > 0:
-            tooltip.set_text(_("Click to go back to today"))
+            tooltip.set_text(_("Click today to return to today"))
         else:
             return False
         return True
