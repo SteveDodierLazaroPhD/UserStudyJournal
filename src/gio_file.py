@@ -261,16 +261,14 @@ class GioFile(object):
             try:
                 return ICONS[size][self.uri]
             except KeyError:
-                for icon in self.icon_names:
-                    info = ICON_THEME.lookup_icon(icon, size, gtk.ICON_LOOKUP_USE_BUILTIN)
+                for name in self.icon_names:
+                    info = ICON_THEME.lookup_icon(name, size, gtk.ICON_LOOKUP_USE_BUILTIN)
                     if info is None:
                         continue
                     location = info.get_filename()
                     icon = gtk.gdk.pixbuf_new_from_file_at_size(location, size, size)
                     if icon:
                         break
-        if not isinstance(icon, gtk.gdk.Pixbuf):
-            icon = None
         ICONS[size][self.uri] = icon
         if icon is not None and border:
             icon = make_icon_frame(icon, border=border, color=0x00000080)
