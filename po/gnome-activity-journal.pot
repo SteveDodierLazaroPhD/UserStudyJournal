@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: zeitgeist@lists.launchpad.net\n"
-"POT-Creation-Date: 2010-01-19 16:12+0100\n"
+"POT-Creation-Date: 2010-01-19 18:22+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,15 +17,15 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: ../gnome-activity-journal:74
+#: ../gnome-activity-journal:75
 msgid "print additional debugging information"
 msgstr ""
 
-#: ../gnome-activity-journal:81
+#: ../gnome-activity-journal:82
 msgid "ERROR"
 msgstr ""
 
-#: ../gnome-activity-journal:81
+#: ../gnome-activity-journal:82
 msgid "Unable to connect to Zeitgeist:"
 msgstr ""
 
@@ -99,7 +99,7 @@ msgid "Evening"
 msgstr ""
 
 #: ../src/daywidgets.py:72 ../src/daywidgets.py:214
-#: ../src/histogramwidget/histogramview.py:290
+#: ../src/histogramwidget/histogramview.py:299
 msgid "Today"
 msgstr ""
 
@@ -124,11 +124,15 @@ msgstr ""
 msgid "Pin to Today"
 msgstr ""
 
-#: ../src/histogramwidget/histogramview.py:80
+#: ../src/histogramwidget/histogramview.py:82
 msgid "item"
 msgid_plural "items"
 msgstr[0] ""
 msgstr[1] ""
+
+#: ../src/histogramwidget/histogramview.py:84
+msgid "Click to go back to today"
+msgstr ""
 
 #: ../extra/gnome-activity-journal.desktop.in.h:2
 msgid ""

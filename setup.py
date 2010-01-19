@@ -64,21 +64,27 @@ class _install(orig_install):
         self._create_symlink(
             'share/gnome-activity-journal/gnome-activity-journal',
             'bin/gnome-activity-journal')
-        # Create a symlink for the icon
+        # Symlink the 48x48 PNG icon into share/pixmaps
         self._create_symlink(
-            'share/gnome-activity-journal/data/icons/hicolor/scalable/'\
+            'share/gnome-activity-journal/data/icons/hicolor/48x48/apps/' \
                 'gnome-activity-journal.svg',
             'share/pixmaps/gnome-activity-journal.svg')
+        # Symlink the icons so that the Journal can find them
+        self._create_symlink(
+            'share/icons/',
+            'share/gnome-activity-journal/data/icons')
 
-def recursive_install(dst, directory):
+def recursive_install(dst, directory, prefix=None, ext=None):
     l = []
     this = []
     for name in glob('%s/*' % directory):
         if os.path.isdir(name):
-            l.extend(recursive_install(dst, name))
-        else:
+            l.extend(recursive_install(dst, name, os.path.join(prefix,
+                os.path.basename(name)) if prefix is not None else None))
+        elif not ext or os.path.splitext(name)[1] in ext:
             this.append(name)
-    l.append((os.path.join(dst, directory), this))
+    l.append((os.path.join(dst,
+        prefix if prefix is not None else directory), this))
     return l
 
 def list_from_lists(*args):
@@ -104,8 +110,11 @@ setup(
     platforms = ['GNU/Linux'],
     data_files = list_from_lists(
         [('share/gnome-activity-journal', ['gnome-activity-journal'])],
-        recursive_install('share/gnome-activity-journal', 'data/'),
-        recursive_install('share/gnome-activity-journal', 'src/')
+        [('share/gnome-activity-journal/data', glob('data/*.*'))],
+        recursive_install('share/icons/hicolor', 'data/icons/hicolor/', '',
+            ext=['.png', '.svg']),
+        recursive_install('share/gnome-activity-journal', 'src/', ext=['.py']),
+        [('share/man/man1/', ['extra/gnome-activity-journal.1'])]
         ),
     cmdclass = {
         'install': _install,
