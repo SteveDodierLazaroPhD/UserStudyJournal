@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GNOME Activity Journal\n"
 "Report-Msgid-Bugs-To: zeitgeist@lists.launchpad.net\n"
-"POT-Creation-Date: 2010-01-19 18:54+0100\n"
+"POT-Creation-Date: 2010-01-19 20:00+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Siegfried-Angel Gevatter Pujals <rainct@ubuntu.com>\n"
 "Language-Team: Siegfried Gevatter <siegfried@gevatter.com>\n"
@@ -149,30 +149,38 @@ msgid "Accessibility"
 msgstr "Accessibilitat"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:2
+msgid "Allow thumbnails as icons"
+msgstr "Permet miniaturitzacions com a icones"
+
+#: ../extra/gnome-activity-journal.schemas.in.h:3
 msgid "Amount of visible days"
 msgstr "Nombre de dies visibles"
 
-#: ../extra/gnome-activity-journal.schemas.in.h:3
+#: ../extra/gnome-activity-journal.schemas.in.h:4
 msgid "Customized height for the main window, in pixels (requires restart). Can't be bigger than the desktop's size."
 msgstr "Alçada de la finestra personalitzada, en píxels (necessita reiniciar). No pot ser superior a la mida de l'escriptori."
 
-#: ../extra/gnome-activity-journal.schemas.in.h:4
+#: ../extra/gnome-activity-journal.schemas.in.h:5
 msgid "Customized width for the main window, in pixels (requires restart). Can't be bigger than the desktop's size."
 msgstr "Amplada de la finestra personalitzada, en píxels (necessita reiniciar). No pot ser superior a la mida de l'escriptori."
 
-#: ../extra/gnome-activity-journal.schemas.in.h:5
+#: ../extra/gnome-activity-journal.schemas.in.h:6
 msgid "The amount of days to show at once."
 msgstr "El nombre de dies a mostrar alhora."
 
-#: ../extra/gnome-activity-journal.schemas.in.h:6
+#: ../extra/gnome-activity-journal.schemas.in.h:7
 msgid "Whether special accessibility options should be enabled (requires restart)."
 msgstr "Si les opcions especials d'accessibilitat s'han d'habilitar (necessita reiniciar)."
 
-#: ../extra/gnome-activity-journal.schemas.in.h:7
+#: ../extra/gnome-activity-journal.schemas.in.h:8
+msgid "Whether to allow showing little thumbnails next to each activity (requires restart). If False, only generic mime-type icons will be used."
+msgstr "Si és permès mostrar petites miniaturitzacions al costat de cada activitat (necessita reiniciar). Si és Fals, només s'utilitzaran icones genèriques segons el tipus MIME."
+
+#: ../extra/gnome-activity-journal.schemas.in.h:9
 msgid "Window height"
 msgstr "Alçada de la finestra"
 
-#: ../extra/gnome-activity-journal.schemas.in.h:8
+#: ../extra/gnome-activity-journal.schemas.in.h:10
 msgid "Window width"
 msgstr "Amplada de la finestra"
 

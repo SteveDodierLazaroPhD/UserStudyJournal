@@ -93,7 +93,11 @@ def list_from_lists(*args):
         l.extend(arg)
     return l
 
-from src.config import VERSION
+try:
+    VERSION = [line for line in open('src/config.py')
+        if line.startswith('VERSION')][0].split('"')[1]
+except (IOError, IndexError):
+    VERSION = 'unknown'
 
 setup(
     name = 'gnome-activity-journal',

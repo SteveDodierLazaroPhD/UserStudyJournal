@@ -1,21 +1,22 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Czech translation for gnome-activity-journal
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gnome-activity-journal package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: zeitgeist@lists.launchpad.net\n"
-"POT-Creation-Date: 2010-01-19 20:00+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Project-Id-Version: gnome-activity-journal\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-01-19 18:54+0100\n"
+"PO-Revision-Date: 2010-01-16 20:49+0000\n"
+"Last-Translator: Kuvaly [LCT] <kuvaly@seznam.cz>\n"
+"Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"X-Launchpad-Export-Date: 2010-01-19 18:40+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
 
 #: ../gnome-activity-journal:75
 msgid "print additional debugging information"
@@ -31,19 +32,19 @@ msgstr ""
 
 #: ../src/main.py:43 ../extra/gnome-activity-journal.desktop.in.h:1
 msgid "Activity Journal"
-msgstr ""
+msgstr "Deník aktivit"
 
 #: ../src/main.py:74
 msgid "Go Back in Time"
-msgstr ""
+msgstr "Jít zpět v čase"
 
 #: ../src/main.py:81
 msgid "Look into the Future"
-msgstr ""
+msgstr "Podívat se do budoucnosti"
 
 #: ../src/main.py:88
 msgid "Jump to Today"
-msgstr ""
+msgstr "Skočit na dnešek"
 
 #. TODO: Move this into Zeitgeist's library, implemented properly
 #: ../src/sources.py:40
@@ -88,24 +89,24 @@ msgstr ""
 
 #: ../src/daywidgets.py:51
 msgid "Morning"
-msgstr ""
+msgstr "Ráno"
 
 #: ../src/daywidgets.py:52
 msgid "Afternoon"
-msgstr ""
+msgstr "Odpoledne"
 
 #: ../src/daywidgets.py:53
 msgid "Evening"
-msgstr ""
+msgstr "Večer"
 
 #: ../src/daywidgets.py:72 ../src/daywidgets.py:214
 #: ../src/histogramwidget/histogramview.py:299
 msgid "Today"
-msgstr ""
+msgstr "Dnes"
 
 #: ../src/daywidgets.py:74
 msgid "Yesterday"
-msgstr ""
+msgstr "Včera"
 
 #. Initialize the widget
 #: ../src/daywidgets.py:412
@@ -114,7 +115,7 @@ msgstr ""
 
 #: ../src/widgets.py:178
 msgid "Type here to search..."
-msgstr ""
+msgstr "Piště zde pro vyhledávání..."
 
 #: ../src/widgets.py:472 ../src/widgets.py:542
 msgid "Remove Pin"
@@ -127,8 +128,9 @@ msgstr ""
 #: ../src/histogramwidget/histogramview.py:82
 msgid "item"
 msgid_plural "items"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "položka"
+msgstr[1] "položky"
+msgstr[2] "položek"
 
 #: ../src/histogramwidget/histogramview.py:84
 msgid "Click today to return to today"
@@ -139,50 +141,42 @@ msgid ""
 "Browse a chronological log of your activities and easily find files, "
 "contacts, etc."
 msgstr ""
+"Objevte chronologický záznam vašich aktivit s jednoduchým hledáním souborů, "
+"kontaktů, apod."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:1
 msgid "Accessibility"
 msgstr ""
 
 #: ../extra/gnome-activity-journal.schemas.in.h:2
-msgid "Allow thumbnails as icons"
-msgstr ""
-
-#: ../extra/gnome-activity-journal.schemas.in.h:3
 msgid "Amount of visible days"
 msgstr ""
 
-#: ../extra/gnome-activity-journal.schemas.in.h:4
+#: ../extra/gnome-activity-journal.schemas.in.h:3
 msgid ""
 "Customized height for the main window, in pixels (requires restart). Can't "
 "be bigger than the desktop's size."
 msgstr ""
 
-#: ../extra/gnome-activity-journal.schemas.in.h:5
+#: ../extra/gnome-activity-journal.schemas.in.h:4
 msgid ""
 "Customized width for the main window, in pixels (requires restart). Can't be "
 "bigger than the desktop's size."
 msgstr ""
 
-#: ../extra/gnome-activity-journal.schemas.in.h:6
+#: ../extra/gnome-activity-journal.schemas.in.h:5
 msgid "The amount of days to show at once."
 msgstr ""
 
-#: ../extra/gnome-activity-journal.schemas.in.h:7
+#: ../extra/gnome-activity-journal.schemas.in.h:6
 msgid ""
 "Whether special accessibility options should be enabled (requires restart)."
 msgstr ""
 
-#: ../extra/gnome-activity-journal.schemas.in.h:8
-msgid ""
-"Whether to allow showing little thumbnails next to each activity (requires "
-"restart). If False, only generic mime-type icons will be used."
-msgstr ""
-
-#: ../extra/gnome-activity-journal.schemas.in.h:9
+#: ../extra/gnome-activity-journal.schemas.in.h:7
 msgid "Window height"
 msgstr ""
 
-#: ../extra/gnome-activity-journal.schemas.in.h:10
+#: ../extra/gnome-activity-journal.schemas.in.h:8
 msgid "Window width"
 msgstr ""
