@@ -43,7 +43,10 @@ class Portal(gtk.Window):
         self.connect("destroy", self.quit)
         self.set_title(_("Activity Journal"))
         self.set_position(gtk.WIN_POS_CENTER)
-
+	    
+	    # Detect when we are maximized
+        self.connect("window-state-event", self._on_window_state_changed)	
+	
         self.set_icon_list(*[gtk.gdk.pixbuf_new_from_file(
             os.path.join(BASE_PATH, name)) for name in (
                 "data/icons/hicolor/16x16/apps/gnome-activity-journal.png",
@@ -89,9 +92,6 @@ class Portal(gtk.Window):
         self.fwdbtn.connect("clicked", self.moveup)
         self.ffwdbtn.connect("clicked", self.jumpup)
 
-        # We configure the view so that the left/right buttons touch the
-        # left/right edges in order to utilize Fitts law. This is accomplished
-        # by having no padding on the HBox
         self.add(self.vbox)
         self.rbox = gtk.VBox()
         #self.rbox.pack_start(self.ffwdbtn, False, 20)
@@ -104,7 +104,6 @@ class Portal(gtk.Window):
         hbox.pack_start(self.rbox, False, False)
         
         self.vbox.pack_start(hbox, True, True)
-        self.set_border_width(3)
 
         self.vbox.pack_end(self.cal, False, False)
 
@@ -121,7 +120,19 @@ class Portal(gtk.Window):
         self.connect("configure-event", self._on_size_changed)
         self.connect("key-press-event", self._global_keypress_handler)
         self.cal.histogram.add_selection_callback(self.handle_fwd_sensitivity)
-
+    
+    def _on_window_state_changed (self, win, event):
+        # When maximized we configure the view so that the left/right buttons
+        # touch the left/right edges of the screen in order to utilize Fitts law
+        if event.new_window_state & gtk.gdk.WINDOW_STATE_MAXIMIZED:
+            # FIXME: Keep vertical padding on self.vbox children withou
+            #        introducing horizontal padding
+            self.set_border_width(0)
+            self.vbox.set_border_width(0)
+        else:
+            self.set_border_width(3)
+            self.vbox.set_property("border-width", 0)
+    
     def _global_keypress_handler(self, widget, event):
         if event.state & gtk.gdk.CONTROL_MASK:
             if gtk.gdk.keyval_name(event.keyval) == "f":
