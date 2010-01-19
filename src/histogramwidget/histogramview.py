@@ -261,7 +261,7 @@ class HistogramWidget(gtk.HBox):
             self.__today_text__ = ""
             self.histogram.queue_draw()
         elif len(self.__today_text__) == 0:
-            self.__today_text__ = _("Today ") + "»"
+            self.__today_text__ = _("Today") + " »"
     
     def __release_handler(self, *args, **kwargs):
         """
