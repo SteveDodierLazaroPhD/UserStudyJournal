@@ -83,6 +83,11 @@ except RuntimeError, e:
     print "%s" % e
     sys.exit(1)
 
+if CLIENT.get_version() < [0, 3, 1, 99]:
+    print "You need Zeitgeist 0.3.2 or later for the GNOME Activity Journal to work."
+    print "https://launchpad.net/zeitgeist"
+    sys.exit(1)
+
 from src.main import Portal
 
 if __name__ == "__main__":
