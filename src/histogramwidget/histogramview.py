@@ -245,9 +245,12 @@ class HistogramWidget(gtk.HBox):
         self.adjustment.set_value(self.histogram.max_width - self.adjustment.page_size)
         self.backward_button.connect("released", self.__release_handler)
         self.forward_button.connect("released", self.__release_handler)
+        self.backward_button.connect("key_press_event", self.keyboard_interaction, int(-self.histogram.xincrement/2))
+        self.forward_button.connect("key_press_event", self.keyboard_interaction, int(self.histogram.xincrement/2))
         self.histogram.connect("selection-set", self.__scrubbing_fix__)
         self.histogram.queue_draw()
         self.viewport.queue_draw()
+        self.set_focus_chain((self.backward_button, self.histogram, self.forward_button))
 
     def __today_expose__(self, widget, event, *args, **kwargs):
         """
@@ -305,6 +308,10 @@ class HistogramWidget(gtk.HBox):
             if self.__pressed__: return True
             return False
         gobject.timeout_add(10, _f, self, button, value)
+        
+    def keyboard_interaction(self, widget, event, value):
+        if event.keyval in (gtk.keysyms.space, gtk.keysyms.Return):
+            self.scroll_viewport(widget, value)
 
     def scroll_viewport(self, widget, value, *args, **kwargs):
         """

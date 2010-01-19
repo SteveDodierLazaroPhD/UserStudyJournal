@@ -108,12 +108,15 @@ class CairoHistogram(gtk.DrawingArea):
         - selected_range: the number of days displayed at once
         """
         super(CairoHistogram, self).__init__()
-        self.set_events(gtk.gdk.BUTTON_MOTION_MASK | gtk.gdk.POINTER_MOTION_HINT_MASK | gtk.gdk.BUTTON_RELEASE_MASK | gtk.gdk.BUTTON_PRESS_MASK)
+        self.set_events(gtk.gdk.KEY_PRESS_MASK | gtk.gdk.BUTTON_MOTION_MASK | 
+                        gtk.gdk.POINTER_MOTION_HINT_MASK | gtk.gdk.BUTTON_RELEASE_MASK | 
+                        gtk.gdk.BUTTON_PRESS_MASK)
         self.set_flags(gtk.CAN_FOCUS)
         self.connect("expose_event", self.__expose__)
         self.connect("button_press_event", self.mouse_interaction)
         self.connect("button_release_event", self.mouse_interaction_release)
         self.connect("motion_notify_event", self.mouse_interaction)
+        self.connect("key_press_event", self.keyboard_interaction)
         self.font_name = self.style.font_desc.get_family()
         self.set_data(datastore if datastore else [], draw = False)
         self.selected_range = selected_range
@@ -366,6 +369,17 @@ class CairoHistogram(gtk.DrawingArea):
         """
         return int((x - self.start_x_padding) / self.xincrement)
 
+    def keyboard_interaction(self, widget, event):
+        if event.keyval in (gtk.keysyms.space, gtk.keysyms.Right, gtk.keysyms.Left, gtk.keysyms.BackSpace):
+            i = self.get_selected()
+            if isinstance(i, list) and len(i) > 0: i = i[-1]
+            if event.keyval in (gtk.keysyms.space, gtk.keysyms.Right):
+                i += 1
+            elif event.keyval in (gtk.keysyms.Left, gtk.keysyms.BackSpace):
+                i -= 1
+            if i < len(self.get_data()):
+                self.change_location(i)
+        
     def mouse_interaction(self, widget, event, *args, **kwargs):
         """
         Reacts to mouse moving (while pressed), and clicks
@@ -377,6 +391,7 @@ class CairoHistogram(gtk.DrawingArea):
         return True
 
     def mouse_interaction_release(self, widget, event, *args, **kwargs):
+        self.grab_focus()
         if (event.y > self.get_size_request()[1] - self.bottom_padding and 
             event.y < self.get_size_request()[1]):
             self.emit("outer-click", event.x, event.y)
