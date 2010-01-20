@@ -38,17 +38,6 @@ import time
 from gtkhistogram import *
 
 
-def get_gc_from_colormap(widget, shade):
-    gc = widget.style.text_gc[gtk.STATE_INSENSITIVE]
-    color = widget.style.text[4]
-    f = lambda num: min((num * shade, 65535.0))
-    color.red = f(color.red)
-    color.green = f(color.green)
-    color.blue = f(color.blue)
-    gc.set_rgb_fg_color(color)
-    return gc
-
-
 class TooltipEventBox(gtk.EventBox):
     """
     A event box housing the tool tip logic that can be used for a CairoHistogram.
@@ -87,91 +76,7 @@ class TooltipEventBox(gtk.EventBox):
         return True
 
 
-class SectionedHistogram(CairoHistogram):
-    """
-    A subclass of CairoHistogram with theming to fit into Journal with a background colored bottom bar
-    """
-    padding = 2
-    column_radius = 1.3
-    font_size = 10
-    bottom_padding = 23
-    top_padding = 2
-    wcolumn = 12
-    xincrement = wcolumn + padding
-    column_radius = 0
-    text_pad = bottom_padding/3
-    gc = None
-    pangofont = None
-
-    def change_style(self, widget, *args, **kwargs):
-        """
-        Sets the widgets style and coloring
-        """
-        self.bg_color = get_gtk_rgba(self.style, "bg", 0)
-        self.base_color = get_gtk_rgba(self.style, "base", 0)
-        self.column_color_normal =  get_gtk_rgba(self.style, "text", 4, 1.17)
-        self.column_color_selected = get_gtk_rgba(self.style, "bg", 3)
-        pal = get_gtk_rgba(self.style, "bg", 3, 1.2)
-        self.column_color_alternative = (pal[2], pal[1], pal[0], 1)
-        self.column_color_selected_alternative = get_gtk_rgba(self.style, "bg", 3, 0.6)
-        fg = self.style.fg[gtk.STATE_NORMAL]
-        bg = self.style.bg[gtk.STATE_NORMAL]
-        #self.font_color = get_gtk_rgba(self.style, "text", 4, 0.6)
-        self.stroke_color = get_gtk_rgba(self.style, "text", 4)
-        self.shadow_color = get_gtk_rgba(self.style, "text", 4)
-        self.font_size = self.style.font_desc.get_size()/1024
-        self.pangofont = pango.FontDescription(self.font_name + " %d" % self.font_size)
-        self.pangofont.set_weight(pango.WEIGHT_BOLD)
-        self.bottom_padding = self.font_size + 9
-        self.gc = get_gc_from_colormap(widget, 0.6)
-
-    def expose(self, widget, event, context):
-        """
-        The minor drawing method
-
-        Arguments:
-        - widget: the widget
-        - event: a gtk event with x and y values
-        - context: The drawingarea's cairo context from the expose event
-        """
-        if not self.pangofont:
-            self.pangofont = pango.FontDescription(self.font_name + " %d" % self.font_size)
-            self.pangofont.set_weight(pango.WEIGHT_BOLD)
-        if not self.gc:
-            self.gc = get_gc_from_colormap(widget, 0.6)
-        context.set_source_rgba(*self.base_color)
-        context.set_operator(cairo.OPERATOR_SOURCE)
-        context.paint()
-        context.rectangle(event.area.x, event.area.y, event.area.width, event.area.height)
-        context.clip()
-        context.set_source_rgba(*self.bg_color)
-        context.rectangle(event.area.x, event.area.height - self.bottom_padding, event.area.width, event.area.height)
-        context.fill()
-        self.draw_columns_from_datastore(context, event, self._selected)
-        context.set_line_width(1)
-        context.set_source_rgba(*self.shadow_color if not self.is_focus() else self.column_color_selected)
-        context.rectangle(event.area.x+0.5, event.area.y+0.5, event.area.width-1, event.area.height - self.bottom_padding)
-        context.stroke()
-
-    def draw_month(self, context, x, height, date):
-        """
-        Draws a line signifying the start of a month
-        """
-        context.set_source_rgba(*self.stroke_color)
-        context.set_line_width(self.stroke_width)
-        context.move_to(x+self.stroke_offset, 0)
-        context.line_to(x+self.stroke_offset, height - self.bottom_padding)
-        context.stroke()
-        date = datetime.date.fromtimestamp(date)
-        month = calendar.month_name[date.month]
-        date = "%s %d" % (month, date.year)
-        layout = self.create_pango_layout(date)
-        layout.set_font_description(self.pangofont)
-        w, h = layout.get_pixel_size()
-        self.window.draw_layout(self.gc, int(x + 3), int(height - h), layout)
-
-
-class JournalHistogram(SectionedHistogram):
+class JournalHistogram(CairoHistogram):
     """
     A subclass of CairoHistogram with theming to fit into Journal
     """
@@ -185,7 +90,6 @@ class JournalHistogram(SectionedHistogram):
     stroke_width = 2
     stroke_offset = 1
     font_size = 12
-    text_pad = 5
 
     def change_style(self, widget, *args, **kwargs):
         self.bg_color = get_gtk_rgba(self.style, "bg", 0)
@@ -194,7 +98,6 @@ class JournalHistogram(SectionedHistogram):
         self.column_color_selected = get_gtk_rgba(self.style, "bg", 3)
         self.column_color_selected_alternative = get_gtk_rgba(self.style, "bg", 3, 0.7)
         self.column_color_alternative = get_gtk_rgba(self.style, "text", 2)
-        #self.font_color = get_gtk_rgba(self.style, "text", 4, 0.6)
         self.stroke_color = get_gtk_rgba(self.style, "bg", 0)
         self.shadow_color = get_gtk_rgba(self.style, "bg", 0, 0.98)
         self.font_size = self.style.font_desc.get_size()/1024
@@ -227,11 +130,10 @@ class HistogramWidget(gtk.HBox):
         align = gtk.Alignment(0,0,1,1)
         align.set_padding(0, 0, 0, 0)
         align.add(self.viewport)
-        if isinstance(self.histogram, SectionedHistogram):
-            self.histogram.connect("expose-event", self.__today_expose__)
-            self.histogram.connect("outer-click", self.__today_clicked__)
-            self.histogram.connect("selection-set", self.__check_for_today__)
-            self.histogram.connect("data-updated", self.scroll_to_end)
+        self.histogram.connect("expose-event", self.__today_expose__)
+        self.histogram.connect("month-frame-clicked", self.__today_clicked__)
+        self.histogram.connect("selection-set", self.__check_for_today__)
+        self.histogram.connect("data-updated", self.scroll_to_end)
         self.backward_button = gtk.Button()
         self.backward_button.add(gtk.Arrow(gtk.ARROW_LEFT, gtk.SHADOW_NONE))
         self.backward_button.set_relief(gtk.RELIEF_NONE)

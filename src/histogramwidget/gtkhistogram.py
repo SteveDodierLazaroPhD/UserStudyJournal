@@ -33,6 +33,7 @@ import gtk
 import math
 import datetime
 import calendar
+import pango
 
 
 def check_for_new_month(date):
@@ -50,7 +51,6 @@ def get_gtk_rgba(style, palette, i, shade = 1):
     - shade: how much you want to shade the color
     """
     f = lambda num: (num/65535.0) * shade
-
     color = getattr(style, palette)[i]
     if isinstance(color, gtk.gdk.Color):
         red = f(color.red)
@@ -60,28 +60,44 @@ def get_gtk_rgba(style, palette, i, shade = 1):
         return (min(red, 1), min(green, 1), min(blue, 1), 1)
     else: raise TypeError("Not a valid gtk.gdk.Color")
 
+def get_gc_from_colormap(widget, shade):
+    """
+    Gets a gdk.GC and modifies the color by shade
+    """
+    gc = widget.style.text_gc[gtk.STATE_INSENSITIVE]
+    if gc:
+        color = widget.style.text[4]
+        f = lambda num: min((num * shade, 65535.0))
+        color.red = f(color.red)
+        color.green = f(color.green)
+        color.blue = f(color.blue)
+        gc.set_rgb_fg_color(color)
+    return gc
+
 
 class CairoHistogram(gtk.DrawingArea):
     """
     A histogram which is represented by a list of dates, and nitems
     """
     _selected = (0,)
-    padding = 1
-    bottom_padding = 0
-    top_padding = 14
-    wcolumn = 15
+    padding = 2
+    bottom_padding = 23
+    top_padding = 2
+    wcolumn = 12
     xincrement = wcolumn + padding
     start_x_padding = 2
     max_width = xincrement
     column_radius = 0
-    font_size = 10
     stroke_width = 1
     stroke_offset = 0
+    gc = None
+    pangofont = None
 
     datastore = None
     selected_range = 0
     highlighted = []
     __calbacks = None
+    __last_location__ = -1
 
     bg_color = (1, 1, 1, 1)
     base_color = (1, 1, 1, 1)
@@ -92,13 +108,11 @@ class CairoHistogram(gtk.DrawingArea):
     stroke_color = (1, 1, 1, 0)
     shadow_color = (1, 1, 1, 0)
 
-    __last_location__ = -1
-
     __gsignals__ = {
         # the index of the first selected item in the datastore.
         "selection-set": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,(gobject.TYPE_INT,)),
         "data-updated":  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,()),
-        "outer-click": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,(gobject.TYPE_INT,gobject.TYPE_INT))
+        "month-frame-clicked": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,(gobject.TYPE_INT,gobject.TYPE_INT))
         }
 
     def __init__(self, datastore = None, selected_range = 0):
@@ -108,10 +122,11 @@ class CairoHistogram(gtk.DrawingArea):
         - selected_range: the number of days displayed at once
         """
         super(CairoHistogram, self).__init__()
-        self.set_events(gtk.gdk.KEY_PRESS_MASK | gtk.gdk.BUTTON_MOTION_MASK | 
-                        gtk.gdk.POINTER_MOTION_HINT_MASK | gtk.gdk.BUTTON_RELEASE_MASK | 
+        self.set_events(gtk.gdk.KEY_PRESS_MASK | gtk.gdk.BUTTON_MOTION_MASK |
+                        gtk.gdk.POINTER_MOTION_HINT_MASK | gtk.gdk.BUTTON_RELEASE_MASK |
                         gtk.gdk.BUTTON_PRESS_MASK)
         self.set_flags(gtk.CAN_FOCUS)
+        self.connect("style-set", self.change_style)
         self.connect("expose_event", self.__expose__)
         self.connect("button_press_event", self.mouse_interaction)
         self.connect("button_release_event", self.mouse_interaction_release)
@@ -120,8 +135,7 @@ class CairoHistogram(gtk.DrawingArea):
         self.font_name = self.style.font_desc.get_family()
         self.set_data(datastore if datastore else [], draw = False)
         self.selected_range = selected_range
-        self.connect("style-set", self.change_style)
-        
+
     def change_style(self, widget, *args, **kwargs):
         """
         Sets the widgets style and coloring
@@ -135,25 +149,28 @@ class CairoHistogram(gtk.DrawingArea):
         self.column_color_selected_alternative = get_gtk_rgba(self.style, "bg", 3, 0.6)
         fg = self.style.fg[gtk.STATE_NORMAL]
         bg = self.style.bg[gtk.STATE_NORMAL]
-        self.font_color = get_gtk_rgba(self.style, "text", 4)
-        self.stroke_color = get_gtk_rgba(self.style, "text", 4, 0.8)
-        self.font_size = self.style.font_desc.get_size()/1024 + 2
+        self.stroke_color = get_gtk_rgba(self.style, "text", 4)
+        self.shadow_color = get_gtk_rgba(self.style, "text", 4)
+        self.font_size = self.style.font_desc.get_size()/1024
+        self.pangofont = pango.FontDescription(self.font_name + " %d" % self.font_size)
+        self.pangofont.set_weight(pango.WEIGHT_BOLD)
+        self.bottom_padding = self.font_size + 9
+        self.gc = get_gc_from_colormap(widget, 0.6)
 
     def set_selected_range(self, selected_range):
         """
         Set the number of days to be colored as selected
-        
+
         Arguments:
         - selected_range: the range to be used when setting selected coloring
         """
         self.selected_range = selected_range
-
     set_dayrange = set_selected_range # Legacy compatibility
 
     def set_data(self, datastore, draw = True):
         """
         Sets the objects datastore attribute using a list
-        
+
         Arguments:
         -datastore: A list that is comprised of rows containing
           a int time and a int nitems
@@ -171,14 +188,14 @@ class CairoHistogram(gtk.DrawingArea):
 
     def get_data(self):
         return self.datastore
-    
+
     def prepend_data(self, newdatastore):
         """
         Adds the items of a new list before the items of the current datastore
-        
+
         Arguments:
         - newdatastore: the new list to be prepended
-        
+
         ## WARNING SELECTION WILL CHANGE WHEN DOING THIS TO BE FIXED ##
         """
         selected = self.get_selected()[-1]
@@ -189,7 +206,7 @@ class CairoHistogram(gtk.DrawingArea):
     def __expose__(self, widget, event):
         """
         The major drawing method that the expose event calls directly
-        
+
         Arguments:
         - widget: the widget
         - event: a gtk event with x and y values
@@ -200,23 +217,35 @@ class CairoHistogram(gtk.DrawingArea):
     def expose(self, widget, event, context):
         """
         The minor drawing method
-        
+
         Arguments:
         - widget: the widget
         - event: a gtk event with x and y values
         - context: The drawingarea's cairo context from the expose event
         """
+        if not self.pangofont:
+            self.pangofont = pango.FontDescription(self.font_name + " %d" % self.font_size)
+            self.pangofont.set_weight(pango.WEIGHT_BOLD)
+        if not self.gc:
+            self.gc = get_gc_from_colormap(widget, 0.6)
         context.set_source_rgba(*self.base_color)
         context.set_operator(cairo.OPERATOR_SOURCE)
         context.paint()
         context.rectangle(event.area.x, event.area.y, event.area.width, event.area.height)
         context.clip()
+        context.set_source_rgba(*self.bg_color)
+        context.rectangle(event.area.x, event.area.height - self.bottom_padding, event.area.width, event.area.height)
+        context.fill()
         self.draw_columns_from_datastore(context, event, self._selected)
+        context.set_line_width(1)
+        context.set_source_rgba(*self.shadow_color if not self.is_focus() else self.column_color_selected)
+        context.rectangle(event.area.x+0.5, event.area.y+0.5, event.area.width-1, event.area.height - self.bottom_padding)
+        context.stroke()
 
     def draw_columns_from_datastore(self, context, event, selected):
         """
         Draws columns from a datastore
-        
+
         Arguments:
         - context: The drawingarea's cairo context from the expose event
         - event: a gtk event with x and y values
@@ -282,27 +311,19 @@ class CairoHistogram(gtk.DrawingArea):
     def draw_month(self, context, x, height, date):
         """
         Draws a line signifying the start of a month
-        Arguments:
-        - x: the x where the item should be drawn
-        - height: the height of the drawing area
-        - date: a int date
         """
-        fg = self.style.fg[gtk.STATE_NORMAL]
-        bg = self.style.bg[gtk.STATE_NORMAL]
         context.set_source_rgba(*self.stroke_color)
-        context.set_line_width(self.stroke_width + self.stroke_offset)
-        context.move_to(x + int(self.padding/2) + 0.5, 0)
-        context.line_to(x + int(self.padding/2) + 0.5, height)
+        context.set_line_width(self.stroke_width)
+        context.move_to(x+self.stroke_offset, 0)
+        context.line_to(x+self.stroke_offset, height - self.bottom_padding)
         context.stroke()
-        context.set_source_rgba(*self.font_color)
-        context.select_font_face(self.font_name, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
-        context.set_font_size(self.font_size)
         date = datetime.date.fromtimestamp(date)
         month = calendar.month_name[date.month]
         date = "%s %d" % (month, date.year)
-        xbearing, ybearing, width, oheight, xadvance, yadvance = context.text_extents(date)
-        context.move_to(x + 8, oheight+2)
-        context.show_text(date)
+        layout = self.create_pango_layout(date)
+        layout.set_font_description(self.pangofont)
+        w, h = layout.get_pixel_size()
+        self.window.draw_layout(self.gc, int(x + 3), int(height - h), layout)
 
     def set_selected(self, i):
         """
@@ -323,7 +344,7 @@ class CairoHistogram(gtk.DrawingArea):
 
     def get_selected(self):
         return self._selected
-    
+
     def clear_selection(self):
         """
         clears the selected items
@@ -346,12 +367,12 @@ class CairoHistogram(gtk.DrawingArea):
         """Clears the highlighted color"""
         self.highlighted = []
         self.queue_draw()
-        
+
     def add_selection_callback(self, callback):
         """
         add a callback for clicked to call when a item is clicked.
         clicked passes this widget, a datastore list, and i to the function
-        
+
         Arguments:
         - callback: the callback to add
         """
@@ -379,7 +400,7 @@ class CairoHistogram(gtk.DrawingArea):
                 i -= 1
             if i < len(self.get_data()):
                 self.change_location(i)
-        
+
     def mouse_interaction(self, widget, event, *args, **kwargs):
         """
         Reacts to mouse moving (while pressed), and clicks
@@ -391,9 +412,9 @@ class CairoHistogram(gtk.DrawingArea):
         return True
 
     def mouse_interaction_release(self, widget, event, *args, **kwargs):
-        if (event.y > self.get_size_request()[1] - self.bottom_padding and 
+        if (event.y > self.get_size_request()[1] - self.bottom_padding and
             event.y < self.get_size_request()[1]):
-            self.emit("outer-click", event.x, event.y)
+            self.emit("month-frame-clicked", event.x, event.y)
 
     def change_location(self, location):
         """Handles click events
