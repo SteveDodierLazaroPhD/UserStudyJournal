@@ -130,9 +130,9 @@ class HistogramWidget(gtk.HBox):
         align = gtk.Alignment(0,0,1,1)
         align.set_padding(0, 0, 0, 0)
         align.add(self.viewport)
-        self.histogram.connect("expose-event", self.__today_expose__)
-        self.histogram.connect("month-frame-clicked", self.__today_clicked__)
-        self.histogram.connect("selection-set", self.__check_for_today__)
+        self.histogram.connect("expose-event", self.today_expose)
+        self.histogram.connect("month-frame-clicked", self.today_clicked)
+        self.histogram.connect("selection-set", self.check_for_today)
         self.histogram.connect("data-updated", self.scroll_to_end)
         self.backward_button = gtk.Button()
         self.backward_button.add(gtk.Arrow(gtk.ARROW_LEFT, gtk.SHADOW_NONE))
@@ -151,16 +151,16 @@ class HistogramWidget(gtk.HBox):
         self.adjustment = self.viewport.get_hadjustment()
         self.adjustment.set_value(1) # Needs to be set twice to work
         self.adjustment.set_value(self.histogram.max_width - self.adjustment.page_size)
-        self.backward_button.connect("released", self.__release_handler)
-        self.forward_button.connect("released", self.__release_handler)
+        self.backward_button.connect("released", self.release_handler)
+        self.forward_button.connect("released", self.release_handler)
         self.backward_button.connect("key_press_event", self.keyboard_interaction, int(-self.histogram.xincrement/2))
         self.forward_button.connect("key_press_event", self.keyboard_interaction, int(self.histogram.xincrement/2))
-        self.histogram.connect("selection-set", self.__scrubbing_fix__)
+        self.histogram.connect("selection-set", self.scrubbing_fix)
         self.histogram.queue_draw()
         self.viewport.queue_draw()
         self.set_focus_chain((self.backward_button, self.forward_button, self.histogram))
 
-    def __today_expose__(self, widget, event, *args, **kwargs):
+    def today_expose(self, widget, event, *args, **kwargs):
         """
         A double drawing hack to draw twice on a drawing areas window. It should
         draw today on the drawing area window
@@ -182,7 +182,7 @@ class HistogramWidget(gtk.HBox):
         widget.window.draw_layout(widget.gc, int(self.adjustment.value + self.adjustment.page_size - w -5),
                                   int(event.area.height - h), layout)
 
-    def __today_clicked__(self, widget, x, y):
+    def today_clicked(self, widget, x, y):
         """
         Handles all rejected clicks from the outer-click signal and checks to
         see if they were inside of the today text
@@ -190,7 +190,7 @@ class HistogramWidget(gtk.HBox):
         if x > self.adjustment.value + self.adjustment.page_size - self.__today_width__:
             self.histogram.change_location(len(self.histogram.get_data()) - 1)
 
-    def __check_for_today__(self, widget, i):
+    def check_for_today(self, widget, i):
         """
         Changes today to a empty string if the selected item is not today
         """
@@ -200,7 +200,7 @@ class HistogramWidget(gtk.HBox):
         elif len(self.__today_text__) == 0:
             self.__today_text__ = _("Today") + " »"
 
-    def __release_handler(self, *args, **kwargs):
+    def release_handler(self, *args, **kwargs):
         """
         Clears scroll the button press varible
         """
@@ -216,7 +216,7 @@ class HistogramWidget(gtk.HBox):
             if self.__pressed__: return True
             return False
         gobject.timeout_add(10, _f, self, button, value)
-        
+
     def keyboard_interaction(self, widget, event, value):
         if event.keyval in (gtk.keysyms.space, gtk.keysyms.Return):
             self.scroll_viewport(widget, value)
@@ -247,7 +247,7 @@ class HistogramWidget(gtk.HBox):
         self.adjustment.set_value(1)
         self.adjustment.set_value(self.histogram.max_width - self.adjustment.page_size)
 
-    def __scrubbing_fix__(self, widget, i, *args, **kwargs):
+    def scrubbing_fix(self, widget, i, *args, **kwargs):
         """
         Allows scrubbing to scroll the scroll window
         """
