@@ -143,7 +143,7 @@ class HistogramWidget(gtk.HBox):
         self.histogram.connect("selection-set", self.check_for_today)
         self.histogram.connect("data-updated", self.scroll_to_end)
         self.histogram.connect("data-updated", self.scroll_to_end)
-        self.pack_start(align, True, True, 3)
+        self.pack_start(align, True, True, 28)
         self.adjustment = self.viewport.get_hadjustment()
         self.adjustment.set_value(1) # Needs to be set twice to work
         self.adjustment.set_value(self.histogram.max_width - self.adjustment.page_size)
