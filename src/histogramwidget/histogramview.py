@@ -165,22 +165,22 @@ class HistogramWidget(gtk.HBox):
         A double drawing hack to draw twice on a drawing areas window. It should
         draw today on the drawing area window
         """
-        context = widget.window.cairo_create()
-        context.set_source_rgba(*widget.bg_color)
-        layout = widget.create_pango_layout(self.__today_text__)
-        layout.set_font_description(widget.pangofont)
-        w, h = layout.get_pixel_size()
-        self.__today_width__ = w + 10
-        context.rectangle(self.adjustment.value + self.adjustment.page_size - self.__today_width__,
-                          event.area.height - widget.bottom_padding + 1, event.area.width, event.area.height)
-        context.fill()
-        if not widget.pangofont:
-            widget.pangofont = pango.FontDescription(self.font_name + " %d" % self.font_size)
-            widget.pangofont.set_weight(pango.WEIGHT_BOLD)
-        if not widget.gc:
-            widget.gc = get_gc_from_colormap(widget, 0.6)
-        widget.window.draw_layout(widget.gc, int(self.adjustment.value + self.adjustment.page_size - w -5),
-                                  int(event.area.height - h), layout)
+        if len(self.__today_text__):
+            context = widget.window.cairo_create()
+            context.set_source_rgba(*widget.bg_color)
+            layout = widget.create_pango_layout(self.__today_text__)
+            pangofont = pango.FontDescription(widget.font_name + " %d" % (widget.font_size - 1))
+            if not widget.gc:
+                widget.gc = get_gc_from_colormap(widget, 0.6)
+            layout.set_font_description(pangofont)
+            w, h = layout.get_pixel_size()
+            self.__today_width__ = w + 10
+            widget.style.paint_box(widget.window, gtk.STATE_NORMAL, gtk.SHADOW_OUT, event.area,
+                                   widget, "button", int(self.adjustment.value + self.adjustment.page_size - self.__today_width__),
+                                   int(event.area.height - widget.bottom_padding + 1), self.__today_width__, widget.bottom_padding - 1)
+            widget.window.draw_layout(widget.gc,
+                                      int(self.adjustment.value + self.adjustment.page_size - w -5),
+                                      int(event.area.height - widget.bottom_padding/2 - h/2), layout)
 
     def today_clicked(self, widget, x, y):
         """

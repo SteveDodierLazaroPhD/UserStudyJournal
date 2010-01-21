@@ -237,9 +237,13 @@ class CairoHistogram(gtk.DrawingArea):
         context.fill()
         self.draw_columns_from_datastore(context, event, self._selected)
         context.set_line_width(1)
-        context.set_source_rgba(*self.shadow_color if not self.is_focus() else self.column_color_selected)
-        context.rectangle(event.area.x+0.5, event.area.y+0.5, event.area.width-1, event.area.height - self.bottom_padding)
-        context.stroke()
+        if type(self) == CairoHistogram:
+            widget.style.paint_shadow(widget.window, gtk.STATE_NORMAL, gtk.SHADOW_IN,
+                                      event.area, widget, "treeview", event.area.x, event.area.y,
+                                      event.area.width, event.area.height - self.bottom_padding)
+        if self.is_focus():
+            widget.style.paint_focus(widget.window, gtk.STATE_NORMAL, event.area, widget, None, event.area.x, event.area.y,
+                                     event.area.width, event.area.height - self.bottom_padding)
 
     def draw_columns_from_datastore(self, context, event, selected):
         """
@@ -322,7 +326,7 @@ class CairoHistogram(gtk.DrawingArea):
         layout = self.create_pango_layout(date)
         layout.set_font_description(self.pangofont)
         w, h = layout.get_pixel_size()
-        self.window.draw_layout(self.gc, int(x + 3), int(height - h), layout)
+        self.window.draw_layout(self.gc, int(x + 3), int(height - self.bottom_padding/2 - h/2), layout)
 
     def set_selected(self, i):
         """
