@@ -119,7 +119,6 @@ class HistogramWidget(gtk.HBox):
     """
     A container for a CairoHistogram which allows you to scroll
     """
-    __pressed__ = False
     __today_width__ = 0
     __today_text__ = ""
     __today_area__ = None
@@ -143,31 +142,15 @@ class HistogramWidget(gtk.HBox):
         self.histogram.connect("button_press_event", self.today_clicked)
         self.histogram.connect("selection-set", self.check_for_today)
         self.histogram.connect("data-updated", self.scroll_to_end)
-        self.backward_button = gtk.Button()
-        self.backward_button.add(gtk.Arrow(gtk.ARROW_LEFT, gtk.SHADOW_NONE))
-        self.backward_button.set_relief(gtk.RELIEF_NONE)
-        self.backward_button.set_focus_on_click(False)
-        self.forward_button = gtk.Button()
-        self.forward_button.add(gtk.Arrow(gtk.ARROW_RIGHT, gtk.SHADOW_NONE))
-        self.forward_button.set_relief(gtk.RELIEF_NONE)
-        self.forward_button.set_focus_on_click(False)
-        self.backward_button.connect("pressed", self.smooth_scroll, self.backward_button, int(-self.histogram.xincrement/2))
-        self.forward_button.connect("pressed", self.smooth_scroll, self.forward_button, int(self.histogram.xincrement/2))
         self.histogram.connect("data-updated", self.scroll_to_end)
-        self.pack_start(self.backward_button, False, False)
         self.pack_start(align, True, True, 3)
-        self.pack_end(self.forward_button, False, False)
         self.adjustment = self.viewport.get_hadjustment()
         self.adjustment.set_value(1) # Needs to be set twice to work
         self.adjustment.set_value(self.histogram.max_width - self.adjustment.page_size)
-        self.backward_button.connect("released", self.release_handler)
-        self.forward_button.connect("released", self.release_handler)
-        self.backward_button.connect("key_press_event", self.keyboard_interaction, int(-self.histogram.xincrement/2))
-        self.forward_button.connect("key_press_event", self.keyboard_interaction, int(self.histogram.xincrement/2))
         self.histogram.connect("selection-set", self.scrubbing_fix)
         self.histogram.queue_draw()
         self.viewport.queue_draw()
-        self.set_focus_chain((self.backward_button, self.forward_button, self.histogram))
+        self.set_focus_chain((self.histogram,))
 
     def today_expose(self, widget, event, *args, **kwargs):
         """
@@ -214,27 +197,6 @@ class HistogramWidget(gtk.HBox):
             self.histogram.queue_draw()
         elif len(self.__today_text__) == 0:
             self.__today_text__ = _("Today") + " »"
-
-    def release_handler(self, *args, **kwargs):
-        """
-        Clears scroll the button press varible
-        """
-        self.__pressed__ = False
-
-    def smooth_scroll(self, widget, button, value):
-        """
-        Scrolls using a timeout while __pressed__
-        """
-        self.__pressed__ = True
-        def _f(self, button, value):
-            self.scroll_viewport(widget, value)
-            if self.__pressed__: return True
-            return False
-        gobject.timeout_add(10, _f, self, button, value)
-
-    def keyboard_interaction(self, widget, event, value):
-        if event.keyval in (gtk.keysyms.space, gtk.keysyms.Return):
-            self.scroll_viewport(widget, value)
 
     def scroll_viewport(self, widget, value, *args, **kwargs):
         """
