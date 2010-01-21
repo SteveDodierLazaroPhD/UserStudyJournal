@@ -103,8 +103,9 @@ class DayButton(gtk.DrawingArea):
         return False
 
     def __clicked_sender__(self, widget, event):
-        if self.sensitive:
-            self.emit("clicked")
+        if event.y > self.header_size:
+            if self.sensitive:
+                self.emit("clicked")
         self.pressed = False
         self.queue_draw()
         return True
