@@ -31,6 +31,7 @@ try:
 except ImportError:
     gst = None
 
+from zeitgeist.client import ZeitgeistClient
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
     ResultType
 
@@ -43,6 +44,7 @@ try:
 except DBusException:
     print "Tracker disabled."
 
+CLIENT = ZeitgeistClient()
 ITEMS = []
 
 class SearchBox(gtk.EventBox):
@@ -436,7 +438,6 @@ class Item(gtk.HBox):
         self.__init_widget()
         self.show_all()
         self.markup = None
-        #self.set_bookmark_widget()
         self.pin.connect("clicked", lambda x: self.set_bookmarked(False))
         ITEMS.append(self)
         self.pin.hide()
@@ -499,7 +500,6 @@ class Item(gtk.HBox):
             self.highlight()
 
         self.connect("style-set", change_style)
-        #bookmarker.connect("reload", lambda x, y: self.set_bookmark_widget())
         
         self.init_multimedia_tooltip()
         
@@ -532,25 +532,26 @@ class Item(gtk.HBox):
                 menu.attach_to_widget(widget, None)
                 self._populate_popup(menu, item)
                 menu.popup(None, None, None, ev.button, ev.time)
-     
+    
+    def _delete_subject(self, *discard):
+        CLIENT.find_event_ids_for_template(
+            Event.new_for_values(subject_uri=self.subject.uri),
+            lambda ids: CLIENT.delete_events(map(int, ids)))
+    
     def _populate_popup(self, menu, item):
-        open = gtk.ImageMenuItem (gtk.STOCK_OPEN)
-        #open.connect("activate", lambda *discard: self._open_item(item=item))
-        open.show()
-        menu.append(open)
-        bool = bookmarker.is_bookmarked(self.subject.uri)
-        if bool:
-            bookmark = gtk.MenuItem(_("Remove Pin"))
-        else:
-            bookmark = gtk.MenuItem(_("Pin to Today"))
-        bookmark.connect("activate", lambda x: self.set_bookmarked(not bool))
-        bookmark.show()
-        menu.append(bookmark)
-                
-        #tag = gtk.MenuItem(("Edit tags..."))
-        #tag.connect("activate", lambda w: self.tag_item(item))
-        #tag.show()
-        #menu.append(tag)
+        menuitem = gtk.ImageMenuItem(gtk.STOCK_OPEN)
+        menu.append(menuitem)
+        
+        bookmarked = bookmarker.is_bookmarked(self.subject.uri)
+        menuitem = gtk.MenuItem(_("Remove Pin") if bookmarked else _("Pin to Today"))
+        menuitem.connect("activate", lambda x: self.set_bookmarked(not bookmarked))
+        menu.append(menuitem)
+        
+        menuitem = gtk.MenuItem(_("Delete item from Journal"))
+        menuitem.connect("activate", self._delete_subject)
+        menu.append(menuitem)
+        
+        menu.show_all()
 
     def set_bookmarked(self, bool):
         uri = unicode(self.subject.uri)
@@ -558,7 +559,6 @@ class Item(gtk.HBox):
             bookmarker.bookmark(uri)
         else:
             bookmarker.unbookmark(uri)
-        #self.set_bookmark_widget()
 
     def launch(self, *discard):
         if self.gio_file is not None:

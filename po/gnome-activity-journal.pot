@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: zeitgeist@lists.launchpad.net\n"
-"POT-Creation-Date: 2010-01-19 20:57+0000\n"
+"POT-Creation-Date: 2010-01-21 20:02+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,16 +17,20 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: ../gnome-activity-journal:75
+#: ../gnome-activity-journal:76
 msgid "print additional debugging information"
 msgstr ""
 
-#: ../gnome-activity-journal:82
+#: ../gnome-activity-journal:83
 msgid "ERROR"
 msgstr ""
 
-#: ../gnome-activity-journal:82
+#: ../gnome-activity-journal:83
 msgid "Unable to connect to Zeitgeist:"
+msgstr ""
+
+#: ../src/main.py:45 ../extra/gnome-activity-journal.desktop.in.h:1
+msgid "Activity Journal"
 msgstr ""
 
 #. TODO: Move this into Zeitgeist's library, implemented properly
@@ -70,34 +74,6 @@ msgstr ""
 msgid "Other Activities"
 msgstr ""
 
-#: ../src/main.py:43 ../extra/gnome-activity-journal.desktop.in.h:1
-msgid "Activity Journal"
-msgstr ""
-
-#: ../src/main.py:75
-msgid "Go Back in Time"
-msgstr ""
-
-#: ../src/main.py:82
-msgid "Look into the Future"
-msgstr ""
-
-#: ../src/main.py:89
-msgid "Jump to Today"
-msgstr ""
-
-#: ../src/widgets.py:178
-msgid "Type here to search..."
-msgstr ""
-
-#: ../src/widgets.py:472 ../src/widgets.py:542
-msgid "Remove Pin"
-msgstr ""
-
-#: ../src/widgets.py:544
-msgid "Pin to Today"
-msgstr ""
-
 #: ../src/daywidgets.py:51
 msgid "Morning"
 msgstr ""
@@ -111,7 +87,7 @@ msgid "Evening"
 msgstr ""
 
 #: ../src/daywidgets.py:72 ../src/daywidgets.py:214
-#: ../src/histogramwidget/histogramview.py:299
+#: ../src/histogramwidget/histogramview.py:199
 msgid "Today"
 msgstr ""
 
@@ -124,13 +100,29 @@ msgstr ""
 msgid "Pinned items"
 msgstr ""
 
-#: ../src/histogramwidget/histogramview.py:82
+#: ../src/widgets.py:180
+msgid "Type here to search..."
+msgstr ""
+
+#: ../src/widgets.py:474 ../src/widgets.py:546
+msgid "Remove Pin"
+msgstr ""
+
+#: ../src/widgets.py:546
+msgid "Pin to Today"
+msgstr ""
+
+#: ../src/widgets.py:550
+msgid "Delete item from Journal"
+msgstr ""
+
+#: ../src/histogramwidget/histogramview.py:79
 msgid "item"
 msgid_plural "items"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/histogramwidget/histogramview.py:84
+#: ../src/histogramwidget/histogramview.py:81
 msgid "Click today to return to today"
 msgstr ""
 

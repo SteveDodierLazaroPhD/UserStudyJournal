@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GNOME Activity Journal\n"
 "Report-Msgid-Bugs-To: zeitgeist@lists.launchpad.net\n"
-"POT-Creation-Date: 2010-01-19 20:00+0100\n"
+"POT-Creation-Date: 2010-01-21 20:02+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Siegfried-Angel Gevatter Pujals <rainct@ubuntu.com>\n"
 "Language-Team: Siegfried Gevatter <siegfried@gevatter.com>\n"
@@ -12,34 +12,22 @@ msgstr ""
 "X-Poedit-Language: Catalan\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
-#: ../gnome-activity-journal:75
+#: ../gnome-activity-journal:76
 msgid "print additional debugging information"
 msgstr "mostra informació extra de depuració"
 
-#: ../gnome-activity-journal:82
+#: ../gnome-activity-journal:83
 msgid "ERROR"
 msgstr "Error"
 
-#: ../gnome-activity-journal:82
+#: ../gnome-activity-journal:83
 msgid "Unable to connect to Zeitgeist:"
 msgstr "No s'ha pogut establir connexió amb el Zeitgeist:"
 
-#: ../src/main.py:43
+#: ../src/main.py:45
 #: ../extra/gnome-activity-journal.desktop.in.h:1
 msgid "Activity Journal"
 msgstr "Diari d'activitats"
-
-#: ../src/main.py:74
-msgid "Go Back in Time"
-msgstr "Torna endarrere en el temps"
-
-#: ../src/main.py:81
-msgid "Look into the Future"
-msgstr "Mira al futur"
-
-#: ../src/main.py:88
-msgid "Jump to Today"
-msgstr "Vés a avui"
 
 #. TODO: Move this into Zeitgeist's library, implemented properly
 #: ../src/sources.py:40
@@ -101,7 +89,7 @@ msgstr "Vespre"
 
 #: ../src/daywidgets.py:72
 #: ../src/daywidgets.py:214
-#: ../src/histogramwidget/histogramview.py:299
+#: ../src/histogramwidget/histogramview.py:199
 msgid "Today"
 msgstr "Avui"
 
@@ -115,28 +103,32 @@ msgstr "Ahir"
 msgid "Pinned items"
 msgstr "Elements incompatibles"
 
-#: ../src/widgets.py:178
+#: ../src/widgets.py:180
 msgid "Type here to search..."
 msgstr "Escriviu aquí per a cercar..."
 
-#: ../src/widgets.py:472
-#: ../src/widgets.py:542
+#: ../src/widgets.py:474
+#: ../src/widgets.py:546
 #, fuzzy
 msgid "Remove Pin"
 msgstr "Interval de pin_g:"
 
-#: ../src/widgets.py:544
+#: ../src/widgets.py:546
 #, fuzzy
 msgid "Pin to Today"
 msgstr "Vés a avui"
 
-#: ../src/histogramwidget/histogramview.py:82
+#: ../src/widgets.py:550
+msgid "Delete item from Journal"
+msgstr "Suprimeix aquest element del Diari"
+
+#: ../src/histogramwidget/histogramview.py:79
 msgid "item"
 msgid_plural "items"
 msgstr[0] "element"
 msgstr[1] "elements"
 
-#: ../src/histogramwidget/histogramview.py:84
+#: ../src/histogramwidget/histogramview.py:81
 msgid "Click today to return to today"
 msgstr "Feu clic sobre «Avui» per a tornar a avui"
 
@@ -183,6 +175,13 @@ msgstr "Alçada de la finestra"
 #: ../extra/gnome-activity-journal.schemas.in.h:10
 msgid "Window width"
 msgstr "Amplada de la finestra"
+
+#~ msgid "Go Back in Time"
+#~ msgstr "Torna endarrere en el temps"
+#~ msgid "Look into the Future"
+#~ msgstr "Mira al futur"
+#~ msgid "Jump to Today"
+#~ msgstr "Vés a avui"
 
 #, fuzzy
 #~ msgid "%s: %s"
