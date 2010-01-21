@@ -140,7 +140,7 @@ class HistogramWidget(gtk.HBox):
         align.set_padding(0, 0, 0, 0)
         align.add(self.viewport)
         self.histogram.connect("expose-event", self.today_expose)
-        self.histogram.connect("month-frame-clicked", self.today_clicked)
+        self.histogram.connect("button_press_event", self.today_clicked)
         self.histogram.connect("selection-set", self.check_for_today)
         self.histogram.connect("data-updated", self.scroll_to_end)
         self.backward_button = gtk.Button()
@@ -195,12 +195,13 @@ class HistogramWidget(gtk.HBox):
                                       int(self.adjustment.value + self.adjustment.page_size - w -5),
                                       int(event.area.height - widget.bottom_padding/2 - h/2), layout)
 
-    def today_clicked(self, widget, x, y):
+    def today_clicked(self, widget, event):
         """
         Handles all rejected clicks from the outer-click signal and checks to
         see if they were inside of the today text
         """
-        if x > self.adjustment.value + self.adjustment.page_size - self.__today_width__:
+        if (event.x > self.adjustment.value + self.adjustment.page_size - self.__today_width__
+        and self.__today_text__) :
             self.histogram.change_location(len(self.histogram.get_datastore()) - 1)
 
     def check_for_today(self, widget, i):

@@ -112,7 +112,6 @@ class CairoHistogram(gtk.DrawingArea):
         # the index of the first selected item in the datastore.
         "selection-set": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,(gobject.TYPE_INT,)),
         "data-updated":  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,()),
-        "month-frame-clicked": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,(gobject.TYPE_INT,gobject.TYPE_INT))
         }
 
     def __init__(self, datastore = None, selected_range = 0):
@@ -417,8 +416,7 @@ class CairoHistogram(gtk.DrawingArea):
     def mouse_press_interaction(self, widget, event, *args, **kwargs):
         if (event.y > self.get_size_request()[1] - self.bottom_padding and
             event.y < self.get_size_request()[1]):
-            self.emit("month-frame-clicked", event.x, event.y)
-            return True
+            return False
         location = min((self.get_datastore_index_from_cartesian(event.x, event.y), len(self.datastore) - 1))
         if location != self.__last_location__:
             self.change_location(location)
