@@ -144,7 +144,8 @@ class DayButton(gtk.DrawingArea):
             state = gtk.STATE_SELECTED
         else:
             state = gtk.STATE_NORMAL
+        size = 10
         arrow = gtk.ARROW_RIGHT if self.side else gtk.ARROW_LEFT
         self.style.paint_arrow(widget.window, state, gtk.SHADOW_NONE, None,
                                self, "arrow", arrow, True,
-                               w/2, h/2, 5, 5)
+                               w/2-size/2, h/2, size, size)
