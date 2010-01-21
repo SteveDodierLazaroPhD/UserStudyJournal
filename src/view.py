@@ -103,7 +103,14 @@ class ActivityView(gtk.VBox):
         else:
             self.daysbox = gtk.VBox()
 
-        self.pack_start(self.daysbox, True, True, 6)
+            
+        self.scroll = gtk.ScrolledWindow()
+        self.scroll.add_with_viewport(self.daysbox)
+        self.scroll.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_NEVER)
+        for widget in self.scroll:
+            widget.set_shadow_type(gtk.SHADOW_NONE)
+
+        self.pack_start(self.scroll, True, True, 6)
         if refresh:
             self.set_views()
         self.daysbox.show_all()
@@ -136,8 +143,9 @@ class ActivityView(gtk.VBox):
     def set_views(self):
         if not self.daysbox:
             return # nothing to do - TODO: should this be allowed to happen?
-        for w in self.daysbox:
-            self.daysbox.remove(w)
+        
+        new_days = []
+            
         for i in xrange(self.dayrange):
             if not settings.get("view", "Journal") == "Journal":
                 i = (self.dayrange - 1) - i
@@ -147,5 +155,38 @@ class ActivityView(gtk.VBox):
                 dayview = DayWidget(self.start + i*86400,
                     self.start + i*86400 + 86400)
                 self.days[ptime] = dayview
-            self.daysbox.pack_start(self.days[ptime], True, True, 3)
-            self.days[ptime].refresh()
+            new_days.append(self.days[ptime])
+        
+        widgets = self.daysbox.get_children()
+        
+        diff = 0
+        if len(widgets) > 0:
+            first_day = widgets[0]
+            diff = (new_days[0].day_start - first_day.day_start) / 86400
+
+        old_days = self.daysbox.get_children()
+
+        if abs(diff) >= self.dayrange or diff == 0:
+            for w in self.daysbox:
+                self.daysbox.remove(w)
+            for day in new_days:
+                self.daysbox.pack_start(day, True, True, 3)
+                day.refresh()
+
+        elif diff > 0:
+            for i in xrange(diff):
+                self.daysbox.remove(old_days[i])
+                old_days[i].unparent()
+            i = diff
+            for i in xrange(len(new_days)):
+                self.daysbox.pack_start(new_days[i], True, True, 3)
+
+        elif diff < 0:
+            old_days.reverse()
+            for i in xrange(abs(diff)):
+                self.daysbox.remove(old_days[i])
+                old_days[i].unparent()
+            new_days.reverse()
+            for i in xrange(len(new_days)):
+                self.daysbox.pack_start(new_days[i], True, True, 3)
+                self.daysbox.reorder_child(new_days[i], 0)
