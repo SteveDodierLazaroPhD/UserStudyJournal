@@ -156,7 +156,7 @@ class DayButton(gtk.DrawingArea):
         self.style.paint_arrow(widget.window, state, gtk.SHADOW_NONE, None,
                                self, "arrow", arrow, True,
                                w/2-size/2, h/2, size, size)
-        if self.hover:
+        if self.hover and self.sensitive:
             widget.style.paint_focus(widget.window, gtk.STATE_ACTIVE, event.area, widget, None, event.area.x, event.area.y,
                                      event.area.width, event.area.height)
 
