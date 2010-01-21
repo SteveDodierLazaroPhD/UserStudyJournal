@@ -140,7 +140,7 @@ class DayButton(gtk.DrawingArea):
             context.fill()
         if not self.sensitive:
             state = gtk.STATE_INSENSITIVE
-        elif self.is_focus():
+        elif self.is_focus() or self.pressed:
             state = gtk.STATE_SELECTED
         else:
             state = gtk.STATE_NORMAL
