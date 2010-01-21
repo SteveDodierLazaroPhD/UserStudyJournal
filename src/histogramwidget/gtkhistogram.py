@@ -41,7 +41,7 @@ def check_for_new_month(date):
         return True
     return False
 
-def get_gtk_rgba(style, palette, i, shade = 1):
+def get_gtk_rgba(style, palette, i, shade = 1, alpha = 1):
     """Takes a gtk style and returns a RGB tuple
 
     Arguments:
@@ -57,7 +57,7 @@ def get_gtk_rgba(style, palette, i, shade = 1):
         green = f(color.green)
         blue = f(color.blue)
 
-        return (min(red, 1), min(green, 1), min(blue, 1), 1)
+        return (min(red, 1), min(green, 1), min(blue, 1), alpha)
     else: raise TypeError("Not a valid gtk.gdk.Color")
 
 def get_gc_from_colormap(widget, shade):
