@@ -53,6 +53,7 @@ class DayButton(gtk.DrawingArea):
     leading = False
     pressed = False
     sensitive = True
+    hover = False
     header_size = 60
     bg_color = (0, 0, 0, 0)
     header_color = (1, 1, 1, 1)
@@ -66,7 +67,7 @@ class DayButton(gtk.DrawingArea):
         }
     def __init__(self, side = 0, leading = False):
         super(DayButton, self).__init__()
-        self.set_events(gtk.gdk.KEY_PRESS_MASK | gtk.gdk.BUTTON_RELEASE_MASK |
+        self.set_events(gtk.gdk.ENTER_NOTIFY_MASK | gtk.gdk.LEAVE_NOTIFY_MASK | gtk.gdk.KEY_PRESS_MASK | gtk.gdk.BUTTON_RELEASE_MASK |
                         gtk.gdk.BUTTON_PRESS_MASK)
         self.set_flags(gtk.CAN_FOCUS)
         self.leading = leading
@@ -74,12 +75,18 @@ class DayButton(gtk.DrawingArea):
         self.connect("button_press_event", self.__on_press__)
         self.connect("button_release_event", self.__clicked_sender__)
         self.connect("key_press_event", self.__keyboard_clicked_sender__)
+        self.connect("enter_notify_event", self.__on_hover__, True)
+        self.connect("leave_notify_event", self.__on_hover__, False)
         self.connect("expose_event", self.expose)
         self.connect("style-set", self.change_style)
         self.set_size_request(20, -1)
 
     def set_sensitive(self, case):
         self.sensitive = case
+        self.queue_draw()
+
+    def __on_hover__(self, widget, event, switch):
+        self.hover = switch
         self.queue_draw()
 
     def __on_press__(self, widget, event):
@@ -149,3 +156,8 @@ class DayButton(gtk.DrawingArea):
         self.style.paint_arrow(widget.window, state, gtk.SHADOW_NONE, None,
                                self, "arrow", arrow, True,
                                w/2-size/2, h/2, size, size)
+        if self.hover:
+            widget.style.paint_focus(widget.window, gtk.STATE_ACTIVE, event.area, widget, None, event.area.x, event.area.y,
+                                     event.area.width, event.area.height)
+
+
