@@ -62,17 +62,18 @@ except ImportError, e:
     print "-" * 60
     sys.exit(1)
 
+from src import config
+
 # Import zeitgeist.datamodel before running gettext.install, so that it doesn't
 # override the location we set (ie., "build/mo").
 from zeitgeist import datamodel
 
-gettext.install('gnome-activity-journal', 'build/mo', unicode=True)
+gettext.install('gnome-activity-journal', config.GETTEXT_PATH, unicode=True)
 
-from src.config import VERSION
-parser = optparse.OptionParser(version=VERSION)
+parser = optparse.OptionParser(version=config.VERSION)
 parser.add_option("--debug",
-	action = "store_true", default=False, dest="debug",
-	help = _("print additional debugging information"))
+    action = "store_true", default=False, dest="debug",
+    help = _("print additional debugging information"))
 options, arguments = parser.parse_args()
 
 try:
