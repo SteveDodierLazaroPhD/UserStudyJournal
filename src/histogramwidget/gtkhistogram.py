@@ -336,7 +336,6 @@ class CairoHistogram(gtk.DrawingArea):
         - i: a list or a int where the int will select i + selected_range
         """
         self._selected = i
-        self.queue_draw()
         if isinstance(i, int):
             self._selected = range(self._selected, self._selected + self.selected_range)
             self.emit("selection-set", max(i, 0))
@@ -344,6 +343,7 @@ class CairoHistogram(gtk.DrawingArea):
             if len(self._selected) == 0:
                 self._selected = [-1] # Disable color
             self.emit("selection-set", max(i[0], 0))
+        self.queue_draw()
 
     def get_selected(self):
         return self._selected
