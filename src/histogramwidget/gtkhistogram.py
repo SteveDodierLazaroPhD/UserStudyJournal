@@ -24,7 +24,7 @@ the first value a int date, and the second value the number of items on that dat
 where items are
 datastore = []
 datastore.append(time, nitems)
-CairoHistogram.set_data(datastore)
+CairoHistogram.set_datastore(datastore)
 """
 
 import cairo
@@ -128,12 +128,11 @@ class CairoHistogram(gtk.DrawingArea):
         self.set_flags(gtk.CAN_FOCUS)
         self.connect("style-set", self.change_style)
         self.connect("expose_event", self.__expose__)
-        self.connect("button_press_event", self.mouse_interaction)
-        self.connect("button_release_event", self.mouse_interaction_release)
-        self.connect("motion_notify_event", self.mouse_interaction)
+        self.connect("button_press_event", self.mouse_press_interaction)
+        self.connect("motion_notify_event", self.mouse_motion_interaction)
         self.connect("key_press_event", self.keyboard_interaction)
         self.font_name = self.style.font_desc.get_family()
-        self.set_data(datastore if datastore else [], draw = False)
+        self.set_datastore(datastore if datastore else [], draw = False)
         self.selected_range = selected_range
 
     def change_style(self, widget, *args, **kwargs):
@@ -167,7 +166,7 @@ class CairoHistogram(gtk.DrawingArea):
         self.selected_range = selected_range
     set_dayrange = set_selected_range # Legacy compatibility
 
-    def set_data(self, datastore, draw = True):
+    def set_datastore(self, datastore, draw = True):
         """
         Sets the objects datastore attribute using a list
 
@@ -186,7 +185,7 @@ class CairoHistogram(gtk.DrawingArea):
         self.emit("data-updated")
         self.set_selected(len(datastore) - self.selected_range)
 
-    def get_data(self):
+    def get_datastore(self):
         return self.datastore
 
     def prepend_data(self, newdatastore):
@@ -384,7 +383,7 @@ class CairoHistogram(gtk.DrawingArea):
         else:
             raise TypeError("Callback is not a function")
 
-    def get_data_index_from_cartesian(self, x, y):
+    def get_datastore_index_from_cartesian(self, x, y):
         """
         Gets the datastore index from a x, y value
         """
@@ -398,23 +397,29 @@ class CairoHistogram(gtk.DrawingArea):
                 i += 1
             elif event.keyval in (gtk.keysyms.Left, gtk.keysyms.BackSpace):
                 i -= 1
-            if i < len(self.get_data()):
+            if i < len(self.get_datastore()):
                 self.change_location(i)
 
-    def mouse_interaction(self, widget, event, *args, **kwargs):
+    def mouse_motion_interaction(self, widget, event, *args, **kwargs):
         """
         Reacts to mouse moving (while pressed), and clicks
         """
-        location = min((self.get_data_index_from_cartesian(event.x, event.y), len(self.datastore) - 1))
+        location = min((self.get_datastore_index_from_cartesian(event.x, event.y), len(self.datastore) - 1))
         if location != self.__last_location__:
             self.change_location(location)
             self.__last_location__ = location
         return True
 
-    def mouse_interaction_release(self, widget, event, *args, **kwargs):
+    def mouse_press_interaction(self, widget, event, *args, **kwargs):
         if (event.y > self.get_size_request()[1] - self.bottom_padding and
             event.y < self.get_size_request()[1]):
             self.emit("month-frame-clicked", event.x, event.y)
+            return True
+        location = min((self.get_datastore_index_from_cartesian(event.x, event.y), len(self.datastore) - 1))
+        if location != self.__last_location__:
+            self.change_location(location)
+            self.__last_location__ = location
+        return True
 
     def change_location(self, location):
         """Handles click events

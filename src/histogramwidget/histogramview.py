@@ -54,7 +54,7 @@ class TooltipEventBox(gtk.EventBox):
 
     def query_tooltip(self, widget, x, y, keyboard_mode, tooltip):
         if y < self.histogram.get_size_request()[1] - self.histogram.bottom_padding:
-            location = self.histogram.get_data_index_from_cartesian(x, y)
+            location = self.histogram.get_datastore_index_from_cartesian(x, y)
             if location != self._saved_tooltip_location:
                 # don't show the previous tooltip if we moved to another
                 # location
@@ -188,13 +188,13 @@ class HistogramWidget(gtk.HBox):
         see if they were inside of the today text
         """
         if x > self.adjustment.value + self.adjustment.page_size - self.__today_width__:
-            self.histogram.change_location(len(self.histogram.get_data()) - 1)
+            self.histogram.change_location(len(self.histogram.get_datastore()) - 1)
 
     def check_for_today(self, widget, i):
         """
         Changes today to a empty string if the selected item is not today
         """
-        if i + self.histogram.selected_range == len(self.histogram.get_data()):
+        if i + self.histogram.selected_range == len(self.histogram.get_datastore()):
             self.__today_text__ = ""
             self.histogram.queue_draw()
         elif len(self.__today_text__) == 0:

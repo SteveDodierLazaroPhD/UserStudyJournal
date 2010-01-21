@@ -31,9 +31,9 @@ class ActivityView(gtk.VBox):
     def __init__(self, cal):
 
         gtk.VBox.__init__(self)
-        
+
         self.cal = cal
-        
+
         self.days = {}
 
         self.daysbox = None
@@ -57,12 +57,12 @@ class ActivityView(gtk.VBox):
         self.pack_start(self.searchbox, False, False)
         self.searchbox.connect("search", self._handle_search_results)
         self.searchbox.connect("clear", self._clear_search_results)
-    
+
     def _clear_search_results(self, widget):
         self.cal.histogram.clear_highlighted()
         for item in ITEMS:
             item.highlight()
-    
+
     def _handle_search_results(self, widget, results):
         datastore = self.cal.histogram.datastore
         keys = []
@@ -75,7 +75,7 @@ class ActivityView(gtk.VBox):
 
         dates = []
         for i, (date, nitems) in enumerate(datastore):
-            if int(date) in keys: 
+            if int(date) in keys:
                 dates.append(i)
         self.cal.histogram.set_highlighted(dates)
         for item in ITEMS:
@@ -88,8 +88,8 @@ class ActivityView(gtk.VBox):
                 end = selection_date  + 86399
                 start = selection_date - (self.dayrange - 1) * 86400
                 self.set_dayrange(start, end)
-        
-        histogramdata.datelist(90, self.cal.histogram.set_data)
+
+        histogramdata.datelist(90, self.cal.histogram.set_datastore)
         self.cal.histogram.add_selection_callback(selection_callback)
 
     def _set_view_type(self, refresh=False):
@@ -103,14 +103,7 @@ class ActivityView(gtk.VBox):
         else:
             self.daysbox = gtk.VBox()
 
-            
-        self.scroll = gtk.ScrolledWindow()
-        self.scroll.add_with_viewport(self.daysbox)
-        self.scroll.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_NEVER)
-        for widget in self.scroll:
-            widget.set_shadow_type(gtk.SHADOW_NONE)
-
-        self.pack_start(self.scroll, True, True, 6)
+        self.pack_start(self.daysbox, True, True, 0)
         if refresh:
             self.set_views()
         self.daysbox.show_all()
