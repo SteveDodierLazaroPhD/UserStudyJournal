@@ -101,7 +101,7 @@ class JournalHistogram(CairoHistogram):
         self.stroke_color = get_gtk_rgba(self.style, "bg", 0)
         self.shadow_color = get_gtk_rgba(self.style, "bg", 0, 0.98)
         self.font_size = self.style.font_desc.get_size()/1024
-        self.bottom_padding = self.font_size + 9
+        self.bottom_padding = self.font_size + 9 + widget.style.ythickness
         self.gc = self.style.text_gc[gtk.STATE_NORMAL]
         self.pangofont = pango.FontDescription(self.font_name + " %d" % self.font_size)
         self.pangofont.set_weight(pango.WEIGHT_BOLD)
@@ -177,7 +177,7 @@ class HistogramWidget(gtk.HBox):
             self.__today_width__ = w + 10
             widget.style.paint_box(widget.window, gtk.STATE_NORMAL, gtk.SHADOW_OUT, event.area,
                                    widget, "button", int(self.adjustment.value + self.adjustment.page_size - self.__today_width__),
-                                   int(event.area.height - widget.bottom_padding + 1), self.__today_width__, widget.bottom_padding - 1)
+                                   int(event.area.height - widget.bottom_padding + 2), self.__today_width__, widget.bottom_padding - 2)
             widget.window.draw_layout(widget.gc,
                                       int(self.adjustment.value + self.adjustment.page_size - w -5),
                                       int(event.area.height - widget.bottom_padding/2 - h/2), layout)

@@ -153,7 +153,7 @@ class CairoHistogram(gtk.DrawingArea):
         self.font_size = self.style.font_desc.get_size()/1024
         self.pangofont = pango.FontDescription(self.font_name + " %d" % self.font_size)
         self.pangofont.set_weight(pango.WEIGHT_BOLD)
-        self.bottom_padding = self.font_size + 9
+        self.bottom_padding = self.font_size + 9 + widget.style.ythickness
         self.gc = get_gc_from_colormap(widget, 0.6)
 
     def set_selected_range(self, selected_range):
