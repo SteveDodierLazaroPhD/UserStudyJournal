@@ -37,6 +37,14 @@ import time
 
 from gtkhistogram import *
 
+def _in_area(coord_x, coord_y, area):
+    """check if some given X,Y coordinates are within an area.
+    area is either None or a (top_left_x, top_left_y, width, height)-tuple"""
+    if area is None:
+        return False
+    area_x, area_y, area_width, area_height = area
+    return (area_x <= coord_x <= area_x + area_width) and \
+        (area_y <= coord_y <= area_y + area_height)
 
 class TooltipEventBox(gtk.EventBox):
     """
@@ -69,7 +77,7 @@ class TooltipEventBox(gtk.EventBox):
             date = datetime.date.fromtimestamp(timestamp).strftime("%A, %d %B, %Y")
             tooltip.set_text("%s\n%i %s" % (date, count,
                                             gettext.ngettext("item", "items", count)))
-        elif len(self.container.__today_text__) > 0:
+        elif self.container.__today_text__ and _in_area(x, y, self.container.__today_area__):
             tooltip.set_text(_("Click today to return to today"))
         else:
             return False
@@ -114,6 +122,7 @@ class HistogramWidget(gtk.HBox):
     __pressed__ = False
     __today_width__ = 0
     __today_text__ = ""
+    __today_area__ = None
 
     def __init__(self, histo_type = None):
         """
@@ -175,9 +184,13 @@ class HistogramWidget(gtk.HBox):
             layout.set_font_description(pangofont)
             w, h = layout.get_pixel_size()
             self.__today_width__ = w + 10
+            self.__today_area__ = (
+                int(self.adjustment.value + self.adjustment.page_size - self.__today_width__),
+                int(event.area.height - widget.bottom_padding + 2),
+                self.__today_width__,
+                widget.bottom_padding - 2)
             widget.style.paint_box(widget.window, gtk.STATE_NORMAL, gtk.SHADOW_OUT, event.area,
-                                   widget, "button", int(self.adjustment.value + self.adjustment.page_size - self.__today_width__),
-                                   int(event.area.height - widget.bottom_padding + 2), self.__today_width__, widget.bottom_padding - 2)
+                widget, "button", *self.__today_area__)
             widget.window.draw_layout(widget.gc,
                                       int(self.adjustment.value + self.adjustment.page_size - w -5),
                                       int(event.area.height - widget.bottom_padding/2 - h/2), layout)
@@ -196,6 +209,7 @@ class HistogramWidget(gtk.HBox):
         """
         if i + self.histogram.selected_range == len(self.histogram.get_datastore()):
             self.__today_text__ = ""
+            self.__today_area__ = None
             self.histogram.queue_draw()
         elif len(self.__today_text__) == 0:
             self.__today_text__ = _("Today") + " »"
