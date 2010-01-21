@@ -139,22 +139,12 @@ class DayButton(gtk.DrawingArea):
             context.rectangle(0, self.header_size, w,  h)
             context.fill()
         if not self.sensitive:
-            color = self.arrow_color_insensitive
-        elif self.pressed or self.is_focus():
-            color = self.arrow_color_selected
+            state = gtk.STATE_INSENSITIVE
+        elif self.is_focus():
+            state = gtk.STATE_SELECTED
         else:
-            color = self.arrow_color
-        context.set_source_rgba(*color)
-        context.set_line_width(2)
-        context.set_line_cap(cairo.LINE_CAP_ROUND)
-        context.set_line_join(cairo.LINE_JOIN_ROUND)
-        v = 2
-        if self.side:
-            context.move_to(w/2 - v, h/2 - 2*v)
-            context.line_to(w/2 + v, h/2)
-            context.line_to(w/2 - v, h/2 + 2*v)
-        else:
-            context.move_to(w/2 + v, h/2 + 2*v)
-            context.line_to(w/2 - v, h/2)
-            context.line_to(w/2 + v, h/2 - 2*v)
-        context.stroke()
+            state = gtk.STATE_NORMAL
+        arrow = gtk.ARROW_RIGHT if self.side else gtk.ARROW_LEFT
+        self.style.paint_arrow(widget.window, state, gtk.SHADOW_NONE, None,
+                               self, "arrow", arrow, True,
+                               w/2, h/2, 5, 5)
