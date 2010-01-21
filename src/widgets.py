@@ -347,6 +347,7 @@ class StaticPreviewTooltip(PreviewTooltip):
         img.set_alignment(0.5, 0.5)
         img.show_all()
         self.replace_content(img)
+        del pixbuf, size
         return True
         
     def _do_update_preview(self, monitor, file, other_file, event_type):

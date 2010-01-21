@@ -20,11 +20,13 @@
 
 import time
 import datetime
+import gc
 
 from widgets import *
 from daywidgets import *
 from histogramwidget import histogramdata
 from config import settings
+
 
 class ActivityView(gtk.VBox):
 
@@ -167,19 +169,27 @@ class ActivityView(gtk.VBox):
                 day.refresh()
 
         elif diff > 0:
+            for i in xrange(len(new_days)):
+                self.daysbox.pack_start(new_days[i], True, True, 3)
+                
+            # SCROLL HERE to new_days[i]
+                
             for i in xrange(diff):
                 self.daysbox.remove(old_days[i])
                 old_days[i].unparent()
-            i = diff
-            for i in xrange(len(new_days)):
-                self.daysbox.pack_start(new_days[i], True, True, 3)
 
         elif diff < 0:
             old_days.reverse()
-            for i in xrange(abs(diff)):
-                self.daysbox.remove(old_days[i])
-                old_days[i].unparent()
             new_days.reverse()
             for i in xrange(len(new_days)):
                 self.daysbox.pack_start(new_days[i], True, True, 3)
                 self.daysbox.reorder_child(new_days[i], 0)
+            
+            # SCROLL HERE to new_days[i]
+            
+            for i in xrange(abs(diff)):
+                self.daysbox.remove(old_days[i])
+                old_days[i].unparent()
+                
+        del new_days, old_days, diff
+        gc.collect()
