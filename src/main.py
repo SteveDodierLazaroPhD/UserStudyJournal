@@ -96,8 +96,9 @@ class Portal(gtk.Window):
         hbox.pack_start(self.rbox, False, False, 3)
 
         self.vbox.pack_start(hbox, True, True, 6)
-
-        self.vbox.pack_end(self.cal, False, False)
+        calhbox = gtk.HBox()
+        calhbox.pack_start(self.cal, True, True, 28)
+        self.vbox.pack_end(calhbox, False, False)
 
 
         self._request_size()

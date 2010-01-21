@@ -115,7 +115,7 @@ class JournalHistogram(CairoHistogram):
         self.pangofont.set_weight(pango.WEIGHT_BOLD)
 
 
-class HistogramWidget(gtk.HBox):
+class HistogramWidget(gtk.Viewport):
     """
     A container for a CairoHistogram which allows you to scroll
     """
@@ -128,29 +128,23 @@ class HistogramWidget(gtk.HBox):
         Arguments:
         - used_themed_histogram: if true use JournalHistogram over CairoHistogram
         """
-        super(gtk.HBox, self).__init__()
-        self.viewport = gtk.Viewport()
-        self.viewport.set_shadow_type(gtk.SHADOW_NONE)
+        super(HistogramWidget, self).__init__()
+        self.set_shadow_type(gtk.SHADOW_NONE)
         self.histogram = histo_type()
         self.eventbox = TooltipEventBox(self.histogram, self)
-        self.viewport.set_size_request(600,75)
-        self.viewport.add(self.eventbox)
-        align = gtk.Alignment(0,0,1,1)
-        align.set_padding(0, 0, 0, 0)
-        align.add(self.viewport)
+        self.set_size_request(600,75)
+        self.add(self.eventbox)
         self.histogram.connect("expose-event", self.today_expose)
         self.histogram.connect("button_press_event", self.today_clicked)
         self.histogram.connect("selection-set", self.check_for_today)
         self.histogram.connect("data-updated", self.scroll_to_end)
         self.histogram.connect("data-updated", self.scroll_to_end)
-        self.pack_start(align, True, True, 28)
-        self.adjustment = self.viewport.get_hadjustment()
-        self.adjustment.set_value(1) # Needs to be set twice to work
-        self.adjustment.set_value(self.histogram.max_width - self.adjustment.page_size)
+        hadjustment = self.get_hadjustment()
+        hadjustment.set_value(1) # Needs to be set twice to work
+        hadjustment.set_value(self.histogram.max_width - hadjustment.page_size)
         self.histogram.connect("selection-set", self.scrubbing_fix)
         self.histogram.queue_draw()
-        self.viewport.queue_draw()
-        self.set_focus_chain((self.histogram,))
+        self.queue_draw()
 
     def today_expose(self, widget, event, *args, **kwargs):
         """
@@ -158,6 +152,7 @@ class HistogramWidget(gtk.HBox):
         draw today on the drawing area window
         """
         if len(self.__today_text__):
+            hadjustment = self.get_hadjustment()
             context = widget.window.cairo_create()
             context.set_source_rgba(*widget.bg_color)
             layout = widget.create_pango_layout(self.__today_text__)
@@ -168,14 +163,14 @@ class HistogramWidget(gtk.HBox):
             w, h = layout.get_pixel_size()
             self.__today_width__ = w + 10
             self.__today_area__ = (
-                int(self.adjustment.value + self.adjustment.page_size - self.__today_width__),
+                int(hadjustment.value + hadjustment.page_size - self.__today_width__),
                 int(event.area.height - widget.bottom_padding + 2),
                 self.__today_width__,
                 widget.bottom_padding - 2)
             widget.style.paint_box(widget.window, gtk.STATE_NORMAL, gtk.SHADOW_OUT, event.area,
-                widget, "button", *self.__today_area__)
+                                   widget, "button", *self.__today_area__)
             widget.window.draw_layout(widget.gc,
-                                      int(self.adjustment.value + self.adjustment.page_size - w -5),
+                                      int(hadjustment.value + hadjustment.page_size - w -5),
                                       int(event.area.height - widget.bottom_padding/2 - h/2), layout)
 
     def today_clicked(self, widget, event):
@@ -183,7 +178,8 @@ class HistogramWidget(gtk.HBox):
         Handles all rejected clicks from the outer-click signal and checks to
         see if they were inside of the today text
         """
-        if (event.x > self.adjustment.value + self.adjustment.page_size - self.__today_width__
+        hadjustment = self.get_hadjustment()
+        if (event.x > hadjustment.value + hadjustment.page_size - self.__today_width__
         and self.__today_text__) :
             self.histogram.change_location(len(self.histogram.get_datastore()) - 1)
 
@@ -206,32 +202,35 @@ class HistogramWidget(gtk.HBox):
         - value: the number of pixels to scroll
           Use negative to scroll towards the left
         """
-        adjustment = self.viewport.get_hadjustment()
-        page_size = adjustment.get_page_size()
+        hadjustment = self.get_hadjustment()
+        page_size = hadjustment.get_page_size()
         if value < 1:
-            newadjval = 0 if value > adjustment.value else (adjustment.value + value)
-        elif adjustment.value + page_size > self.histogram.max_width - value:
+            newadjval = 0 if value > hadjustment.value else (hadjustment.value + value)
+        elif hadjustment.value + page_size > self.histogram.max_width - value:
             newadjval = self.histogram.max_width - page_size
         else:
-            newadjval = adjustment.value + value
-        adjustment.set_value(newadjval)
+            newadjval = hadjustment.value + value
+        hadjustment.set_value(newadjval)
         self.histogram.queue_draw()
 
     def scroll_to_end(self, *args, **kwargs):
         """
         Scroll to the end of the drawing area's viewport
         """
-        self.adjustment.set_value(1)
-        self.adjustment.set_value(self.histogram.max_width - self.adjustment.page_size)
+        hadjustment = self.get_hadjustment()
+        hadjustment.set_value(1)
+        hadjustment.set_value(self.histogram.max_width - hadjustment.page_size)
 
     def scrubbing_fix(self, widget, i, *args, **kwargs):
         """
         Allows scrubbing to scroll the scroll window
         """
+        hadjustment = self.get_hadjustment()
         proposed_xa = ((i) * self.histogram.xincrement) + self.histogram.start_x_padding
         proposed_xb = ((i + self.histogram.selected_range) * self.histogram.xincrement) + self.histogram.start_x_padding
-        if proposed_xa < self.adjustment.value:
-            self.adjustment.set_value(proposed_xa)
-        elif proposed_xb > self.adjustment.value + self.adjustment.page_size:
-            self.adjustment.set_value(proposed_xb - self.adjustment.page_size)
+        if proposed_xa < hadjustment.value:
+            hadjustment.set_value(proposed_xa)
+        elif proposed_xb > hadjustment.value + hadjustment.page_size:
+            hadjustment.set_value(proposed_xb - hadjustment.page_size)
+
 
