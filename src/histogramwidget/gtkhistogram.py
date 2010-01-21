@@ -123,13 +123,14 @@ class CairoHistogram(gtk.DrawingArea):
         super(CairoHistogram, self).__init__()
         self.set_events(gtk.gdk.KEY_PRESS_MASK | gtk.gdk.BUTTON_MOTION_MASK |
                         gtk.gdk.POINTER_MOTION_HINT_MASK | gtk.gdk.BUTTON_RELEASE_MASK |
-                        gtk.gdk.BUTTON_PRESS_MASK)
+                        gtk.gdk.BUTTON_PRESS_MASK| gtk.gdk.SCROLL_MASK)
         self.set_flags(gtk.CAN_FOCUS)
         self.connect("style-set", self.change_style)
         self.connect("expose_event", self.__expose__)
         self.connect("button_press_event", self.mouse_press_interaction)
         self.connect("motion_notify_event", self.mouse_motion_interaction)
         self.connect("key_press_event", self.keyboard_interaction)
+        self.connect("scroll-event", self.mouse_scroll_interaction)
         self.font_name = self.style.font_desc.get_family()
         self.set_datastore(datastore if datastore else [], draw = False)
         self.selected_range = selected_range
@@ -422,6 +423,15 @@ class CairoHistogram(gtk.DrawingArea):
             self.change_location(location)
             self.__last_location__ = location
         return True
+
+    def mouse_scroll_interaction(self, widget, event):
+        i = self.get_selected()[-1]
+        if (event.direction in (gtk.gdk.SCROLL_UP, gtk.gdk.SCROLL_RIGHT)):
+            if i+1< len(self.get_datastore()):
+                self.change_location(i+1)
+        elif (event.direction in (gtk.gdk.SCROLL_DOWN, gtk.gdk.SCROLL_LEFT)):
+            if 0 <= i-1:
+                self.change_location(i-1)
 
     def change_location(self, location):
         """Handles click events
