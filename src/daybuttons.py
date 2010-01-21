@@ -130,6 +130,7 @@ class DayButton(gtk.DrawingArea):
         x = 0; y = 0
         r = 5
         w, h = event.area.width, event.area.height
+        size = 20
         if self.sensitive:
             context.set_source_rgba(*(self.leading_header_color if self.leading else self.header_color))
             context.new_sub_path()
@@ -145,19 +146,20 @@ class DayButton(gtk.DrawingArea):
             context.set_source_rgba(*self.internal_color)
             context.rectangle(0, self.header_size, w,  h)
             context.fill()
+            if self.hover:
+                widget.style.paint_box(widget.window, gtk.STATE_PRELIGHT, gtk.SHADOW_OUT,
+                                         event.area, widget, "button", (w-size)/2, h/2,
+                                         size, size)
+        size = 10
         if not self.sensitive:
             state = gtk.STATE_INSENSITIVE
         elif self.is_focus() or self.pressed:
             state = gtk.STATE_SELECTED
         else:
             state = gtk.STATE_NORMAL
-        size = 10
         arrow = gtk.ARROW_RIGHT if self.side else gtk.ARROW_LEFT
         self.style.paint_arrow(widget.window, state, gtk.SHADOW_NONE, None,
                                self, "arrow", arrow, True,
-                               w/2-size/2, h/2, size, size)
-        if self.hover and self.sensitive:
-            widget.style.paint_focus(widget.window, gtk.STATE_ACTIVE, event.area, widget, None, event.area.x, event.area.y,
-                                     event.area.width, event.area.height)
+                               w/2-size/2, h/2 + size/2, size, size)
 
 
