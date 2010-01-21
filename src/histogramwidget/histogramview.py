@@ -122,6 +122,7 @@ class HistogramWidget(gtk.Viewport):
     __today_width__ = 0
     __today_text__ = ""
     __today_area__ = None
+    __today_hover__ = False
 
     def __init__(self, histo_type = None):
         """
@@ -136,6 +137,7 @@ class HistogramWidget(gtk.Viewport):
         self.add(self.eventbox)
         self.histogram.connect("expose-event", self.today_expose)
         self.histogram.connect("button_press_event", self.today_clicked)
+        self.histogram.connect("motion_notify_event", self.today_hover)
         self.histogram.connect("selection-set", self.check_for_today)
         self.histogram.connect("data-updated", self.scroll_to_end)
         self.histogram.connect("data-updated", self.scroll_to_end)
@@ -167,11 +169,27 @@ class HistogramWidget(gtk.Viewport):
                 int(event.area.height - widget.bottom_padding + 2),
                 self.__today_width__,
                 widget.bottom_padding - 2)
-            widget.style.paint_box(widget.window, gtk.STATE_NORMAL, gtk.SHADOW_OUT, event.area,
+            state = gtk.STATE_SELECTED if self.__today_hover__ else gtk.STATE_NORMAL
+            widget.style.paint_box(widget.window, state, gtk.SHADOW_OUT, event.area,
                                    widget, "button", *self.__today_area__)
             widget.window.draw_layout(widget.gc,
                                       int(hadjustment.value + hadjustment.page_size - w -5),
                                       int(event.area.height - widget.bottom_padding/2 - h/2), layout)
+
+    def today_hover(self, widget, event):
+        hadjustment = self.get_hadjustment()
+        if (self.__today_text__ and
+            event.y > self.get_size_request()[1] - self.histogram.bottom_padding and
+            event.x > hadjustment.value + hadjustment.page_size - self.__today_width__):
+            if not self.__today_hover__:
+                self.__today_hover__ = True
+                self.histogram.queue_draw()
+            return True
+        if self.__today_hover__:
+            self.__today_hover__ = False
+            self.histogram.queue_draw()
+        return False
+
 
     def today_clicked(self, widget, event):
         """
@@ -179,8 +197,7 @@ class HistogramWidget(gtk.Viewport):
         see if they were inside of the today text
         """
         hadjustment = self.get_hadjustment()
-        if (event.x > hadjustment.value + hadjustment.page_size - self.__today_width__
-        and self.__today_text__) :
+        if (self.__today_text__ and event.x > hadjustment.value + hadjustment.page_size - self.__today_width__):
             self.histogram.change_location(len(self.histogram.get_datastore()) - 1)
 
     def check_for_today(self, widget, i):
