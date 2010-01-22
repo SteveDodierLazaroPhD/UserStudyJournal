@@ -92,6 +92,7 @@ class CairoHistogram(gtk.DrawingArea):
     stroke_width = 1
     stroke_offset = 0
     min_column_height = 4
+    max_column_height = 101
     gc = None
     pangofont = None
     __disable_mouse_motion__ = False
@@ -185,6 +186,7 @@ class CairoHistogram(gtk.DrawingArea):
             self.largest = 1
             for date, nitems in self.__datastore__:
                 if nitems > self.largest: self.largest = nitems
+            if self.largest > self.max_column_height: self.largest = self.max_column_height
             self.max_width = self.xincrement + (self.xincrement *len(datastore))
         else:
             raise TypeError("Datastore is not a <list>")
@@ -299,6 +301,8 @@ class CairoHistogram(gtk.DrawingArea):
         """
         if nitems < 2:
             nitems = 2
+        elif nitems > self.max_column_height:
+            nitems = self.max_column_height
         maxheight = maxheight - self.bottom_padding
         height = int(((float(nitems)/self.largest)*(maxheight-2))) - self.top_padding
         if height < self.min_column_height:

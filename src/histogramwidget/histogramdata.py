@@ -33,19 +33,15 @@ def datelist(n, callback):
     if n == -1:
         n = int(time.time()/86400)
     today = int(time.mktime(time.strptime(time.strftime("%d %B %Y"), "%d %B %Y")))
-    today = today - n*86400 
-    
+    today = today - n*86400
+
     x = []
-    
+
     def _handle_find_events(ids):
-        if len(ids) > 100:
-            count = 101
-        else:
-            count = len(ids)
-        x.append((today+len(x)*86400, count))
+        x.append((today+len(x)*86400, len(ids)))
         if len(x) == n+1:
             callback(x)
-    
+
     def get_ids(start, end):
         event_templates = [
             Event.new_for_values(interpretation=Interpretation.VISIT_EVENT.uri),
@@ -53,6 +49,6 @@ def datelist(n, callback):
         CLIENT.find_event_ids_for_templates(event_templates,
             _handle_find_events, [start * 1000, end * 1000],
             num_events=50000, result_type=0)
-    
+
     for i in xrange(n+1):
        get_ids(today+i*86400, today+i*86400+86399)
