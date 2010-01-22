@@ -67,8 +67,8 @@ class _install(orig_install):
         # Symlink the 48x48 PNG icon into share/pixmaps
         self._create_symlink(
             'share/gnome-activity-journal/data/icons/hicolor/48x48/apps/' \
-                'gnome-activity-journal.svg',
-            'share/pixmaps/gnome-activity-journal.svg')
+                'gnome-activity-journal.png',
+            'share/pixmaps/gnome-activity-journal.png')
         # Symlink the icons so that the Journal can find them
         self._create_symlink(
             'share/icons/',
