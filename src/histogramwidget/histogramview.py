@@ -137,9 +137,9 @@ class HistogramWidget(gtk.Viewport):
         self.set_size_request(600,75)
         self.add(self.eventbox)
         self.histogram.connect("expose-event", self.today_expose)
-        self.histogram.connect("button_press_event", self.today_clicked)
-        self.histogram.connect("motion_notify_event", self.today_hover)
-        self.histogram.connect("leave_notify_event", self.__today_leave_handler__)
+        self.histogram.connect("button_press_event", self.footer_clicked)
+        self.histogram.connect("motion_notify_event", self.footer_hovered)
+        self.histogram.connect("leave_notify_event", self.__widget_leave_handler__)
         self.histogram.connect("selection-set", self.check_for_today)
         self.histogram.connect("data-updated", self.scroll_to_end)
         self.histogram.connect("data-updated", self.scroll_to_end)
@@ -181,18 +181,20 @@ class HistogramWidget(gtk.Viewport):
             return True
         return False
 
-    def __today_leave_handler__(self, widget, event):
+    def __widget_leave_handler__(self, widget, event):
         """
         Clears hover effects when you leave the widget
         """
         self.__today_hover__ = False
         self.queue_draw()
+        return True
 
-    def today_hover(self, widget, event):
+    def footer_hovered(self, widget, event):
         """
         Highlights the today button if you hover over it
         """
         hadjustment = self.get_hadjustment()
+        # Check if the today section of the footer was hovered
         if (self.__today_text__ and
             event.y > self.get_size_request()[1] - self.histogram.bottom_padding and
             event.x > hadjustment.value + hadjustment.page_size - self.__today_width__):
@@ -206,14 +208,19 @@ class HistogramWidget(gtk.Viewport):
         return False
 
 
-    def today_clicked(self, widget, event):
+    def footer_clicked(self, widget, event):
         """
-        Handles all rejected clicks from the outer-click signal and checks to
-        see if they were inside of the today text
+        Handles all rejected clicks from bellow the histogram internal view and
+        checks to see if they were inside of the today text
         """
         hadjustment = self.get_hadjustment()
+        # Check for today button click
         if (self.__today_text__ and event.x > hadjustment.value + hadjustment.page_size - self.__today_width__):
             self.histogram.change_location(len(self.histogram.get_datastore()) - 1)
+            return True
+        else:
+            pass # Drag here
+        return False
 
     def check_for_today(self, widget, i):
         """
@@ -225,6 +232,7 @@ class HistogramWidget(gtk.Viewport):
             self.histogram.queue_draw()
         elif len(self.__today_text__) == 0:
             self.__today_text__ = _("Today") + " »"
+        return True
 
     def scroll_viewport(self, widget, value, *args, **kwargs):
         """
