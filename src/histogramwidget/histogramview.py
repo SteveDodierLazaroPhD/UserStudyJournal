@@ -226,7 +226,7 @@ class HistogramWidget(gtk.Viewport):
         """
         Changes today to a empty string if the selected item is not today
         """
-        if ii == len(self.histogram.get_datastore()):
+        if ii == len(self.histogram.get_datastore())-1:
             self.__today_text__ = ""
             self.__today_area__ = None
             self.histogram.queue_draw()
