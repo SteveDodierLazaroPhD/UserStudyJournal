@@ -125,16 +125,16 @@ class HistogramWidget(gtk.Viewport):
     __today_area__ = None
     __today_hover__ = False
 
-    def __init__(self, histo_type = None):
+    def __init__(self, histo_type, size = (600, 75)):
         """
         Arguments:
-        - used_themed_histogram: if true use JournalHistogram over CairoHistogram
+        - histo_type = a CairoHistogram or a derivative
         """
         super(HistogramWidget, self).__init__()
         self.set_shadow_type(gtk.SHADOW_NONE)
         self.histogram = histo_type()
         self.eventbox = TooltipEventBox(self.histogram, self)
-        self.set_size_request(600,75)
+        self.set_size_request(*size)
         self.add(self.eventbox)
         self.histogram.connect("expose-event", self.today_expose)
         self.histogram.connect("button_press_event", self.footer_clicked)
@@ -150,7 +150,7 @@ class HistogramWidget(gtk.Viewport):
         self.histogram.queue_draw()
         self.queue_draw()
 
-    def today_expose(self, widget, event, *args, **kwargs):
+    def today_expose(self, widget, event):
         """
         A double drawing hack to draw twice on a drawing areas window. It should
         draw today on the drawing area window
@@ -207,7 +207,6 @@ class HistogramWidget(gtk.Viewport):
             self.histogram.queue_draw()
         return False
 
-
     def footer_clicked(self, widget, event):
         """
         Handles all rejected clicks from bellow the histogram internal view and
@@ -234,25 +233,6 @@ class HistogramWidget(gtk.Viewport):
             self.__today_text__ = _("Today") + " »"
         return True
 
-    def scroll_viewport(self, widget, value, *args, **kwargs):
-        """
-        Scrolls the viewport over value number of days
-
-        Arguments:
-        - value: the number of pixels to scroll
-          Use negative to scroll towards the left
-        """
-        hadjustment = self.get_hadjustment()
-        page_size = hadjustment.get_page_size()
-        if value < 1:
-            newadjval = 0 if value > hadjustment.value else (hadjustment.value + value)
-        elif hadjustment.value + page_size > self.histogram.max_width - value:
-            newadjval = self.histogram.max_width - page_size
-        else:
-            newadjval = hadjustment.value + value
-        hadjustment.set_value(newadjval)
-        self.histogram.queue_draw()
-
     def scroll_to_end(self, *args, **kwargs):
         """
         Scroll to the end of the drawing area's viewport
@@ -272,5 +252,4 @@ class HistogramWidget(gtk.Viewport):
             hadjustment.set_value(proposed_xa)
         elif proposed_xb > hadjustment.value + hadjustment.page_size:
             hadjustment.set_value(proposed_xb - hadjustment.page_size)
-
 

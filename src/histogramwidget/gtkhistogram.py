@@ -96,7 +96,7 @@ class CairoHistogram(gtk.DrawingArea):
     pangofont = None
     __disable_mouse_motion__ = False
     selected_range = 0
-    highlighted = []
+    __highlighted__ = tuple()
     __callbacks__ = None
     __last_location__ = -1
     bg_color = (1, 1, 1, 1)
@@ -141,7 +141,7 @@ class CairoHistogram(gtk.DrawingArea):
         self.set_datastore(datastore if datastore else [], draw = False)
         self.selected_range = selected_range
 
-    def change_style(self, widget, *args, **kwargs):
+    def change_style(self, widget, old_style):
         """
         Sets the widgets style and coloring
         """
@@ -259,7 +259,6 @@ class CairoHistogram(gtk.DrawingArea):
         - context: The drawingarea's cairo context from the expose event
         - event: a gtk event with x and y values
         - selected: a list of the selected columns
-        - highlighted: a list of the highlighted columns
         """
         x = self.start_x_padding
         y = event.area.height
@@ -269,7 +268,7 @@ class CairoHistogram(gtk.DrawingArea):
         for date, nitems in self.__datastore__:
             if check_for_new_month(date):
                 months_positions += [(date, x)]
-            if len(self.highlighted) > 0 and i >= self.highlighted[0] and i <= self.highlighted[-1] and i in self.highlighted:
+            if len(self.__highlighted__) > 0 and i >= self.__highlighted__[0] and i <= self.__highlighted__[-1] and i in self.__highlighted__:
                 color = self.column_color_selected_alternative if i in selected else self.column_color_alternative
             elif not selected:
                 color = self.column_color_normal
@@ -347,12 +346,9 @@ class CairoHistogram(gtk.DrawingArea):
         """
         self.__selected__ = i
         if isinstance(i, int):
-            self.__selected__ = range(self.__selected__, self.__selected__ + self.selected_range)
+            self.__selected__ = range(i, i + self.selected_range)
             self.emit("selection-set", max(i, 0), max(i + self.selected_range - 1, 0))
-        elif isinstance(self.__selected__, list):
-            if len(self.__selected__) == 0:
-                self.__selected__ = [-1] # Disable color
-            self.emit("selection-set", max(i[0], 0), max(i[-1], 0))
+        else: self.__selected__ = []
         self.queue_draw()
         return True
 
@@ -376,13 +372,13 @@ class CairoHistogram(gtk.DrawingArea):
         - highlighted: a list of indexes to be highlighted
         """
         if isinstance(highlighted, list):
-            self.highlighted = highlighted
+            self.__highlighted__ = highlighted
         else: raise TypeError("highlighted is not a list")
         self.queue_draw()
 
     def clear_highlighted(self):
         """Clears the highlighted color"""
-        self.highlighted = []
+        self.__highlighted__ = []
         self.queue_draw()
 
     def add_selection_callback(self, callback):
