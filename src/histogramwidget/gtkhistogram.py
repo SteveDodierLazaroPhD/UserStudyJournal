@@ -119,13 +119,12 @@ class CairoHistogram(gtk.DrawingArea):
     __connections__ = {"style-set": "change_style",
                        "expose_event": "__expose__",
                        "button_press_event": "mouse_press_interaction",
-                       "button_release_event": "mouse_release_interaction",
                        "motion_notify_event": "mouse_motion_interaction",
                        "key_press_event": "keyboard_interaction",
                        "scroll-event" : "mouse_scroll_interaction"}
-    __events__ = (gdk.KEY_PRESS_MASK | gdk.LEAVE_NOTIFY_MASK |
-                  gdk.POINTER_MOTION_MASK  | gdk.BUTTON_RELEASE_MASK |
-                  gdk.BUTTON_PRESS_MASK| gdk.SCROLL_MASK)
+    __events__ = (gtk.gdk.KEY_PRESS_MASK | gtk.gdk.BUTTON_MOTION_MASK |
+                  gtk.gdk.POINTER_MOTION_HINT_MASK | gtk.gdk.BUTTON_RELEASE_MASK |
+                  gtk.gdk.BUTTON_PRESS_MASK)
 
     def __init__(self, datastore = None, selected_range = 0):
         """
@@ -403,27 +402,23 @@ class CairoHistogram(gtk.DrawingArea):
         """
         Reacts to mouse moving (while pressed), and clicks
         """
-        if (event.state == gdk.BUTTON1_MASK and not self.__disable_mouse_motion__):
-            location = min((self.get_datastore_index_from_cartesian(event.x, event.y), len(self.__datastore__) - 1))
-            if location != self.__last_location__:
-                self.change_location(location)
-                self.__last_location__ = location
-            return True
+        #if (event.state == gdk.BUTTON1_MASK and not self.__disable_mouse_motion__):
+        location = min((self.get_datastore_index_from_cartesian(event.x, event.y), len(self.__datastore__) - 1))
+        if location != self.__last_location__:
+            self.change_location(location)
+            self.__last_location__ = location
+            #return True
         return False
 
     def mouse_press_interaction(self, widget, event, *args, **kwargs):
         if (event.y > self.get_size_request()[1] - self.bottom_padding and
             event.y < self.get_size_request()[1]):
-            if not self.__disable_mouse_motion__: self.__disable_mouse_motion__ = True
             return False
         location = min((self.get_datastore_index_from_cartesian(event.x, event.y), len(self.__datastore__) - 1))
         if location != self.__last_location__:
             self.change_location(location)
             self.__last_location__ = location
         return True
-
-    def mouse_release_interaction(self, widget, event):
-        if self.__disable_mouse_motion__: self.__disable_mouse_motion__ = False
 
     def mouse_scroll_interaction(self, widget, event):
         i = self.get_selected()[-1]
