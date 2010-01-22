@@ -74,7 +74,7 @@ class Portal(gtk.Window):
         self.fwdbtn = DayButton(1)
         self.fwdbtn.set_sensitive(False)
 
-        def _c(widget, i):
+        def _c(widget, i, ii):
             if i == len(widget.get_datastore()) - widget.selected_range - 1:
                 self.fwdbtn.leading = True
             else:

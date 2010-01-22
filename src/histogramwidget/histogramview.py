@@ -222,11 +222,11 @@ class HistogramWidget(gtk.Viewport):
             pass # Drag here
         return False
 
-    def check_for_today(self, widget, i):
+    def check_for_today(self, widget, i, ii):
         """
         Changes today to a empty string if the selected item is not today
         """
-        if i + self.histogram.selected_range == len(self.histogram.get_datastore()):
+        if ii == len(self.histogram.get_datastore()):
             self.__today_text__ = ""
             self.__today_area__ = None
             self.histogram.queue_draw()
@@ -261,7 +261,7 @@ class HistogramWidget(gtk.Viewport):
         hadjustment.set_value(1)
         hadjustment.set_value(self.histogram.max_width - hadjustment.page_size)
 
-    def scrubbing_fix(self, widget, i, *args, **kwargs):
+    def scrubbing_fix(self, widget, i, ii):
         """
         Allows scrubbing to scroll the scroll window
         """

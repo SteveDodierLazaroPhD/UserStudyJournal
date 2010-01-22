@@ -80,7 +80,7 @@ class CairoHistogram(gtk.DrawingArea):
     """
     A histogram which is represented by a list of dates, and nitems
     """
-    _selected = (0,)
+    __selected__ = (0,)
     padding = 2
     bottom_padding = 23
     top_padding = 2
@@ -111,7 +111,8 @@ class CairoHistogram(gtk.DrawingArea):
     __datastore__ = None
     __gsignals__ = {
         # the index of the first selected item in the datastore.
-        "selection-set": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,(gobject.TYPE_INT,)),
+        "selection-set": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,
+                          (gobject.TYPE_INT,gobject.TYPE_INT)),
         "data-updated":  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,()),
         }
     __connections__ = {"style-set": "change_style",
@@ -240,7 +241,7 @@ class CairoHistogram(gtk.DrawingArea):
         context.set_source_rgba(*self.bg_color)
         context.rectangle(event.area.x, event.area.height - self.bottom_padding, event.area.width, event.area.height)
         context.fill()
-        self.draw_columns_from_datastore(context, event, self._selected)
+        self.draw_columns_from_datastore(context, event, self.get_selected())
         context.set_line_width(1)
         if type(self) == CairoHistogram:
             widget.style.paint_shadow(widget.window, gtk.STATE_NORMAL, gtk.SHADOW_IN,
@@ -337,17 +338,21 @@ class CairoHistogram(gtk.DrawingArea):
         """
         Set the selected items using a int or a list of the selections
         If you pass this method a int it will select the index + selected_range
+
+        Emits:
+         self.__selected__[0] and self.__selected__[-1]
+
         Arguments:
         - i: a list or a int where the int will select i + selected_range
         """
-        self._selected = i
+        self.__selected__ = i
         if isinstance(i, int):
-            self._selected = range(self._selected, self._selected + self.selected_range)
-            self.emit("selection-set", max(i, 0))
-        elif isinstance(self._selected, list):
-            if len(self._selected) == 0:
-                self._selected = [-1] # Disable color
-            self.emit("selection-set", max(i[0], 0))
+            self.__selected__ = range(self.__selected__, self.__selected__ + self.selected_range)
+            self.emit("selection-set", max(i, 0), max(i + self.selected_range - 1, 0))
+        elif isinstance(self.__selected__, list):
+            if len(self.__selected__) == 0:
+                self.__selected__ = [-1] # Disable color
+            self.emit("selection-set", max(i[0], 0), max(i[-1], 0))
         self.queue_draw()
         return True
 
@@ -355,13 +360,13 @@ class CairoHistogram(gtk.DrawingArea):
         """
         returns a list of selected indices
         """
-        return self._selected
+        return self.__selected__
 
     def clear_selection(self):
         """
         clears the selected items
         """
-        self._selected = range(len(self.__datastore__))[-self.selected_range:]
+        self.__selected__ = range(len(self.__datastore__))[-self.selected_range:]
         self.queue_draw()
 
     def set_highlighted(self, highlighted):
