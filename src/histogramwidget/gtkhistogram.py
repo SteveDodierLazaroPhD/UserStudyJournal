@@ -30,7 +30,8 @@ CairoHistogram.set_datastore(datastore)
 import cairo
 import gobject
 import gtk
-import math
+from gtk import gdk
+from math import pi as PI
 import datetime
 import calendar
 import pango
@@ -52,13 +53,13 @@ def get_gtk_rgba(style, palette, i, shade = 1, alpha = 1):
     """
     f = lambda num: (num/65535.0) * shade
     color = getattr(style, palette)[i]
-    if isinstance(color, gtk.gdk.Color):
+    if isinstance(color, gdk.Color):
         red = f(color.red)
         green = f(color.green)
         blue = f(color.blue)
 
         return (min(red, 1), min(green, 1), min(blue, 1), alpha)
-    else: raise TypeError("Not a valid gtk.gdk.Color")
+    else: raise TypeError("Not a valid gdk.Color")
 
 def get_gc_from_colormap(widget, shade):
     """
@@ -94,7 +95,6 @@ class CairoHistogram(gtk.DrawingArea):
     gc = None
     pangofont = None
     __disable_mouse_motion__ = False
-    datastore = None
     selected_range = 0
     highlighted = []
     __callbacks__ = None
@@ -108,6 +108,7 @@ class CairoHistogram(gtk.DrawingArea):
     stroke_color = (1, 1, 1, 0)
     shadow_color = (1, 1, 1, 0)
 
+    __datastore__ = None
     __gsignals__ = {
         # the index of the first selected item in the datastore.
         "selection-set": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,(gobject.TYPE_INT,)),
@@ -120,9 +121,9 @@ class CairoHistogram(gtk.DrawingArea):
                        "motion_notify_event": "mouse_motion_interaction",
                        "key_press_event": "keyboard_interaction",
                        "scroll-event" : "mouse_scroll_interaction"}
-    __events__ = (gtk.gdk.KEY_PRESS_MASK | gtk.gdk.LEAVE_NOTIFY_MASK |
-                  gtk.gdk.POINTER_MOTION_MASK  | gtk.gdk.BUTTON_RELEASE_MASK |
-                  gtk.gdk.BUTTON_PRESS_MASK| gtk.gdk.SCROLL_MASK)
+    __events__ = (gdk.KEY_PRESS_MASK | gdk.LEAVE_NOTIFY_MASK |
+                  gdk.POINTER_MOTION_MASK  | gdk.BUTTON_RELEASE_MASK |
+                  gdk.BUTTON_PRESS_MASK| gdk.SCROLL_MASK)
 
     def __init__(self, datastore = None, selected_range = 0):
         """
@@ -168,7 +169,7 @@ class CairoHistogram(gtk.DrawingArea):
         - selected_range: the range to be used when setting selected coloring
         """
         self.selected_range = selected_range
-    set_dayrange = set_selected_range # Legacy compatibility
+        return True
 
     def set_datastore(self, datastore, draw = True):
         """
@@ -179,9 +180,9 @@ class CairoHistogram(gtk.DrawingArea):
           a int time and a int nitems
         """
         if isinstance(datastore, list):
-            self.datastore = datastore
+            self.__datastore__ = datastore
             self.largest = 1
-            for date, nitems in self.datastore:
+            for date, nitems in self.__datastore__:
                 if nitems > self.largest: self.largest = nitems
             self.max_width = self.xincrement + (self.xincrement *len(datastore))
         else:
@@ -190,7 +191,7 @@ class CairoHistogram(gtk.DrawingArea):
         self.set_selected(len(datastore) - self.selected_range)
 
     def get_datastore(self):
-        return self.datastore
+        return self.__datastore__
 
     def prepend_data(self, newdatastore):
         """
@@ -202,7 +203,7 @@ class CairoHistogram(gtk.DrawingArea):
         ## WARNING SELECTION WILL CHANGE WHEN DOING THIS TO BE FIXED ##
         """
         selected = self.get_selected()[-1]
-        self.datastore = newdatastore + self.datastore
+        self.__datastore__ = newdatastore + self.__datastore__
         self.queue_draw()
         self.set_selected(len(newdatastore) + selected)
 
@@ -264,7 +265,7 @@ class CairoHistogram(gtk.DrawingArea):
 
         months_positions = []
         i = 0
-        for date, nitems in self.datastore:
+        for date, nitems in self.__datastore__:
             if check_for_new_month(date):
                 months_positions += [(date, x)]
             if len(self.highlighted) > 0 and i >= self.highlighted[0] and i <= self.highlighted[-1] and i in self.highlighted:
@@ -307,8 +308,8 @@ class CairoHistogram(gtk.DrawingArea):
         context.move_to(x + self.column_radius, y)
         context.new_sub_path()
         if nitems > 4:
-            context.arc(self.column_radius + x, self.column_radius + y, self.column_radius, math.pi, 3 * math.pi /2)
-            context.arc(x + self.wcolumn - self.column_radius, self.column_radius + y, self.column_radius, 3 * math.pi / 2, 0)
+            context.arc(self.column_radius + x, self.column_radius + y, self.column_radius, PI, 3 * PI /2)
+            context.arc(x + self.wcolumn - self.column_radius, self.column_radius + y, self.column_radius, 3 * PI / 2, 0)
             context.rectangle(x, y + self.column_radius, self.wcolumn, height - self.column_radius)
         else:
             context.rectangle(x, y, self.wcolumn, height)
@@ -348,15 +349,19 @@ class CairoHistogram(gtk.DrawingArea):
                 self._selected = [-1] # Disable color
             self.emit("selection-set", max(i[0], 0))
         self.queue_draw()
+        return True
 
     def get_selected(self):
+        """
+        returns a list of selected indices
+        """
         return self._selected
 
     def clear_selection(self):
         """
         clears the selected items
         """
-        self._selected = range(len(self.datastore))[-self.selected_range:]
+        self._selected = range(len(self.__datastore__))[-self.selected_range:]
         self.queue_draw()
 
     def set_highlighted(self, highlighted):
@@ -412,8 +417,8 @@ class CairoHistogram(gtk.DrawingArea):
         """
         Reacts to mouse moving (while pressed), and clicks
         """
-        if (event.state == gtk.gdk.BUTTON1_MASK and not self.__disable_mouse_motion__):
-            location = min((self.get_datastore_index_from_cartesian(event.x, event.y), len(self.datastore) - 1))
+        if (event.state == gdk.BUTTON1_MASK and not self.__disable_mouse_motion__):
+            location = min((self.get_datastore_index_from_cartesian(event.x, event.y), len(self.__datastore__) - 1))
             if location != self.__last_location__:
                 self.change_location(location)
                 self.__last_location__ = location
@@ -425,7 +430,7 @@ class CairoHistogram(gtk.DrawingArea):
             event.y < self.get_size_request()[1]):
             if not self.__disable_mouse_motion__: self.__disable_mouse_motion__ = True
             return False
-        location = min((self.get_datastore_index_from_cartesian(event.x, event.y), len(self.datastore) - 1))
+        location = min((self.get_datastore_index_from_cartesian(event.x, event.y), len(self.__datastore__) - 1))
         if location != self.__last_location__:
             self.change_location(location)
             self.__last_location__ = location
@@ -436,10 +441,10 @@ class CairoHistogram(gtk.DrawingArea):
 
     def mouse_scroll_interaction(self, widget, event):
         i = self.get_selected()[-1]
-        if (event.direction in (gtk.gdk.SCROLL_UP, gtk.gdk.SCROLL_RIGHT)):
+        if (event.direction in (gdk.SCROLL_UP, gdk.SCROLL_RIGHT)):
             if i+1< len(self.get_datastore()):
                 self.change_location(i+1)
-        elif (event.direction in (gtk.gdk.SCROLL_DOWN, gtk.gdk.SCROLL_LEFT)):
+        elif (event.direction in (gdk.SCROLL_DOWN, gdk.SCROLL_LEFT)):
             if 0 <= i-1:
                 self.change_location(i-1)
 
@@ -457,5 +462,5 @@ class CairoHistogram(gtk.DrawingArea):
         if isinstance(self.__callbacks__, list):
             for callback in self.__callbacks__:
                 if callable(callback):
-                    callback(self, self.datastore, location)
+                    callback(self, self.__datastore__, location)
         return True

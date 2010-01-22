@@ -69,7 +69,7 @@ class TooltipEventBox(gtk.EventBox):
                 self._saved_tooltip_location = location
                 return False
             try:
-                timestamp, count = self.histogram.datastore[location]
+                timestamp, count = self.histogram.get_datastore()[location]
             except IndexError:
                 # there is no bar for at this location
                 # don't show a tooltip

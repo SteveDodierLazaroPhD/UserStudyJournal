@@ -51,7 +51,7 @@ class ActivityView(gtk.VBox):
 
     def set_num_days(self, dayrange):
         self.dayrange = dayrange
-        self.cal.histogram.set_dayrange(dayrange)
+        self.cal.histogram.set_selected_range(dayrange)
         self.set_views()
 
     def _set_searchbox(self):
@@ -66,7 +66,7 @@ class ActivityView(gtk.VBox):
             item.highlight()
 
     def _handle_search_results(self, widget, results):
-        datastore = self.cal.histogram.datastore
+        datastore = self.cal.histogram.get_datastore()
         keys = []
         t = time.time()
         offset =time.mktime(time.gmtime(t)) - time.mktime(time.localtime(t))
@@ -113,7 +113,7 @@ class ActivityView(gtk.VBox):
     def jump(self, offset):
         self.start = self.start + offset
         if time.time() > self.start:
-            diff = self.start - self.cal.histogram.datastore[0][0]
+            diff = self.start - self.cal.histogram.get_datastore()[0][0]
             self.cal.histogram.set_selected(diff / 86400)
             self.set_dayrange(self.start, self.end+offset)
 
@@ -138,9 +138,9 @@ class ActivityView(gtk.VBox):
     def set_views(self):
         if not self.daysbox:
             return # nothing to do - TODO: should this be allowed to happen?
-        
+
         new_days = []
-            
+
         for i in xrange(self.dayrange):
             if not settings.get("view", "Journal") == "Journal":
                 i = (self.dayrange - 1) - i
@@ -151,9 +151,9 @@ class ActivityView(gtk.VBox):
                     self.start + i*86400 + 86400)
                 self.days[ptime] = dayview
             new_days.append(self.days[ptime])
-        
+
         widgets = self.daysbox.get_children()
-        
+
         diff = 0
         if len(widgets) > 0:
             first_day = widgets[0]
@@ -171,9 +171,9 @@ class ActivityView(gtk.VBox):
         elif diff > 0:
             for i in xrange(len(new_days)):
                 self.daysbox.pack_start(new_days[i], True, True, 3)
-                
+
             # SCROLL HERE to new_days[i]
-                
+
             for i in xrange(diff):
                 self.daysbox.remove(old_days[i])
                 old_days[i].unparent()
@@ -184,12 +184,12 @@ class ActivityView(gtk.VBox):
             for i in xrange(len(new_days)):
                 self.daysbox.pack_start(new_days[i], True, True, 3)
                 self.daysbox.reorder_child(new_days[i], 0)
-            
+
             # SCROLL HERE to new_days[i]
-            
+
             for i in xrange(abs(diff)):
                 self.daysbox.remove(old_days[i])
                 old_days[i].unparent()
-                
+
         del new_days, old_days, diff
         gc.collect()
