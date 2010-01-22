@@ -97,7 +97,7 @@ class CairoHistogram(gtk.DrawingArea):
     datastore = None
     selected_range = 0
     highlighted = []
-    __calbacks = None
+    __callbacks__ = None
     __last_location__ = -1
     bg_color = (1, 1, 1, 1)
     base_color = (1, 1, 1, 1)
@@ -384,10 +384,10 @@ class CairoHistogram(gtk.DrawingArea):
         - callback: the callback to add
         """
         if callable(callback):
-            if not self.__calbacks:
-                self.__calbacks = [callback]
-            elif isinstance(self.__calbacks, list):
-                self.__calbacks.append(callback)
+            if not self.__callbacks__:
+                self.__callbacks__ = [callback]
+            elif isinstance(self.__callbacks__, list):
+                self.__callbacks__.append(callback)
         else:
             raise TypeError("Callback is not a function")
 
@@ -454,8 +454,8 @@ class CairoHistogram(gtk.DrawingArea):
         if location < 0:
             return False
         self.set_selected(max(location - self.selected_range + 1, 0))
-        if isinstance(self.__calbacks, list):
-            for callback in self.__calbacks:
+        if isinstance(self.__callbacks__, list):
+            for callback in self.__callbacks__:
                 if callable(callback):
                     callback(self, self.datastore, location)
         return True
