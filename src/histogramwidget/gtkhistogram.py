@@ -93,15 +93,12 @@ class CairoHistogram(gtk.DrawingArea):
     min_column_height = 4
     gc = None
     pangofont = None
-
     __disable_mouse_motion__ = False
-
     datastore = None
     selected_range = 0
     highlighted = []
     __calbacks = None
     __last_location__ = -1
-
     bg_color = (1, 1, 1, 1)
     base_color = (1, 1, 1, 1)
     column_color_normal =  (1, 1, 1, 1)
@@ -116,6 +113,16 @@ class CairoHistogram(gtk.DrawingArea):
         "selection-set": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,(gobject.TYPE_INT,)),
         "data-updated":  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,()),
         }
+    __connections__ = {"style-set": "change_style",
+                       "expose_event": "__expose__",
+                       "button_press_event": "mouse_press_interaction",
+                       "button_release_event": "mouse_release_interaction",
+                       "motion_notify_event": "mouse_motion_interaction",
+                       "key_press_event": "keyboard_interaction",
+                       "scroll-event" : "mouse_scroll_interaction"}
+    __events__ = (gtk.gdk.KEY_PRESS_MASK | gtk.gdk.LEAVE_NOTIFY_MASK |
+                  gtk.gdk.POINTER_MOTION_MASK  | gtk.gdk.BUTTON_RELEASE_MASK |
+                  gtk.gdk.BUTTON_PRESS_MASK| gtk.gdk.SCROLL_MASK)
 
     def __init__(self, datastore = None, selected_range = 0):
         """
@@ -124,17 +131,10 @@ class CairoHistogram(gtk.DrawingArea):
         - selected_range: the number of days displayed at once
         """
         super(CairoHistogram, self).__init__()
-        self.set_events(gtk.gdk.KEY_PRESS_MASK | gtk.gdk.LEAVE_NOTIFY_MASK |
-                        gtk.gdk.POINTER_MOTION_MASK  | gtk.gdk.BUTTON_RELEASE_MASK |
-                        gtk.gdk.BUTTON_PRESS_MASK| gtk.gdk.SCROLL_MASK)
+        self.set_events(self.__events__)
         self.set_flags(gtk.CAN_FOCUS)
-        self.connect("style-set", self.change_style)
-        self.connect("expose_event", self.__expose__)
-        self.connect("button_press_event", self.mouse_press_interaction)
-        self.connect("button_release_event", self.mouse_release_interaction)
-        self.connect("motion_notify_event", self.mouse_motion_interaction)
-        self.connect("key_press_event", self.keyboard_interaction)
-        self.connect("scroll-event", self.mouse_scroll_interaction)
+        for key, val in self.__connections__.iteritems():
+            self.connect(key, getattr(self, val))
         self.font_name = self.style.font_desc.get_family()
         self.set_datastore(datastore if datastore else [], draw = False)
         self.selected_range = selected_range
@@ -458,4 +458,4 @@ class CairoHistogram(gtk.DrawingArea):
             for callback in self.__calbacks:
                 if callable(callback):
                     callback(self, self.datastore, location)
-
+        return True
