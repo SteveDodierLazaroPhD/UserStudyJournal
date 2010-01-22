@@ -124,7 +124,7 @@ class CairoHistogram(gtk.DrawingArea):
         - selected_range: the number of days displayed at once
         """
         super(CairoHistogram, self).__init__()
-        self.set_events(gtk.gdk.KEY_PRESS_MASK |
+        self.set_events(gtk.gdk.KEY_PRESS_MASK | gtk.gdk.LEAVE_NOTIFY_MASK |
                         gtk.gdk.POINTER_MOTION_MASK  | gtk.gdk.BUTTON_RELEASE_MASK |
                         gtk.gdk.BUTTON_PRESS_MASK| gtk.gdk.SCROLL_MASK)
         self.set_flags(gtk.CAN_FOCUS)

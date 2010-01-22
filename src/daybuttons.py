@@ -149,12 +149,16 @@ class DayButton(gtk.DrawingArea):
             context.fill()
             if self.hover:
                 widget.style.paint_box(widget.window, gtk.STATE_PRELIGHT, gtk.SHADOW_OUT,
-                                         event.area, widget, "button", 0, self.header_size,
+                                         event.area, widget, "button",
+                                         event.area.x, self.header_size,
                                          w, h-self.header_size)
         size = 10
         if not self.sensitive:
             state = gtk.STATE_INSENSITIVE
         elif self.is_focus() or self.pressed:
+            widget.style.paint_focus(widget.window, gtk.STATE_ACTIVE, event.area,
+                                     widget, None, event.area.x, self.header_size,
+                                     w, h-self.header_size)
             state = gtk.STATE_SELECTED
         else:
             state = gtk.STATE_NORMAL

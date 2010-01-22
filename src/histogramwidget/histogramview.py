@@ -139,6 +139,7 @@ class HistogramWidget(gtk.Viewport):
         self.histogram.connect("expose-event", self.today_expose)
         self.histogram.connect("button_press_event", self.today_clicked)
         self.histogram.connect("motion_notify_event", self.today_hover)
+        self.histogram.connect("leave_notify_event", self.__today_leave_handler__)
         self.histogram.connect("selection-set", self.check_for_today)
         self.histogram.connect("data-updated", self.scroll_to_end)
         self.histogram.connect("data-updated", self.scroll_to_end)
@@ -172,13 +173,25 @@ class HistogramWidget(gtk.Viewport):
                 widget.bottom_padding - 2)
             state = gtk.STATE_PRELIGHT if self.__today_hover__ else gtk.STATE_NORMAL
             shadow = gtk.SHADOW_IN if self.__today_hover__ else gtk.SHADOW_OUT
-            widget.style.paint_box(widget.window, state, gtk.SHADOW_OUT, event.area,
-                                   widget, "button", *self.__today_area__)
-            widget.window.draw_layout(widget.gc,
-                                      int(hadjustment.value + hadjustment.page_size - w -5),
+            widget.style.paint_box(widget.window, state, gtk.SHADOW_OUT, event.area, widget, "button", *self.__today_area__)
+            if self.__today_hover__:
+                widget.style.paint_focus(widget.window, state, event.area, widget, "button", *self.__today_area__)
+            widget.window.draw_layout(widget.gc, int(hadjustment.value + hadjustment.page_size - w -5),
                                       int(event.area.height - widget.bottom_padding/2 - h/2), layout)
+            return True
+        return False
+
+    def __today_leave_handler__(self, widget, event):
+        """
+        Clears hover effects when you leave the widget
+        """
+        self.__today_hover__ = False
+        self.queue_draw()
 
     def today_hover(self, widget, event):
+        """
+        Highlights the today button if you hover over it
+        """
         hadjustment = self.get_hadjustment()
         if (self.__today_text__ and
             event.y > self.get_size_request()[1] - self.histogram.bottom_padding and
