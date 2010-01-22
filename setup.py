@@ -114,7 +114,8 @@ setup(
     platforms = ['GNU/Linux'],
     data_files = list_from_lists(
         [('share/gnome-activity-journal', ['gnome-activity-journal'])],
-        [('share/gnome-activity-journal/data', glob('data/*.*'))],
+        [('share/gnome-activity-journal/data', glob('data/*.svg'))],
+        [('share/pixmaps/', ['data/gnome-activity-journal.xpm'])],
         recursive_install('share/icons/hicolor', 'data/icons/hicolor/', '',
             ext=['.png', '.svg']),
         recursive_install('share/gnome-activity-journal', 'src/', ext=['.py']),
