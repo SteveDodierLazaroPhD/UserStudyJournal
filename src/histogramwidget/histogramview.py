@@ -98,6 +98,7 @@ class JournalHistogram(CairoHistogram):
     stroke_width = 2
     stroke_offset = 1
     font_size = 12
+    min_column_height = 2
 
     def change_style(self, widget, *args, **kwargs):
         self.bg_color = get_gtk_rgba(self.style, "bg", 0)
@@ -169,7 +170,8 @@ class HistogramWidget(gtk.Viewport):
                 int(event.area.height - widget.bottom_padding + 2),
                 self.__today_width__,
                 widget.bottom_padding - 2)
-            state = gtk.STATE_SELECTED if self.__today_hover__ else gtk.STATE_NORMAL
+            state = gtk.STATE_PRELIGHT if self.__today_hover__ else gtk.STATE_NORMAL
+            shadow = gtk.SHADOW_IN if self.__today_hover__ else gtk.SHADOW_OUT
             widget.style.paint_box(widget.window, state, gtk.SHADOW_OUT, event.area,
                                    widget, "button", *self.__today_area__)
             widget.window.draw_layout(widget.gc,
