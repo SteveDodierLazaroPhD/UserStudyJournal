@@ -84,7 +84,8 @@ class ActivityView(gtk.VBox):
             item.highlight()
 
     def _set_timeline(self):
-        def selection_callback(widget, datastore, i):
+        def selection_callback(widget, i):
+            datastore = widget.get_datastore()
             if i < len(datastore):
                 selection_date = datastore[i][0]
                 end = selection_date  + 86399
@@ -92,7 +93,7 @@ class ActivityView(gtk.VBox):
                 self.set_dayrange(start, end)
 
         histogramdata.datelist(90, self.cal.histogram.set_datastore)
-        self.cal.histogram.add_selection_callback(selection_callback)
+        self.cal.histogram.connect("column_clicked", selection_callback)
 
     def _set_view_type(self, refresh=False):
 

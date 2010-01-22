@@ -97,7 +97,6 @@ class CairoHistogram(gtk.DrawingArea):
     __disable_mouse_motion__ = False
     selected_range = 0
     __highlighted__ = tuple()
-    __callbacks__ = None
     __last_location__ = -1
     bg_color = (1, 1, 1, 1)
     base_color = (1, 1, 1, 1)
@@ -111,9 +110,11 @@ class CairoHistogram(gtk.DrawingArea):
     __datastore__ = None
     __gsignals__ = {
         # the index of the first selected item in the datastore.
-        "selection-set": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,
-                          (gobject.TYPE_INT,gobject.TYPE_INT)),
-        "data-updated":  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,()),
+        "selection-set" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,
+                           (gobject.TYPE_INT,gobject.TYPE_INT)),
+        "data-updated" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,()),
+        "column_clicked" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,
+                            (gobject.TYPE_INT,))
         }
     __connections__ = {"style-set": "change_style",
                        "expose_event": "__expose__",
@@ -381,22 +382,6 @@ class CairoHistogram(gtk.DrawingArea):
         self.__highlighted__ = []
         self.queue_draw()
 
-    def add_selection_callback(self, callback):
-        """
-        add a callback for clicked to call when a item is clicked.
-        clicked passes this widget, a datastore list, and i to the function
-
-        Arguments:
-        - callback: the callback to add
-        """
-        if callable(callback):
-            if not self.__callbacks__:
-                self.__callbacks__ = [callback]
-            elif isinstance(self.__callbacks__, list):
-                self.__callbacks__.append(callback)
-        else:
-            raise TypeError("Callback is not a function")
-
     def get_datastore_index_from_cartesian(self, x, y):
         """
         Gets the datastore index from a x, y value
@@ -450,18 +435,11 @@ class CairoHistogram(gtk.DrawingArea):
                 self.change_location(i-1)
 
     def change_location(self, location):
-        """Handles click events
-
-        By wrapping this and using the returned location you can do nifty stuff
-        with the datastore object
-
-        Calls a calback set by connect_selection_callback
+        """
+        Handles click events
         """
         if location < 0:
             return False
         self.set_selected(max(location - self.selected_range + 1, 0))
-        if isinstance(self.__callbacks__, list):
-            for callback in self.__callbacks__:
-                if callable(callback):
-                    callback(self, self.__datastore__, location)
+        self.emit("column_clicked", location)
         return True

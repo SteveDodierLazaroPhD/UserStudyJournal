@@ -112,7 +112,7 @@ class Portal(gtk.Window):
         self.activityview.searchbox.hide()
         self.connect("configure-event", self._on_size_changed)
         self.connect("key-press-event", self._global_keypress_handler)
-        self.cal.histogram.add_selection_callback(self.handle_fwd_sensitivity)
+        self.cal.histogram.connect("column_clicked", self.handle_fwd_sensitivity)
 
     def _on_window_state_changed (self, win, event):
         # When maximized we configure the view so that the left/right buttons
@@ -148,7 +148,8 @@ class Portal(gtk.Window):
         if (dayinfocus) < self.activityview.end:
             self.fwdbtn.set_sensitive(False)
 
-    def handle_fwd_sensitivity(self, widget, datastore, i):
+    def handle_fwd_sensitivity(self, widget, i):
+        datastore = widget.get_datastore()
         if i < len(datastore) - 1:
             self.fwdbtn.set_sensitive(True)
         else:
