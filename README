@@ -17,3 +17,28 @@ And then start Zeitgeist in a separate terminal window, running:
 Once Zeitgeist is running, you can start the GNOME Activity Journal like this:
 
  $ ./gnome-activity-journal/gnome-activity-journal
+
+License
+------------------------------
+
+Code:
+
+ GNU General Public License, version 3 or later
+ See COPYING
+
+Art:
+
+ Creative Commons Attribution Share-Alike License
+ See http://creativecommons.org/licenses/by-sa/3.0/
+
+Copyright
+------------------------------
+
+See AUTHORS and the source file's headers for the copyright holder's names.
+
+Additionally, some images use textures or other resources from 3th parties
+not directly involved with the project. Those are:
+
+ gnome-activity-journal.svg:
+  - Luigi Chiesa, 2007
+    http://commons.wikimedia.org/wiki/File:Jute_nahtlos.png
