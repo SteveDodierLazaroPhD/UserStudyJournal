@@ -339,6 +339,9 @@ class EventGroup(gtk.VBox):
         if not categories:
             self.hide_all()
         else:
+            # Make the group title, etc. visible
+            self.show_all()
+            
             ungrouped_events = []
             for key in sorted(categories.iterkeys()):
                 events = categories[key]
@@ -351,23 +354,14 @@ class EventGroup(gtk.VBox):
             ungrouped_events.sort(key=lambda x: x.timestamp)
             box = CategoryBox(None, ungrouped_events)
             self.view.pack_start(box)
+            
+            # Make the group's contents visible
             self.view.show()
-            box.show()
-            self.show()
-            self.label.show()
-        
-        if len(bookmarker.bookmarks) > 0:
-            pinbox.show_all()
-        else:
-            pinbox.hide_all()
 
-    def _handle_find_events(self, ids):
-        CLIENT.get_events(ids, self.set_events)
-
-    def get_events(self):
-        if self.event_templates is not None:
-            CLIENT.find_event_ids_for_templates(self.event_templates,
-                self._handle_find_events, self.event_timerange, num_events=50000,
+    def get_events(self, *discard):
+        if self.event_templates and len(self.event_templates) > 0:
+            CLIENT.find_events_for_templates(self.event_templates,
+                self.set_events, self.event_timerange, num_events=50000,
                 result_type=ResultType.MostRecentSubjects)
         else:
             self.view.hide()
@@ -388,7 +382,6 @@ class DayPartWidget(EventGroup):
         # FIXME: Move this into EventGroup
         CLIENT.install_monitor(self.event_timerange, self.event_templates,
             self.notify_insert_handler, self.notify_delete_handler)
-        self.show_all()
 
     def notify_insert_handler(self, time_range, events):
         # FIXME: Don't regenerate everything, we already get the
@@ -409,14 +402,7 @@ class PinBox(EventGroup):
         super(PinBox, self).__init__(_("Pinned items"))
 
         # Connect to relevant signals
-        bookmarker.connect("reload", lambda widget, uris: self.get_events())
-        bookmarker.connect("reload", self.check_is_visible)
-
-    def check_is_visible(self, widget, bookmarks):
-        if len(bookmarks) > 0:
-            self.show_all()
-        else:
-            self.hide_all()
+        bookmarker.connect("reload", self.get_events)
 
     @property
     def event_templates(self):
@@ -427,12 +413,12 @@ class PinBox(EventGroup):
         
         templates = []
         for bookmark in bookmarker.bookmarks:
-            templates.append(Event.new_for_values(
-                subjects=[Subject.new_for_values(uri=bookmark)]))
-        if len(templates) > 0:
-            self.show_all()
-        else:
-            self.hide_all()
+            templates.append(Event.new_for_values(subject_uri=bookmark))
         return templates
+    
+    def set_events(self, *args, **kwargs):
+        super(PinBox, self).set_events(*args, **kwargs)
+        # Make the pin icons visible
+        self.view.show_all()
 
 pinbox = PinBox()
