@@ -55,11 +55,11 @@ class DayWidget(gtk.VBox):
 
         self._init_widgets()
         self._init_pinbox()
-        self._init_events()
         gobject.timeout_add_seconds(
             86400 - (int(time.time() - time.timezone) % 86400), self._refresh)
         
         self.show_all()
+        self._init_events()
 
     def refresh(self):
         for w in self.view:
