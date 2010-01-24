@@ -83,7 +83,6 @@ class DayWidget(gtk.VBox):
     def _init_pinbox(self):
         if self.day_start <= time.time() < self.day_end:
             self.view.pack_start(pinbox, False, False)
-        
             
     def _init_widgets(self):
         self.vbox = gtk.VBox()
@@ -152,7 +151,6 @@ class DayWidget(gtk.VBox):
         for period in self._periods:
             part = DayPartWidget(period[0], period[1], period[2])
             self.view.pack_start(part, False, False)
-            part.get_events()
 
 class CategoryBox(gtk.VBox):
 
@@ -170,7 +168,6 @@ class CategoryBox(gtk.VBox):
             hbox.show()
             label.show()
             
-
         # If this isn't a set of ungrouped events, give it a label
         if category:
             # Place the items into a box and simulate left padding
