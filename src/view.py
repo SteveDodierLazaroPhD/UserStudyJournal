@@ -119,11 +119,17 @@ class ActivityView(gtk.VBox):
         if refresh:
             self.set_views()
         self.daysbox.show_all()
+    
+        def change_style(widget, style):
+            rc_style = self.style
+            #color = rc_style.bg[gtk.STATE_NORMAL]
+            self.notebook.set_style(rc_style)
+
+        self.notebook.connect("style-set", change_style)
 
     def jump(self, offset):
         ###IMPORTANT HIDES THE DETAILED VIEW ON JUMP IMPORTANT REMOVE ME SEIF###
         ### When the switching works ###
-        self.notebook.set_page(0)
         self.start = self.start + offset
         if time.time() > self.start:
             diff = self.start - self.cal.histogram.get_datastore()[0][0]
@@ -135,6 +141,7 @@ class ActivityView(gtk.VBox):
         self.end = end
         self.dayrange = int(int((end - start)) / 86400) + 1
         self.set_views()
+        self.daybox.set_day(start+(self.dayrange-1)*86400, end)
 
     def _set_today_timestamp(self, dayinfocus=None):
         """
