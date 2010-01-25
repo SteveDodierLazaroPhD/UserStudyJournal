@@ -51,13 +51,39 @@ class DetailedWindow(gtk.ScrolledWindow):
         self.set_shadow_type(gtk.SHADOW_NONE)
         self.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         self.view = logwidget.DetailedView()
+        
+        evbox = gtk.EventBox()
+        evbox.add(self.view)
+        
         self.view.set_text_handler(get_tab_text_custom)
         self.view.connect("item-clicked", self.clicked_func)
         self.view.connect("private-area-clicked", self.arrow_clicked_func)
-        self.add_with_viewport(self.view)
+        self.add_with_viewport(evbox)
         self.get_children()[0].set_shadow_type(gtk.SHADOW_NONE)
         for widget in self:
             self.set_shadow_type(gtk.SHADOW_NONE)
+            
+        def change_style(widget, style):
+            rc_style = self.style
+            color = rc_style.bg[gtk.STATE_NORMAL]
+
+            if color.red * 102/100 > 65535.0:
+                color.red = 65535.0
+            else:
+                color.red = color.red * 102 / 100
+
+            if color.green * 102/100 > 65535.0:
+                color.green = 65535.0
+            else:
+                color.green = color.green * 102 / 100
+
+            if color.blue * 102/100 > 65535.0:
+                color.blue = 65535.0
+            else:
+                color.blue = color.blue * 102 / 100
+            self.view.modify_bg(gtk.STATE_NORMAL, color)
+
+        self.connect("style-set", change_style)
 
 
     def clicked_func(self, widget, zevent):

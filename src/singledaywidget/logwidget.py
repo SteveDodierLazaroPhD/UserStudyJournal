@@ -329,6 +329,8 @@ class DetailedView(gtk.DrawingArea):
         for key, val in self.__connections__.iteritems():
             self.connect(key, getattr(self, val))
         self.clear_registered_areas()
+        
+        
 
     def text_handler(self, obj):
         """
