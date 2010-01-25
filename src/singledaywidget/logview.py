@@ -64,7 +64,7 @@ class DetailedWindow(gtk.ScrolledWindow):
         """
         A sample event for clicks
         """
-        print zevent.subjects[0].text, time.strftime("Day:%d Time:%H:%S", time.localtime(int(zevent.timestamp)/1000))
+        print zevent.subjects[0].text, time.strftime("Day:%d Time:%H:%M", time.localtime(int(zevent.timestamp)/1000))
 
     def arrow_clicked_func(self, widget, arrow):
         if arrow == gtk.ARROW_LEFT:
