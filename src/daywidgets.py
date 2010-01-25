@@ -41,23 +41,19 @@ from singledaywidget.eventhandler import get_dayevents
 CLIENT = ZeitgeistClient()
 
 class SingleDayWidget(gtk.VBox):
-    
+
     __gsignals__ = {
         "unfocus-day" : (gobject.SIGNAL_RUN_FIRST,
                     gobject.TYPE_NONE,
                     ())
         }
-    
+
     def __init__(self):
         gtk.VBox.__init__(self)
         self.daylabel = None
         self.view = DetailedWindow()
-        self.view.set_shadow_type(gtk.SHADOW_NONE)
-        for w in self.view.get_children():
-            w.set_shadow_type(gtk.SHADOW_NONE)
-        
         self.pack_end(self.view)
-    
+
     def _set_date_strings(self):
         self.date_string = date.fromtimestamp(self.day_start).strftime("%d %B")
         self.year_string = date.fromtimestamp(self.day_start).strftime("%Y")
@@ -68,7 +64,7 @@ class SingleDayWidget(gtk.VBox):
         else:
                 self.week_day_string = date.fromtimestamp(self.day_start).strftime("%A")
         self.emit("style-set", None)
-    
+
     def set_day(self, start, end):
         self.day_start = start
         self.day_end = end
@@ -89,7 +85,7 @@ class SingleDayWidget(gtk.VBox):
         self.pack_start(self.daylabel, False, False)
         get_dayevents(start*1000, end*1000, self.view.view.set_datastore)
         self.show_all()
-    
+
     def click(self, widget, event):
         if event.button == 1:
             self.emit("unfocus-day")
@@ -108,7 +104,7 @@ class DayWidget(gtk.VBox):
         hour = 60*60
         self.day_start = start
         self.day_end = end
-        
+
         self._set_date_strings()
         self._periods = [
             (_("Morning"), start, start + 12*hour - 1),
@@ -120,7 +116,7 @@ class DayWidget(gtk.VBox):
         self._init_pinbox()
         gobject.timeout_add_seconds(
             86400 - (int(time.time() - time.timezone) % 86400), self._refresh)
-        
+
         self.show_all()
         self._init_events()
 
@@ -146,14 +142,14 @@ class DayWidget(gtk.VBox):
     def _init_pinbox(self):
         if self.day_start <= time.time() < self.day_end:
             self.view.pack_start(pinbox, False, False)
-            
+
     def _init_widgets(self):
         self.vbox = gtk.VBox()
         evbox = gtk.EventBox()
         evbox.add(self.vbox)
 
         self.pack_start(evbox)
-        
+
         self.daylabel = None
 
         self._init_date_label()
@@ -174,32 +170,32 @@ class DayWidget(gtk.VBox):
             w.set_shadow_type(gtk.SHADOW_NONE)
         self.vbox.pack_start(scroll)
         self.show_all()
-        
+
         def change_style(widget, style):
             rc_style = self.style
             color = rc_style.bg[gtk.STATE_NORMAL]
-            
+
             if color.red * 102/100 > 65535.0:
                 color.red = 65535.0
             else:
                 color.red = color.red * 102 / 100
-                
+
             if color.green * 102/100 > 65535.0:
                 color.green = 65535.0
             else:
                 color.green = color.green * 102 / 100
-                
+
             if color.blue * 102/100 > 65535.0:
                 color.blue = 65535.0
             else:
-                color.blue = color.blue * 102 / 100                
+                color.blue = color.blue * 102 / 100
             evbox2.modify_bg(gtk.STATE_NORMAL, color)
 
         self.connect("style-set", change_style)
 
     def _init_date_label(self):
         self._set_date_strings()
-        
+
         today = int(time.time() ) - 7*86400
         if self.daylabel:
             # Disconnect HERE
@@ -209,11 +205,11 @@ class DayWidget(gtk.VBox):
         else:
             self.daylabel = DayLabel(self.week_day_string, self.date_string+", "+ self.year_string)
         self.daylabel.connect("button-press-event", self.click)
-    
+
         self.daylabel.set_size_request(100, 60)
         self.vbox.pack_start(self.daylabel, False, False)
         self.vbox.reorder_child(self.daylabel, 0)
-    
+
     def click(self, widget, event):
         if event.button == 1:
             self.emit("focus-day")
@@ -241,7 +237,7 @@ class CategoryBox(gtk.VBox):
             self.view.pack_start(hbox, False, False, 0)
             hbox.show()
             label.show()
-            
+
         # If this isn't a set of ungrouped events, give it a label
         if category:
             # Place the items into a box and simulate left padding
@@ -250,7 +246,7 @@ class CategoryBox(gtk.VBox):
             self.box.pack_start(label, False, False, 7)
             self.box.pack_start(self.view)
             self.pack_end(self.box)
-            
+
             # Add the title button
             self.btn = CategoryButton(category, len(events))
             self.btn.connect("toggle", self.on_toggle)
@@ -259,7 +255,7 @@ class CategoryBox(gtk.VBox):
             hbox.pack_start(lbl, False, False, 8)
             hbox.pack_start(self.btn, True, True, 0)
             self.pack_start(hbox, False, False)
-            
+
             self.show()
             hbox.show_all()
             label.show_all()
@@ -280,7 +276,7 @@ class CategoryBox(gtk.VBox):
             self.box.hide()
 
 class DayLabel(gtk.DrawingArea):
-    
+
     __events__ = (gtk.gdk.KEY_PRESS_MASK | gtk.gdk.BUTTON_MOTION_MASK |
                   gtk.gdk.POINTER_MOTION_HINT_MASK | gtk.gdk.BUTTON_RELEASE_MASK |
                   gtk.gdk.BUTTON_PRESS_MASK)
@@ -295,7 +291,7 @@ class DayLabel(gtk.DrawingArea):
         self.day = day
         self.set_events(self.__events__)
         self.connect("expose_event", self.expose)
-    
+
     def expose(self, widget, event):
         context = widget.window.cairo_create()
         self.context = context
@@ -303,7 +299,7 @@ class DayLabel(gtk.DrawingArea):
         bg = self.style.bg[0]
         red, green, blue = bg.red/65535.0, bg.green/65535.0, bg.blue/65535.0
         self.font_name = self.style.font_desc.get_family()
-        
+
         context.set_source_rgba(red, green, blue, 1)
 
         context.set_operator(cairo.OPERATOR_SOURCE)
@@ -322,7 +318,7 @@ class DayLabel(gtk.DrawingArea):
         else:
             y = event.area.height
         x = event.area.width
-        gc = self.style.fg_gc[gtk.STATE_SELECTED if self.leading else gtk.STATE_NORMAL]        
+        gc = self.style.fg_gc[gtk.STATE_SELECTED if self.leading else gtk.STATE_NORMAL]
         layout = widget.create_pango_layout(self.day)
         layout.set_font_description(pango.FontDescription(self.font_name + " Bold 15"))
         w, h = layout.get_pixel_size()
@@ -336,7 +332,7 @@ class DayLabel(gtk.DrawingArea):
         w, h = layout.get_pixel_size()
         widget.window.draw_layout(gc, (event.area.width-w)/2, lastfontheight, layout)
 
-        
+
     def draw(self, widget, event, context):
         if self.leading:
             bg = self.style.bg[3]
@@ -346,16 +342,16 @@ class DayLabel(gtk.DrawingArea):
             red = (bg.red * 125 / 100)/65535.0
             green = (bg.green * 125 / 100)/65535.0
             blue = (bg.blue * 125 / 100)/65535.0
-        
+
         # Draw
         x = 0; y = 0
         r = 5
         w, h = event.area.width, event.area.height
-        # Temporary color, I will fix this later when I have a chance to sleep. 
+        # Temporary color, I will fix this later when I have a chance to sleep.
         #grad = cairo.LinearGradient(0, 3*event.area.height, 0, 0)
         #grad.add_color_stop_rgb(0,  0, 0, 0)
         #grad.add_color_stop_rgb(1,  red, green, blue)
-        
+
         #if self.leading:
             #context.set_source(grad)
         context.set_source_rgba(red, green, blue, 1)
@@ -371,26 +367,26 @@ class EventGroup(gtk.VBox):
 
     def __init__(self, title):
         super(EventGroup, self).__init__()
-        
+
         # Create the title label
         self.label = gtk.Label(title)
         self.label.set_alignment(0.03, 0.5)
         self.pack_start(self.label, False, False, 6)
-        
+
         # Create the main container
         self.view = gtk.VBox()
         self.pack_start(self.view)
 
         # Connect to relevant signals
         self.connect("style-set", self.on_style_change)
-        
+
         # Populate the widget with content
         self.get_events()
 
     def on_style_change(self, widget, style):
         """ Update used colors according to the system theme. """
         color = self.style.bg[gtk.STATE_NORMAL]
-        fcolor = self.style.fg[gtk.STATE_NORMAL] 
+        fcolor = self.style.fg[gtk.STATE_NORMAL]
         color.red = (2 * color.red + fcolor.red) / 3
         color.green = (2 * color.green + fcolor.green) / 3
         color.blue = (2 * color.blue + fcolor.blue) / 3
@@ -403,7 +399,7 @@ class EventGroup(gtk.VBox):
             urllib.unquote(str(uri[7:])))
 
     def set_events(self, events):
-        
+
         for widget in self.view:
             self.view.remove(widget)
 
@@ -420,7 +416,7 @@ class EventGroup(gtk.VBox):
         else:
             # Make the group title, etc. visible
             self.show_all()
-            
+
             ungrouped_events = []
             for key in sorted(categories.iterkeys()):
                 events = categories[key]
@@ -433,7 +429,7 @@ class EventGroup(gtk.VBox):
             ungrouped_events.sort(key=lambda x: x.timestamp)
             box = CategoryBox(None, ungrouped_events)
             self.view.pack_start(box)
-            
+
             # Make the group's contents visible
             self.view.show()
 
@@ -454,10 +450,10 @@ class DayPartWidget(EventGroup):
             Event.new_for_values(interpretation=Interpretation.VISIT_EVENT.uri),
             Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri)
         )
-        
+
         # Initialize the widget
         super(DayPartWidget, self).__init__(title)
-        
+
         # FIXME: Move this into EventGroup
         CLIENT.install_monitor(self.event_timerange, self.event_templates,
             self.notify_insert_handler, self.notify_delete_handler)
@@ -489,12 +485,12 @@ class PinBox(EventGroup):
             # Abort, or we will query with no templates and get lots of
             # irrelevant events.
             return None
-        
+
         templates = []
         for bookmark in bookmarker.bookmarks:
             templates.append(Event.new_for_values(subject_uri=bookmark))
         return templates
-    
+
     def set_events(self, *args, **kwargs):
         super(PinBox, self).set_events(*args, **kwargs)
         # Make the pin icons visible

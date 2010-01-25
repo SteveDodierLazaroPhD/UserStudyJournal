@@ -86,6 +86,9 @@ class ActivityView(gtk.VBox):
 
     def _set_timeline(self):
         def selection_callback(widget, i):
+            ###IMPORTANT HIDES THE DETAILED VIEW ON HISTOGRAM CLICK IMPORTANT REMOVE ME SEIF###
+            ### When the switching works ###
+            self.notebook.set_page(0)
             datastore = widget.get_datastore()
             if i < len(datastore):
                 selection_date = datastore[i][0]
@@ -104,11 +107,11 @@ class ActivityView(gtk.VBox):
         self.daysbox = gtk.HBox(True)
         self.daybox = SingleDayWidget()
         self.daybox.connect("unfocus-day", self._zoom_out_day)
-        
+
         self.notebook = gtk.Notebook()
         self.notebook.set_show_tabs(False)
         self.notebook.set_show_border(False)
-        
+
         self.notebook.append_page(self.daysbox, gtk.Label("Group View"))
         self.notebook.append_page(self.daybox, gtk.Label("Day View"))
 
@@ -118,6 +121,9 @@ class ActivityView(gtk.VBox):
         self.daysbox.show_all()
 
     def jump(self, offset):
+        ###IMPORTANT HIDES THE DETAILED VIEW ON JUMP IMPORTANT REMOVE ME SEIF###
+        ### When the switching works ###
+        self.notebook.set_page(0)
         self.start = self.start + offset
         if time.time() > self.start:
             diff = self.start - self.cal.histogram.get_datastore()[0][0]
@@ -144,7 +150,7 @@ class ActivityView(gtk.VBox):
 
     def _zoom_out_day(self, widget):
         self.notebook.set_current_page(0)
-    
+
     def _zoom_in_day(self, widget):
         self.notebook.set_current_page(1)
         self.daybox.set_day(widget.day_start, widget.day_end)

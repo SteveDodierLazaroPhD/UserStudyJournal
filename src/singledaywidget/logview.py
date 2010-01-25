@@ -48,15 +48,17 @@ class DetailedWindow(gtk.ScrolledWindow):
     day_i = 0
     def __init__(self):
         super(gtk.ScrolledWindow, self).__init__()
+        self.set_shadow_type(gtk.SHADOW_NONE)
         self.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         self.view = logwidget.DetailedView()
         self.view.set_text_handler(get_tab_text_custom)
         self.view.connect("item-clicked", self.clicked_func)
         self.view.connect("private-area-clicked", self.arrow_clicked_func)
         self.add_with_viewport(self.view)
+        self.get_children()[0].set_shadow_type(gtk.SHADOW_NONE)
         for widget in self:
             self.set_shadow_type(gtk.SHADOW_NONE)
-        
+
 
     def clicked_func(self, widget, zevent):
         """
