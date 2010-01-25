@@ -112,9 +112,9 @@ class SingleDayWidget(gtk.VBox):
         self.show_all()
         
         
-        self.connect("motion-notify-event", lambda x, y: evbox.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND1)))
-        self.connect("leave-notify-event", lambda x, y: evbox.window.set_cursor(None))
-
+        self.connect("motion-notify-event", lambda x, y: evbox.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2)))
+        #self.connect("leave-notify-event", lambda x, y: evbox.window.set_cursor(None))
+        evbox.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2))
         
 
     def click(self, widget, event):
@@ -243,8 +243,8 @@ class DayWidget(gtk.VBox):
         evbox.add(self.daylabel)
         self.vbox.pack_start(evbox, False, False)
         
-        self.connect("motion-notify-event", lambda x, y: evbox.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND1)))
-        self.connect("leave-notify-event", lambda x, y: evbox.window.set_cursor(None))
+        self.connect("motion-notify-event", lambda x, y: evbox.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2)))
+        #self.connect("leave-notify-event", lambda x, y: evbox.window.set_cursor(None))
 
         
         self.vbox.reorder_child(self.daylabel, 0)
