@@ -39,6 +39,7 @@ class ActivityView(gtk.VBox):
         self.days = {}
 
         self.daysbox = None
+        self.daybox = None
         self.__first_run = True
         self.set_num_days(3)
 
@@ -100,13 +101,14 @@ class ActivityView(gtk.VBox):
         for w in self:
             if w != self.searchbox:
                 self.remove(w)
+        self.daysbox = gtk.HBox(True)
+        self.daybox = SingleDayWidget()
+        self.notebook = gtk.Notebook()
+        
+        self.notebook.append_page(self.daysbox, gtk.Label("Group View"))
+        self.notebook.append_page(self.daybox, gtk.Label("Day View"))
 
-        if settings.get("view", "Journal") == "Journal":
-            self.daysbox = gtk.HBox(True)
-        else:
-            self.daysbox = gtk.VBox()
-
-        self.pack_start(self.daysbox, True, True, 0)
+        self.pack_start(self.notebook, True, True, 0)
         if refresh:
             self.set_views()
         self.daysbox.show_all()
@@ -136,6 +138,10 @@ class ActivityView(gtk.VBox):
         self.start = dayinfocus - (self.dayrange - 1) * 86400
         self.set_views()
 
+    def _zoom_in_day(self, widget):
+        self.notebook.set_current_page(1)
+        self.daybox.set_day(widget.day_start, widget.day_end)
+
     def set_views(self):
         if not self.daysbox:
             return # nothing to do - TODO: should this be allowed to happen?
@@ -150,6 +156,7 @@ class ActivityView(gtk.VBox):
             if not self.days.has_key(ptime):
                 dayview = DayWidget(self.start + i*86400,
                     self.start + i*86400 + 86400)
+                dayview.connect("focus-day", self._zoom_in_day)
                 self.days[ptime] = dayview
             new_days.append(self.days[ptime])
 

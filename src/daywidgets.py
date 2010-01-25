@@ -35,10 +35,57 @@ from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
     ResultType, TimeRange
 
 from widgets import *
+from singledaywidget.logview import DetailedWindow
+from singledaywidget.eventhandler import get_dayevents
 
 CLIENT = ZeitgeistClient()
 
+class SingleDayWidget(gtk.VBox):
+    def __init__(self):
+        gtk.VBox.__init__(self)
+        self.daylabel = None
+        self.view = DetailedWindow()
+        self.pack_end(self.view)
+    
+    def _set_date_strings(self):
+        self.date_string = date.fromtimestamp(self.day_start).strftime("%d %B")
+        self.year_string = date.fromtimestamp(self.day_start).strftime("%Y")
+        if time.time() < self.day_end and time.time() > self.day_start:
+            self.week_day_string = _("Today")
+        elif time.time() - 86400 < self.day_end and time.time() - 86400> self.day_start:
+            self.week_day_string = _("Yesterday")
+        else:
+                self.week_day_string = date.fromtimestamp(self.day_start).strftime("%A")
+        self.emit("style-set", None)
+    
+    def set_day(self, start, end):
+        self.day_start = start
+        self.day_end = end
+        for widget in self:
+            if self.view != widget:
+                self.remove(widget)
+        self._set_date_strings()
+        today = int(time.time() ) - 7*86400
+        if self.daylabel:
+            #Disconnect here
+            pass
+        if self.day_start < today:
+            self.daylabel = DayLabel(self.date_string, self.week_day_string+", "+ self.year_string)
+        else:
+            self.daylabel = DayLabel(self.week_day_string, self.date_string+", "+ self.year_string)
+        self.daylabel.set_size_request(100, 60)
+        self.pack_start(self.daylabel, False, False)
+        get_dayevents(start*1000, end*1000, self.view.view.set_datastore)
+        self.show_all()
+
+
 class DayWidget(gtk.VBox):
+
+    __gsignals__ = {
+        "focus-day" : (gobject.SIGNAL_RUN_FIRST,
+                    gobject.TYPE_NONE,
+                    ())
+        }
 
     def __init__(self, start, end):
         super(DayWidget, self).__init__()
@@ -90,6 +137,8 @@ class DayWidget(gtk.VBox):
         evbox.add(self.vbox)
 
         self.pack_start(evbox)
+        
+        self.daylabel = None
 
         self._init_date_label()
 
@@ -135,14 +184,23 @@ class DayWidget(gtk.VBox):
     def _init_date_label(self):
         self._set_date_strings()
         
-        today = int(time.time() )- 7*86400
+        today = int(time.time() ) - 7*86400
+        if self.daylabel:
+            # Disconnect HERE
+            pass
         if self.day_start < today:
             self.daylabel = DayLabel(self.date_string, self.week_day_string+", "+ self.year_string)
         else:
             self.daylabel = DayLabel(self.week_day_string, self.date_string+", "+ self.year_string)
+        self.daylabel.connect("button-press-event", self.click)
+    
         self.daylabel.set_size_request(100, 60)
         self.vbox.pack_start(self.daylabel, False, False)
         self.vbox.reorder_child(self.daylabel, 0)
+    
+    def click(self, widget, event):
+        if event.button == 1:
+            self.emit("focus-day")
 
     def _init_events(self):
         for w in self.view:
@@ -206,6 +264,10 @@ class CategoryBox(gtk.VBox):
             self.box.hide()
 
 class DayLabel(gtk.DrawingArea):
+    
+    __events__ = (gtk.gdk.KEY_PRESS_MASK | gtk.gdk.BUTTON_MOTION_MASK |
+                  gtk.gdk.POINTER_MOTION_HINT_MASK | gtk.gdk.BUTTON_RELEASE_MASK |
+                  gtk.gdk.BUTTON_PRESS_MASK)
 
     def __init__(self, day, date):
         if day == _("Today"):
@@ -215,6 +277,7 @@ class DayLabel(gtk.DrawingArea):
         super(DayLabel, self).__init__()
         self.date = date
         self.day = day
+        self.set_events(self.__events__)
         self.connect("expose_event", self.expose)
     
     def expose(self, widget, event):
