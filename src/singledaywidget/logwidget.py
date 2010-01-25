@@ -473,7 +473,7 @@ class DetailedView(gtk.DrawingArea):
                 widget, context, layout, self.gc, self.base_color, text, area[0], area[1], area[2], area[3],
                 ftype = obj.subjects[0].interpretation, fmime=obj.subjects[0].mimetype)
             if self.__active_area__ == tuple(narea):
-                widget.style.paint_focus(widget.window, gtk.STATE_ACTIVE, event.area, widget, "treeview", *narea)
+                widget.style.paint_focus(widget.window, gtk.STATE_ACTIVE, event.area, widget, None, *narea)
             self.register_area(obj, *narea)
             y += self.yincrement
             i += 1
