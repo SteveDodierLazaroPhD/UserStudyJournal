@@ -135,13 +135,17 @@ class DayButton(gtk.DrawingArea):
         if self.sensitive:
             context.set_source_rgba(*(self.leading_header_color if self.leading else self.header_color))
             context.new_sub_path()
-            context.arc(r+x, r+y, r, math.pi, 3 * math.pi /2)
-            context.arc(w-r, r+y, r, 3 * math.pi / 2, 0)
+            context.move_to(x+r,y)
+            context.line_to(x+w-r,y)
+            context.curve_to(x+w,y,x+w,y,x+w,y+r)
+            context.line_to(x+w,y+h-r)
+            context.curve_to(x+w,y+h,x+w,y+h,x+w-r,y+h)
+            context.line_to(x+r,y+h)
+            context.curve_to(x,y+h,x,y+h,x,y+h-r)
+            context.line_to(x,y+r)
+            context.curve_to(x,y,x,y,x+r,y)
+            context.set_source_rgba(*(self.leading_header_color if self.leading else self.header_color))
             context.close_path()
-            if self.side:
-                context.rectangle(w/2, 0, w, self.header_size)
-            else:
-                context.rectangle(0, 0, w/2, self.header_size)
             context.rectangle(0, r, w,  self.header_size)
             context.fill()
             context.set_source_rgba(*self.internal_color)
