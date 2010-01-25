@@ -52,13 +52,10 @@ class DetailedWindow(gtk.ScrolledWindow):
         self.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         self.view = logwidget.DetailedView()
         
-        evbox = gtk.EventBox()
-        evbox.add(self.view)
-        
         self.view.set_text_handler(get_tab_text_custom)
         self.view.connect("item-clicked", self.clicked_func)
         self.view.connect("private-area-clicked", self.arrow_clicked_func)
-        self.add_with_viewport(evbox)
+        self.add_with_viewport(self.view)
         self.get_children()[0].set_shadow_type(gtk.SHADOW_NONE)
         for widget in self:
             self.set_shadow_type(gtk.SHADOW_NONE)
