@@ -340,7 +340,7 @@ class DetailedView(gtk.DrawingArea):
         """
         t1 = "<b>" + obj.subjects[0].text + "</b>"
         t2 = obj.subjects[0].mimetype.split("/")[0]
-        t3 = time.strftime("%H:%S", time.localtime(int(obj.timestamp)/1000))
+        t3 = time.strftime("%H:%M", time.localtime(int(obj.timestamp)/1000))
         return t1 + "\n" + t2 + "\n" + t3
 
     def set_text_handler(self, fn):
@@ -422,8 +422,7 @@ class DetailedView(gtk.DrawingArea):
             return False
         area, obj = val
         self.__active_area__ = area
-        if obj in [self.__private_areas__[key] for key in
-                   self.__private_areas__.keys()]:
+        if obj in self.__private_areas__.values():
             self.emit("private-area-clicked", obj)
             return True
         self.emit("item-clicked", obj)
@@ -448,15 +447,15 @@ class DetailedView(gtk.DrawingArea):
         draw_time_markers(widget, event, context, layout, self.gc, self.base_color, self.stroke_color, self.header_height)
         self.expose(widget, event, context, layout)
         # Paint arrows
-        size = self.header_height
-        self.style.paint_arrow(
-            widget.window, gtk.STATE_NORMAL, gtk.SHADOW_IN,
-            event.area, widget, None, gtk.ARROW_LEFT, True, 0, 0, size, size)
-        self.register_area(gtk.ARROW_LEFT, 0, 0, size, size, private = True)
-        self.style.paint_arrow(
-            widget.window, gtk.STATE_NORMAL, gtk.SHADOW_IN,
-            event.area, widget, None, gtk.ARROW_RIGHT, True, event.area.width - size, 0, size, size)
-        self.register_area(gtk.ARROW_RIGHT, event.area.width - size, 0, size, size, private = True)
+        #size = self.header_height
+        #self.style.paint_arrow(
+        #    widget.window, gtk.STATE_NORMAL, gtk.SHADOW_IN,
+        #    event.area, widget, None, gtk.ARROW_LEFT, True, 0, 0, size, size)
+        #self.register_area(gtk.ARROW_LEFT, 0, 0, size, size, private = True)
+        #self.style.paint_arrow(
+        #    widget.window, gtk.STATE_NORMAL, gtk.SHADOW_IN,
+        #    event.area, widget, None, gtk.ARROW_RIGHT, True, event.area.width - size, 0, size, size)
+        #self.register_area(gtk.ARROW_RIGHT, event.area.width - size, 0, size, size, private = True)
 
     def expose(self, widget, event, context, layout):
         """The minor expose function"""
