@@ -52,6 +52,10 @@ class SingleDayWidget(gtk.VBox):
         gtk.VBox.__init__(self)
         self.daylabel = None
         self.view = DetailedWindow()
+        self.view.set_shadow_type(gtk.SHADOW_NONE)
+        for w in self.view.get_children():
+            w.set_shadow_type(gtk.SHADOW_NONE)
+        
         self.pack_end(self.view)
     
     def _set_date_strings(self):

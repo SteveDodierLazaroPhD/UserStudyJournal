@@ -40,7 +40,7 @@ def get_tab_text_custom(obj):
     t1 = "<b>" + text + "</b>"
     interpretation = obj.subjects[0].interpretation
     t2 = FILETYPES[obj.subjects[0].interpretation] if interpretation in FILETYPES.keys() else "Unknown"
-    t3 = time.strftime("%H:%S", time.localtime(int(obj.timestamp)/1000))
+    t3 = time.strftime("%H:%M", time.localtime(int(obj.timestamp)/1000))
     return t1 + "\n" + t2 + "\n" + t3
 
 
@@ -54,6 +54,9 @@ class DetailedWindow(gtk.ScrolledWindow):
         self.view.connect("item-clicked", self.clicked_func)
         self.view.connect("private-area-clicked", self.arrow_clicked_func)
         self.add_with_viewport(self.view)
+        for widget in self:
+            self.set_shadow_type(gtk.SHADOW_NONE)
+        
 
     def clicked_func(self, widget, zevent):
         """
