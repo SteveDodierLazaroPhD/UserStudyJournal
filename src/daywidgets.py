@@ -282,7 +282,6 @@ class CategoryBox(gtk.VBox):
             hbox.show_all()
             label.show_all()
             self.btn.show()
-            self.box.hide()
             self.view.show()
 
         else:
@@ -290,6 +289,7 @@ class CategoryBox(gtk.VBox):
             self.pack_end(self.box)
             self.box.show()
             self.show()
+        
 
     def on_toggle(self, view, bool):
         if bool:
@@ -454,6 +454,9 @@ class EventGroup(gtk.VBox):
 
             # Make the group's contents visible
             self.view.show()
+        if self == pinbox:
+            print "*********"
+            pinbox.show_all()
 
     def get_events(self, *discard):
         if self.event_templates and len(self.event_templates) > 0:
@@ -517,5 +520,6 @@ class PinBox(EventGroup):
         super(PinBox, self).set_events(*args, **kwargs)
         # Make the pin icons visible
         self.view.show_all()
+        self.show_all()
 
 pinbox = PinBox()

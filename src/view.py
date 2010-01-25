@@ -219,5 +219,9 @@ class ActivityView(gtk.VBox):
                 self.daysbox.remove(old_days[i])
                 old_days[i].unparent()
 
+        for day in self.daysbox:
+            day._init_pinbox()
+        pinbox.get_events()
+
         del new_days, old_days, diff
         gc.collect()
