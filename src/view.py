@@ -103,7 +103,11 @@ class ActivityView(gtk.VBox):
                 self.remove(w)
         self.daysbox = gtk.HBox(True)
         self.daybox = SingleDayWidget()
+        self.daybox.connect("unfocus-day", self._zoom_out_day)
+        
         self.notebook = gtk.Notebook()
+        self.notebook.set_show_tabs(False)
+        self.notebook.set_show_border(False)
         
         self.notebook.append_page(self.daysbox, gtk.Label("Group View"))
         self.notebook.append_page(self.daybox, gtk.Label("Day View"))
@@ -138,6 +142,9 @@ class ActivityView(gtk.VBox):
         self.start = dayinfocus - (self.dayrange - 1) * 86400
         self.set_views()
 
+    def _zoom_out_day(self, widget):
+        self.notebook.set_current_page(0)
+    
     def _zoom_in_day(self, widget):
         self.notebook.set_current_page(1)
         self.daybox.set_day(widget.day_start, widget.day_end)

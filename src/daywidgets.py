@@ -41,6 +41,13 @@ from singledaywidget.eventhandler import get_dayevents
 CLIENT = ZeitgeistClient()
 
 class SingleDayWidget(gtk.VBox):
+    
+    __gsignals__ = {
+        "unfocus-day" : (gobject.SIGNAL_RUN_FIRST,
+                    gobject.TYPE_NONE,
+                    ())
+        }
+    
     def __init__(self):
         gtk.VBox.__init__(self)
         self.daylabel = None
@@ -74,9 +81,14 @@ class SingleDayWidget(gtk.VBox):
         else:
             self.daylabel = DayLabel(self.week_day_string, self.date_string+", "+ self.year_string)
         self.daylabel.set_size_request(100, 60)
+        self.daylabel.connect("button-press-event", self.click)
         self.pack_start(self.daylabel, False, False)
         get_dayevents(start*1000, end*1000, self.view.view.set_datastore)
         self.show_all()
+    
+    def click(self, widget, event):
+        if event.button == 1:
+            self.emit("unfocus-day")
 
 
 class DayWidget(gtk.VBox):
