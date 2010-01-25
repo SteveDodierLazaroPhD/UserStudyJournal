@@ -394,7 +394,7 @@ class EventGroup(gtk.VBox):
         self.label = gtk.Label(title)
         self.label.set_alignment(0.03, 0.5)
         self.pack_start(self.label, False, False, 6)
-
+        self.events = []
         # Create the main container
         self.view = gtk.VBox()
         self.pack_start(self.view)
@@ -421,7 +421,7 @@ class EventGroup(gtk.VBox):
             urllib.unquote(str(uri[7:])))
 
     def set_events(self, events):
-
+        self.events = events
         for widget in self.view:
             self.view.remove(widget)
 
