@@ -104,9 +104,18 @@ class SingleDayWidget(gtk.VBox):
             self.daylabel = DayLabel(self.week_day_string, self.date_string+", "+ self.year_string)
         self.daylabel.set_size_request(100, 60)
         self.daylabel.connect("button-press-event", self.click)
-        self.pack_start(self.daylabel, False, False)
+        evbox = gtk.EventBox()
+        evbox.add(self.daylabel)
+        self.pack_start(evbox, False, False)
+        print evbox.window
         get_dayevents(start*1000, end*1000, self.view.view.set_datastore)
         self.show_all()
+        
+        
+        self.connect("motion-notify-event", lambda x, y: evbox.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND1)))
+        self.connect("leave-notify-event", lambda x, y: evbox.window.set_cursor(None))
+
+        
 
     def click(self, widget, event):
         if event.button == 1:
@@ -138,6 +147,7 @@ class DayWidget(gtk.VBox):
         self._init_pinbox()
         gobject.timeout_add_seconds(
             86400 - (int(time.time() - time.timezone) % 86400), self._refresh)
+        
 
         self.show_all()
         self._init_events()
@@ -229,7 +239,14 @@ class DayWidget(gtk.VBox):
         self.daylabel.connect("button-press-event", self.click)
 
         self.daylabel.set_size_request(100, 60)
-        self.vbox.pack_start(self.daylabel, False, False)
+        evbox = gtk.EventBox()
+        evbox.add(self.daylabel)
+        self.vbox.pack_start(evbox, False, False)
+        
+        self.connect("motion-notify-event", lambda x, y: evbox.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND1)))
+        self.connect("leave-notify-event", lambda x, y: evbox.window.set_cursor(None))
+
+        
         self.vbox.reorder_child(self.daylabel, 0)
 
     def click(self, widget, event):
@@ -313,6 +330,7 @@ class DayLabel(gtk.DrawingArea):
         self.day = day
         self.set_events(self.__events__)
         self.connect("expose_event", self.expose)
+        boat = gtk.gdk.Cursor(gtk.gdk.BOAT)
 
     def expose(self, widget, event):
         context = widget.window.cairo_create()
