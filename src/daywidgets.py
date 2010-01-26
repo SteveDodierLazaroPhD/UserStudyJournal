@@ -443,7 +443,7 @@ class EventGroup(gtk.VBox):
             urllib.unquote(str(uri[7:])))
 
     def set_events(self, events):
-        self.events = events
+        self.events = []
         for widget in self.view:
             self.view.remove(widget)
 
@@ -454,6 +454,7 @@ class EventGroup(gtk.VBox):
                 if not categories.has_key(subject.interpretation):
                     categories[subject.interpretation] = []
                 categories[subject.interpretation].append(event)
+                self.events.append(event)
 
         if not categories:
             pass
@@ -480,6 +481,12 @@ class EventGroup(gtk.VBox):
             pinbox.show_all()
         except:
             pass
+            
+        
+        if len(self.events) == 0:
+            self.hide()
+        else:
+            self.show()
             
     def get_events(self, *discard):
         if self.event_templates and len(self.event_templates) > 0:
