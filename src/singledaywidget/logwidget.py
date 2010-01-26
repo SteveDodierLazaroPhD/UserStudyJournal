@@ -132,12 +132,13 @@ def get_gc_from_colormap(style, palette, i, shade=1):
     return gc
 
 
-def draw_text(widget, layout, gc, text, x, y, width, height, xcenter = False,
+def draw_text(window, layout, gc, text, x, y, width, height, xcenter = False,
               ycenter = False, xoffset= 0, yoffset= 0, maxw = 0):
     """
     draw text using this function
 
     Arguments:
+    - window: a window to draw on
     - layout: a pango layout to use for writing
     - gc: a text_gc from style
     - text: the text to draw
@@ -160,20 +161,20 @@ def draw_text(widget, layout, gc, text, x, y, width, height, xcenter = False,
     #layout.set_wrap(pango.WRAP_CHAR)
     #layout.set_alignment(pango.ALIGN_CENTER)
     layout.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
-    widget.window.draw_layout(
+    window.draw_layout(
         gc, int(x + text_w/2 if xcenter else x),
         int(y + text_h/2 if ycenter else y), layout)
     layout.set_spacing(0)
     return text_h, text_w
 
 
-def draw_text_box(widget, context, layout, gc, basecolor, text, x, y, width, height,
+def draw_text_box(window, context, layout, gc, basecolor, text, x, y, width, height,
                   innercolor = (0, 0, 0, 0), ftype=None, fmime=""):
     """
     Draws a box around the marker box and draws the text in a box on the side
 
     Arguments:
-    - a widget to draw on
+    - a window to draw on
     - context: A cairo context to draw on
     - layout: a pango layout to use for writing
     - gc: a text_gc from style
@@ -207,7 +208,7 @@ def draw_text_box(widget, context, layout, gc, basecolor, text, x, y, width, hei
         area = (x-edge, y, maxw + width + 5, height)
         xoffset = width+spacing/2
     paint_box(context, basecolor, 0, 0, area[0], area[1], area[2], area[3], rounded = 8)
-    tw, th = draw_text(widget, layout, gc, text, area[0], area[1], area[2], area[3], xoffset = xoffset, maxw = 120-2*spacing)
+    tw, th = draw_text(window, layout, gc, text, area[0], area[1], area[2], area[3], xoffset = xoffset, maxw = 120-2*spacing)
     paint_box(context, innercolor, 4, 0, x, y, width, height)
     return [int(a) for a in area]
 
@@ -251,11 +252,11 @@ def paint_box(context, color, xpadding, ypadding, x, y, width, height, rounded =
         context.set_source_rgba
         context.stroke()
 
-def draw_time_markers(widget, event, context, layout, gc, color1, color2, height):
+def draw_time_markers(window, event, context, layout, gc, color1, color2, height):
     """
     Draws strings and lines representing times
     """
-    maxheight = widget.window.get_geometry()[3]
+    maxheight = window.get_geometry()[3]
     context.set_source_rgba(*color1)
     context.rectangle(0, 0, event.area.width, height)
     context.fill()
@@ -272,7 +273,7 @@ def draw_time_markers(widget, event, context, layout, gc, color1, color2, height
         context.stroke()
         layout.set_markup("<b>"+TIMES[i]+"</b>")
         w, h = layout.get_pixel_size()
-        widget.window.draw_layout(gc, int(point - w/2), int((height-h)/2), layout)
+        window.draw_layout(gc, int(point - w/2), int((height-h)/2), layout)
         i += 1
     return
 
@@ -329,8 +330,8 @@ class DetailedView(gtk.DrawingArea):
         for key, val in self.__connections__.iteritems():
             self.connect(key, getattr(self, val))
         self.clear_registered_areas()
-        
-        
+
+
 
     def text_handler(self, obj):
         """
@@ -446,7 +447,7 @@ class DetailedView(gtk.DrawingArea):
         if not self.gc:
             self.gc = get_gc_from_colormap(widget.style, "text_gc", 0)
         layout.set_font_description(widget.pangofont)
-        draw_time_markers(widget, event, context, layout, self.gc, self.base_color, self.stroke_color, self.header_height)
+        draw_time_markers(widget.window, event, context, layout, self.gc, self.base_color, self.stroke_color, self.header_height)
         self.expose(widget, event, context, layout)
         # Paint arrows
         #size = self.header_height
@@ -472,7 +473,7 @@ class DetailedView(gtk.DrawingArea):
                 self.get_datastore()[i][2] = area
             text = self.text_handler(obj)
             narea = draw_text_box(
-                widget, context, layout, self.gc, self.base_color, text, area[0], area[1], area[2], area[3],
+                widget.window, context, layout, self.gc, self.base_color, text, area[0], area[1], area[2], area[3],
                 ftype = obj.subjects[0].interpretation, fmime=obj.subjects[0].mimetype)
             if self.__active_area__ == tuple(narea):
                 widget.style.paint_focus(widget.window, gtk.STATE_ACTIVE, event.area, widget, None, *narea)
