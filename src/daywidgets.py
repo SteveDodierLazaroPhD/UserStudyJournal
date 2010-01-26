@@ -107,15 +107,16 @@ class SingleDayWidget(gtk.VBox):
         evbox = gtk.EventBox()
         evbox.add(self.daylabel)
         self.pack_start(evbox, False, False)
-        print evbox.window
         get_dayevents(start*1000, end*1000, self.view.view.set_datastore)
         self.show_all()
         
         
-        self.connect("motion-notify-event", lambda x, y: evbox.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2)))
+        #self.connect("motion-notify-event", lambda x, y: evbox.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2)))
         #self.connect("leave-notify-event", lambda x, y: evbox.window.set_cursor(None))
-        evbox.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2))
-        
+        try:
+            evbox.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2))
+        except:
+            pass
 
     def click(self, widget, event):
         if event.button == 1:
@@ -170,6 +171,7 @@ class DayWidget(gtk.VBox):
     def _refresh(self):
         self._init_date_label()
         self._init_pinbox()
+        pinbox.show_all()
 
     def _init_pinbox(self):
         if self.day_start <= time.time() < self.day_end:
@@ -242,8 +244,10 @@ class DayWidget(gtk.VBox):
         evbox = gtk.EventBox()
         evbox.add(self.daylabel)
         self.vbox.pack_start(evbox, False, False)
-        
-        self.connect("motion-notify-event", lambda x, y: evbox.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2)))
+        try:
+            self.connect("motion-notify-event", lambda x, y: evbox.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2)))
+        except:
+            pass
         #self.connect("leave-notify-event", lambda x, y: evbox.window.set_cursor(None))
 
         
@@ -313,6 +317,7 @@ class CategoryBox(gtk.VBox):
             self.box.show()
         else:
             self.box.hide()
+        pinbox.show_all()
 
 class DayLabel(gtk.DrawingArea):
 
@@ -330,7 +335,6 @@ class DayLabel(gtk.DrawingArea):
         self.day = day
         self.set_events(self.__events__)
         self.connect("expose_event", self.expose)
-        boat = gtk.gdk.Cursor(gtk.gdk.BOAT)
 
     def expose(self, widget, event):
         context = widget.window.cairo_create()
@@ -452,10 +456,10 @@ class EventGroup(gtk.VBox):
                 categories[subject.interpretation].append(event)
 
         if not categories:
-            self.hide_all()
+            pass
         else:
             # Make the group title, etc. visible
-            self.show_all()
+            self.show()
 
             ungrouped_events = []
             for key in sorted(categories.iterkeys()):
@@ -472,10 +476,11 @@ class EventGroup(gtk.VBox):
 
             # Make the group's contents visible
             self.view.show()
-        if self == pinbox:
-            print "*********"
+        try:
             pinbox.show_all()
-
+        except:
+            pass
+            
     def get_events(self, *discard):
         if self.event_templates and len(self.event_templates) > 0:
             CLIENT.find_events_for_templates(self.event_templates,
@@ -483,6 +488,7 @@ class EventGroup(gtk.VBox):
                 result_type=ResultType.MostRecentSubjects)
         else:
             self.view.hide()
+        self.show_all()
 
 class DayPartWidget(EventGroup):
 

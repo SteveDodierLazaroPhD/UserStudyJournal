@@ -22,6 +22,7 @@
 import gtk
 import gettext
 import datetime
+import time
 import gobject
 import pango
 import gio
@@ -427,6 +428,9 @@ class Item(gtk.HBox):
         self.subject = event.subjects[0]
         self.gio_file = GioFile.create(self.subject.uri)            
         self.time = float(event.timestamp) / 1000
+        self.time =  time.strftime("%H:%M", time.localtime(self.time))
+
+
 
         if self.gio_file is not None:
             self.icon = self.gio_file.get_icon(

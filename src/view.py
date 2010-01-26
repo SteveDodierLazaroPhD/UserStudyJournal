@@ -133,17 +133,21 @@ class ActivityView(gtk.VBox):
         ###IMPORTANT HIDES THE DETAILED VIEW ON JUMP IMPORTANT REMOVE ME SEIF###
         ### When the switching works ###
         self.start = self.start + offset
+        
         if time.time() > self.start:
             diff = self.start - self.cal.histogram.get_datastore()[0][0]
             self.cal.histogram.set_selected(diff / 86400)
-            self.set_dayrange(self.start, self.end+offset)
+            self.set_dayrange(self.start, self.end+offset)             
+            widget = self.daysbox.get_children()[self.dayrange -1]
+            self.daybox.set_day(widget.day_start, widget.day_end)
 
     def set_dayrange(self, start, end):
         self.start = start
         self.end = end
         self.dayrange = int(int((end - start)) / 86400) + 1
         self.set_views()
-        self.daybox.set_day(start+(self.dayrange-1)*86400, end)
+        widget = self.daysbox.get_children()[self.dayrange -1]
+        self.daybox.set_day(widget.day_start, widget.day_end)
 
     def _set_today_timestamp(self, dayinfocus=None):
         """
