@@ -85,25 +85,21 @@ FILETYPESNAMES ={
     }
 
 
-def make_area_from_event(x, y, max_width, row_height, timestamp, duration):
+def make_area_from_event(x, max_width, timestamp, duration):
     """
     Generates a time box based on a objects timestamp and duration
 
-    x, y, max_width, row_height, obj, duration
+    Arguments
     - x: The start x postion
-    - y: The start y position
     - max_width: The max gdk.window width
-    - row_height: The height of the box to be returned
     - timestamp: a timestamp int or string from which to calulate the start position
     - duration: the length to calulate the width
     """
     _f = lambda duration: max(duration/3600.0/1000.0/24.0 * max_width, max_width/48)
     _e = lambda timestamp: max(((int(timestamp)/1000.0 - time.timezone)%86400)/3600/24.0 * max_width, 2)
-    y = y
     x = x + _e(int(timestamp))
     width = min(_f(duration), max_width-x)
-    height = row_height
-    return (int(x), int(y), int(width), int(height))
+    return (x, int(width))
 
 
 def get_gtk_rgba(style, palette, i, shade = 1, alpha = 1):
@@ -289,7 +285,7 @@ class DetailedView(gtk.DrawingArea):
     A gtk widget which displays a bunch of rows with items representing a
     section of time where they were used
     """
-    __datastore__ = tuple()
+    __datastore__ = {}
     __gsignals__ = {
         # Sent when data is updated
         "data-updated" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,()),
@@ -474,16 +470,6 @@ class DetailedView(gtk.DrawingArea):
         layout.set_font_description(widget.pangofont)
         draw_time_markers(widget.window, event, context, layout, self.lightgc, self.base_color, self.stroke_color, self.header_height)
         self.expose(widget, event, context, layout)
-        # Paint arrows
-        #size = self.header_height
-        #self.style.paint_arrow(
-        #    widget.window, gtk.STATE_NORMAL, gtk.SHADOW_IN,
-        #    event.area, widget, None, gtk.ARROW_LEFT, True, 0, 0, size, size)
-        #self.register_area(gtk.ARROW_LEFT, 0, 0, size, size, private = True)
-        #self.style.paint_arrow(
-        #    widget.window, gtk.STATE_NORMAL, gtk.SHADOW_IN,
-        #    event.area, widget, None, gtk.ARROW_RIGHT, True, event.area.width - size, 0, size, size)
-        #self.register_area(gtk.ARROW_RIGHT, event.area.width - size, 0, size, size, private = True)
 
     def expose(self, widget, event, context, layout):
         """The minor expose function"""
@@ -492,17 +478,17 @@ class DetailedView(gtk.DrawingArea):
         state = gtk.STATE_NORMAL
         y = 2 * self.header_height
         i = 0
-        for obj, duration, area in self.get_datastore():
-            if not area or self.__last_width__ != event.area.width: # Get the time bar area
-                area = make_area_from_event(0, y, event.area.width, self.row_height, obj.timestamp, duration)
-                self.get_datastore()[i][2] = area
+        for uri, row in self.get_datastore().iteritems():
+            obj, duration = row[0]
+            barsize = make_area_from_event(0, event.area.width, obj.timestamp, duration)
             text = self.text_handler(obj)
-            narea = draw_text_box(
-                widget.window, context, layout, self.gc, self.base_color, text, area[0], area[1], area[2], area[3],
+            area = draw_text_box(
+                widget.window, context, layout, self.gc, self.base_color, text, barsize[0],
+                y, barsize[1], self.row_height,
                 ftype = obj.subjects[0].interpretation, fmime=obj.subjects[0].mimetype)
-            if self.__active_area__ == tuple(narea):
-                widget.style.paint_focus(widget.window, gtk.STATE_ACTIVE, event.area, widget, None, *narea)
-            self.register_area(obj, *narea)
+            if self.__active_area__ == tuple(area):
+                widget.style.paint_focus(widget.window, gtk.STATE_ACTIVE, event.area, widget, None, *area)
+            self.register_area(obj, *area)
             y += self.yincrement
             i += 1
         self.__last_width__ = event.area.width
@@ -518,14 +504,14 @@ class DetailedView(gtk.DrawingArea):
         - datastore:
         """
         if datastore:
-            if isinstance(datastore, tuple):
-                datastore =  list(datastore)
-            if isinstance(datastore, list):
-                self.__datastore__ = datastore
-            else:
-                raise TypeError("Datastore is not a <list>")
+            #if isinstance(datastore, tuple):
+            #    datastore =  list(datastore)
+            #if isinstance(datastore, list):
+            self.__datastore__ = datastore
+            #else:
+            #    raise TypeError("Datastore is not a <list>")
         else:
-            self.__datastore__ = []
+            self.__datastore__ = {}
         self.clear_registered_areas(private=True)
         self.emit("data-updated")
         self.queue_draw()

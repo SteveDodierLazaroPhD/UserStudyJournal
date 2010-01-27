@@ -23,6 +23,7 @@ def get_dayevents(start, end, callback):
 
     def handle_find_events(events):
         results = {}
+        sort_results = {}
         for event in events:
             if event_exists(event.subjects[0].uri):
                
@@ -31,7 +32,7 @@ def get_dayevents(start, end, callback):
                    
                     if not results.has_key(event.subjects[0].uri):
                         results[event.subjects[0].uri] = []
-                    
+                        sort_results[event.subjects[0].uri] = int(event.timestamp)
                     r = [event, 1000]
                     results[event.subjects[0].uri].append(r)
                 else:
@@ -40,8 +41,15 @@ def get_dayevents(start, end, callback):
                         if int(event.timestamp) > int(item[0].timestamp):
                             item[1] = int(event.timestamp) - int(item[0].timestamp)
                             results[event.subjects[0].uri][len(results[event.subjects[0].uri])-1] = item
-        callback(results)
+                            
+        sort_results = [(k, v) for v, k in sort_results.items()]
+        sort_results.sort()
+        final_results = []
+        for v in sort_results:
+            final_results.append(results[v[1]])
         
+        callback(final_results)
+    
     timerange = [start, end]
     event = Event()
     #event.interpretation = Interpretation.VISIT_EVENT
