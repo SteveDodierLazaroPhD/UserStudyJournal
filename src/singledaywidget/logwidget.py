@@ -75,6 +75,15 @@ FILETYPES ={
     Interpretation.UNKNOWN.uri : 21,
     }
 
+FILETYPESNAMES ={
+    Interpretation.VIDEO.uri : "Video",
+    Interpretation.MUSIC.uri : "Music",
+    Interpretation.DOCUMENT.uri : "Document",
+    Interpretation.IMAGE.uri : "Image",
+    Interpretation.SOURCECODE.uri : "Source Code",
+    Interpretation.UNKNOWN.uri : "Unknown",
+    }
+
 
 def make_area_from_event(x, y, max_width, row_height, timestamp, duration):
     """
@@ -341,10 +350,12 @@ class DetailedView(gtk.DrawingArea):
         Arguments:
         - obj: A event object
         """
-        t1 = "<b>" + obj.subjects[0].text + "</b>"
-        t2 = obj.subjects[0].mimetype.split("/")[0]
+        text = obj.subjects[0].text
+        t1 = "<b>" + text + "</b>"
+        interpretation = obj.subjects[0].interpretation
+        t2 = FILETYPESNAMES[obj.subjects[0].interpretation] if interpretation in FILETYPESNAMES.keys() else "Unknown"
         t3 = time.strftime("%H:%M", time.localtime(int(obj.timestamp)/1000))
-        return t1 + "\n" + t2 + "\n" + t3
+        return str(t1) + "\n" + str(t2) + "\n" + str(t3)
 
     def set_text_handler(self, fn):
         """

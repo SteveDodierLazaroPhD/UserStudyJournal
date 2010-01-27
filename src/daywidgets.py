@@ -35,7 +35,7 @@ from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
     ResultType, TimeRange
 
 from widgets import *
-from singledaywidget.logview import DetailedWindow
+from singledaywidget import logwidget
 from singledaywidget.eventhandler import get_dayevents
 
 CLIENT = ZeitgeistClient()
@@ -51,9 +51,16 @@ class SingleDayWidget(gtk.VBox):
     def __init__(self):
         gtk.VBox.__init__(self)
         self.daylabel = None
-        self.view = DetailedWindow()
-        self.pack_end(self.view)
-        
+        self.scrolledwindow = gtk.ScrolledWindow()
+        self.scrolledwindow.set_shadow_type(gtk.SHADOW_NONE)
+        self.scrolledwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        self.view = logwidget.DetailedView()
+        self.view.connect("item-clicked", self.area_clicked)
+        self.view.connect("private-area-clicked", self.private_area_clicked)
+        self.scrolledwindow.add_with_viewport(self.view)
+        self.scrolledwindow.get_children()[0].set_shadow_type(gtk.SHADOW_NONE)
+        self.pack_end(self.scrolledwindow)
+
         def change_style(widget, style):
             rc_style = self.style
             color = rc_style.bg[gtk.STATE_NORMAL]
@@ -91,7 +98,7 @@ class SingleDayWidget(gtk.VBox):
         self.day_start = start
         self.day_end = end
         for widget in self:
-            if self.view != widget:
+            if self.scrolledwindow != widget:
                 self.remove(widget)
         self._set_date_strings()
         today = int(time.time() ) - 7*86400
@@ -107,10 +114,10 @@ class SingleDayWidget(gtk.VBox):
         evbox = gtk.EventBox()
         evbox.add(self.daylabel)
         self.pack_start(evbox, False, False)
-        get_dayevents(start*1000, end*1000, self.view.view.set_datastore)
+        get_dayevents(start*1000, end*1000, self.view.set_datastore)
         self.show_all()
-        
-        
+
+
         #self.connect("motion-notify-event", lambda x, y: evbox.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2)))
         #self.connect("leave-notify-event", lambda x, y: evbox.window.set_cursor(None))
         try:
@@ -121,6 +128,15 @@ class SingleDayWidget(gtk.VBox):
     def click(self, widget, event):
         if event.button == 1:
             self.emit("unfocus-day")
+
+    def area_clicked(self, widget, zevent):
+        """
+        A sample event for clicks
+        """
+        print zevent.subjects[0].text, time.strftime("Day:%d Time:%H:%M", time.localtime(int(zevent.timestamp)/1000))
+
+    def private_area_clicked(self, widget, obj):
+        widget.queue_draw()
 
 
 class DayWidget(gtk.VBox):
@@ -148,7 +164,7 @@ class DayWidget(gtk.VBox):
         self._init_pinbox()
         gobject.timeout_add_seconds(
             86400 - (int(time.time() - time.timezone) % 86400), self._refresh)
-        
+
 
         self.show_all()
         self._init_events()
@@ -250,7 +266,7 @@ class DayWidget(gtk.VBox):
             pass
         #self.connect("leave-notify-event", lambda x, y: evbox.window.set_cursor(None))
 
-        
+
         self.vbox.reorder_child(self.daylabel, 0)
 
     def click(self, widget, event):
@@ -310,7 +326,7 @@ class CategoryBox(gtk.VBox):
             self.pack_end(self.box)
             self.box.show()
             self.show()
-        
+
 
     def on_toggle(self, view, bool):
         if bool:
@@ -481,13 +497,13 @@ class EventGroup(gtk.VBox):
             pinbox.show_all()
         except:
             pass
-            
-        
+
+
         if len(self.events) == 0:
             self.hide()
         else:
             self.show()
-            
+
     def get_events(self, *discard):
         if self.event_templates and len(self.event_templates) > 0:
             CLIENT.find_events_for_templates(self.event_templates,
