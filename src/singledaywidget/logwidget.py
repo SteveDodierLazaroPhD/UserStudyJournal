@@ -300,12 +300,14 @@ class DetailedView(gtk.DrawingArea):
     }
     __events__ = (
         gdk.ENTER_NOTIFY_MASK | gdk.LEAVE_NOTIFY_MASK |
-        gdk.KEY_PRESS_MASK | gdk.BUTTON_RELEASE_MASK | gdk.BUTTON_PRESS_MASK
+        gdk.KEY_PRESS_MASK | gdk.BUTTON_RELEASE_MASK | gdk.BUTTON_PRESS_MASK |
+        gdk.MOTION_NOTIFY
     )
     __connections__ = {
         "expose-event":"__expose__",
         "button_press_event": "__button_press_handler__",
         "button_release_event": "__button_release_handler__",
+        "motion_notify_event": "__motion_notify_handler__",
         "style-set": "change_style",
     }
     # Click handling areas
@@ -418,6 +420,17 @@ class DetailedView(gtk.DrawingArea):
                         return (x, y, width, height), obj
         return False
 
+    def __motion_notify_handler__(self, widget, event):
+        val = self.check_area(event.x, event.y)
+        if val:
+            self.__active_area__ = val[0]
+            self.queue_draw()
+            return True
+        elif self.__active_area__:
+            self.__active_area__ = None
+            self.queue_draw()
+        return False
+
     def __button_press_handler__(self, widget, event):
         """
         A simple button press handler that emits signals based on matched areas
@@ -482,7 +495,7 @@ class DetailedView(gtk.DrawingArea):
         y = 2 * self.header_height
         i = 0
         for obj, duration, area in self.get_datastore():
-            if not area or self.__last_width__ != event.area.width:
+            if not area or self.__last_width__ != event.area.width: # Get the time bar area
                 area = make_area_from_event(0, y, event.area.width, self.row_height, obj.timestamp, duration)
                 self.get_datastore()[i][2] = area
             text = self.text_handler(obj)
