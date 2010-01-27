@@ -176,51 +176,6 @@ def draw_text(window, layout, gc, text, x, y, width, height, xcenter = False,
     layout.set_spacing(0)
     return text_h, text_w
 
-
-def draw_text_boxold(window, context, layout, gc, basecolor, text, x, y, width, height,
-                  innercolor = (0, 0, 0, 0), ftype=None, fmime=""):
-    """
-    Draws a box around the marker box and draws the text in a box on the side
-
-    Arguments:
-    - a window to draw on
-    - context: A cairo context to draw on
-    - layout: a pango layout to use for writing
-    - gc: a text_gc from style
-    - basecolor: a rgba tuple for the outer tab
-    - text: the text to draw
-    - x: The start x postion
-    - y: The start y position
-    - width: The boxes width
-    - height: The height of the box
-    - innercolor(*optional): a rgba tuple for the outer tab
-    - ftype(optional): the file type
-    - fmime(optional): the mimetype
-    """
-    if ftype:
-        if ftype in FILETYPES.keys():
-            i = FILETYPES[ftype]
-            l = int(math.fabs(hash(fmime))) % 3
-            innercolor = tangocolors[min(i+l, len(tangocolors)-1)]
-        else:
-            innercolor = (136/255.0, 138/255.0, 133/255.0)
-    spacing = 10
-    edge = 0
-    layout.set_markup(text)
-    maxw, maxh  = layout.get_pixel_size()
-    maxw = min(maxw, 100)
-    maxw +=  spacing
-    if x - maxw >= 0:
-        area = (x - maxw, y, maxw + width + edge, height)
-        xoffset = spacing/2
-    else:
-        area = (x-edge, y, maxw + width + 5, height)
-        xoffset = width+spacing/2
-    paint_box(context, basecolor, 0, 0, area[0], area[1], area[2], area[3], rounded = 8)
-    tw, th = draw_text(window, layout, gc, text, area[0], area[1], area[2], area[3], xoffset = xoffset, maxw = 120-2*spacing)
-    paint_box(context, innercolor, 4, 0, x, y, width, height)
-    return [int(a) for a in area]
-
 def draw_text_box(window, context, layout, gc, basecolor, text, x, y, width, height,
                   innercolor = (0, 0, 0, 0), ftype=None, fmime=""):
     """
@@ -319,8 +274,8 @@ def draw_time_markers(window, event, context, layout, gc, color1, color2, height
     points = [e*(x/v) for x in xrange(1, int(v))]
     i = 0
     for point in points:
-        context.move_to(point+0.5, height)
-        context.line_to(point+0.5, maxheight)
+        context.move_to(point, height)
+        context.line_to(point, maxheight)
         context.stroke()
         layout.set_markup("<b>"+TIMES[i]+"</b>")
         w, h = layout.get_pixel_size()
@@ -396,7 +351,7 @@ class DetailedView(gtk.DrawingArea):
         - obj: A event object
         """
         text = obj.subjects[0].text
-        t1 = "<b>" + text + "</b>"
+        t1 = "<big><b>" + text + "</b></big>"
         interpretation = obj.subjects[0].interpretation
         t2 = FILETYPESNAMES[obj.subjects[0].interpretation] if interpretation in FILETYPESNAMES.keys() else "Unknown"
         t3 = time.strftime("%H:%M", time.localtime(int(obj.timestamp)/1000))

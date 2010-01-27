@@ -83,6 +83,23 @@ class SingleDayWidget(gtk.VBox):
 
         self.connect("style-set", change_style)
 
+        def text_handler(obj):
+            """
+            A text handler that returns the text to be drawn by the
+            draw_text_box
+
+            Arguments:
+            - obj: A event object
+            """
+            text = obj.subjects[0].text
+            interpretation = obj.subjects[0].interpretation
+            t1 = (logwidget.FILETYPESNAMES[interpretation] if
+                  interpretation in logwidget.FILETYPESNAMES.keys() else "Unknown")
+            t1 = "<big><b>" + t1 + "</b></big>"
+            t2 = text
+            return str(t1) + "\n" + str(t2)
+        self.view.set_text_handler(text_handler)
+
     def _set_date_strings(self):
         self.date_string = date.fromtimestamp(self.day_start).strftime("%d %B")
         self.year_string = date.fromtimestamp(self.day_start).strftime("%Y")
