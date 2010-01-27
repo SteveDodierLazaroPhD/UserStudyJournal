@@ -60,25 +60,18 @@ class SingleDayWidget(gtk.VBox):
         self.scrolledwindow.add_with_viewport(self.view)
         self.scrolledwindow.get_children()[0].set_shadow_type(gtk.SHADOW_NONE)
         self.pack_end(self.scrolledwindow)
+        self.f_color = self.style.text[4]
 
         def change_style(widget, style):
+            self.f_color = widget.style.text[4]
+            self.f_color.red = max(self.f_color.red * 60/100, 0)
+            self.f_color.green = max(self.f_color.green * 60/100, 0)
+            self.f_color.blue = max(self.f_color.blue * 60/100, 0)
             rc_style = self.style
             color = rc_style.bg[gtk.STATE_NORMAL]
-
-            if color.red * 102/100 > 65535.0:
-                color.red = 65535.0
-            else:
-                color.red = color.red * 102 / 100
-
-            if color.green * 102/100 > 65535.0:
-                color.green = 65535.0
-            else:
-                color.green = color.green * 102 / 100
-
-            if color.blue * 102/100 > 65535.0:
-                color.blue = 65535.0
-            else:
-                color.blue = color.blue * 102 / 100
+            color.red = min(color.red * 102/100, 65535.0)
+            color.green = min(color.green * 102/100, 65535.0)
+            color.blue = min(color.blue * 102/100, 65535.0)
             self.view.modify_bg(gtk.STATE_NORMAL, color)
 
         self.connect("style-set", change_style)
@@ -96,8 +89,8 @@ class SingleDayWidget(gtk.VBox):
             t1 = (logwidget.FILETYPESNAMES[interpretation] if
                   interpretation in logwidget.FILETYPESNAMES.keys() else "Unknown")
             t1 = "<big><b>" + t1 + "</b></big>"
-            t2 = text
-            return str(t1) + "\n" + str(t2)
+            t2 = "<span color='%s'>%s</span> " % (self.f_color, text)
+            return str(t1) + "\n" + str(t2) + ""
         self.view.set_text_handler(text_handler)
 
     def _set_date_strings(self):
@@ -152,7 +145,6 @@ class SingleDayWidget(gtk.VBox):
         """
         gio_file = GioFile.create(zevent.subjects[0].uri)
         if gio_file: gio_file.launch()
-        print zevent.subjects[0].text, time.strftime("Day:%d Time:%H:%M", time.localtime(int(zevent.timestamp)/1000))
 
     def private_area_clicked(self, widget, obj):
         widget.queue_draw()

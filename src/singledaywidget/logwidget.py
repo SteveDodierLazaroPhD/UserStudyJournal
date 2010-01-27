@@ -319,6 +319,7 @@ class DetailedView(gtk.DrawingArea):
     yincrement = row_height + spacing
     # Style stuff
     gc = None
+    lightgc = None
     pangofont = None
     font_name = ""
     font_size =  7*1024
@@ -457,8 +458,10 @@ class DetailedView(gtk.DrawingArea):
         layout = widget.create_pango_layout("")
         if not self.gc:
             self.gc = get_gc_from_colormap(widget.style, "text_gc", 0)
+        if not self.lightgc:
+            self.lightgc = get_gc_from_colormap(widget.style, "text_gc", 4)
         layout.set_font_description(widget.pangofont)
-        draw_time_markers(widget.window, event, context, layout, self.gc, self.base_color, self.stroke_color, self.header_height)
+        draw_time_markers(widget.window, event, context, layout, self.lightgc, self.base_color, self.stroke_color, self.header_height)
         self.expose(widget, event, context, layout)
         # Paint arrows
         #size = self.header_height
