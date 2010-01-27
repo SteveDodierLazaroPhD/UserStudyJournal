@@ -25,29 +25,23 @@ def get_dayevents(start, end, callback):
         results = {}
         for event in events:
             if event_exists(event.subjects[0].uri):
-                if not results.has_key(event.subjects[0].uri):
-                    results[event.subjects[0].uri] = []
+               
                 if event.interpretation == Interpretation.VISIT_EVENT or \
                             event.interpretation == Interpretation.OPEN_EVENT:
+                   
+                    if not results.has_key(event.subjects[0].uri):
+                        results[event.subjects[0].uri] = []
+                    
                     r = [event, 1000]
                     results[event.subjects[0].uri].append(r)
                 else:
-                    try:
+                    if results.has_key(event.subjects[0].uri):
                         item = results[event.subjects[0].uri][len(results[event.subjects[0].uri])-1] 
                         if int(event.timestamp) > int(item[0].timestamp):
                             item[1] = int(event.timestamp) - int(item[0].timestamp)
                             results[event.subjects[0].uri][len(results[event.subjects[0].uri])-1] = item
-                    except Exception, ex:
-                        print ex
-                #results.append([event, random.randint(720000, 14200000), None])#random.randint(0, 72000000)])
-                #results.append([event, random.randint(0, 14200000), None])#random.randint(0, 72000000)])
-        
-        for r in results.values():
-            for event in r:
-                print event[0].subjects[0].uri, event[1]
-
-
         callback(results)
+        
     timerange = [start, end]
     event = Event()
     #event.interpretation = Interpretation.VISIT_EVENT
