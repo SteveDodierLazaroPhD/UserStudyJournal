@@ -53,7 +53,7 @@ class SingleDayWidget(gtk.VBox):
         self.daylabel = None
         self.scrolledwindow = gtk.ScrolledWindow()
         self.scrolledwindow.set_shadow_type(gtk.SHADOW_NONE)
-        self.scrolledwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        self.scrolledwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
         self.view = logwidget.DetailedView()
         self.view.connect("area-clicked", self.area_clicked)
         self.view.connect("private-area-clicked", self.private_area_clicked)
