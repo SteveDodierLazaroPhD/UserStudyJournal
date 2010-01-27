@@ -88,7 +88,7 @@ class ActivityView(gtk.VBox):
         def selection_callback(widget, i):
             ###IMPORTANT HIDES THE DETAILED VIEW ON HISTOGRAM CLICK IMPORTANT REMOVE ME SEIF###
             ### When the switching works ###
-            self.notebook.set_page(0)
+            #self.notebook.set_page(0)
             datastore = widget.get_datastore()
             if i < len(datastore):
                 selection_date = datastore[i][0]
@@ -121,7 +121,7 @@ class ActivityView(gtk.VBox):
         if refresh:
             self.set_views()
         self.daysbox.show_all()
-    
+
         def change_style(widget, style):
             rc_style = self.style
             #color = rc_style.bg[gtk.STATE_NORMAL]
@@ -133,11 +133,11 @@ class ActivityView(gtk.VBox):
         ###IMPORTANT HIDES THE DETAILED VIEW ON JUMP IMPORTANT REMOVE ME SEIF###
         ### When the switching works ###
         self.start = self.start + offset
-        
+
         if time.time() > self.start:
             diff = self.start - self.cal.histogram.get_datastore()[0][0]
             self.cal.histogram.set_selected(diff / 86400)
-            self.set_dayrange(self.start, self.end+offset)             
+            self.set_dayrange(self.start, self.end+offset)
             widget = self.daysbox.get_children()[self.dayrange -1]
             self.daybox.set_day(widget.day_start, widget.day_end)
 
@@ -165,8 +165,12 @@ class ActivityView(gtk.VBox):
         self.notebook.set_current_page(0)
 
     def _zoom_in_day(self, widget):
+        i = self.dayrange - 1
+        for w in self.daysbox:
+            if w == widget: break
+            i -= 1
         self.notebook.set_current_page(1)
-        self.daybox.set_day(widget.day_start, widget.day_end)
+        self.jump(i*-86400)
 
     def set_views(self):
         if not self.daysbox:
