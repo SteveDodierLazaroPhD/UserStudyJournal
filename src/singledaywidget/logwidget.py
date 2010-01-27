@@ -163,8 +163,6 @@ def draw_text(window, layout, gc, text, x, y, width, height, xcenter = False,
     layout.set_spacing(1024)
     text_w, text_h = layout.get_pixel_size()
     layout.set_width(maxw*1024)
-    #layout.set_wrap(pango.WRAP_CHAR)
-    #layout.set_alignment(pango.ALIGN_CENTER)
     layout.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
     window.draw_layout(
         gc, int(x + text_w/2 if xcenter else x),
@@ -191,6 +189,7 @@ def draw_text_box(window, context, layout, gc, basecolor, text, x, y, maxwidth, 
     - innercolor(*optional): a rgba tuple for the outer tab
     - ftype(optional): the file type
     - fmime(optional): the mimetype
+    - a list of bar tuples with (x, width) values to draw
     """
     if ftype:
         if ftype in FILETYPES.keys():
@@ -199,7 +198,7 @@ def draw_text_box(window, context, layout, gc, basecolor, text, x, y, maxwidth, 
             innercolor = tangocolors[min(i+l, len(tangocolors)-1)]
         else:
             innercolor = (136/255.0, 138/255.0, 133/255.0)
-    timebar = 5
+    bar_height = 3
     edge = 0
     layout.set_markup(text)
     text_width, text_height  = layout.get_pixel_size()
@@ -214,10 +213,10 @@ def draw_text_box(window, context, layout, gc, basecolor, text, x, y, maxwidth, 
     if x > maxwidth - 10:
         x = maxwidth - 10
         width +=10
-    tw, th = draw_text(window, layout, gc, text, area[0], area[1]+timebar, area[2], area[3], maxw = 200)
+    tw, th = draw_text(window, layout, gc, text, area[0], area[1]+bar_height, area[2], area[3], maxw = 200)
     if bars:
         for bar in bars:
-            paint_box(context, innercolor, 0, 0, bar[0], y, bar[1], timebar)
+            paint_box(context, innercolor, 0, 0, bar[0], y, bar[1], bar_height)
     return [int(a) for a in area]
 
 def paint_box(context, color, xpadding, ypadding, x, y, width, height, rounded = 0, border_color = None):
@@ -253,30 +252,23 @@ def paint_box(context, color, xpadding, ypadding, x, y, width, height, rounded =
         context.line_to(x,y+r)
         context.curve_to(x,y,x,y,x+r,y)
     else:
-        context.rectangle(x, y, width, height)
+        context.rectangle(x+0.5, y, width, height)
     context.fill()
     if border_color:
         context.set_line_width(1)
         context.set_source_rgba
         context.stroke()
 
-def draw_time_markers(window, event, context, layout, gc, color1, color2, height):
+def draw_time_markers(window, event, layout, gc, height):
     """
     Draws strings and lines representing times
     """
     maxheight = window.get_geometry()[3]
-    context.fill()
-    # Draw time text here
-    context.set_source_rgba(*color2)
-    context.set_line_width(1)
     e =  event.area.width
     v = 6.0
     points = [e*(x/v) for x in xrange(1, int(v))]
     i = 0
     for point in points:
-        #context.move_to(point, height)
-        #context.line_to(point, maxheight)
-        #context.stroke()
         layout.set_markup("<b>"+TIMES[i]+"</b>")
         w, h = layout.get_pixel_size()
         window.draw_layout(gc, int(point - w/2), int((height-h)/2), layout)
@@ -470,7 +462,7 @@ class DetailedView(gtk.DrawingArea):
         if not self.lightgc:
             self.lightgc = get_gc_from_colormap(widget.style, "text_gc", 4)
         layout.set_font_description(widget.pangofont)
-        draw_time_markers(widget.window, event, context, layout, self.lightgc, self.base_color, self.stroke_color, self.header_height)
+        draw_time_markers(widget.window, event, layout, self.lightgc, self.header_height)
         self.expose(widget, event, context, layout)
 
     def expose(self, widget, event, context, layout):
@@ -486,8 +478,6 @@ class DetailedView(gtk.DrawingArea):
             for row in rows:
                 barsizes.append(make_area_from_event(0, event.area.width, row[0].timestamp, row[1]))
             barsize = barsizes[0]
-            #print obj.subjects[0].text
-            #print str(barsizes) + "\n"
             text = self.text_handler(obj)
             area = draw_text_box(
                 widget.window, context, layout, self.gc, self.base_color, text, barsize[0],

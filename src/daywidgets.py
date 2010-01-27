@@ -88,7 +88,7 @@ class SingleDayWidget(gtk.VBox):
             interpretation = obj.subjects[0].interpretation
             t1 = (logwidget.FILETYPESNAMES[interpretation] if
                   interpretation in logwidget.FILETYPESNAMES.keys() else "Unknown")
-            t1 = "<big><b>" + t1 + "</b></big>"
+            t1 = "<b>" + t1 + "</b>"
             t2 = "<span color='%s'>%s</span> " % (self.f_color, text)
             return str(t1) + "\n" + str(t2) + ""
         self.view.set_text_handler(text_handler)
