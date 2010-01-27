@@ -139,7 +139,6 @@ class ActivityView(gtk.VBox):
             self.cal.histogram.set_selected(diff / 86400)
             self.set_dayrange(self.start, self.end+offset)
             widget = self.daysbox.get_children()[self.dayrange -1]
-            self.daybox.set_day(widget.day_start, widget.day_end)
 
     def set_dayrange(self, start, end):
         self.start = start
