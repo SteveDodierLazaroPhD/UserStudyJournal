@@ -209,8 +209,12 @@ def draw_text_box(window, context, layout, gc, basecolor, text, x, y, maxwidth, 
         width = max(text_width, bars[0][1])
     if x + text_width > maxwidth:
         area = (max(maxwidth-text_width, maxwidth-200), y, text_width, maxheight)
+        paint_box(context, basecolor, 0, 0, area[0], y, area[3], bar_height)
     else:
         area = (x, y, max(text_width, width), maxheight)
+        if bars:
+            sw = bars[0][0] - (bars[-1][0] + bars[-1][1])
+            paint_box(context, basecolor, 0, 0, bars[0][0], y, sw if sw > text_width else text_width, bar_height)
     if x > maxwidth - 10:
         x = maxwidth - 10
         width +=10
