@@ -484,8 +484,10 @@ class DetailedView(gtk.DrawingArea):
             obj, duration = rows[0]
             barsizes = []
             for row in rows:
-                barsizes.append(make_area_from_event(0, event.area.width, obj.timestamp, duration))
+                barsizes.append(make_area_from_event(0, event.area.width, row[0].timestamp, row[1]))
             barsize = barsizes[0]
+            #print obj.subjects[0].text
+            #print str(barsizes) + "\n"
             text = self.text_handler(obj)
             area = draw_text_box(
                 widget.window, context, layout, self.gc, self.base_color, text, barsize[0],
