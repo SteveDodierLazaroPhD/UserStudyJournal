@@ -99,6 +99,7 @@ class CairoHistogram(gtk.DrawingArea):
     selected_range = 0
     __highlighted__ = tuple()
     __last_location__ = -1
+    __single_day_only__ = False
     bg_color = (1, 1, 1, 1)
     base_color = (1, 1, 1, 1)
     column_color_normal =  (1, 1, 1, 1)
@@ -274,6 +275,8 @@ class CairoHistogram(gtk.DrawingArea):
                 color = self.column_color_selected_alternative if i in selected else self.column_color_alternative
             elif not selected:
                 color = self.column_color_normal
+            elif self.__single_day_only__  and i != selected[-1]:
+                color = self.column_color_normal
             elif i >= selected[0] and i <= selected[-1] and i in selected:
                 color = self.column_color_selected
             else:
@@ -385,6 +388,13 @@ class CairoHistogram(gtk.DrawingArea):
     def clear_highlighted(self):
         """Clears the highlighted color"""
         self.__highlighted__ = []
+        self.queue_draw()
+
+    def set_single_day(self, choice):
+        """
+        Allows the cal to enter a mode where the trailing days are not selected but still kept
+        """
+        self.__single_day_only__ = choice
         self.queue_draw()
 
     def get_datastore_index_from_cartesian(self, x, y):

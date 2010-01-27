@@ -163,6 +163,7 @@ class ActivityView(gtk.VBox):
 
     def _zoom_out_day(self, widget):
         self.notebook.set_current_page(0)
+        self.cal.histogram.set_single_day(False)
 
     def _zoom_in_day(self, widget):
         i = self.dayrange - 1
@@ -171,6 +172,7 @@ class ActivityView(gtk.VBox):
             i -= 1
         self.notebook.set_current_page(1)
         self.jump(i*-86400)
+        self.cal.histogram.set_single_day(True)
 
     def set_views(self):
         if not self.daysbox:
