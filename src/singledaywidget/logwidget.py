@@ -99,7 +99,7 @@ def make_area_from_event(x, max_width, timestamp, duration):
     _e = lambda timestamp: max(((int(timestamp)/1000.0 - time.timezone)%86400)/3600/24.0 * max_width, 2)
     x = x + _e(int(timestamp))
     width = min(_f(duration), max_width-x)
-    return (x, int(width))
+    return [x, int(width)]
 
 
 def get_gtk_rgba(style, palette, i, shade = 1, alpha = 1):
@@ -216,6 +216,8 @@ def draw_text_box(window, context, layout, gc, basecolor, text, x, y, maxwidth, 
         width +=10
     tw, th = draw_text(window, layout, gc, text, area[0], area[1]+2*bar_height, area[2], area[3], maxw = 200, xoffset=bar_height)
     if bars:
+        if bars[0][0] > maxwidth - 6:
+            bars[0][0] = maxwidth - 6; bars[0][1] = 6
         for bar in bars:
             paint_box(context, innercolor, 0, 0, bar[0], y, bar[1], bar_height)
     return [int(a) for a in area]
