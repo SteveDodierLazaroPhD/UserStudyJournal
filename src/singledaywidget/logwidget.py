@@ -203,7 +203,7 @@ def draw_text_box(window, context, layout, gc, basecolor, text, x, y, maxwidth, 
     edge = 0
     layout.set_markup(text)
     text_width, text_height  = layout.get_pixel_size()
-    text_width = min(text_width, 120)
+    text_width = min(text_width, int(maxwidth-x))
     if bars and len(bars) > 1:
         width = (bars[-1][0] + bars[-1][1]) - bars[0][0]
     else:
@@ -215,7 +215,7 @@ def draw_text_box(window, context, layout, gc, basecolor, text, x, y, maxwidth, 
     if x > maxwidth - 10:
         x = maxwidth - 10
         width +=10
-    tw, th = draw_text(window, layout, gc, text, area[0], area[1]+timebar, area[2], area[3], maxw = 120)
+    tw, th = draw_text(window, layout, gc, text, area[0], area[1]+timebar, area[2], area[3], maxw = int(maxwidth-x))
     if bars:
         for bar in bars:
             paint_box(context, innercolor, 0, 0, bar[0], y, bar[1], timebar)
@@ -481,8 +481,10 @@ class DetailedView(gtk.DrawingArea):
         state = gtk.STATE_NORMAL
         y = 2 * self.header_height
         i = 0
+        print ""
         for rows in self.get_datastore():
             obj, duration = rows[0]
+            print "===" + obj.subjects[0].uri + "==="
             barsizes = []
             for row in rows:
                 barsizes.append(make_area_from_event(0, event.area.width, obj.timestamp, duration))
@@ -500,6 +502,7 @@ class DetailedView(gtk.DrawingArea):
         self.__last_width__ = event.area.width
         if y > event.area.height:
             self.set_size_request(event.area.width, y + self.spacing)
+        print ""
         return True
 
     def set_datastore(self, datastore, draw = True):
