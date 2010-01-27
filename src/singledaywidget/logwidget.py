@@ -177,7 +177,7 @@ def draw_text(window, layout, gc, text, x, y, width, height, xcenter = False,
     return text_h, text_w
 
 
-def draw_text_box(window, context, layout, gc, basecolor, text, x, y, width, height,
+def draw_text_boxold(window, context, layout, gc, basecolor, text, x, y, width, height,
                   innercolor = (0, 0, 0, 0), ftype=None, fmime=""):
     """
     Draws a box around the marker box and draws the text in a box on the side
@@ -219,6 +219,50 @@ def draw_text_box(window, context, layout, gc, basecolor, text, x, y, width, hei
     paint_box(context, basecolor, 0, 0, area[0], area[1], area[2], area[3], rounded = 8)
     tw, th = draw_text(window, layout, gc, text, area[0], area[1], area[2], area[3], xoffset = xoffset, maxw = 120-2*spacing)
     paint_box(context, innercolor, 4, 0, x, y, width, height)
+    return [int(a) for a in area]
+
+def draw_text_box(window, context, layout, gc, basecolor, text, x, y, width, height,
+                  innercolor = (0, 0, 0, 0), ftype=None, fmime=""):
+    """
+    Draws a box around the marker box and draws the text in a box on the side
+
+    Arguments:
+    - a window to draw on
+    - context: A cairo context to draw on
+    - layout: a pango layout to use for writing
+    - gc: a text_gc from style
+    - basecolor: a rgba tuple for the outer tab
+    - text: the text to draw
+    - x: The start x postion
+    - y: The start y position
+    - width: The boxes width
+    - height: The height of the box
+    - innercolor(*optional): a rgba tuple for the outer tab
+    - ftype(optional): the file type
+    - fmime(optional): the mimetype
+    """
+    if ftype:
+        if ftype in FILETYPES.keys():
+            i = FILETYPES[ftype]
+            l = int(math.fabs(hash(fmime))) % 3
+            innercolor = tangocolors[min(i+l, len(tangocolors)-1)]
+        else:
+            innercolor = (136/255.0, 138/255.0, 133/255.0)
+    maxwidth = window.get_geometry()[2]
+    timebar = 5
+    edge = 0
+    layout.set_markup(text)
+    text_width, text_height  = layout.get_pixel_size()
+    text_width = min(text_width, 120)
+    if x + text_width > maxwidth:
+        area = (maxwidth-text_width, y, text_width, height)
+    else:
+        area = (x, y, max(width, text_width), height)
+    if x > maxwidth - 10:
+        x = maxwidth - 10
+        width +=10
+    tw, th = draw_text(window, layout, gc, text, area[0], area[1]+timebar, area[2], area[3], maxw = 120)
+    paint_box(context, innercolor, 0, 0, x, y, width, timebar)
     return [int(a) for a in area]
 
 def paint_box(context, color, xpadding, ypadding, x, y, width, height, rounded = 0, border_color = None):
@@ -266,8 +310,8 @@ def draw_time_markers(window, event, context, layout, gc, color1, color2, height
     Draws strings and lines representing times
     """
     maxheight = window.get_geometry()[3]
-    context.set_source_rgba(*color1)
-    context.rectangle(0, 0, event.area.width, height)
+    #context.set_source_rgba(*color1)
+    #context.rectangle(0, 0, event.area.width, height)
     context.fill()
     # Draw time text here
     context.set_source_rgba(*color2)
@@ -314,7 +358,7 @@ class DetailedView(gtk.DrawingArea):
     __active_area__ =  tuple()
     # Geometry stuff
     header_height = 15
-    row_height = 52
+    row_height = 50
     spacing = 4
     yincrement = row_height + spacing
     # Style stuff
@@ -355,7 +399,7 @@ class DetailedView(gtk.DrawingArea):
         interpretation = obj.subjects[0].interpretation
         t2 = FILETYPESNAMES[obj.subjects[0].interpretation] if interpretation in FILETYPESNAMES.keys() else "Unknown"
         t3 = time.strftime("%H:%M", time.localtime(int(obj.timestamp)/1000))
-        return str(t1) + "\n" + str(t2) + "\n" + str(t3)
+        return str(t1) + "\n" + str(t2) + ", " + str(t3)
 
     def set_text_handler(self, fn):
         """
@@ -539,7 +583,7 @@ class DetailedView(gtk.DrawingArea):
         yw, th = layout.get_pixel_size()
         spacing = layout.get_spacing()
         spacing =  spacing if spacing else 1024
-        h = (th)*3 + (spacing/1024)*4
+        h = (th)*2 + (spacing/1024)*4 + 10
         self.row_height = max(h, DetailedView.row_height)
         self.yincrement = self.row_height + self.spacing
         self.gc = get_gc_from_colormap(widget.style, "text_gc", 0)
