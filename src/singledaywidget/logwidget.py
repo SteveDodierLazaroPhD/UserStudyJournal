@@ -172,8 +172,8 @@ def draw_text(window, layout, gc, text, x, y, width, height, xcenter = False,
     layout.set_spacing(0)
     return text_h, text_w
 
-def draw_text_box(window, context, layout, gc, basecolor, text, x, y, width, height,
-                  innercolor = (0, 0, 0, 0), ftype=None, fmime=""):
+def draw_text_box(window, context, layout, gc, basecolor, text, x, y, maxwidth, maxheight,
+                  innercolor = (0, 0, 0, 0), ftype=None, fmime="", bars = None):
     """
     Draws a box around the marker box and draws the text in a box on the side
 
@@ -186,8 +186,8 @@ def draw_text_box(window, context, layout, gc, basecolor, text, x, y, width, hei
     - text: the text to draw
     - x: The start x postion
     - y: The start y position
-    - width: The boxes width
-    - height: The height of the box
+    - maxwidth: The boxes max width
+    - maxheight: The max height of the box
     - innercolor(*optional): a rgba tuple for the outer tab
     - ftype(optional): the file type
     - fmime(optional): the mimetype
@@ -199,21 +199,26 @@ def draw_text_box(window, context, layout, gc, basecolor, text, x, y, width, hei
             innercolor = tangocolors[min(i+l, len(tangocolors)-1)]
         else:
             innercolor = (136/255.0, 138/255.0, 133/255.0)
-    maxwidth = window.get_geometry()[2]
     timebar = 5
     edge = 0
     layout.set_markup(text)
     text_width, text_height  = layout.get_pixel_size()
     text_width = min(text_width, 120)
-    if x + text_width > maxwidth:
-        area = (maxwidth-text_width, y, text_width, height)
+    if bars and len(bars) > 1:
+        width = (bars[-1][0] + bars[-1][1]) - bars[0][0]
     else:
-        area = (x, y, max(width, text_width), height)
+        width = max(text_width, bars[0][1])
+    if x + text_width > maxwidth:
+        area = (maxwidth-text_width, y, text_width, maxheight)
+    else:
+        area = (x, y, max(text_width, width), maxheight)
     if x > maxwidth - 10:
         x = maxwidth - 10
         width +=10
     tw, th = draw_text(window, layout, gc, text, area[0], area[1]+timebar, area[2], area[3], maxw = 120)
-    paint_box(context, innercolor, 0, 0, x, y, width, timebar)
+    if bars:
+        for bar in bars:
+            paint_box(context, innercolor, 0, 0, bar[0], y, bar[1], timebar)
     return [int(a) for a in area]
 
 def paint_box(context, color, xpadding, ypadding, x, y, width, height, rounded = 0, border_color = None):
@@ -339,8 +344,6 @@ class DetailedView(gtk.DrawingArea):
         for key, val in self.__connections__.iteritems():
             self.connect(key, getattr(self, val))
         self.clear_registered_areas()
-
-
 
     def text_handler(self, obj):
         """
@@ -478,14 +481,17 @@ class DetailedView(gtk.DrawingArea):
         state = gtk.STATE_NORMAL
         y = 2 * self.header_height
         i = 0
-        for uri, row in self.get_datastore().iteritems():
-            obj, duration = row[0]
-            barsize = make_area_from_event(0, event.area.width, obj.timestamp, duration)
+        for rows in self.get_datastore():
+            obj, duration = rows[0]
+            barsizes = []
+            for row in rows:
+                barsizes.append(make_area_from_event(0, event.area.width, obj.timestamp, duration))
+            barsize = barsizes[0]
             text = self.text_handler(obj)
             area = draw_text_box(
                 widget.window, context, layout, self.gc, self.base_color, text, barsize[0],
-                y, barsize[1], self.row_height,
-                ftype = obj.subjects[0].interpretation, fmime=obj.subjects[0].mimetype)
+                y, event.area.width, self.row_height,
+                ftype = obj.subjects[0].interpretation, fmime=obj.subjects[0].mimetype, bars = barsizes)
             if self.__active_area__ == tuple(area):
                 widget.style.paint_focus(widget.window, gtk.STATE_ACTIVE, event.area, widget, None, *area)
             self.register_area(obj, *area)
@@ -504,12 +510,12 @@ class DetailedView(gtk.DrawingArea):
         - datastore:
         """
         if datastore:
-            #if isinstance(datastore, tuple):
-            #    datastore =  list(datastore)
-            #if isinstance(datastore, list):
-            self.__datastore__ = datastore
-            #else:
-            #    raise TypeError("Datastore is not a <list>")
+            if isinstance(datastore, tuple):
+                datastore =  list(datastore)
+            if isinstance(datastore, list):
+                self.__datastore__ = datastore
+            else:
+                raise TypeError("Datastore is not a <list>")
         else:
             self.__datastore__ = {}
         self.clear_registered_areas(private=True)
