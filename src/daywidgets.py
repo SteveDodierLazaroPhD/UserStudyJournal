@@ -150,6 +150,8 @@ class SingleDayWidget(gtk.VBox):
         """
         A sample event for clicks
         """
+        gio_file = GioFile.create(zevent.subjects[0].uri)
+        if gio_file: gio_file.launch()
         print zevent.subjects[0].text, time.strftime("Day:%d Time:%H:%M", time.localtime(int(zevent.timestamp)/1000))
 
     def private_area_clicked(self, widget, obj):
