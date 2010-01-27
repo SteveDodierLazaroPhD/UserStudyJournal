@@ -310,8 +310,6 @@ def draw_time_markers(window, event, context, layout, gc, color1, color2, height
     Draws strings and lines representing times
     """
     maxheight = window.get_geometry()[3]
-    #context.set_source_rgba(*color1)
-    #context.rectangle(0, 0, event.area.width, height)
     context.fill()
     # Draw time text here
     context.set_source_rgba(*color2)
@@ -338,8 +336,11 @@ class DetailedView(gtk.DrawingArea):
     """
     __datastore__ = tuple()
     __gsignals__ = {
+        # Sent when data is updated
         "data-updated" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,()),
-        "item-clicked" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,)),
+        # Sent when a public area is clicked
+        "area-clicked" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,)),
+        # Sent when a private area is clicked
         "private-area-clicked" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,)),
     }
     __events__ = (
@@ -471,7 +472,7 @@ class DetailedView(gtk.DrawingArea):
 
         Emits:
         - private-area-clicked: Emitted if a registered private area is clicked
-        - item-clicked: Emitted when a registered area is clicked
+        - area-clicked: Emitted when a registered area is clicked
         """
         val = self.check_area(event.x, event.y)
         if not val:
@@ -483,7 +484,7 @@ class DetailedView(gtk.DrawingArea):
         if obj in self.__private_areas__.values():
             self.emit("private-area-clicked", obj)
             return True
-        self.emit("item-clicked", obj)
+        self.emit("area-clicked", obj)
         self.queue_draw()
         return True
 

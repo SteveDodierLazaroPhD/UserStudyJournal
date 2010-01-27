@@ -55,7 +55,7 @@ class SingleDayWidget(gtk.VBox):
         self.scrolledwindow.set_shadow_type(gtk.SHADOW_NONE)
         self.scrolledwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         self.view = logwidget.DetailedView()
-        self.view.connect("item-clicked", self.area_clicked)
+        self.view.connect("area-clicked", self.area_clicked)
         self.view.connect("private-area-clicked", self.private_area_clicked)
         self.scrolledwindow.add_with_viewport(self.view)
         self.scrolledwindow.get_children()[0].set_shadow_type(gtk.SHADOW_NONE)
