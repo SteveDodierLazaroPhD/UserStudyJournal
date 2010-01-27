@@ -202,6 +202,7 @@ def draw_text_box(window, context, layout, gc, basecolor, text, x, y, maxwidth, 
     edge = 0
     layout.set_markup(text)
     text_width, text_height  = layout.get_pixel_size()
+    text_width+=bar_height
     if bars and len(bars) > 1:
         width = (bars[-1][0] + bars[-1][1]) - bars[0][0]
     else:
@@ -213,7 +214,7 @@ def draw_text_box(window, context, layout, gc, basecolor, text, x, y, maxwidth, 
     if x > maxwidth - 10:
         x = maxwidth - 10
         width +=10
-    tw, th = draw_text(window, layout, gc, text, area[0], area[1]+bar_height, area[2], area[3], maxw = 200)
+    tw, th = draw_text(window, layout, gc, text, area[0], area[1]+2*bar_height, area[2], area[3], maxw = 200, xoffset=bar_height)
     if bars:
         for bar in bars:
             paint_box(context, innercolor, 0, 0, bar[0], y, bar[1], bar_height)
