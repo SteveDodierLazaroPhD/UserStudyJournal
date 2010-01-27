@@ -339,6 +339,7 @@ class DetailedView(gtk.DrawingArea):
         self.set_size_request(600, 800)
         self.set_events(self.__events__)
         self.set_property("has-tooltip", True)
+        self.handcursor = gtk.gdk.Cursor(gtk.gdk.HAND2)
         for key, val in self.__connections__.iteritems():
             self.connect(key, getattr(self, val))
         self.clear_registered_areas()
@@ -423,12 +424,9 @@ class DetailedView(gtk.DrawingArea):
     def __motion_notify_handler__(self, widget, event):
         val = self.check_area(event.x, event.y)
         if val:
-            self.__active_area__ = val[0]
-            self.queue_draw()
+            widget.window.set_cursor(self.handcursor)
             return True
-        elif self.__active_area__:
-            self.__active_area__ = None
-            self.queue_draw()
+        widget.window.set_cursor(None)
         return False
 
     def __button_press_handler__(self, widget, event):
@@ -542,6 +540,7 @@ class DetailedView(gtk.DrawingArea):
         """
         Sets the widgets style and coloring
         """
+        self.handcursor = gtk.gdk.Cursor(gtk.gdk.HAND2)
         self.selected_color = get_gtk_rgba(self.style, "bg", 3)
         self.selected_color_alternative = (1, 0.68, 0.24, 1)
         self.font_name = self.style.font_desc.get_family()
