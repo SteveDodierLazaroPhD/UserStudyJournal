@@ -555,9 +555,11 @@ class DetailedView(gtk.DrawingArea):
                 self.__datastore__ = datastore
             else:
                 raise TypeError("Datastore is not a <list>")
-            self.clear_registered_areas(private=True)
-            self.emit("data-updated")
-            self.queue_draw()
+        else:
+            self.__datastore__ = []
+        self.clear_registered_areas(private=True)
+        self.emit("data-updated")
+        self.queue_draw()
 
     def get_datastore(self):
         """
