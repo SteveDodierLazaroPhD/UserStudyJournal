@@ -274,9 +274,9 @@ def draw_time_markers(window, event, context, layout, gc, color1, color2, height
     points = [e*(x/v) for x in xrange(1, int(v))]
     i = 0
     for point in points:
-        context.move_to(point, height)
-        context.line_to(point, maxheight)
-        context.stroke()
+        #context.move_to(point, height)
+        #context.line_to(point, maxheight)
+        #context.stroke()
         layout.set_markup("<b>"+TIMES[i]+"</b>")
         w, h = layout.get_pixel_size()
         window.draw_layout(gc, int(point - w/2), int((height-h)/2), layout)
@@ -353,7 +353,7 @@ class DetailedView(gtk.DrawingArea):
         - obj: A event object
         """
         text = obj.subjects[0].text
-        t1 = "<big><b>" + text + "</b></big>"
+        t1 = "<b>" + text + "</b>"
         interpretation = obj.subjects[0].interpretation
         t2 = FILETYPESNAMES[obj.subjects[0].interpretation] if interpretation in FILETYPESNAMES.keys() else "Unknown"
         t3 = time.strftime("%H:%M", time.localtime(int(obj.timestamp)/1000))
