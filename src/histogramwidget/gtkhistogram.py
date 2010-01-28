@@ -109,6 +109,12 @@ class CairoHistogram(gtk.DrawingArea):
     stroke_color = (1, 1, 1, 0)
     shadow_color = (1, 1, 1, 0)
 
+    # Today button stuff
+    __today_width__ = 0
+    __today_text__ = ""
+    __today_area__ = None
+    __today_hover__ = False
+
     __datastore__ = None
     __gsignals__ = {
         # the index of the first selected item in the datastore.
@@ -123,7 +129,9 @@ class CairoHistogram(gtk.DrawingArea):
                        "button_press_event": "mouse_press_interaction",
                        "motion_notify_event": "mouse_motion_interaction",
                        "key_press_event": "keyboard_interaction",
-                       "scroll-event" : "mouse_scroll_interaction"}
+                       "scroll-event" : "mouse_scroll_interaction",
+                       "selection-set": "check_for_today",
+                       }
     __events__ = (gtk.gdk.KEY_PRESS_MASK | gtk.gdk.BUTTON_MOTION_MASK |
                   gtk.gdk.POINTER_MOTION_HINT_MASK | gtk.gdk.BUTTON_RELEASE_MASK |
                   gtk.gdk.BUTTON_PRESS_MASK)
@@ -221,6 +229,8 @@ class CairoHistogram(gtk.DrawingArea):
         """
         context = widget.window.cairo_create()
         self.expose(widget, event, context)
+        if len(self.__today_text__):
+            self.draw_today(widget, event, context)
 
     def expose(self, widget, event, context):
         """
@@ -253,6 +263,29 @@ class CairoHistogram(gtk.DrawingArea):
         if self.is_focus():
             widget.style.paint_focus(widget.window, gtk.STATE_NORMAL, event.area, widget, None, event.area.x, event.area.y,
                                      event.area.width, event.area.height - self.bottom_padding)
+
+    def draw_today(self, widget, event, context):
+        """
+        """
+        layout = widget.create_pango_layout(self.__today_text__)
+        pangofont = pango.FontDescription(widget.font_name + " %d" % (widget.font_size - 1))
+        if not widget.gc:
+            widget.gc = get_gc_from_colormap(widget, 0.6)
+        layout.set_font_description(pangofont)
+        w, h = layout.get_pixel_size()
+        self.__today_width__ = w + 10
+        self.__today_area__ = (
+            int(event.area.x + event.area.width - self.__today_width__),
+            int(event.area.height - widget.bottom_padding + 2),
+            self.__today_width__,
+            widget.bottom_padding - 2)
+        state = gtk.STATE_PRELIGHT
+        shadow = gtk.SHADOW_IN
+        widget.style.paint_box(
+            widget.window, state, gtk.SHADOW_OUT, event.area, widget, "button", *self.__today_area__)
+        widget.window.draw_layout(
+            widget.gc, int(event.area.x + event.area.width - w -5),
+            int(event.area.height - widget.bottom_padding/2 - h/2), layout)
 
     def draw_columns_from_datastore(self, context, event, selected):
         """
@@ -453,4 +486,17 @@ class CairoHistogram(gtk.DrawingArea):
             return False
         self.set_selected(max(location - self.selected_range + 1, 0))
         self.emit("column_clicked", location)
+        return True
+
+    # Today stuff
+    def check_for_today(self, widget, i, ii):
+        """
+        Changes today to a empty string if the selected item is not today
+        """
+        if ii == len(self.get_datastore())-1:
+            self.__today_text__ = ""
+            self.__today_area__ = None
+        elif len(self.__today_text__) == 0:
+            self.__today_text__ = _("Today") + " »"
+        self.queue_draw()
         return True

@@ -77,7 +77,7 @@ class TooltipEventBox(gtk.EventBox):
             date = datetime.date.fromtimestamp(timestamp).strftime("%A, %d %B, %Y")
             tooltip.set_text("%s\n%i %s" % (date, count,
                                             gettext.ngettext("item", "items", count)))
-        elif self.container.__today_text__ and _in_area(x, y, self.container.__today_area__):
+        elif self.container.histogram.__today_text__ and _in_area(x, y, self.container.histogram.__today_area__):
             tooltip.set_text(_("Click today to return to today"))
         else:
             return False
@@ -120,10 +120,7 @@ class HistogramWidget(gtk.Viewport):
     """
     A container for a CairoHistogram which allows you to scroll
     """
-    __today_width__ = 0
-    __today_text__ = ""
-    __today_area__ = None
-    __today_hover__ = False
+
 
     def __init__(self, histo_type, size = (600, 75)):
         """
@@ -136,11 +133,8 @@ class HistogramWidget(gtk.Viewport):
         self.eventbox = TooltipEventBox(self.histogram, self)
         self.set_size_request(*size)
         self.add(self.eventbox)
-        self.histogram.connect("expose-event", self.today_expose)
         self.histogram.connect("button_press_event", self.footer_clicked)
-        #self.histogram.connect("motion_notify_event", self.footer_hovered)
-        #self.histogram.connect("leave_notify_event", self.__widget_leave_handler__)
-        self.histogram.connect("selection-set", self.check_for_today)
+        self.histogram.connect("data-updated", self.scroll_to_end)
         self.histogram.connect("data-updated", self.scroll_to_end)
         self.histogram.connect("data-updated", self.scroll_to_end)
         hadjustment = self.get_hadjustment()
@@ -150,63 +144,6 @@ class HistogramWidget(gtk.Viewport):
         self.histogram.queue_draw()
         self.queue_draw()
 
-    def today_expose(self, widget, event):
-        """
-        A double drawing hack to draw twice on a drawing areas window. It should
-        draw today on the drawing area window
-        """
-        if len(self.__today_text__):
-            hadjustment = self.get_hadjustment()
-            context = widget.window.cairo_create()
-            context.set_source_rgba(*widget.bg_color)
-            layout = widget.create_pango_layout(self.__today_text__)
-            pangofont = pango.FontDescription(widget.font_name + " %d" % (widget.font_size - 1))
-            if not widget.gc:
-                widget.gc = get_gc_from_colormap(widget, 0.6)
-            layout.set_font_description(pangofont)
-            w, h = layout.get_pixel_size()
-            self.__today_width__ = w + 10
-            self.__today_area__ = (
-                int(hadjustment.value + hadjustment.page_size - self.__today_width__),
-                int(event.area.height - widget.bottom_padding + 2),
-                self.__today_width__,
-                widget.bottom_padding - 2)
-            state = gtk.STATE_PRELIGHT if self.__today_hover__ else gtk.STATE_NORMAL
-            shadow = gtk.SHADOW_IN if self.__today_hover__ else gtk.SHADOW_OUT
-            widget.style.paint_box(widget.window, state, gtk.SHADOW_OUT, event.area, widget, "button", *self.__today_area__)
-            if self.__today_hover__:
-                widget.style.paint_focus(widget.window, state, event.area, widget, "button", *self.__today_area__)
-            widget.window.draw_layout(widget.gc, int(hadjustment.value + hadjustment.page_size - w -5),
-                                      int(event.area.height - widget.bottom_padding/2 - h/2), layout)
-            return True
-        return False
-
-    def __widget_leave_handler__(self, widget, event):
-        """
-        Clears hover effects when you leave the widget
-        """
-        self.__today_hover__ = False
-        self.queue_draw()
-        return True
-
-    def footer_hovered(self, widget, event):
-        """
-        Highlights the today button if you hover over it
-        """
-        hadjustment = self.get_hadjustment()
-        # Check if the today section of the footer was hovered
-        if (self.__today_text__ and
-            event.y > self.get_size_request()[1] - self.histogram.bottom_padding and
-            event.x > hadjustment.value + hadjustment.page_size - self.__today_width__):
-            if not self.__today_hover__:
-                self.__today_hover__ = True
-                self.histogram.queue_draw()
-            return True
-        if self.__today_hover__:
-            self.__today_hover__ = False
-            self.histogram.queue_draw()
-        return False
-
     def footer_clicked(self, widget, event):
         """
         Handles all rejected clicks from bellow the histogram internal view and
@@ -214,24 +151,12 @@ class HistogramWidget(gtk.Viewport):
         """
         hadjustment = self.get_hadjustment()
         # Check for today button click
-        if (self.__today_text__ and event.x > hadjustment.value + hadjustment.page_size - self.__today_width__):
+        if (widget.__today_text__ and event.x > hadjustment.value + hadjustment.page_size - widget.__today_width__):
             self.histogram.change_location(len(self.histogram.get_datastore()) - 1)
             return True
         else:
             pass # Drag here
         return False
-
-    def check_for_today(self, widget, i, ii):
-        """
-        Changes today to a empty string if the selected item is not today
-        """
-        if ii == len(self.histogram.get_datastore())-1:
-            self.__today_text__ = ""
-            self.__today_area__ = None
-            self.histogram.queue_draw()
-        elif len(self.__today_text__) == 0:
-            self.__today_text__ = _("Today") + " »"
-        return True
 
     def scroll_to_end(self, *args, **kwargs):
         """
