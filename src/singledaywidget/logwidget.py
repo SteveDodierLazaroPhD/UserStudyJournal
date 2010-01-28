@@ -178,7 +178,7 @@ def draw_text(window, layout, gc, text, x, y, width, height, xcenter = False,
     layout.set_spacing(0)
     return text_h, text_w
 
-def draw_text_box(window, context, layout, gc, basecolor, text, x, y, maxwidth, maxheight, innercolor, bars):
+def draw_text_box(window, context, layout, gc, basecolor, innercolor, text, x, y, maxwidth, maxheight, bars):
     """
     Draws a box around the marker box and draws the text in a box on the side
 
@@ -193,6 +193,7 @@ def draw_text_box(window, context, layout, gc, basecolor, text, x, y, maxwidth, 
     - y: The start y position
     - maxwidth: The boxes max width
     - maxheight: The max height of the box
+    - innercolor
     - a list of bar tuples with (x, width) values to draw
     """
 
@@ -201,7 +202,7 @@ def draw_text_box(window, context, layout, gc, basecolor, text, x, y, maxwidth, 
     layout.set_markup(text)
     text_width, text_height  = layout.get_pixel_size()
     text_width+=bar_height
-    if bars and len(bars) > 1:
+    if len(bars) > 1:
         width = (bars[-1][0] + bars[-1][1]) - bars[0][0]
     else:
         width = max(text_width, bars[0][1])
@@ -213,12 +214,11 @@ def draw_text_box(window, context, layout, gc, basecolor, text, x, y, maxwidth, 
         x = maxwidth - 10
         width +=10
     tw, th = draw_text(window, layout, gc, text, area[0], area[1]+2*bar_height, area[2], area[3], maxw = 200, xoffset=bar_height)
-    if bars:
-        paint_box(context, basecolor, 0, 0, area[0], y, area[2], bar_height)
-        if bars[0][0] > maxwidth - 6:
-            bars[0][0] = maxwidth - 6; bars[0][1] = 6
-        for bar in bars:
-            paint_box(context, innercolor, 0, 0, bar[0], y, bar[1], bar_height)
+    paint_box(context, basecolor, 0, 0, area[0], y, area[2], bar_height)
+    if bars[0][0] > maxwidth - 6:
+        bars[0][0] = maxwidth - 6; bars[0][1] = 6
+    for bar in bars:
+        paint_box(context, innercolor, 0, 0, bar[0], y, bar[1], bar_height)
     return [int(a) for a in area]
 
 def paint_box(context, color, xpadding, ypadding, x, y, width, height, rounded = 0, border_color = None):
@@ -540,8 +540,8 @@ class DetailedView(gtk.DrawingArea):
             text = self.text_handler(obj)
             color = get_file_color(obj.subjects[0].interpretation, obj.subjects[0].mimetype)
             area = draw_text_box(
-                widget.window, context, layout, self.gc, self.base_color, text, barsize[0],
-                y, event.area.width, self.row_height, color, barsizes)
+                widget.window, context, layout, self.gc, self.base_color, color, text, barsize[0],
+                y, event.area.width, self.row_height, barsizes)
             if self.__active_area__ == tuple(area):
                 widget.style.paint_focus(widget.window, gtk.STATE_ACTIVE, event.area, widget, None, *area)
             self.register_area(obj, *area)
