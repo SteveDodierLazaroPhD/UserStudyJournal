@@ -480,12 +480,19 @@ class Item(gtk.HBox):
         self.pin.set_relief(gtk.RELIEF_NONE)
         self.pack_end(self.pin, False, False)
         #hbox.pack_end(img, False, False)
-        
+        evbox = gtk.EventBox()
         self.btn.add(hbox)
-        self.pack_start(self.btn)
+        evbox.add(self.btn)
+        self.pack_start(evbox)
     
         self.btn.connect("clicked", self.launch)
         self.btn.connect("button_press_event", self._show_item_popup)
+        
+        def realize_cb(widget):
+            evbox.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2))
+
+        self.btn.connect("realize", realize_cb)
+        
         
         def change_style(widget, style):
             rc_style = self.style
@@ -502,6 +509,24 @@ class Item(gtk.HBox):
                 color = rc_style.text[gtk.STATE_NORMAL]
                 self.label.modify_text(gtk.STATE_NORMAL, color)
             self.highlight()
+            
+            color = rc_style.bg[gtk.STATE_NORMAL]
+
+            if color.red * 102/100 > 65535.0:
+                color.red = 65535.0
+            else:
+                color.red = color.red * 102 / 100
+
+            if color.green * 102/100 > 65535.0:
+                color.green = 65535.0
+            else:
+                color.green = color.green * 102 / 100
+
+            if color.blue * 102/100 > 65535.0:
+                color.blue = 65535.0
+            else:
+                color.blue = color.blue * 102 / 100
+            evbox.modify_bg(gtk.STATE_NORMAL, color)
 
         self.connect("style-set", change_style)
         
