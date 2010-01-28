@@ -143,20 +143,17 @@ def get_gc_from_colormap(style, palette, i, shade=1):
     return gc
 
 
-def draw_text(window, layout, gc, text, x, y, width, height, xcenter = False,
+def draw_text(widget, gc, text, x, y, xcenter = False,
               ycenter = False, xoffset= 0, yoffset= 0, maxw = 0):
     """
     draw text using this function
 
     Arguments:
-    - window: a window to draw on
-    - layout: a pango layout to use for writing
+    - widget: a widget with a window to draw on
     - gc: a text_gc from style
     - text: the text to draw
     - x: The start x postion
     - y: The start y position
-    - width: The width of the container box
-    - height: The height of the box
     - xcenter(optional) True/False. Should we center text on x/y
     - ycenter(optional)
     - xoffset: amount to offset the x
@@ -165,58 +162,17 @@ def draw_text(window, layout, gc, text, x, y, width, height, xcenter = False,
     """
     x += xoffset
     y += yoffset
+    layout = widget.create_pango_layout("")
     layout.set_markup(text)
     layout.set_spacing(1024)
     text_w, text_h = layout.get_pixel_size()
     layout.set_width(maxw*1024)
     layout.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
-    window.draw_layout(
+    widget.window.draw_layout(
         gc, int(x + text_w/2 if xcenter else x),
         int(y + text_h/2 if ycenter else y), layout)
     layout.set_spacing(0)
     return text_h, text_w
-
-def draw_text_box(window, context, layout, gc, basecolor, innercolor, text, x, y, maxwidth, maxheight, bars):
-    """
-    Draws a box around the marker box and draws the text in a box on the side
-
-    Arguments:
-    - a window to draw on
-    - context: A cairo context to draw on
-    - layout: a pango layout to use for writing
-    - gc: a text_gc from style
-    - basecolor: a rgba tuple for the backdrop bar
-    - innercolor: the bar color
-    - text: the text to draw
-    - x: The start x postion
-    - y: The start y position
-    - maxwidth: The boxes max width
-    - maxheight: The max height of the box
-    - a list of bar tuples with (x, width) values to draw
-    """
-
-    bar_height = 3
-    layout.set_markup(text)
-    text_width, text_height  = layout.get_pixel_size()
-    text_width+=bar_height
-    if len(bars) > 1:
-        width = (bars[-1][0] + bars[-1][1]) - bars[0][0]
-    else:
-        width = max(text_width, bars[0][1])
-    if x + text_width > maxwidth:
-        area = (max(maxwidth-text_width, maxwidth-200), y, text_width, maxheight)
-    else:
-        area = (x, y, max(text_width, width), maxheight)
-    if x > maxwidth - 10:
-        x = maxwidth - 10
-        width +=10
-    tw, th = draw_text(window, layout, gc, text, area[0], area[1]+2*bar_height, area[2], area[3], maxw = 200, xoffset=bar_height)
-    paint_box(context, basecolor, 0, 0, area[0], y, area[2], bar_height)
-    if bars[0][0] > maxwidth - 6:
-        bars[0][0] = maxwidth - 6; bars[0][1] = 6
-    for bar in bars:
-        paint_box(context, innercolor, 0, 0, bar[0], y, bar[1], bar_height)
-    return [int(a) for a in area]
 
 def paint_box(context, color, xpadding, ypadding, x, y, width, height, rounded = 0, border_color = None):
     """
@@ -257,6 +213,47 @@ def paint_box(context, color, xpadding, ypadding, x, y, width, height, rounded =
         context.set_line_width(1)
         context.set_source_rgba(border_color)
         context.stroke()
+
+def draw_event_widget(widget, gc, basecolor, innercolor, text, x, y, maxwidth, maxheight, bars):
+    """
+    Draws text with time signifiers
+
+    Arguments:
+    - widget: a widget with a window to draw on
+    - gc: a text_gc from style
+    - basecolor: a rgba tuple for the backdrop bar
+    - innercolor: the bar color
+    - text: the text to draw
+    - x: The start x postion
+    - y: The start y position
+    - maxwidth: The boxes max width
+    - maxheight: The max height of the box
+    - bars: a list of bar tuples with (x, width) values to draw
+    """
+    layout = widget.create_pango_layout("")
+    context = widget.window.cairo_create()
+    bar_height = 3
+    layout.set_markup(text)
+    text_width, text_height  = layout.get_pixel_size()
+    text_width+=bar_height
+    if len(bars) > 1:
+        width = (bars[-1][0] + bars[-1][1]) - bars[0][0]
+    else:
+        width = max(text_width, bars[0][1])
+    if x + text_width > maxwidth:
+        area = (max(maxwidth-text_width, maxwidth-200), y, text_width, maxheight)
+    else:
+        area = (x, y, max(text_width, width), maxheight)
+    if x > maxwidth - 10:
+        x = maxwidth - 10
+        width +=10
+    tw, th = draw_text(widget, gc, text, area[0], area[1]+2*bar_height, maxw = 200, xoffset=bar_height)
+    paint_box(context, basecolor, 0, 0, area[0], y, area[2], bar_height)
+    if bars[0][0] > maxwidth - 6:
+        bars[0][0] = maxwidth - 6; bars[0][1] = 6
+    for bar in bars:
+        paint_box(context, innercolor, 0, 0, bar[0], y, bar[1], bar_height)
+    return [int(a) for a in area]
 
 def draw_time_markers(window, event, layout, gc, height):
     """
@@ -345,7 +342,7 @@ class DetailedView(gtk.DrawingArea):
     def text_handler(self, obj):
         """
         A default text handler that returns the text to be drawn by the
-        draw_text_box
+        draw_event_widget
 
         Arguments:
         - obj: A event object
@@ -535,8 +532,8 @@ class DetailedView(gtk.DrawingArea):
             barsize = barsizes[0]
             text = self.text_handler(obj)
             color = get_file_color(obj.subjects[0].interpretation, obj.subjects[0].mimetype)
-            area = draw_text_box(
-                widget.window, context, layout, self.gc, self.base_color, color, text, barsize[0],
+            area = draw_event_widget(
+                widget, self.gc, self.base_color, color, text, barsize[0],
                 y, event.area.width, self.row_height, barsizes)
             if self.__active_area__ == tuple(area):
                 widget.style.paint_focus(widget.window, gtk.STATE_ACTIVE, event.area, widget, None, *area)
