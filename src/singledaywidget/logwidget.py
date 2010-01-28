@@ -323,9 +323,8 @@ class DetailedView(gtk.DrawingArea):
     selected_color_alternative = (1, 1, 1, 1)
     __last_width__ = 0
 
-    # Useless stuff for clicking and tooltips
+    # new stuff for clicking and tooltips
     __hovered_obj__ = None
-    #
 
     def __init__(self, fn=None):
         super(DetailedView, self).__init__()
@@ -472,7 +471,6 @@ class DetailedView(gtk.DrawingArea):
         """
         self.__active_area__ = None
         self.queue_draw()
-        pass
 
     def key_press_handler(self, widget, event):
         """
@@ -529,12 +527,10 @@ class DetailedView(gtk.DrawingArea):
             barsizes = []
             for row in rows:
                 barsizes.append(make_area_from_event(0, event.area.width, row[0].timestamp, row[1]))
-            barsize = barsizes[0]
+            x = barsizes[0][0]
             text = self.text_handler(obj)
             color = get_file_color(obj.subjects[0].interpretation, obj.subjects[0].mimetype)
-            area = draw_event_widget(
-                widget, self.gc, self.base_color, color, text, barsize[0],
-                y, event.area.width, self.row_height, barsizes)
+            area = draw_event_widget(widget, self.gc, self.base_color, color, text, x, y, event.area.width, self.row_height, barsizes)
             if self.__active_area__ == tuple(area):
                 widget.style.paint_focus(widget.window, gtk.STATE_ACTIVE, event.area, widget, None, *area)
             self.register_area(obj, *area)
