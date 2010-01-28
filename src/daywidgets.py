@@ -218,10 +218,7 @@ class DayWidget(gtk.VBox):
 
     def _init_widgets(self):
         self.vbox = gtk.VBox()
-        evbox = gtk.EventBox()
-        evbox.add(self.vbox)
-
-        self.pack_start(evbox)
+        self.pack_start(self.vbox)
 
         self.daylabel = None
 
@@ -282,11 +279,21 @@ class DayWidget(gtk.VBox):
         self.daylabel.set_size_request(100, 60)
         evbox = gtk.EventBox()
         evbox.add(self.daylabel)
+        evbox.set_size_request(100, 60)
         self.vbox.pack_start(evbox, False, False)
         try:
             self.connect("motion-notify-event", lambda x, y: evbox.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2)))
         except:
             pass
+        
+        def change_style(widget, style):
+            rc_style = self.style
+            color = rc_style.bg[gtk.STATE_NORMAL]
+            evbox.modify_bg(gtk.STATE_NORMAL, color)
+            self.daylabel.modify_bg(gtk.STATE_NORMAL, color)
+
+
+        self.connect("style-set", change_style)
         #self.connect("leave-notify-event", lambda x, y: evbox.window.set_cursor(None))
 
 
