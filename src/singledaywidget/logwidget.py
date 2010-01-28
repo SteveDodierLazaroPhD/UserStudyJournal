@@ -103,6 +103,12 @@ def make_area_from_event(x, max_width, timestamp, duration):
     width = min(_f(duration), max_width-x)
     return [x, int(width)]
 
+def get_file_color(ftype, fmime):
+    if ftype in FILETYPES.keys():
+        i = FILETYPES[ftype]
+        l = int(math.fabs(hash(fmime))) % 3
+        return tangocolors[min(i+l, len(tangocolors)-1)]
+    return (136/255.0, 138/255.0, 133/255.0)
 
 def get_gtk_rgba(style, palette, i, shade = 1, alpha = 1):
     """Takes a gtk style and returns a RGB tuple
@@ -172,8 +178,7 @@ def draw_text(window, layout, gc, text, x, y, width, height, xcenter = False,
     layout.set_spacing(0)
     return text_h, text_w
 
-def draw_text_box(window, context, layout, gc, basecolor, text, x, y, maxwidth, maxheight,
-                  innercolor = (0, 0, 0, 0), ftype=None, fmime="", bars = None):
+def draw_text_box(window, context, layout, gc, basecolor, text, x, y, maxwidth, maxheight, innercolor, bars):
     """
     Draws a box around the marker box and draws the text in a box on the side
 
@@ -188,18 +193,9 @@ def draw_text_box(window, context, layout, gc, basecolor, text, x, y, maxwidth, 
     - y: The start y position
     - maxwidth: The boxes max width
     - maxheight: The max height of the box
-    - innercolor(*optional): a rgba tuple for the outer tab
-    - ftype(optional): the file type
-    - fmime(optional): the mimetype
     - a list of bar tuples with (x, width) values to draw
     """
-    if ftype:
-        if ftype in FILETYPES.keys():
-            i = FILETYPES[ftype]
-            l = int(math.fabs(hash(fmime))) % 3
-            innercolor = tangocolors[min(i+l, len(tangocolors)-1)]
-        else:
-            innercolor = (136/255.0, 138/255.0, 133/255.0)
+
     bar_height = 3
     edge = 0
     layout.set_markup(text)
@@ -533,9 +529,6 @@ class DetailedView(gtk.DrawingArea):
 
     def expose(self, widget, event, context, layout):
         """The minor expose method that handles item drawing"""
-        style = widget.style
-        shadow = gtk.SHADOW_OUT
-        state = gtk.STATE_NORMAL
         y = 2 * self.header_height
         i = 0
         for rows in self.get_datastore():
@@ -545,10 +538,10 @@ class DetailedView(gtk.DrawingArea):
                 barsizes.append(make_area_from_event(0, event.area.width, row[0].timestamp, row[1]))
             barsize = barsizes[0]
             text = self.text_handler(obj)
+            color = get_file_color(obj.subjects[0].interpretation, obj.subjects[0].mimetype)
             area = draw_text_box(
                 widget.window, context, layout, self.gc, self.base_color, text, barsize[0],
-                y, event.area.width, self.row_height,
-                ftype = obj.subjects[0].interpretation, fmime=obj.subjects[0].mimetype, bars = barsizes)
+                y, event.area.width, self.row_height, color, barsizes)
             if self.__active_area__ == tuple(area):
                 widget.style.paint_focus(widget.window, gtk.STATE_ACTIVE, event.area, widget, None, *area)
             self.register_area(obj, *area)
