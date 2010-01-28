@@ -29,8 +29,8 @@ import os
 from config import BASE_PATH, ACCESSIBILITY, settings
 from widgets import *
 from view import ActivityView
-from histogramwidget.histogramview import HistogramWidget, JournalHistogram, CairoHistogram
-from daybuttons import DayButton
+from histogram import HistogramWidget, JournalHistogram, CairoHistogram
+from daywidgets import DayButton
 
 
 class Portal(gtk.Window):

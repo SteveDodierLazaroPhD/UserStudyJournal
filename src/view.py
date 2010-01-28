@@ -24,7 +24,7 @@ import gc
 
 from widgets import *
 from daywidgets import *
-from histogramwidget import histogramdata
+from eventgatherer import datelist
 from config import settings
 
 
@@ -96,7 +96,7 @@ class ActivityView(gtk.VBox):
                 start = selection_date - (self.dayrange - 1) * 86400
                 self.set_dayrange(start, end)
 
-        histogramdata.datelist(90, self.cal.histogram.set_datastore)
+        datelist(90, self.cal.histogram.set_datastore)
         self.cal.histogram.connect("column_clicked", selection_callback)
 
     def _set_view_type(self, refresh=False):

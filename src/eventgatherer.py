@@ -3,8 +3,7 @@
 # GNOME Activity Journal
 #
 # Copyright © 2010 Seif Lotfy <seif@lotfy.com>
-# Copyright © 2010 Randal Barlow <email.tehk@gmail.com>
-# Copyright © 2010 Siegfried-Angel Gevatter Pujals <siegfried@gevatter.com>
+# Copyright © 2010 Siegfried Gevatter <siegfried@gevatter.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,15 +18,47 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-iszeitgeist = True
-
-from datetime import timedelta, datetime
 import time
+from datetime import timedelta, datetime
+import gtk
+import random
+import os
+import urllib
 from zeitgeist.client import ZeitgeistClient
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
-    ResultType
+    ResultType, TimeRange
 
 CLIENT = ZeitgeistClient()
+
+
+def get_dayevents(start, end, callback):
+
+    def event_exists(uri):
+        # TODO: Move this into Zeitgeist's datamodel.py
+        return not uri.startswith("file://") or os.path.exists(
+            urllib.unquote(str(uri[7:])))
+
+    def handle_find_events(events):
+        results = {}
+        for event in events:
+            uri = event.subjects[0].uri
+            if not event_exists(uri):
+                continue
+            if not event.subjects[0].uri in results:
+                results[uri] = []
+            results[uri].append([event, 120000])
+        callback(list(sorted(results.itervalues(), key=lambda r: \
+            r[0][0].timestamp)))
+
+    timerange = [start, end]
+    event_templates = (
+        Event.new_for_values(interpretation=Interpretation.VISIT_EVENT.uri),
+        Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri),
+        Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri),
+    )
+    CLIENT.find_events_for_templates(event_templates, handle_find_events,
+        timerange, num_events=50000, result_type=ResultType.LeastRecentEvents)
+
 
 def datelist(n, callback):
     if n == -1:

@@ -35,8 +35,8 @@ from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
     ResultType, TimeRange
 
 from widgets import *
-from singledaywidget import logwidget
-from singledaywidget.eventhandler import get_dayevents
+import logwidget
+from eventgatherer import get_dayevents
 
 CLIENT = ZeitgeistClient()
 
@@ -423,7 +423,6 @@ class DayLabel(gtk.DrawingArea):
         w, h = layout.get_pixel_size()
         widget.window.draw_layout(gc, (event.area.width-w)/2, lastfontheight, layout)
 
-
     def draw(self, widget, event, context):
         if self.leading:
             bg = self.style.bg[3]
@@ -433,26 +432,140 @@ class DayLabel(gtk.DrawingArea):
             red = (bg.red * 125 / 100)/65535.0
             green = (bg.green * 125 / 100)/65535.0
             blue = (bg.blue * 125 / 100)/65535.0
-
-        # Draw
         x = 0; y = 0
         r = 5
         w, h = event.area.width, event.area.height
-        # Temporary color, I will fix this later when I have a chance to sleep.
-        #grad = cairo.LinearGradient(0, 3*event.area.height, 0, 0)
-        #grad.add_color_stop_rgb(0,  0, 0, 0)
-        #grad.add_color_stop_rgb(1,  red, green, blue)
-
-        #if self.leading:
-            #context.set_source(grad)
         context.set_source_rgba(red, green, blue, 1)
-
         context.new_sub_path()
         context.arc(r+x, r+y, r, math.pi, 3 * math.pi /2)
         context.arc(w-r, r+y, r, 3 * math.pi / 2, 0)
         context.close_path()
         context.rectangle(0, r, w, h)
         context.fill_preserve()
+
+
+class DayButton(gtk.DrawingArea):
+    leading = False
+    pressed = False
+    sensitive = True
+    hover = False
+    header_size = 60
+    bg_color = (0, 0, 0, 0)
+    header_color = (1, 1, 1, 1)
+    leading_header_color = (1, 1, 1, 1)
+    internal_color = (0, 1, 0, 1)
+    arrow_color = (1,1,1,1)
+    arrow_color_selected = (1, 1, 1, 1)
+
+    __gsignals__ = {
+        "clicked":  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,()),
+        }
+    def __init__(self, side = 0, leading = False):
+        super(DayButton, self).__init__()
+        self.set_events(gtk.gdk.ENTER_NOTIFY_MASK | gtk.gdk.LEAVE_NOTIFY_MASK | gtk.gdk.KEY_PRESS_MASK | gtk.gdk.BUTTON_RELEASE_MASK |
+                        gtk.gdk.BUTTON_PRESS_MASK)
+        self.set_flags(gtk.CAN_FOCUS)
+        self.leading = leading
+        self.side = side
+        self.connect("button_press_event", self.__on_press__)
+        self.connect("button_release_event", self.__clicked_sender__)
+        self.connect("key_press_event", self.__keyboard_clicked_sender__)
+        self.connect("enter_notify_event", self.__on_hover__, True)
+        self.connect("leave_notify_event", self.__on_hover__, False)
+        self.connect("expose_event", self.expose)
+        self.connect("style-set", self.change_style)
+        self.set_size_request(20, -1)
+
+    def set_sensitive(self, case):
+        self.sensitive = case
+        self.queue_draw()
+
+    def __on_hover__(self, widget, event, switch):
+        self.hover = switch
+        self.queue_draw()
+
+    def __on_press__(self, widget, event):
+        self.pressed = True
+        self.queue_draw()
+
+    def __keyboard_clicked_sender__(self, widget, event):
+        if event.keyval in (gtk.keysyms.Return, gtk.keysyms.space):
+            if self.sensitive:
+                self.emit("clicked")
+            self.pressed = False
+            self.queue_draw()
+            return True
+        return False
+
+    def __clicked_sender__(self, widget, event):
+        if event.y > self.header_size:
+            if self.sensitive:
+                self.emit("clicked")
+        self.pressed = False
+        self.queue_draw()
+        return True
+
+    def change_style(self, *args, **kwargs):
+        self.bg_color = logwidget.get_gtk_rgba(self.style, "bg", 0)
+        self.header_color = logwidget.get_gtk_rgba(self.style, "bg", 0, 1.25)
+        self.leading_header_color = logwidget.get_gtk_rgba(self.style, "bg", 3)
+        self.internal_color = logwidget.get_gtk_rgba(self.style, "bg", 0, 1.02)
+        self.arrow_color = logwidget.get_gtk_rgba(self.style, "text", 0, 0.6)
+        self.arrow_color_selected = logwidget.get_gtk_rgba(self.style, "bg", 3)
+        self.arrow_color_insensitive = logwidget.get_gtk_rgba(self.style, "text", 4)
+
+    def expose(self, widget, event):
+        context = widget.window.cairo_create()
+
+        context.set_source_rgba(*self.bg_color)
+        context.set_operator(cairo.OPERATOR_SOURCE)
+        context.paint()
+        context.rectangle(event.area.x, event.area.y, event.area.width, event.area.height)
+        context.clip()
+
+        x = 0; y = 0
+        r = 5
+        w, h = event.area.width, event.area.height
+        size = 20
+        if self.sensitive:
+            context.set_source_rgba(*(self.leading_header_color if self.leading else self.header_color))
+            context.new_sub_path()
+            context.move_to(x+r,y)
+            context.line_to(x+w-r,y)
+            context.curve_to(x+w,y,x+w,y,x+w,y+r)
+            context.line_to(x+w,y+h-r)
+            context.curve_to(x+w,y+h,x+w,y+h,x+w-r,y+h)
+            context.line_to(x+r,y+h)
+            context.curve_to(x,y+h,x,y+h,x,y+h-r)
+            context.line_to(x,y+r)
+            context.curve_to(x,y,x,y,x+r,y)
+            context.set_source_rgba(*(self.leading_header_color if self.leading else self.header_color))
+            context.close_path()
+            context.rectangle(0, r, w,  self.header_size)
+            context.fill()
+            context.set_source_rgba(*self.internal_color)
+            context.rectangle(0, self.header_size, w,  h)
+            context.fill()
+            if self.hover:
+                widget.style.paint_box(widget.window, gtk.STATE_PRELIGHT, gtk.SHADOW_OUT,
+                                         event.area, widget, "button",
+                                         event.area.x, self.header_size,
+                                         w, h-self.header_size)
+        size = 10
+        if not self.sensitive:
+            state = gtk.STATE_INSENSITIVE
+        elif self.is_focus() or self.pressed:
+            widget.style.paint_focus(widget.window, gtk.STATE_ACTIVE, event.area,
+                                     widget, None, event.area.x, self.header_size,
+                                     w, h-self.header_size)
+            state = gtk.STATE_SELECTED
+        else:
+            state = gtk.STATE_NORMAL
+        arrow = gtk.ARROW_RIGHT if self.side else gtk.ARROW_LEFT
+        self.style.paint_arrow(widget.window, state, gtk.SHADOW_NONE, None,
+                               self, "arrow", arrow, True,
+                               w/2-size/2, h/2 + size/2, size, size)
+
 
 class EventGroup(gtk.VBox):
 
@@ -533,7 +646,6 @@ class EventGroup(gtk.VBox):
         except:
             pass
 
-
         if len(self.events) == 0:
             self.hide()
         else:
@@ -555,7 +667,8 @@ class DayPartWidget(EventGroup):
         self.event_timerange = [start * 1000, end * 1000]
         self.event_templates = (
             Event.new_for_values(interpretation=Interpretation.VISIT_EVENT.uri),
-            Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri)
+            Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri),
+            Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri),
         )
 
         # Initialize the widget
