@@ -38,7 +38,6 @@ class Portal(gtk.Window):
     def __init__(self):
 
         gtk.Window.__init__(self)
-        self._screen = gtk.gdk.Screen()
         self._requested_size = None
 
         self.connect("destroy", self.quit)
@@ -162,8 +161,8 @@ class Portal(gtk.Window):
         self.fwdbtn.set_sensitive(True)
 
     def _request_size(self):
-        screen = self._screen.get_monitor_geometry(
-            self._screen.get_monitor_at_point(*self.get_position()))
+        screen = self.get_screen().get_monitor_geometry(
+            self.get_screen().get_monitor_at_point(*self.get_position()))
 
         min_size = (1024, 600) # minimum netbook size
         size = [
