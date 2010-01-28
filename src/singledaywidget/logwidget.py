@@ -17,12 +17,10 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import cairo
 import gobject
 import gtk
 import pango
 import time
-import random
 import math
 import operator
 
@@ -187,18 +185,17 @@ def draw_text_box(window, context, layout, gc, basecolor, innercolor, text, x, y
     - context: A cairo context to draw on
     - layout: a pango layout to use for writing
     - gc: a text_gc from style
-    - basecolor: a rgba tuple for the outer tab
+    - basecolor: a rgba tuple for the backdrop bar
+    - innercolor: the bar color
     - text: the text to draw
     - x: The start x postion
     - y: The start y position
     - maxwidth: The boxes max width
     - maxheight: The max height of the box
-    - innercolor
     - a list of bar tuples with (x, width) values to draw
     """
 
     bar_height = 3
-    edge = 0
     layout.set_markup(text)
     text_width, text_height  = layout.get_pixel_size()
     text_width+=bar_height
@@ -265,7 +262,6 @@ def draw_time_markers(window, event, layout, gc, height):
     """
     Draws strings and lines representing times
     """
-    maxheight = window.get_geometry()[3]
     e =  event.area.width
     v = 6.0
     points = [e*(x/v) for x in xrange(1, int(v))]
