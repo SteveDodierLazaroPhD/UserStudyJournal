@@ -30,6 +30,11 @@ from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
 
 CLIENT = ZeitgeistClient()
 
+event_templates = (
+    Event.new_for_values(interpretation=Interpretation.VISIT_EVENT.uri),
+    Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri),
+    Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri),
+)
 
 def get_dayevents(start, end, callback):
 
@@ -49,21 +54,16 @@ def get_dayevents(start, end, callback):
             results[uri].append([event, 120000])
         callback(list(sorted(results.itervalues(), key=lambda r: \
             r[0][0].timestamp)))
-
-    timerange = [start, end]
-    event_templates = (
-        Event.new_for_values(interpretation=Interpretation.VISIT_EVENT.uri),
-        Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri),
-        Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri),
-    )
+    
     CLIENT.find_events_for_templates(event_templates, handle_find_events,
-        timerange, num_events=50000, result_type=ResultType.LeastRecentEvents)
-
+        [start, end], num_events=50000,
+        result_type=ResultType.LeastRecentEvents)
 
 def datelist(n, callback):
     if n == -1:
         n = int(time.time()/86400)
-    today = int(time.mktime(time.strptime(time.strftime("%d %B %Y"), "%d %B %Y")))
+    today = int(time.mktime(time.strptime(time.strftime("%d %B %Y"),
+        "%d %B %Y")))
     today = today - n*86400
 
     x = []
@@ -74,9 +74,6 @@ def datelist(n, callback):
             callback(x)
 
     def get_ids(start, end):
-        event_templates = [
-            Event.new_for_values(interpretation=Interpretation.VISIT_EVENT.uri),
-            Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri)]
         CLIENT.find_event_ids_for_templates(event_templates,
             _handle_find_events, [start * 1000, end * 1000],
             num_events=50000, result_type=0)
