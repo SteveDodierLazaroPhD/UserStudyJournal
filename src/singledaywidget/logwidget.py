@@ -20,7 +20,6 @@
 import cairo
 import gobject
 import gtk
-from gtk import gdk
 import pango
 import time
 import random
@@ -28,6 +27,8 @@ import math
 import operator
 
 from zeitgeist.datamodel import Interpretation
+
+gdk = gtk.gdk
 
 
 TIMES = ("4:00", "8:00", "12:00", "16:00",
@@ -261,7 +262,7 @@ def paint_box(context, color, xpadding, ypadding, x, y, width, height, rounded =
     context.fill()
     if border_color:
         context.set_line_width(1)
-        context.set_source_rgba
+        context.set_source_rgba(border_color)
         context.stroke()
 
 def draw_time_markers(window, event, layout, gc, height):
@@ -302,13 +303,13 @@ class DetailedView(gtk.DrawingArea):
     )
     __connections__ = {
         "expose-event":"__expose__",
-        "button_press_event": "__button_press_handler__",
-        "button_release_event": "__button_release_handler__",
-        "motion_notify_event": "__motion_notify_handler__",
+        "button_press_event": "button_press_handler",
+        "button_release_event": "button_release_handler",
+        "motion_notify_event": "motion_notify_handler",
         "style-set": "change_style",
-        "key_press_event": "__key_press_handler__",
-        #"query-tooltip" : "__query_tooltip__", # Enable to enable tooltips
-        "focus-out-event" : "__focus_out_handler__",
+        "key_press_event": "key_press_handler",
+        #"query-tooltip" : "query_tooltip", # Enable to enable tooltips
+        "focus-out-event" : "focus_out_handler",
     }
     # Click handling areas
     __private_areas__ = {}
@@ -424,10 +425,10 @@ class DetailedView(gtk.DrawingArea):
                         return (x, y, width, height), obj
         return False
 
-    def __focus_out_handler__(self, widget, event):
+    def focus_out_handler(self, widget, event):
         self.__active_area__ = None
 
-    def __query_tooltip__(self, widget, x, y, keyboard_mode, tooltip):
+    def query_tooltip(self, widget, x, y, keyboard_mode, tooltip):
         """
         Uses __hovered_obj__ to check the tooltip
         """
@@ -437,10 +438,10 @@ class DetailedView(gtk.DrawingArea):
             return True
         return False
 
-    def __motion_notify_handler__(self, widget, event):
+    def motion_notify_handler(self, widget, event):
         """
         Changes the cursor on motion and also sets the __hovered_obj__ property
-        so __query_tooltip__ does not have to think
+        so query_tooltip does not have to think
         """
         val = self.check_area(event.x, event.y)
         if val:
@@ -451,7 +452,7 @@ class DetailedView(gtk.DrawingArea):
         self.__hovered_obj__ = None
         return False
 
-    def __button_press_handler__(self, widget, event):
+    def button_press_handler(self, widget, event):
         """
         A simple button press handler that emits signals based on matched areas
 
@@ -477,13 +478,19 @@ class DetailedView(gtk.DrawingArea):
         self.queue_draw()
         return True
 
-    def __button_release_handler__(self, widget, event):
-        """Place holder"""
+    def button_release_handler(self, widget, event):
+        """ Disables the active area on a released click
+        """
         self.__active_area__ = None
         self.queue_draw()
         pass
 
-    def __key_press_handler__(self, widget, event):
+    def key_press_handler(self, widget, event):
+        """
+        Handles keyboard navigation
+
+        Up, Down, and Space are all used
+        """
         if event.keyval in (gtk.keysyms.Down, gtk.keysyms.Up, gtk.keysyms.space):
             areas = self.__areas__.keys()
             areas.sort(key=operator.itemgetter(1))
@@ -510,7 +517,7 @@ class DetailedView(gtk.DrawingArea):
 
     def __expose__(self, widget, event):
         """
-        The main expose function
+        The main expose method that calls all the child functions and methods
         """
         self.clear_registered_areas(private=True)
         widget.style.set_background(widget.window, gtk.STATE_NORMAL)
@@ -525,7 +532,7 @@ class DetailedView(gtk.DrawingArea):
         self.expose(widget, event, context, layout)
 
     def expose(self, widget, event, context, layout):
-        """The minor expose function"""
+        """The minor expose method that handles item drawing"""
         style = widget.style
         shadow = gtk.SHADOW_OUT
         state = gtk.STATE_NORMAL
