@@ -285,12 +285,12 @@ class DetailedView(gtk.DrawingArea):
         # Sent when a private area is clicked
         "private-area-clicked" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,)),
     }
-    __events__ = (
+    _events = (
         gdk.ENTER_NOTIFY_MASK | gdk.LEAVE_NOTIFY_MASK |
         gdk.KEY_PRESS_MASK | gdk.BUTTON_RELEASE_MASK | gdk.BUTTON_PRESS_MASK |
         gdk.MOTION_NOTIFY
     )
-    __connections__ = {
+    _connections = {
         "expose-event":"__expose__",
         "button_press_event": "button_press_handler",
         "button_release_event": "button_release_handler",
@@ -301,40 +301,39 @@ class DetailedView(gtk.DrawingArea):
         "focus-out-event" : "focus_out_handler",
     }
     # Click handling areas
-    __private_areas__ = {}
-    __areas__ = {}
-    __active_area__ =  tuple()
+    _private_areas = {}
+    _areas = {}
+    _active_area =  tuple()
     # Geometry stuff
-    header_height = 15
-    row_height = 50
-    spacing = 4
-    yincrement = row_height + spacing
+    _header_height = 15
+    _row_height = 50
+    _spacing = 4
+    yincrement = _row_height + _spacing
     # Style stuff
     gc = None
     lightgc = None
     pangofont = None
     font_name = ""
     font_size =  7*1024
-    bg_color = (1, 1, 1, 1)
-    base_color = (1, 1, 1, 1)
-    font_color = (0, 0, 0, 0)
-    stroke_color = (1, 1, 1, 1)
-    selected_color = (1, 1, 1, 1)
-    selected_color_alternative = (1, 1, 1, 1)
-    __last_width__ = 0
+    colors = {
+        "bg" : (1, 1, 1, 1),
+        "base" : (1, 1, 1, 1),
+        "font" : (0, 0, 0, 0),
+        }
+    _last_window_width = 0
 
     # new stuff for clicking and tooltips
-    __hovered_obj__ = None
+    _currently_active_obj = None
 
     def __init__(self, fn=None):
         super(DetailedView, self).__init__()
         if fn: self.set_text_handler(fn)
         self.set_size_request(600, 800)
-        self.set_events(self.__events__)
+        self.set_events(self._events)
         self.set_property("has-tooltip", True)
         self.set_flags(gtk.CAN_FOCUS)
         self.handcursor = gtk.gdk.Cursor(gtk.gdk.HAND2)
-        for key, val in self.__connections__.iteritems():
+        for key, val in self._connections.iteritems():
             self.connect(key, getattr(self, val))
         self.clear_registered_areas()
 
@@ -378,9 +377,9 @@ class DetailedView(gtk.DrawingArea):
         - private(optional): Add the item to the private areas
         """
         if private:
-            self.__private_areas__[(x, y, width, height)] = obj
+            self._private_areas[(x, y, width, height)] = obj
         else:
-            self.__areas__[(x, y, width, height)] = obj
+            self._areas[(x, y, width, height)] = obj
 
     def clear_registered_areas(self, private = False):
         """
@@ -389,8 +388,8 @@ class DetailedView(gtk.DrawingArea):
         Arguments:
         - private(Optional): If True we clear private areas as well
         """
-        if private: self.__private_areas__ = {}
-        self.__areas__ = {}
+        if private: self._private_areas = {}
+        self._areas = {}
 
     def check_area(self, mousex, mousey):
         """
@@ -401,43 +400,43 @@ class DetailedView(gtk.DrawingArea):
         - mousex: x mouse cord to check
         - mousey: y mouse cord to check
         """
-        if self.__private_areas__:
-            for (x, y, width, height), obj in self.__private_areas__.iteritems():
+        if self._private_areas:
+            for (x, y, width, height), obj in self._private_areas.iteritems():
                 if y <= mousey <= y + height:
                     if x <= mousex <= x + width:
                         return (x, y, width, height), obj
-        if self.__areas__:
-            for (x, y, width, height), obj in self.__areas__.iteritems():
+        if self._areas:
+            for (x, y, width, height), obj in self._areas.iteritems():
                 if y <= mousey <= y + height:
                     if x <= mousex <= x + width:
                         return (x, y, width, height), obj
         return False
 
     def focus_out_handler(self, widget, event):
-        self.__active_area__ = None
+        self._active_area = None
 
     def query_tooltip(self, widget, x, y, keyboard_mode, tooltip):
         """
-        Uses __hovered_obj__ to check the tooltip
+        Uses _currently_active_obj to check the tooltip
         """
-        if self.__hovered_obj__:
+        if self._currently_active_obj:
             tooltip.set_text(time.strftime("First Event: %H:%M",
-                             time.localtime(int(self.__hovered_obj__.timestamp)/1000)))
+                             time.localtime(int(self._currently_active_obj.timestamp)/1000)))
             return True
         return False
 
     def motion_notify_handler(self, widget, event):
         """
-        Changes the cursor on motion and also sets the __hovered_obj__ property
+        Changes the cursor on motion and also sets the _currently_active_obj property
         so query_tooltip does not have to think
         """
         val = self.check_area(event.x, event.y)
         if val:
             widget.window.set_cursor(self.handcursor)
-            self.__hovered_obj__ = val[1]
+            self._currently_active_obj = val[1]
             return True
         widget.window.set_cursor(None)
-        self.__hovered_obj__ = None
+        self._currently_active_obj = None
         return False
 
     def button_press_handler(self, widget, event):
@@ -454,12 +453,12 @@ class DetailedView(gtk.DrawingArea):
         """
         val = self.check_area(event.x, event.y)
         if not val:
-            self.__active_area__ = None
+            self._active_area = None
             self.queue_draw()
             return False
         area, obj = val
-        self.__active_area__ = area
-        if obj in self.__private_areas__.values():
+        self._active_area = area
+        if obj in self._private_areas.values():
             self.emit("private-area-clicked", obj)
             return True
         self.emit("area-clicked", obj)
@@ -469,7 +468,7 @@ class DetailedView(gtk.DrawingArea):
     def button_release_handler(self, widget, event):
         """ Disables the active area on a released click
         """
-        self.__active_area__ = None
+        self._active_area = None
         self.queue_draw()
 
     def key_press_handler(self, widget, event):
@@ -479,25 +478,25 @@ class DetailedView(gtk.DrawingArea):
         Up, Down, and Space are all used
         """
         if event.keyval in (gtk.keysyms.Down, gtk.keysyms.Up, gtk.keysyms.space):
-            areas = self.__areas__.keys()
+            areas = self._areas.keys()
             areas.sort(key=operator.itemgetter(1))
-            if not self.__active_area__:
-                self.__active_area__ = areas[0]
+            if not self._active_area:
+                self._active_area = areas[0]
             elif event.keyval == gtk.keysyms.space:
-                if self.__active_area__:
-                    obj = self.__areas__[self.__active_area__]
+                if self._active_area:
+                    obj = self._areas[self._active_area]
                     self.emit("area-clicked", obj)
-            elif self.__active_area__ and self.__areas__:
+            elif self._active_area and self._areas:
                 try:
-                    i = areas.index(self.__active_area__)
+                    i = areas.index(self._active_area)
                     if event.keyval == gtk.keysyms.Down:
                         i += 1
                     else:
                         i -= 1
                     i = min(max(i, 0), len(areas)-1)
-                    self.__active_area__ = areas[i]
+                    self._active_area = areas[i]
                 except ValueError:
-                    self.__active_area__ = areas[0]
+                    self._active_area = areas[0]
             self.queue_draw()
             return True
         return False
@@ -515,12 +514,12 @@ class DetailedView(gtk.DrawingArea):
         if not self.lightgc:
             self.lightgc = get_gc_from_colormap(widget.style, "text_gc", 4)
         layout.set_font_description(widget.pangofont)
-        draw_time_markers(widget.window, event, layout, self.lightgc, self.header_height)
+        draw_time_markers(widget.window, event, layout, self.lightgc, self._header_height)
         self.expose(widget, event, context, layout)
 
     def expose(self, widget, event, context, layout):
         """The minor expose method that handles item drawing"""
-        y = 2 * self.header_height
+        y = 2 * self._header_height
         i = 0
         for rows in self.get_datastore():
             obj, duration = rows[0]
@@ -530,15 +529,15 @@ class DetailedView(gtk.DrawingArea):
             x = barsizes[0][0]
             text = self.text_handler(obj)
             color = get_file_color(obj.subjects[0].interpretation, obj.subjects[0].mimetype)
-            area = draw_event_widget(widget, self.gc, self.base_color, color, text, x, y, event.area.width, self.row_height, barsizes)
-            if self.__active_area__ == tuple(area):
+            area = draw_event_widget(widget, self.gc, self.colors["base"], color, text, x, y, event.area.width, self._row_height, barsizes)
+            if self._active_area == tuple(area):
                 widget.style.paint_focus(widget.window, gtk.STATE_ACTIVE, event.area, widget, None, *area)
             self.register_area(obj, *area)
             y += self.yincrement
             i += 1
-        self.__last_width__ = event.area.width
+        self._last_window_width = event.area.width
         if y > event.area.height:
-            self.set_size_request(event.area.width, y + self.spacing)
+            self.set_size_request(event.area.width, y + self._spacing)
         return True
 
     def set_datastore(self, datastore, draw = True):
@@ -573,14 +572,11 @@ class DetailedView(gtk.DrawingArea):
         Sets the widgets style and coloring
         """
         self.handcursor = gtk.gdk.Cursor(gtk.gdk.HAND2)
-        self.selected_color = get_gtk_rgba(self.style, "bg", 3)
-        self.selected_color_alternative = (1, 0.68, 0.24, 1)
         self.font_name = self.style.font_desc.get_family()
-        self.bg_color = get_gtk_rgba(self.style, "bg", 0)
-        self.base_color = get_gtk_rgba(self.style, "base", 0,)
-        self.stroke_color = get_gtk_rgba(self.style, "bg", 0, 0.95)
+        self.colors["bg"] = get_gtk_rgba(self.style, "bg", 0)
+        self.colors["base"] = get_gtk_rgba(self.style, "base", 0,)
         self.font_size = self.style.font_desc.get_size()
-        self.header_height = self.font_size/1024 + self.spacing*2
+        self._header_height = self.font_size/1024 + self._spacing*2
         self.pangofont = pango.FontDescription(self.font_name)
         self.pangofont.set_size(self.font_size)
         layout = widget.create_pango_layout("SAMPLE")
@@ -589,8 +585,8 @@ class DetailedView(gtk.DrawingArea):
         spacing = layout.get_spacing()
         spacing =  spacing if spacing else 1024
         h = (th)*2 + (spacing/1024)*4 + 10
-        self.row_height = max(h, DetailedView.row_height)
-        self.yincrement = self.row_height + self.spacing
+        self._row_height = max(h, DetailedView._row_height)
+        self.yincrement = self._row_height + self._spacing
         self.gc = get_gc_from_colormap(widget.style, "text_gc", 0)
-        self.__last_width__ = 0
+        self._last_window_width = 0
         self.queue_draw()

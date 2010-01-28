@@ -95,12 +95,12 @@ class SingleDayWidget(gtk.VBox):
 
         def query_tooltip(widget, x, y, keyboard_mode, tooltip):
             """
-            Uses __hovered_obj__ to check the tooltip
-            __hovered_obj__ is a zeitgeist event
+            Uses _currently_active_obj to check the tooltip
+            _currently_active_obj is a zeitgeist event
             """
-            if widget.__hovered_obj__:
+            if widget._currently_active_obj:
                 tooltip_window = widget.get_tooltip_window()
-                gio_file = GioFile.create(widget.__hovered_obj__.subjects[0].uri)
+                gio_file = GioFile.create(widget._currently_active_obj.subjects[0].uri)
                 return tooltip_window.preview(gio_file)
             return False
         self.view.set_tooltip_window(StaticPreviewTooltip)
