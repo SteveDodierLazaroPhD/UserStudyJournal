@@ -77,7 +77,7 @@ class TooltipEventBox(gtk.EventBox):
             date = datetime.date.fromtimestamp(timestamp).strftime("%A, %d %B, %Y")
             tooltip.set_text("%s\n%i %s" % (date, count,
                                             gettext.ngettext("item", "items", count)))
-        elif self.container.histogram.__today_text__ and _in_area(x, y, self.container.histogram.__today_area__):
+        elif self.container.histogram._today_text and _in_area(x, y, self.container.histogram._today_area):
             tooltip.set_text(_("Click today to return to today"))
         else:
             return False
@@ -149,7 +149,7 @@ class HistogramWidget(gtk.Viewport):
         """
         hadjustment = self.get_hadjustment()
         # Check for today button click
-        if (widget.__today_text__ and event.x > hadjustment.value + hadjustment.page_size - widget.__today_width__):
+        if (widget._today_text and event.x > hadjustment.value + hadjustment.page_size - widget._today_width):
             self.histogram.change_location(len(self.histogram.get_datastore()) - 1)
             return True
         else:
