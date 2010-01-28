@@ -485,37 +485,41 @@ class EventGroup(gtk.VBox):
         self.events = []
         for widget in self.view:
             self.view.remove(widget)
-
-        categories = {}
-        for event in events:
-            subject = event.subjects[0]
-            if self.event_exists(subject.uri):
-                if not categories.has_key(subject.interpretation):
-                    categories[subject.interpretation] = []
-                categories[subject.interpretation].append(event)
-                self.events.append(event)
-
-        if not categories:
-            pass
-        else:
-            # Make the group title, etc. visible
-            self.show()
-
-            ungrouped_events = []
-            for key in sorted(categories.iterkeys()):
-                events = categories[key]
-                if len(events) > 3:
-                    box = CategoryBox(key, list(reversed(events)))
-                    self.view.pack_start(box)
-                else:
-                    ungrouped_events += events
-
-            ungrouped_events.sort(key=lambda x: x.timestamp)
-            box = CategoryBox(None, ungrouped_events)
+            
+        if self == pinbox:
+            box = CategoryBox(None, events)
             self.view.pack_start(box)
-
-            # Make the group's contents visible
-            self.view.show()
+        else:
+            categories = {}
+            for event in events:
+                subject = event.subjects[0]
+                if self.event_exists(subject.uri):
+                    if not categories.has_key(subject.interpretation):
+                        categories[subject.interpretation] = []
+                    categories[subject.interpretation].append(event)
+                    self.events.append(event)
+    
+            if not categories:
+                pass
+            else:
+                # Make the group title, etc. visible
+                self.show()
+    
+                ungrouped_events = []
+                for key in sorted(categories.iterkeys()):
+                    events = categories[key]
+                    if len(events) > 3:
+                        box = CategoryBox(key, list(reversed(events)))
+                        self.view.pack_start(box)
+                    else:
+                        ungrouped_events += events
+    
+                ungrouped_events.sort(key=lambda x: x.timestamp)
+                box = CategoryBox(None, ungrouped_events)
+                self.view.pack_start(box)
+    
+                # Make the group's contents visible
+                self.view.show()
         try:
             pinbox.show_all()
         except:
