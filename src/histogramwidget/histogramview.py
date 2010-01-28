@@ -134,10 +134,6 @@ class HistogramWidget(gtk.Viewport):
         self.set_size_request(*size)
         self.add(self.eventbox)
         self.histogram.connect("button_press_event", self.footer_clicked)
-        self.histogram.connect("data-updated", self.scroll_to_end)
-        hadjustment = self.get_hadjustment()
-        hadjustment.set_value(1) # Needs to be set twice to work
-        hadjustment.set_value(self.histogram.max_width - hadjustment.page_size)
         self.histogram.connect("selection-set", self.scrubbing_fix)
         self.histogram.queue_draw()
         self.queue_draw()
