@@ -276,7 +276,7 @@ class DetailedView(gtk.DrawingArea):
     A gtk widget which displays a bunch of rows with items representing a
     section of time where they were used
     """
-    __datastore__ = tuple()
+    _datastore = tuple()
     __gsignals__ = {
         # Sent when data is updated
         "data-updated" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,()),
@@ -551,11 +551,11 @@ class DetailedView(gtk.DrawingArea):
             if isinstance(datastore, tuple):
                 datastore =  list(datastore)
             if isinstance(datastore, list):
-                self.__datastore__ = datastore
+                self._datastore = datastore
             else:
                 raise TypeError("Datastore is not a <list>")
         else:
-            self.__datastore__ = []
+            self._datastore = []
         self.clear_registered_areas(private=True)
         self.clear_registered_areas()
         self.emit("data-updated")
@@ -565,7 +565,7 @@ class DetailedView(gtk.DrawingArea):
         """
         Returns the instances datastore
         """
-        return self.__datastore__
+        return self._datastore
 
     def change_style(self, widget, old_style):
         """
