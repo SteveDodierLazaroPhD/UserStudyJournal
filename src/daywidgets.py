@@ -92,6 +92,18 @@ class SingleDayWidget(gtk.VBox):
             t2 = "<span color='%s'>%s</span> " % (self.f_color, text)
             return str(t1) + "\n" + str(t2) + ""
         self.view.set_text_handler(text_handler)
+        # Preview tooltips from widgets.py
+        #def query_tooltip(widget, x, y, keyboard_mode, tooltip):
+        #    """
+        #    Uses __hovered_obj__ to check the tooltip
+        #    __hovered_obj__ is a zeitgeist event
+        #    """
+        #    if widget.__hovered_obj__:
+        #        interpretation = widget.__hovered_obj__.interpretation
+        #        print interpretation
+        #        return True
+        #    return False
+        #self.view.connect("query-tooltip", query_tooltip)
 
     def _set_date_strings(self):
         self.date_string = date.fromtimestamp(self.day_start).strftime("%d %B")

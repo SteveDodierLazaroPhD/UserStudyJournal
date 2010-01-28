@@ -25,6 +25,7 @@ import pango
 import time
 import random
 import math
+import operator
 
 from zeitgeist.datamodel import Interpretation
 
@@ -305,6 +306,8 @@ class DetailedView(gtk.DrawingArea):
         "button_release_event": "__button_release_handler__",
         "motion_notify_event": "__motion_notify_handler__",
         "style-set": "change_style",
+        "key_press_event": "__key_press_handler__",
+        #"query-tooltip" : "__query_tooltip__", # Enable to enable tooltips
     }
     # Click handling areas
     __private_areas__ = {}
@@ -329,12 +332,17 @@ class DetailedView(gtk.DrawingArea):
     selected_color_alternative = (1, 1, 1, 1)
     __last_width__ = 0
 
+    # Useless stuff for clicking and tooltips
+    __hovered_obj__ = None
+    #
+
     def __init__(self, fn=None):
         super(DetailedView, self).__init__()
         if fn: self.set_text_handler(fn)
         self.set_size_request(600, 800)
         self.set_events(self.__events__)
         self.set_property("has-tooltip", True)
+        self.set_flags(gtk.CAN_FOCUS)
         self.handcursor = gtk.gdk.Cursor(gtk.gdk.HAND2)
         for key, val in self.__connections__.iteritems():
             self.connect(key, getattr(self, val))
@@ -415,12 +423,28 @@ class DetailedView(gtk.DrawingArea):
                         return (x, y, width, height), obj
         return False
 
+    def __query_tooltip__(self, widget, x, y, keyboard_mode, tooltip):
+        """
+        Uses __hovered_obj__ to check the tooltip
+        """
+        if self.__hovered_obj__:
+            tooltip.set_text(time.strftime("First Event: %H:%M",
+                             time.localtime(int(self.__hovered_obj__.timestamp)/1000)))
+            return True
+        return False
+
     def __motion_notify_handler__(self, widget, event):
+        """
+        Changes the cursor on motion and also sets the __hovered_obj__ property
+        so __query_tooltip__ does not have to think
+        """
         val = self.check_area(event.x, event.y)
         if val:
             widget.window.set_cursor(self.handcursor)
+            self.__hovered_obj__ = val[1]
             return True
         widget.window.set_cursor(None)
+        self.__hovered_obj__ = None
         return False
 
     def __button_press_handler__(self, widget, event):
@@ -451,7 +475,34 @@ class DetailedView(gtk.DrawingArea):
 
     def __button_release_handler__(self, widget, event):
         """Place holder"""
+        self.__active_area__ = None
+        self.queue_draw()
         pass
+
+    def __key_press_handler__(self, widget, event):
+        if event.keyval in (gtk.keysyms.Down, gtk.keysyms.Up, gtk.keysyms.space):
+            areas = self.__areas__.keys()
+            areas.sort(key=operator.itemgetter(1))
+            if not self.__active_area__:
+                self.__active_area__ = areas[0]
+            elif event.keyval == gtk.keysyms.space:
+                if self.__active_area__:
+                    obj = self.__areas__[self.__active_area__]
+                    self.emit("area-clicked", obj)
+            elif self.__active_area__ and self.__areas__:
+                try:
+                    i = areas.index(self.__active_area__)
+                    if event.keyval == gtk.keysyms.Down:
+                        i += 1
+                    else:
+                        i -= 1
+                    i = min(max(i, 0), len(areas)-1)
+                    self.__active_area__ = areas[i]
+                except ValueError:
+                    self.__active_area__ = areas[0]
+            self.queue_draw()
+            return True
+        return False
 
     def __expose__(self, widget, event):
         """
@@ -514,6 +565,7 @@ class DetailedView(gtk.DrawingArea):
         else:
             self.__datastore__ = []
         self.clear_registered_areas(private=True)
+        self.clear_registered_areas()
         self.emit("data-updated")
         self.queue_draw()
 
