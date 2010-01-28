@@ -308,6 +308,7 @@ class DetailedView(gtk.DrawingArea):
         "style-set": "change_style",
         "key_press_event": "__key_press_handler__",
         #"query-tooltip" : "__query_tooltip__", # Enable to enable tooltips
+        "focus-out-event" : "__focus_out_handler__",
     }
     # Click handling areas
     __private_areas__ = {}
@@ -422,6 +423,9 @@ class DetailedView(gtk.DrawingArea):
                     if x <= mousex <= x + width:
                         return (x, y, width, height), obj
         return False
+
+    def __focus_out_handler__(self, widget, event):
+        self.__active_area__ = None
 
     def __query_tooltip__(self, widget, x, y, keyboard_mode, tooltip):
         """

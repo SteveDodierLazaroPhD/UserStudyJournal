@@ -92,18 +92,19 @@ class SingleDayWidget(gtk.VBox):
             t2 = "<span color='%s'>%s</span> " % (self.f_color, text)
             return str(t1) + "\n" + str(t2) + ""
         self.view.set_text_handler(text_handler)
-        # Preview tooltips from widgets.py
-        #def query_tooltip(widget, x, y, keyboard_mode, tooltip):
-        #    """
-        #    Uses __hovered_obj__ to check the tooltip
-        #    __hovered_obj__ is a zeitgeist event
-        #    """
-        #    if widget.__hovered_obj__:
-        #        interpretation = widget.__hovered_obj__.interpretation
-        #        print interpretation
-        #        return True
-        #    return False
-        #self.view.connect("query-tooltip", query_tooltip)
+
+        def query_tooltip(widget, x, y, keyboard_mode, tooltip):
+            """
+            Uses __hovered_obj__ to check the tooltip
+            __hovered_obj__ is a zeitgeist event
+            """
+            if widget.__hovered_obj__:
+                tooltip_window = widget.get_tooltip_window()
+                gio_file = GioFile.create(widget.__hovered_obj__.subjects[0].uri)
+                return tooltip_window.preview(gio_file)
+            return False
+        self.view.set_tooltip_window(StaticPreviewTooltip)
+        self.view.connect("query-tooltip", query_tooltip)
 
     def _set_date_strings(self):
         self.date_string = date.fromtimestamp(self.day_start).strftime("%d %B")
@@ -285,7 +286,7 @@ class DayWidget(gtk.VBox):
             self.connect("motion-notify-event", lambda x, y: evbox.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2)))
         except:
             pass
-        
+
         def change_style(widget, style):
             rc_style = self.style
             color = rc_style.bg[gtk.STATE_NORMAL]
@@ -492,7 +493,7 @@ class EventGroup(gtk.VBox):
         self.events = []
         for widget in self.view:
             self.view.remove(widget)
-            
+
         if self == pinbox:
             box = CategoryBox(None, events)
             self.view.pack_start(box)
@@ -505,13 +506,13 @@ class EventGroup(gtk.VBox):
                         categories[subject.interpretation] = []
                     categories[subject.interpretation].append(event)
                     self.events.append(event)
-    
+
             if not categories:
                 pass
             else:
                 # Make the group title, etc. visible
                 self.show()
-    
+
                 ungrouped_events = []
                 for key in sorted(categories.iterkeys()):
                     events = categories[key]
@@ -520,11 +521,11 @@ class EventGroup(gtk.VBox):
                         self.view.pack_start(box)
                     else:
                         ungrouped_events += events
-    
+
                 ungrouped_events.sort(key=lambda x: x.timestamp)
                 box = CategoryBox(None, ungrouped_events)
                 self.view.pack_start(box)
-    
+
                 # Make the group's contents visible
                 self.view.show()
         try:
