@@ -243,10 +243,8 @@ class DayWidget(gtk.VBox):
         evbox.add(self.daylabel)
         evbox.set_size_request(100, 60)
         self.vbox.pack_start(evbox, False, False)
-        try:
-            self.connect("motion-notify-event", lambda x, y: evbox.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2)))
-        except:
-            pass
+        self.connect("motion-notify-event", lambda x, y:
+            evbox.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2)))
 
         def change_style(widget, style):
             rc_style = self.style
@@ -580,10 +578,10 @@ class EventGroup(gtk.VBox):
                     self.events.append(event)
 
             if not categories:
-                pass
+                self.hide_all()
             else:
                 # Make the group title, etc. visible
-                self.show()
+                self.show_all()
 
                 ungrouped_events = []
                 for key in sorted(categories.iterkeys()):
@@ -600,10 +598,7 @@ class EventGroup(gtk.VBox):
 
                 # Make the group's contents visible
                 self.view.show()
-        try:
-            pinbox.show_all()
-        except:
-            pass
+                pinbox.show_all()
 
         if len(self.events) == 0:
             self.hide()
@@ -617,7 +612,6 @@ class EventGroup(gtk.VBox):
                 result_type=ResultType.MostRecentSubjects)
         else:
             self.view.hide()
-        self.show_all()
 
 class DayPartWidget(EventGroup):
 
