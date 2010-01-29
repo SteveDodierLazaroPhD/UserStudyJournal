@@ -160,6 +160,7 @@ class ActivityView(gtk.VBox):
         self.set_views()
 
     def _zoom_out_day(self, widget):
+        self.jump(self._prezoom_position*86400)
         self.notebook.set_current_page(0)
         self.cal.histogram.set_single_day(False)
 
@@ -168,6 +169,7 @@ class ActivityView(gtk.VBox):
         for w in self.daysbox:
             if w == widget: break
             i -= 1
+        self._prezoom_position = i
         self.notebook.set_current_page(1)
         self.jump(i*-86400)
         self.cal.histogram.set_single_day(True)

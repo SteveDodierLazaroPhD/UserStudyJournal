@@ -420,6 +420,7 @@ class DetailedView(gtk.DrawingArea):
 
     def focus_out_handler(self, widget, event):
         self._active_area = None
+        self.queue_draw()
 
     def query_tooltip(self, widget, x, y, keyboard_mode, tooltip):
         """
