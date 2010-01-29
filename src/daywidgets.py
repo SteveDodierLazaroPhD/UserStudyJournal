@@ -105,13 +105,9 @@ class SingleDayWidget(gtk.VBox):
         get_dayevents(start*1000, end*1000, self.view.set_datastore)
         self.show_all()
 
-
         #self.connect("motion-notify-event", lambda x, y: evbox.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2)))
         #self.connect("leave-notify-event", lambda x, y: evbox.window.set_cursor(None))
-        try:
-            evbox.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2))
-        except:
-            pass
+        evbox.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2))
 
     def click(self, widget, event):
         if event.button == 1:
@@ -258,10 +254,8 @@ class DayWidget(gtk.VBox):
             evbox.modify_bg(gtk.STATE_NORMAL, color)
             self.daylabel.modify_bg(gtk.STATE_NORMAL, color)
 
-
         self.connect("style-set", change_style)
         #self.connect("leave-notify-event", lambda x, y: evbox.window.set_cursor(None))
-
 
         self.vbox.reorder_child(self.daylabel, 0)
 
