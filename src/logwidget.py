@@ -210,7 +210,7 @@ def paint_box(context, color, xpadding, ypadding, x, y, width,
         context.line_to(x,y+r)
         context.curve_to(x,y,x,y,x+r,y)
     else:
-        context.rectangle(x+0.5, y, width, height)
+        context.rectangle(int(x), int(y), int(width), int(height))
     context.fill()
     if border_color:
         context.set_line_width(1)
@@ -547,7 +547,7 @@ class DetailedView(gtk.DrawingArea):
             x = barsizes[0][0]
             text = self.text_handler(obj)
             color = get_file_color(obj.subjects[0].interpretation, obj.subjects[0].mimetype)
-            area = draw_event_widget(widget, self.gc, self.colors["base"], color, text, x, y, event.area.width, self._row_height, barsizes)
+            area = draw_event_widget(widget, self.gc, self.colors["bg"], color, text, x, y, event.area.width, self._row_height, barsizes)
             if self._active_area == tuple(area):
                 widget.style.paint_focus(widget.window, gtk.STATE_ACTIVE, event.area, widget, None, *area)
             self.register_area(obj, *area)
@@ -590,7 +590,7 @@ class DetailedView(gtk.DrawingArea):
         """
         self.handcursor = gtk.gdk.Cursor(gtk.gdk.HAND2)
         self.font_name = self.style.font_desc.get_family()
-        self.colors["bg"] = get_gtk_rgba(self.style, "bg", 0)
+        self.colors["bg"] = get_gtk_rgba(self.style, "bg", 0, 1.04)
         self.colors["base"] = get_gtk_rgba(self.style, "base", 0,)
         f_color = widget.style.text[4]
         f_color.red = max(f_color.red * 60/100, 0)
