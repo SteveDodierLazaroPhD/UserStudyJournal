@@ -60,13 +60,8 @@ class SingleDayWidget(gtk.VBox):
         self.scrolledwindow.add_with_viewport(self.view)
         self.scrolledwindow.get_children()[0].set_shadow_type(gtk.SHADOW_NONE)
         self.pack_end(self.scrolledwindow)
-        self.f_color = self.style.text[4]
 
         def change_style(widget, style):
-            self.f_color = widget.style.text[4]
-            self.f_color.red = max(self.f_color.red * 60/100, 0)
-            self.f_color.green = max(self.f_color.green * 60/100, 0)
-            self.f_color.blue = max(self.f_color.blue * 60/100, 0)
             rc_style = self.style
             color = rc_style.bg[gtk.STATE_NORMAL]
             color.red = min(color.red * 102/100, 65535.0)
@@ -75,36 +70,6 @@ class SingleDayWidget(gtk.VBox):
             self.view.modify_bg(gtk.STATE_NORMAL, color)
 
         self.connect("style-set", change_style)
-
-        def text_handler(obj):
-            """
-            A text handler that returns the text to be drawn by the
-            draw_text_box
-
-            Arguments:
-            - obj: A event object
-            """
-            text = obj.subjects[0].text
-            interpretation = obj.subjects[0].interpretation
-            t1 = (logwidget.FILETYPESNAMES[interpretation] if
-                  interpretation in logwidget.FILETYPESNAMES.keys() else "Unknown")
-            t1 = "<b>" + t1 + "</b>"
-            t2 = "<span color='%s'>%s</span> " % (self.f_color, text)
-            return str(t1) + "\n" + str(t2) + ""
-        self.view.set_text_handler(text_handler)
-
-        def query_tooltip(widget, x, y, keyboard_mode, tooltip):
-            """
-            Uses _currently_active_obj to check the tooltip
-            _currently_active_obj is a zeitgeist event
-            """
-            if widget._currently_active_obj:
-                tooltip_window = widget.get_tooltip_window()
-                gio_file = GioFile.create(widget._currently_active_obj.subjects[0].uri)
-                return tooltip_window.preview(gio_file)
-            return False
-        self.view.set_tooltip_window(StaticPreviewTooltip)
-        self.view.connect("query-tooltip", query_tooltip)
 
     def _set_date_strings(self):
         self.date_string = date.fromtimestamp(self.day_start).strftime("%d %B")

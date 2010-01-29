@@ -25,6 +25,8 @@ import math
 import operator
 
 from zeitgeist.datamodel import Interpretation
+from widgets import StaticPreviewTooltip, VideoPreviewTooltip
+from gio_file import GioFile
 
 gdk = gtk.gdk
 
@@ -174,7 +176,8 @@ def draw_text(widget, gc, text, x, y, xcenter = False,
     layout.set_spacing(0)
     return text_h, text_w
 
-def paint_box(context, color, xpadding, ypadding, x, y, width, height, rounded = 0, border_color = None):
+def paint_box(context, color, xpadding, ypadding, x, y, width,
+              height, rounded = 0, border_color = None):
     """
     Paint a box
 
@@ -297,7 +300,7 @@ class DetailedView(gtk.DrawingArea):
         "motion_notify_event": "motion_notify_handler",
         "style-set": "change_style",
         "key_press_event": "key_press_handler",
-        #"query-tooltip" : "query_tooltip", # Enable to enable tooltips
+        "query-tooltip" : "query_tooltip", # Enable to enable tooltips
         "focus-out-event" : "focus_out_handler",
     }
     # Click handling areas
@@ -319,6 +322,7 @@ class DetailedView(gtk.DrawingArea):
         "bg" : (1, 1, 1, 1),
         "base" : (1, 1, 1, 1),
         "font" : (0, 0, 0, 0),
+        "f" : "#b3b3b3"
         }
     _last_window_width = 0
 
@@ -331,6 +335,7 @@ class DetailedView(gtk.DrawingArea):
         self.set_size_request(600, 800)
         self.set_events(self._events)
         self.set_property("has-tooltip", True)
+        self.set_tooltip_window(StaticPreviewTooltip)
         self.set_flags(gtk.CAN_FOCUS)
         self.handcursor = gtk.gdk.Cursor(gtk.gdk.HAND2)
         for key, val in self._connections.iteritems():
@@ -346,11 +351,12 @@ class DetailedView(gtk.DrawingArea):
         - obj: A event object
         """
         text = obj.subjects[0].text
-        t1 = "<b>" + text + "</b>"
         interpretation = obj.subjects[0].interpretation
-        t2 = FILETYPESNAMES[obj.subjects[0].interpretation] if interpretation in FILETYPESNAMES.keys() else "Unknown"
-        t3 = time.strftime("%H:%M", time.localtime(int(obj.timestamp)/1000))
-        return str(t1) + "\n" + str(t2) + ", " + str(t3)
+        t1 = (FILETYPESNAMES[interpretation] if
+              interpretation in FILETYPESNAMES.keys() else "Unknown")
+        t1 = "<b>" + t1 + "</b>"
+        t2 = "<span color='%s'>%s</span> " % (self.colors["f"], text)
+        return str(t1) + "\n" + str(t2) + ""
 
     def set_text_handler(self, fn):
         """
@@ -418,11 +424,22 @@ class DetailedView(gtk.DrawingArea):
     def query_tooltip(self, widget, x, y, keyboard_mode, tooltip):
         """
         Uses _currently_active_obj to check the tooltip
+        _currently_active_obj is a zeitgeist event
+
+        There is a important issue here, I switch tooltip types depending on
+        the interpretation, but that is very inefficient. We really need a
+        tooltip class which can decide what type it is when givin the uri. Until
+        then we have this issue.
         """
-        if self._currently_active_obj:
-            tooltip.set_text(time.strftime("First Event: %H:%M",
-                             time.localtime(int(self._currently_active_obj.timestamp)/1000)))
-            return True
+        if widget._currently_active_obj:
+            interpretation = widget._currently_active_obj.subjects[0].interpretation
+            if FILETYPESNAMES[interpretation] == "Video":
+                self.set_tooltip_window(VideoPreviewTooltip)
+            else:
+                self.set_tooltip_window(StaticPreviewTooltip)
+            tooltip_window = widget.get_tooltip_window()
+            gio_file = GioFile.create(widget._currently_active_obj.subjects[0].uri)
+            return tooltip_window.preview(gio_file)
         return False
 
     def motion_notify_handler(self, widget, event):
@@ -575,6 +592,11 @@ class DetailedView(gtk.DrawingArea):
         self.font_name = self.style.font_desc.get_family()
         self.colors["bg"] = get_gtk_rgba(self.style, "bg", 0)
         self.colors["base"] = get_gtk_rgba(self.style, "base", 0,)
+        f_color = widget.style.text[4]
+        f_color.red = max(f_color.red * 60/100, 0)
+        f_color.green = max(f_color.green * 60/100, 0)
+        f_color.blue = max(f_color.blue * 60/100, 0)
+        self.colors["f"] = f_color
         self.font_size = self.style.font_desc.get_size()
         self._header_height = self.font_size/1024 + self._spacing*2
         self.pangofont = pango.FontDescription(self.font_name)
