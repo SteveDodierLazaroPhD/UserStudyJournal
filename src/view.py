@@ -86,9 +86,6 @@ class ActivityView(gtk.VBox):
 
     def _set_timeline(self):
         def selection_callback(widget, i):
-            ###IMPORTANT HIDES THE DETAILED VIEW ON HISTOGRAM CLICK IMPORTANT REMOVE ME SEIF###
-            ### When the switching works ###
-            #self.notebook.set_page(0)
             datastore = widget.get_datastore()
             if i < len(datastore):
                 selection_date = datastore[i][0]
@@ -130,8 +127,6 @@ class ActivityView(gtk.VBox):
         self.notebook.connect("style-set", change_style)
 
     def jump(self, offset):
-        ###IMPORTANT HIDES THE DETAILED VIEW ON JUMP IMPORTANT REMOVE ME SEIF###
-        ### When the switching works ###
         self.start = self.start + offset
 
         if time.time() > self.start:
@@ -160,7 +155,10 @@ class ActivityView(gtk.VBox):
         self.set_views()
 
     def _zoom_out_day(self, widget):
-        self.jump(self._prezoom_position*86400)
+        offset = self._prezoom_position*86400
+        while offset + self.start + (self.dayrange - 1)*86400 >= time.time() - time.timezone:
+            offset -=86400
+        self.jump(offset)
         self.notebook.set_current_page(0)
         self.cal.histogram.set_single_day(False)
 
