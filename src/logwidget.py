@@ -309,7 +309,7 @@ class DetailedView(gtk.DrawingArea):
     _active_area =  tuple()
     # Geometry stuff
     _header_height = 15
-    _row_height = 50
+    _row_height = 32
     _spacing = 4
     yincrement = _row_height + _spacing
     # Style stuff
@@ -601,13 +601,10 @@ class DetailedView(gtk.DrawingArea):
         self._header_height = self.font_size/1024 + self._spacing*2
         self.pangofont = pango.FontDescription(self.font_name)
         self.pangofont.set_size(self.font_size)
-        layout = widget.create_pango_layout("SAMPLE")
+        layout = widget.create_pango_layout("SPpq|I\nSPpqI|")
         layout.set_font_description(widget.pangofont)
         yw, th = layout.get_pixel_size()
-        spacing = layout.get_spacing()
-        spacing =  spacing if spacing else 1024
-        h = (th)*2 + (spacing/1024)*4 + 10
-        self._row_height = max(h, DetailedView._row_height)
+        self._row_height = max(th*1.3, DetailedView._row_height)
         self.yincrement = self._row_height + self._spacing
         self.gc = get_gc_from_colormap(widget.style, "text_gc", 0)
         self._last_window_width = 0
