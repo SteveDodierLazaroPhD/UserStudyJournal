@@ -135,7 +135,7 @@ class CairoHistogram(gtk.DrawingArea):
                             (gobject.TYPE_INT,))
         }
     _connections = {"style-set": "change_style",
-                       "expose_event": "__expose__",
+                       "expose_event": "_expose",
                        "button_press_event": "mouse_press_interaction",
                        "motion_notify_event": "mouse_motion_interaction",
                        "key_press_event": "keyboard_interaction",
@@ -229,7 +229,7 @@ class CairoHistogram(gtk.DrawingArea):
         self.queue_draw()
         self.set_selected(len(newdatastore) + selected)
 
-    def __expose__(self, widget, event):
+    def _expose(self, widget, event):
         """
         The major drawing method that the expose event calls directly
 

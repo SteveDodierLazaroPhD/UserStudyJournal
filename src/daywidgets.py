@@ -467,11 +467,11 @@ class DayButton(gtk.DrawingArea):
         self.set_flags(gtk.CAN_FOCUS)
         self.leading = leading
         self.side = side
-        self.connect("button_press_event", self.__on_press__)
-        self.connect("button_release_event", self.__clicked_sender__)
-        self.connect("key_press_event", self.__keyboard_clicked_sender__)
-        self.connect("enter_notify_event", self.__on_hover__, True)
-        self.connect("leave_notify_event", self.__on_hover__, False)
+        self.connect("button_press_event", self.on_press)
+        self.connect("button_release_event", self.clicked_sender)
+        self.connect("key_press_event", self.keyboard_clicked_sender)
+        self.connect("enter_notify_event", self.on_hover, True)
+        self.connect("leave_notify_event", self.on_hover, False)
         self.connect("expose_event", self.expose)
         self.connect("style-set", self.change_style)
         self.set_size_request(20, -1)
@@ -480,15 +480,15 @@ class DayButton(gtk.DrawingArea):
         self.sensitive = case
         self.queue_draw()
 
-    def __on_hover__(self, widget, event, switch):
+    def on_hover(self, widget, event, switch):
         self.hover = switch
         self.queue_draw()
 
-    def __on_press__(self, widget, event):
+    def on_press(self, widget, event):
         self.pressed = True
         self.queue_draw()
 
-    def __keyboard_clicked_sender__(self, widget, event):
+    def keyboard_clicked_sender(self, widget, event):
         if event.keyval in (gtk.keysyms.Return, gtk.keysyms.space):
             if self.sensitive:
                 self.emit("clicked")
@@ -497,7 +497,7 @@ class DayButton(gtk.DrawingArea):
             return True
         return False
 
-    def __clicked_sender__(self, widget, event):
+    def clicked_sender(self, widget, event):
         if event.y > self.header_size:
             if self.sensitive:
                 self.emit("clicked")

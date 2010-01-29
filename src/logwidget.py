@@ -291,7 +291,7 @@ class DetailedView(gtk.DrawingArea):
         gdk.MOTION_NOTIFY
     )
     _connections = {
-        "expose-event":"__expose__",
+        "expose-event":"_expose",
         "button_press_event": "button_press_handler",
         "button_release_event": "button_release_handler",
         "motion_notify_event": "motion_notify_handler",
@@ -501,7 +501,7 @@ class DetailedView(gtk.DrawingArea):
             return True
         return False
 
-    def __expose__(self, widget, event):
+    def _expose(self, widget, event):
         """
         The main expose method that calls all the child functions and methods
         """
