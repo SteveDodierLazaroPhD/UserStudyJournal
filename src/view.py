@@ -29,7 +29,12 @@ from config import settings
 
 
 class ActivityView(gtk.VBox):
-
+    __gsignals__ = {
+        # Sent when date is updated. Sends a start time in seconds, end time in seconds
+        # and a bool that si true if we are in single day view
+        "date-updated" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,
+                          (gobject.TYPE_INT, gobject.TYPE_INT, gobject.TYPE_BOOLEAN)),
+        }
     def __init__(self, cal):
 
         gtk.VBox.__init__(self)
@@ -141,6 +146,10 @@ class ActivityView(gtk.VBox):
         self.set_views()
         widget = self.daysbox.get_children()[self.dayrange -1]
         self.daybox.set_day(widget.day_start, widget.day_end)
+        if self.notebook.get_current_page() == 1:
+            val = True
+        else: val = False
+        self.emit("date-updated", start, end, val)
 
     def _set_today_timestamp(self, dayinfocus=None):
         """
@@ -162,6 +171,7 @@ class ActivityView(gtk.VBox):
         self.jump(offset)
         self.notebook.set_current_page(0)
         self.cal.histogram.set_single_day(False)
+        self.emit("date-updated", self.start, self.end, False)
 
     def _zoom_in_day(self, widget):
         i = self.dayrange - 1

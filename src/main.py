@@ -114,6 +114,18 @@ class Portal(gtk.Window):
         self.connect("configure-event", self._on_size_changed)
         self.connect("key-press-event", self._global_keypress_handler)
         self.cal.histogram.connect("column_clicked", self.handle_fwd_sensitivity)
+        self.activityview.connect("date-updated", self._title_handler)
+        start = datetime.date.fromtimestamp(self.activityview.start).strftime("%A ")
+        self.set_title(start + _("to") + _(" Today"))
+
+    def _title_handler(self, widget, starti, endi, singleday):
+        if singleday:
+            end = datetime.date.fromtimestamp(endi-8399).strftime("%d %B ")
+            self.set_title(end)
+        else:
+            start = datetime.date.fromtimestamp(starti).strftime("%d %B ")
+            end = datetime.date.fromtimestamp(endi).strftime(" %d %B")
+            self.set_title(start + _("to") + end)
 
     def _on_window_state_changed (self, win, event):
         # When maximized we configure the view so that the left/right buttons

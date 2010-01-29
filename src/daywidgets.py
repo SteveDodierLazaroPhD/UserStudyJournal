@@ -79,7 +79,7 @@ class SingleDayWidget(gtk.VBox):
         elif time.time() - 86400 < self.day_end and time.time() - 86400> self.day_start:
             self.week_day_string = _("Yesterday")
         else:
-                self.week_day_string = date.fromtimestamp(self.day_start).strftime("%A")
+            self.week_day_string = date.fromtimestamp(self.day_start).strftime("%A")
         self.emit("style-set", None)
 
     def set_day(self, start, end):
