@@ -554,8 +554,7 @@ class DetailedView(gtk.DrawingArea):
             y += self.yincrement
             i += 1
         self._last_window_width = event.area.width
-        if y > event.area.height:
-            self.set_size_request(event.area.width, y + self._spacing)
+        self.set_size_request(event.area.width, y + self._spacing)
         return True
 
     def set_datastore(self, datastore, draw = True):

@@ -119,13 +119,24 @@ class Portal(gtk.Window):
         self.set_title(start + _("to") + _(" Today") + " - Activity Journal")
 
     def _title_handler(self, widget, starti, endi, singleday):
+        endday = datetime.date.fromtimestamp(endi)
+        startday = datetime.date.fromtimestamp(starti)
+        if endday.day == datetime.date.today().day:
+            end = _("Today")
+            start = startday.strftime("%A")
+        elif endday.day == datetime.date.today().day-1:
+            end = _("Yesterday")
+            start = startday.strftime("%A")
+        elif endday.day + 6 > datetime.date.today().day:
+            end = endday.strftime("%A")
+            start = startday.strftime("%A")
+        else:
+            start = startday.strftime("%d %B")
+            end = endday.strftime("%d %B")
         if singleday:
-            end = datetime.date.fromtimestamp(endi-8399).strftime("%d %B")
             self.set_title(end + " - Activity Journal")
         else:
-            start = datetime.date.fromtimestamp(starti).strftime("%d %B ")
-            end = datetime.date.fromtimestamp(endi).strftime(" %d %B")
-            self.set_title(start + _("to") + end + " - Activity Journal")
+            self.set_title(start + " " + _("to") + " " + end + " - Activity Journal")
 
     def _on_window_state_changed (self, win, event):
         # When maximized we configure the view so that the left/right buttons
