@@ -33,10 +33,10 @@ import calendar
 import gettext
 import gobject
 import gtk
-from gtk import gdk
 from math import pi as PI
 import pango
 
+gdk = gtk.gdk
 
 def check_for_new_month(date):
     if datetime.date.fromtimestamp(date).day == 1:
@@ -172,8 +172,6 @@ class CairoHistogram(gtk.DrawingArea):
         pal = get_gtk_rgba(self.style, "bg", 3, 1.2)
         self.column_color_alternative = (pal[2], pal[1], pal[0], 1)
         self.column_color_selected_alternative = get_gtk_rgba(self.style, "bg", 3, 0.6)
-        fg = self.style.fg[gtk.STATE_NORMAL]
-        bg = self.style.bg[gtk.STATE_NORMAL]
         self.stroke_color = get_gtk_rgba(self.style, "text", 4)
         self.shadow_color = get_gtk_rgba(self.style, "text", 4)
         self.font_size = self.style.font_desc.get_size()/1024
@@ -290,9 +288,9 @@ class CairoHistogram(gtk.DrawingArea):
             self._today_width,
             widget.bottom_padding - 2)
         state = gtk.STATE_PRELIGHT
-        shadow = gtk.SHADOW_IN
+        shadow = gtk.SHADOW_OUT
         widget.style.paint_box(
-            widget.window, state, gtk.SHADOW_OUT, event.area, widget, "button", *self._today_area)
+            widget.window, state, shadow, event.area, widget, "button", *self._today_area)
         widget.window.draw_layout(
             widget.gc, int(event.area.x + event.area.width - w -5),
             int(event.area.height - widget.bottom_padding/2 - h/2), layout)
@@ -307,8 +305,6 @@ class CairoHistogram(gtk.DrawingArea):
         - selected: a list of the selected columns
         """
         x = self.start_x_padding
-        y = event.area.height
-
         months_positions = []
         i = 0
         for date, nitems in self._datastore:
