@@ -34,7 +34,7 @@ gdk = gtk.gdk
 TIMES = ("4:00", "8:00", "12:00", "16:00",
          "20:00", "22:00",)
 
-tangocolors = (
+TANGOCOLORS = (
     (252/255.0, 234/255.0,  79/255.0),#0
     (237/255.0, 212/255.0,   0/255.0),
     (196/255.0, 160/255.0,   0/255.0),
@@ -68,7 +68,7 @@ tangocolors = (
     ( 46/255.0,  52/255.0,  54/255.0),
     )
 
-FILETYPES ={
+FILETYPES = {
     Interpretation.VIDEO.uri : 0,
     Interpretation.MUSIC.uri : 3,
     Interpretation.DOCUMENT.uri : 12,
@@ -77,7 +77,7 @@ FILETYPES ={
     Interpretation.UNKNOWN.uri : 21,
     }
 
-FILETYPESNAMES ={
+FILETYPESNAMES = {
     Interpretation.VIDEO.uri : "Video",
     Interpretation.MUSIC.uri : "Music",
     Interpretation.DOCUMENT.uri : "Document",
@@ -104,10 +104,12 @@ def make_area_from_event(x, max_width, timestamp, duration):
     return [x, int(width)]
 
 def get_file_color(ftype, fmime):
+    """Uses hashing to choose a shade from a hue in the color tuple above
+    """
     if ftype in FILETYPES.keys():
         i = FILETYPES[ftype]
         l = int(math.fabs(hash(fmime))) % 3
-        return tangocolors[min(i+l, len(tangocolors)-1)]
+        return TANGOCOLORS[min(i+l, len(TANGOCOLORS)-1)]
     return (136/255.0, 138/255.0, 133/255.0)
 
 def get_gtk_rgba(style, palette, i, shade = 1, alpha = 1):
