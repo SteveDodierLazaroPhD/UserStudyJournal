@@ -99,16 +99,9 @@ class SingleDayWidget(gtk.VBox):
             self.daylabel = DayLabel(self.week_day_string, self.date_string+", "+ self.year_string)
         self.daylabel.set_size_request(100, 60)
         self.daylabel.connect("button-press-event", self.click)
-        evbox = gtk.EventBox()
-        evbox.add(self.daylabel)
-        self.pack_start(evbox, False, False)
+        self.pack_start(self.daylabel, False, False)
         get_dayevents(start*1000, end*1000, self.view.set_datastore)
         self.show_all()
-
-        #self.connect("motion-notify-event", lambda x, y: evbox.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2)))
-        #self.connect("leave-notify-event", lambda x, y: evbox.window.set_cursor(None))
-        if evbox.window:
-            evbox.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2))
 
     def click(self, widget, event):
         if event.button == 1:
@@ -326,9 +319,12 @@ class CategoryBox(gtk.VBox):
 
 class DayLabel(gtk.DrawingArea):
 
-    __events__ = (gtk.gdk.KEY_PRESS_MASK | gtk.gdk.BUTTON_MOTION_MASK |
-                  gtk.gdk.POINTER_MOTION_HINT_MASK | gtk.gdk.BUTTON_RELEASE_MASK |
-                  gtk.gdk.BUTTON_PRESS_MASK)
+    _events = (
+        gtk.gdk.ENTER_NOTIFY_MASK | gtk.gdk.LEAVE_NOTIFY_MASK |
+        gtk.gdk.KEY_PRESS_MASK | gtk.gdk.BUTTON_MOTION_MASK |
+        gtk.gdk.POINTER_MOTION_HINT_MASK | gtk.gdk.BUTTON_RELEASE_MASK |
+        gtk.gdk.BUTTON_PRESS_MASK
+    )
 
     def __init__(self, day, date):
         if day == _("Today"):
@@ -338,8 +334,16 @@ class DayLabel(gtk.DrawingArea):
         super(DayLabel, self).__init__()
         self.date = date
         self.day = day
-        self.set_events(self.__events__)
+        self.set_events(self._events)
         self.connect("expose_event", self.expose)
+        self.connect("enter-notify-event", self._on_enter)
+        self.connect("leave-notify-event", self._on_leave)
+
+    def _on_enter(self, widget, event):
+        widget.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2))
+
+    def _on_leave(self, widget, event):
+        widget.window.set_cursor(None)
 
     def expose(self, widget, event):
         context = widget.window.cairo_create()
