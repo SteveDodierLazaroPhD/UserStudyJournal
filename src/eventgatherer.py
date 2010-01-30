@@ -36,6 +36,8 @@ event_templates = (
     Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri),
 )
 
+EVENTS = {}
+
 def get_dayevents(start, end, callback):
 
     def event_exists(uri):
@@ -52,12 +54,17 @@ def get_dayevents(start, end, callback):
             if not event.subjects[0].uri in results:
                 results[uri] = []
             results[uri].append([event, 120000])
-        callback(list(sorted(results.itervalues(), key=lambda r: \
-            r[0][0].timestamp)))
+        events = list(sorted(results.itervalues(), key=lambda r: \
+            r[0][0].timestamp))
+        EVENTS[start+end] = events
+        callback(events)
     
-    CLIENT.find_events_for_templates(event_templates, handle_find_events,
-        [start, end], num_events=50000,
-        result_type=ResultType.LeastRecentEvents)
+    if not EVENTS.has_key(start+end):
+        CLIENT.find_events_for_templates(event_templates, handle_find_events,
+                                         [start, end], num_events=50000,
+                                         result_type=ResultType.LeastRecentEvents)
+    else:
+        callback(EVENTS[start+end]) 
 
 def datelist(n, callback):
     if n == -1:

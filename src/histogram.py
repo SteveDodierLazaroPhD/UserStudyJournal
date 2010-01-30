@@ -110,14 +110,17 @@ class CairoHistogram(gtk.DrawingArea):
     _highlighted = tuple()
     _last_location = -1
     _single_day_only = False
-    bg_color = (1, 1, 1, 1)
-    base_color = (1, 1, 1, 1)
-    column_color_normal =  (1, 1, 1, 1)
-    column_color_selected = (1, 1, 1, 1)
-    column_color_alternative = (1, 1, 1, 1)
-    font_color = (0, 0, 0, 0)
-    stroke_color = (1, 1, 1, 0)
-    shadow_color = (1, 1, 1, 0)
+    colors = {
+        "bg" : (1, 1, 1, 1),
+        "base" : (1, 1, 1, 1),
+        "column_normal" :  (1, 1, 1, 1),
+        "column_selected" : (1, 1, 1, 1),
+        "column_alternative" : (1, 1, 1, 1),
+        "column_selected_alternative" : (1, 1, 1, 1),
+        "font_color" : (0, 0, 0, 0),
+        "stroke" : (1, 1, 1, 0),
+        "shadow" : (1, 1, 1, 0),
+        }
 
     # Today button stuff
     _today_width = 0
@@ -165,15 +168,16 @@ class CairoHistogram(gtk.DrawingArea):
         """
         Sets the widgets style and coloring
         """
-        self.bg_color = get_gtk_rgba(self.style, "bg", 0)
-        self.base_color = get_gtk_rgba(self.style, "base", 0)
-        self.column_color_normal =  get_gtk_rgba(self.style, "text", 4, 1.17)
-        self.column_color_selected = get_gtk_rgba(self.style, "bg", 3)
+        self.colors = self.colors.copy()
+        self.colors["bg"] = get_gtk_rgba(self.style, "bg", 0)
+        self.colors["base"] = get_gtk_rgba(self.style, "base", 0)
+        self.colors["column_normal"] =  get_gtk_rgba(self.style, "text", 4, 1.17)
+        self.colors["column_selected"] = get_gtk_rgba(self.style, "bg", 3)
         pal = get_gtk_rgba(self.style, "bg", 3, 1.2)
-        self.column_color_alternative = (pal[2], pal[1], pal[0], 1)
-        self.column_color_selected_alternative = get_gtk_rgba(self.style, "bg", 3, 0.6)
-        self.stroke_color = get_gtk_rgba(self.style, "text", 4)
-        self.shadow_color = get_gtk_rgba(self.style, "text", 4)
+        self.colors["column_alternative"] = (pal[2], pal[1], pal[0], 1)
+        self.colors["column_selected_alternative"] = get_gtk_rgba(self.style, "bg", 3, 0.6)
+        self.colors["stroke"] = get_gtk_rgba(self.style, "text", 4)
+        self.colors["shadow"] = get_gtk_rgba(self.style, "text", 4)
         self.font_size = self.style.font_desc.get_size()/1024
         self.pangofont = pango.FontDescription(self.font_name + " %d" % self.font_size)
         self.pangofont.set_weight(pango.WEIGHT_BOLD)
@@ -254,12 +258,12 @@ class CairoHistogram(gtk.DrawingArea):
             self.pangofont.set_weight(pango.WEIGHT_BOLD)
         if not self.gc:
             self.gc = get_gc_from_colormap(widget, 0.6)
-        context.set_source_rgba(*self.base_color)
+        context.set_source_rgba(*self.colors["base"])
         context.set_operator(cairo.OPERATOR_SOURCE)
         context.paint()
         context.rectangle(event.area.x, event.area.y, event.area.width, event.area.height)
         context.clip()
-        context.set_source_rgba(*self.bg_color)
+        context.set_source_rgba(*self.colors["bg"])
         context.rectangle(event.area.x, event.area.height - self.bottom_padding, event.area.width, event.area.height)
         context.fill()
         self.draw_columns_from_datastore(context, event, self.get_selected())
@@ -311,15 +315,15 @@ class CairoHistogram(gtk.DrawingArea):
             if check_for_new_month(date):
                 months_positions += [(date, x)]
             if len(self._highlighted) > 0 and i >= self._highlighted[0] and i <= self._highlighted[-1] and i in self._highlighted:
-                color = self.column_color_selected_alternative if i in selected else self.column_color_alternative
+                color = self.colors["column_selected_alternative"] if i in selected else self.colors["column_alternative"]
             elif not selected:
-                color = self.column_color_normal
+                color = self.colors["column_normal"]
             elif self._single_day_only  and i != selected[-1]:
-                color = self.column_color_normal
+                color = self.colors["column_normal"]
             elif i >= selected[0] and i <= selected[-1] and i in selected:
-                color = self.column_color_selected
+                color = self.colors["column_selected"]
             else:
-                color = self.column_color_normal
+                color = self.colors["column_normal"]
             self.draw_column(context, x, event.area.height, nitems, color)
             x += self.xincrement
             i += 1
@@ -366,7 +370,7 @@ class CairoHistogram(gtk.DrawingArea):
         """
         Draws a line signifying the start of a month
         """
-        context.set_source_rgba(*self.stroke_color)
+        context.set_source_rgba(*self.colors["stroke"])
         context.set_line_width(self.stroke_width)
         context.move_to(x+self.stroke_offset, 0)
         context.line_to(x+self.stroke_offset, height - self.bottom_padding)
@@ -563,14 +567,15 @@ class JournalHistogram(CairoHistogram):
     min_column_height = 2
 
     def change_style(self, widget, *args, **kwargs):
-        self.bg_color = get_gtk_rgba(self.style, "bg", 0)
-        self.base_color = get_gtk_rgba(self.style, "base", 0)
-        self.column_color_normal =  get_gtk_rgba(self.style, "bg", 1)
-        self.column_color_selected = get_gtk_rgba(self.style, "bg", 3)
-        self.column_color_selected_alternative = get_gtk_rgba(self.style, "bg", 3, 0.7)
-        self.column_color_alternative = get_gtk_rgba(self.style, "text", 2)
-        self.stroke_color = get_gtk_rgba(self.style, "bg", 0)
-        self.shadow_color = get_gtk_rgba(self.style, "bg", 0, 0.98)
+        self.colors = self.colors.copy()
+        self.colors["bg"] = get_gtk_rgba(self.style, "bg", 0)
+        self.colors["color"] = get_gtk_rgba(self.style, "base", 0)
+        self.colors["column_normal"] =  get_gtk_rgba(self.style, "bg", 1)
+        self.colors["column_selected"] = get_gtk_rgba(self.style, "bg", 3)
+        self.colors["column_selected_alternative"] = get_gtk_rgba(self.style, "bg", 3, 0.7)
+        self.colors["column_alternative"] = get_gtk_rgba(self.style, "text", 2)
+        self.colors["stroke"] = get_gtk_rgba(self.style, "bg", 0)
+        self.colors["shadow"] = get_gtk_rgba(self.style, "bg", 0, 0.98)
         self.font_size = self.style.font_desc.get_size()/1024
         self.bottom_padding = self.font_size + 9 + widget.style.ythickness
         self.gc = self.style.text_gc[gtk.STATE_NORMAL]
