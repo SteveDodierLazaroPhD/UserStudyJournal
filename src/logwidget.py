@@ -428,7 +428,7 @@ class DetailedView(gtk.DrawingArea):
         """
         if widget._currently_active_obj:
             interpretation = widget._currently_active_obj.subjects[0].interpretation
-            if FILETYPESNAMES[interpretation] == "Video":
+            if interpretation == Interpretation.VIDEO.uri:
                 self.set_tooltip_window(VideoPreviewTooltip)
             else:
                 self.set_tooltip_window(StaticPreviewTooltip)
