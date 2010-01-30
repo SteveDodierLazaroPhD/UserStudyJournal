@@ -627,9 +627,14 @@ class EventGroup(gtk.VBox):
             self.show()
 
     def get_events(self, *discard):
+        
+        def __handle_find_events(ids):
+            CLIENT.get_events(ids, self.set_events)
+            
+        
         if self.event_templates and len(self.event_templates) > 0:
-            CLIENT.find_events_for_templates(self.event_templates,
-                self.set_events, self.event_timerange, num_events=50000,
+            CLIENT.find_event_ids_for_templates(self.event_templates,
+                __handle_find_events, self.event_timerange, num_events=50000,
                 result_type=ResultType.MostRecentSubjects)
         else:
             self.view.hide()
