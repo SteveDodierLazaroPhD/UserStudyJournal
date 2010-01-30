@@ -125,7 +125,6 @@ def get_gtk_rgba(style, palette, i, shade = 1, alpha = 1):
         red = f(color.red)
         green = f(color.green)
         blue = f(color.blue)
-
         return (min(red, 1), min(green, 1), min(blue, 1), alpha)
     raise TypeError("Not a valid gdk.Color")
 
@@ -318,7 +317,6 @@ class DetailedView(gtk.DrawingArea):
         "font" : (0, 0, 0, 0),
         "f" : "#b3b3b3"
         }
-    _last_window_width = 0
 
     # new stuff for clicking and tooltips
     _currently_active_obj = None
@@ -532,23 +530,22 @@ class DetailedView(gtk.DrawingArea):
     def expose(self, widget, event, context, layout):
         """The minor expose method that handles item drawing"""
         y = 2 * self._header_height
-        i = 0
         for rows in self.get_datastore():
             obj, duration = rows[0]
-            barsizes = []
-            for row in rows:
-                barsizes.append(make_area_from_event(0, event.area.width, row[0].timestamp, row[1]))
-            x = barsizes[0][0]
+            subject = obj.subjects[0]
+            bars = [make_area_from_event(0, event.area.width, row[0].timestamp, row[1])
+                        for row in rows]
             text = self.text_handler(obj)
-            color = get_file_color(obj.subjects[0].interpretation, obj.subjects[0].mimetype)
-            area = draw_event_widget(widget, self.gc, self.colors["bg"], color, text, x, y, event.area.width, self._row_height, barsizes)
+            color = get_file_color(subject.interpretation, subject.mimetype)
+            area = draw_event_widget(widget, self.gc, self.colors["bg"], color,
+                                     text, bars[0][0], y, event.area.width,
+                                     self._row_height, bars)
             if self._active_area == tuple(area):
-                widget.style.paint_focus(widget.window, gtk.STATE_ACTIVE, event.area, widget, None, *area)
+                widget.style.paint_focus(widget.window, gtk.STATE_ACTIVE,
+                                         event.area, widget, None, *area)
             self.register_area(obj, *area)
             y += self.yincrement
-            i += 1
-        self._last_window_width = event.area.width
-        self.set_size_request(event.area.width, y + self._spacing)
+        self.set_size_request(int(event.area.width), int(y + self._spacing))
         return True
 
     def set_datastore(self, datastore, draw = True):
@@ -601,5 +598,4 @@ class DetailedView(gtk.DrawingArea):
         self._row_height = max(th*1.3, DetailedView._row_height)
         self.yincrement = self._row_height + self._spacing
         self.gc = get_gc_from_colormap(widget.style, "text_gc", 0)
-        self._last_window_width = 0
         self.queue_draw()
