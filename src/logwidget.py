@@ -217,7 +217,7 @@ def paint_box(context, color, xpadding, ypadding, x, y, width,
         context.set_source_rgba(border_color)
         context.stroke()
 
-def draw_event_widget(widget, gc, basecolor, innercolor, text, x, y, maxwidth, maxheight, bars):
+def draw_event_widget_old(widget, gc, basecolor, innercolor, text, x, y, maxwidth, maxheight, bars):
     """
     Draws text with time signifiers
 
@@ -251,6 +251,41 @@ def draw_event_widget(widget, gc, basecolor, innercolor, text, x, y, maxwidth, m
         x = maxwidth - 10
         width +=10
     tw, th = draw_text(widget, gc, text, area[0], area[1]+2*bar_height, maxw = 200, xoffset=bar_height)
+    paint_box(context, basecolor, 0, 0, area[0], y, area[2], bar_height)
+    if bars[0][0] > maxwidth - 6:
+        bars[0][0] = maxwidth - 6; bars[0][1] = 6
+    for bar in bars:
+        paint_box(context, innercolor, 0, 0, bar[0], y, bar[1], bar_height)
+    return [int(a) for a in area]
+
+def draw_event_widget(widget, gc, basecolor, innercolor, text, x, y, maxwidth, maxheight, bars):
+    """
+    Draws text with time signifiers
+
+    Arguments:
+    - widget: a widget with a window to draw on
+    - gc: a text_gc from style
+    - basecolor: a rgba tuple for the backdrop bar
+    - innercolor: the bar color
+    - text: the text to draw
+    - x: The start x postion
+    - y: The start y position
+    - maxwidth: The boxes max width
+    - maxheight: The max height of the box
+    - bars: a list of bar tuples with (x, width) values to draw
+    """
+    layout = widget.create_pango_layout("")
+    layout.set_width(150*1024)
+    layout.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
+    context = widget.window.cairo_create()
+    bar_height = 3
+    layout.set_markup(text)
+    text_width, text_height  = layout.get_pixel_size()
+    width = (bars[-1][0] + bars[-1][1]) - bars[0][0]
+    if x + text_width > maxwidth:
+        area = (maxwidth - text_width, y, text_width, maxheight)
+    else: area = (x, y, max(text_width, width), maxheight)
+    tw, th = draw_text(widget, gc, text, area[0], area[1]+2*bar_height, maxw = 150, xoffset=bar_height)
     paint_box(context, basecolor, 0, 0, area[0], y, area[2], bar_height)
     if bars[0][0] > maxwidth - 6:
         bars[0][0] = maxwidth - 6; bars[0][1] = 6
