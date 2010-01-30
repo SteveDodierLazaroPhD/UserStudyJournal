@@ -107,7 +107,8 @@ class SingleDayWidget(gtk.VBox):
 
         #self.connect("motion-notify-event", lambda x, y: evbox.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2)))
         #self.connect("leave-notify-event", lambda x, y: evbox.window.set_cursor(None))
-        evbox.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2))
+        if evbox:
+            evbox.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2))
 
     def click(self, widget, event):
         if event.button == 1:
