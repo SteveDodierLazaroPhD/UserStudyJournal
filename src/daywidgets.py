@@ -107,7 +107,7 @@ class SingleDayWidget(gtk.VBox):
 
         #self.connect("motion-notify-event", lambda x, y: evbox.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2)))
         #self.connect("leave-notify-event", lambda x, y: evbox.window.set_cursor(None))
-        if evbox:
+        if evbox.window:
             evbox.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2))
 
     def click(self, widget, event):
@@ -418,18 +418,22 @@ class DayButton(gtk.DrawingArea):
     __gsignals__ = {
         "clicked":  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,()),
         }
+    _events = (
+        gtk.gdk.ENTER_NOTIFY_MASK | gtk.gdk.LEAVE_NOTIFY_MASK |
+        gtk.gdk.KEY_PRESS_MASK | gtk.gdk.BUTTON_RELEASE_MASK | gtk.gdk.BUTTON_PRESS_MASK |
+        gtk.gdk.MOTION_NOTIFY |   gtk.gdk.POINTER_MOTION_MASK
+    )
     def __init__(self, side = 0, leading = False):
         super(DayButton, self).__init__()
-        self.set_events(gtk.gdk.ENTER_NOTIFY_MASK | gtk.gdk.LEAVE_NOTIFY_MASK | gtk.gdk.KEY_PRESS_MASK | gtk.gdk.BUTTON_RELEASE_MASK |
-                        gtk.gdk.BUTTON_PRESS_MASK)
+        self.set_events(self._events)
         self.set_flags(gtk.CAN_FOCUS)
         self.leading = leading
         self.side = side
         self.connect("button_press_event", self.on_press)
         self.connect("button_release_event", self.clicked_sender)
         self.connect("key_press_event", self.keyboard_clicked_sender)
-        self.connect("enter_notify_event", self.on_hover, True)
-        self.connect("leave_notify_event", self.on_hover, False)
+        self.connect("motion_notify_event", self.on_hover)
+        self.connect("leave_notify_event", self._enter_leave_notify, False)
         self.connect("expose_event", self.expose)
         self.connect("style-set", self.change_style)
         self.set_size_request(20, -1)
@@ -438,13 +442,25 @@ class DayButton(gtk.DrawingArea):
         self.sensitive = case
         self.queue_draw()
 
-    def on_hover(self, widget, event, switch):
-        self.hover = switch
+    def _enter_leave_notify(self, widget, event, bol):
+        self.hover = bol
         self.queue_draw()
 
+    def on_hover(self, widget, event):
+        if event.y > self.header_size:
+            if not self.hover:
+                self.hover = True
+                self.queue_draw()
+        else:
+            if self.hover:
+                self.hover = False
+                self.queue_draw()
+        return False
+
     def on_press(self, widget, event):
-        self.pressed = True
-        self.queue_draw()
+        if event.y > self.header_size:
+            self.pressed = True
+            self.queue_draw()
 
     def keyboard_clicked_sender(self, widget, event):
         if event.keyval in (gtk.keysyms.Return, gtk.keysyms.space):
