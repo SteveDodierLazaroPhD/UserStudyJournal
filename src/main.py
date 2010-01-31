@@ -80,6 +80,8 @@ class Portal(gtk.Window):
                 self.fwdbtn.leading = False
             if ii < len(widget.get_datastore()) - 1:
                 self.fwdbtn.set_sensitive(True)
+            else:
+                self.fwdbtn.set_sensitive(False)
             return True
         self.cal.histogram.connect("selection-set", _c)
 
