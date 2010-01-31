@@ -165,9 +165,9 @@ class ActivityView(gtk.VBox):
 
     def _zoom_out_day(self, widget):
         offset = self._prezoom_position*86400
-        _t = (86400-(time.time() % 86400)) + time.time() + time.timezone
-        #while offset + self.end > _t:
-        #    offset -=86400
+        _t = (86400 - (time.time() % 86400)) + time.time() + time.timezone
+        while offset + self.end > _t - 2:
+            offset -=86400
         self.jump(offset)
         self.notebook.set_current_page(0)
         self.cal.histogram.set_single_day(False)
