@@ -416,11 +416,11 @@ class VideoPreviewTooltip(PreviewTooltip):
 
 class Item(gtk.HBox):
 
-    def __init__(self, event):
+    def __init__(self, event, allow_pin = False):
 
         gtk.HBox.__init__(self)
         self.set_border_width(2)
-
+        self.allow_pin = allow_pin
         self.btn = gtk.Button()
         self.search_results = []
         self.in_search = False
@@ -442,9 +442,8 @@ class Item(gtk.HBox):
         self.__init_widget()
         self.show_all()
         self.markup = None
-        self.pin.connect("clicked", lambda x: self.set_bookmarked(False))
+        
         ITEMS.append(self)
-        self.pin.hide()
     
     def highlight(self):
         #print len(searchbox.results)
@@ -472,13 +471,15 @@ class Item(gtk.HBox):
         hbox.pack_start(img, False, False, 1)
         hbox.pack_start(self.label, True, True, 4)
         
-        img = gtk.image_new_from_file("data/icons/hicolor/24x24/status/pin.png") # todo: get the name "pin" from theme when icons are properly installed
-        self.pin = gtk.Button()
-        self.pin.add(img)
-        self.pin.set_tooltip_text(_("Remove Pin"))
-        self.pin.set_focus_on_click(False)
-        self.pin.set_relief(gtk.RELIEF_NONE)
-        self.pack_end(self.pin, False, False)
+        if self.allow_pin:
+            img = gtk.image_new_from_file("data/icons/hicolor/24x24/status/pin.png") # todo: get the name "pin" from theme when icons are properly installed
+            self.pin = gtk.Button()
+            self.pin.add(img)
+            self.pin.set_tooltip_text(_("Remove Pin"))
+            self.pin.set_focus_on_click(False)
+            self.pin.set_relief(gtk.RELIEF_NONE)
+            self.pack_end(self.pin, False, False)
+            self.pin.connect("clicked", lambda x: self.set_bookmarked(False))
         #hbox.pack_end(img, False, False)
         evbox = gtk.EventBox()
         self.btn.add(hbox)

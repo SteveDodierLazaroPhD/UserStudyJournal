@@ -149,9 +149,8 @@ class DayWidget(gtk.VBox):
         self._init_events()
 
     def refresh(self):
-        for w in self.view:
-            w.on_style_change(None, None)
-
+        pass
+    
     def _set_date_strings(self):
         self.date_string = date.fromtimestamp(self.day_start).strftime("%d %B")
         self.year_string = date.fromtimestamp(self.day_start).strftime("%Y")
@@ -265,12 +264,12 @@ class DayWidget(gtk.VBox):
 
 class CategoryBox(gtk.VBox):
 
-    def __init__(self, category, events):
+    def __init__(self, category, events, pinnable = False):
         super(CategoryBox, self).__init__()
 
         self.view = gtk.VBox(True)
         for event in events:
-            item = Item(event)
+            item = Item(event, pinnable)
             hbox = gtk.HBox ()
             label = gtk.Label("")
             hbox.pack_start(label, False, False, 7)
@@ -586,7 +585,7 @@ class EventGroup(gtk.VBox):
             self.view.remove(widget)
 
         if self == pinbox:
-            box = CategoryBox(None, events)
+            box = CategoryBox(None, events, True)
             self.view.pack_start(box)
         else:
             categories = {}
@@ -641,8 +640,6 @@ class EventGroup(gtk.VBox):
             CLIENT.find_event_ids_for_templates(self.event_templates,
                 __handle_find_events, self.event_timerange, num_events=50000,
                 result_type=ResultType.MostRecentSubjects)
-        else:
-            self.view.hide()
 
     def get_events(self, *discard):
         if self.event_templates and len(self.event_templates) > 0:

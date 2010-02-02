@@ -219,8 +219,7 @@ class ActivityView(gtk.VBox):
         elif diff > 0:
             for i in xrange(len(new_days)):
                 self.daysbox.pack_start(new_days[i], True, True, 3)
-
-            # SCROLL HERE to new_days[i]
+                new_days[i].refresh()
 
             for i in xrange(diff):
                 self.daysbox.remove(old_days[i])
@@ -232,6 +231,7 @@ class ActivityView(gtk.VBox):
             for i in xrange(len(new_days)):
                 self.daysbox.pack_start(new_days[i], True, True, 3)
                 self.daysbox.reorder_child(new_days[i], 0)
+                new_days[i].refresh()
 
             # SCROLL HERE to new_days[i]
 
