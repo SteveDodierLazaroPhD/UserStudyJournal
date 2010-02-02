@@ -27,7 +27,6 @@ from daywidgets import *
 from eventgatherer import datelist
 from config import settings
 
-
 class ActivityView(gtk.VBox):
     __gsignals__ = {
         # Sent when date is updated. Sends a start time in seconds, end time in seconds
