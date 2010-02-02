@@ -34,6 +34,8 @@ event_templates = (
     Event.new_for_values(interpretation=Interpretation.VISIT_EVENT.uri),
     Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri),
     Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri),
+    Event.new_for_values(interpretation=Interpretation.OPEN_EVENT.uri),
+    Event.new_for_values(interpretation=Interpretation.CLOSE_EVENT.uri),
 )
 
 EVENTS = {}
@@ -53,7 +55,11 @@ def get_dayevents(start, end, callback):
                 continue
             if not event.subjects[0].uri in results:
                 results[uri] = []
-            results[uri].append([event, 120000])
+            if not event.interpretation == Interpretation.CLOSE_EVENT.uri:
+                results[uri].append([event, 0])
+            else:
+                results[uri][len(results[uri])-1][1] = (int(event.timestamp)) -  int(results[uri][-1][0].timestamp)
+                        
         events = list(sorted(results.itervalues(), key=lambda r: \
             r[0][0].timestamp))
         EVENTS[start+end] = events

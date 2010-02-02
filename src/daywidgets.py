@@ -658,6 +658,7 @@ class DayPartWidget(EventGroup):
             Event.new_for_values(interpretation=Interpretation.VISIT_EVENT.uri),
             Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri),
             Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri),
+            Event.new_for_values(interpretation=Interpretation.OPEN_EVENT.uri),
         )
 
         # Initialize the widget
