@@ -2,15 +2,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GNOME Activity Journal\n"
 "Report-Msgid-Bugs-To: zeitgeist@lists.launchpad.net\n"
-"POT-Creation-Date: 2010-01-21 20:02+0100\n"
-"PO-Revision-Date: \n"
-"Last-Translator: Siegfried-Angel Gevatter Pujals <rainct@ubuntu.com>\n"
+"POT-Creation-Date: 2010-01-22 14:44+0100\n"
+"PO-Revision-Date: 2010-01-21 19:45+0000\n"
+"Last-Translator: Siegfried Gevatter <rainct@ubuntu.com>\n"
 "Language-Team: Siegfried Gevatter <siegfried@gevatter.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: Catalan\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Launchpad-Export-Date: 2010-02-13 05:04+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+"X-Poedit-Language: Catalan\n"
 
 #: ../gnome-activity-journal:76
 msgid "print additional debugging information"
@@ -24,39 +26,34 @@ msgstr "Error"
 msgid "Unable to connect to Zeitgeist:"
 msgstr "No s'ha pogut establir connexió amb el Zeitgeist:"
 
-#: ../src/main.py:45
-#: ../extra/gnome-activity-journal.desktop.in.h:1
+#: ../src/main.py:45 ../extra/gnome-activity-journal.desktop.in.h:1
 msgid "Activity Journal"
 msgstr "Diari d'activitats"
 
 #. TODO: Move this into Zeitgeist's library, implemented properly
 #: ../src/sources.py:40
-#, fuzzy
 msgid "Worked with a Video"
-msgstr "S'està obrint el dispositiu de vídeo %s amb el controlador %s"
+msgstr ""
 
 #: ../src/sources.py:40
 msgid "Worked with Videos"
 msgstr "Vídeos amb que s'ha treballat"
 
 #: ../src/sources.py:41
-#, fuzzy
 msgid "Worked with Audio"
-msgstr "Reproductor de CD d'àudio %s"
+msgstr ""
 
 #: ../src/sources.py:42
-#, fuzzy
 msgid "Worked with an Image"
-msgstr "Obre la imatge amb"
+msgstr ""
 
 #: ../src/sources.py:42
 msgid "Worked with Images"
 msgstr "Imatges amb que s'ha treballat"
 
 #: ../src/sources.py:43
-#, fuzzy
 msgid "Edited or Read Document"
-msgstr "El document és només de lectura."
+msgstr ""
 
 #: ../src/sources.py:43
 msgid "Edited or Read Documents"
@@ -67,9 +64,8 @@ msgid "Edited or Read Code"
 msgstr "Codi llegit o modificat"
 
 #: ../src/sources.py:45
-#, fuzzy
 msgid "Other Activity"
-msgstr "Indicador d'activitat"
+msgstr ""
 
 #: ../src/sources.py:45
 msgid "Other Activities"
@@ -87,9 +83,8 @@ msgstr "Tarda"
 msgid "Evening"
 msgstr "Vespre"
 
-#: ../src/daywidgets.py:72
-#: ../src/daywidgets.py:214
-#: ../src/histogramwidget/histogramview.py:199
+#: ../src/daywidgets.py:72 ../src/daywidgets.py:214
+#: ../src/histogramwidget/histogramview.py:233
 msgid "Today"
 msgstr "Avui"
 
@@ -99,24 +94,20 @@ msgstr "Ahir"
 
 #. Initialize the widget
 #: ../src/daywidgets.py:412
-#, fuzzy
 msgid "Pinned items"
-msgstr "Elements incompatibles"
+msgstr ""
 
 #: ../src/widgets.py:180
 msgid "Type here to search..."
 msgstr "Escriviu aquí per a cercar..."
 
-#: ../src/widgets.py:474
-#: ../src/widgets.py:546
-#, fuzzy
+#: ../src/widgets.py:474 ../src/widgets.py:546
 msgid "Remove Pin"
-msgstr "Interval de pin_g:"
+msgstr ""
 
 #: ../src/widgets.py:546
-#, fuzzy
 msgid "Pin to Today"
-msgstr "Vés a avui"
+msgstr ""
 
 #: ../src/widgets.py:550
 msgid "Delete item from Journal"
@@ -133,8 +124,12 @@ msgid "Click today to return to today"
 msgstr "Feu clic sobre «Avui» per a tornar a avui"
 
 #: ../extra/gnome-activity-journal.desktop.in.h:2
-msgid "Browse a chronological log of your activities and easily find files, contacts, etc."
-msgstr "Vegeu un registre cronològic de les vostres activitats i trobeu fàcilment fitxers, contactes, etc."
+msgid ""
+"Browse a chronological log of your activities and easily find files, "
+"contacts, etc."
+msgstr ""
+"Vegeu un registre cronològic de les vostres activitats i trobeu fàcilment "
+"fitxers, contactes, etc."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:1
 msgid "Accessibility"
@@ -149,24 +144,40 @@ msgid "Amount of visible days"
 msgstr "Nombre de dies visibles"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:4
-msgid "Customized height for the main window, in pixels (requires restart). Can't be bigger than the desktop's size."
-msgstr "Alçada de la finestra personalitzada, en píxels (necessita reiniciar). No pot ser superior a la mida de l'escriptori."
+msgid ""
+"Customized height for the main window, in pixels (requires restart). Can't "
+"be bigger than the desktop's size."
+msgstr ""
+"Alçada de la finestra personalitzada, en píxels (necessita reiniciar). No "
+"pot ser superior a la mida de l'escriptori."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:5
-msgid "Customized width for the main window, in pixels (requires restart). Can't be bigger than the desktop's size."
-msgstr "Amplada de la finestra personalitzada, en píxels (necessita reiniciar). No pot ser superior a la mida de l'escriptori."
+msgid ""
+"Customized width for the main window, in pixels (requires restart). Can't be "
+"bigger than the desktop's size."
+msgstr ""
+"Amplada de la finestra personalitzada, en píxels (necessita reiniciar). No "
+"pot ser superior a la mida de l'escriptori."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:6
 msgid "The amount of days to show at once."
 msgstr "El nombre de dies a mostrar alhora."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:7
-msgid "Whether special accessibility options should be enabled (requires restart)."
-msgstr "Si les opcions especials d'accessibilitat s'han d'habilitar (necessita reiniciar)."
+msgid ""
+"Whether special accessibility options should be enabled (requires restart)."
+msgstr ""
+"Si les opcions especials d'accessibilitat s'han d'habilitar (necessita "
+"reiniciar)."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:8
-msgid "Whether to allow showing little thumbnails next to each activity (requires restart). If False, only generic mime-type icons will be used."
-msgstr "Si és permès mostrar petites miniaturitzacions al costat de cada activitat (necessita reiniciar). Si és Fals, només s'utilitzaran icones genèriques segons el tipus MIME."
+msgid ""
+"Whether to allow showing little thumbnails next to each activity (requires "
+"restart). If False, only generic mime-type icons will be used."
+msgstr ""
+"Si és permès mostrar petites miniaturitzacions al costat de cada activitat "
+"(necessita reiniciar). Si és Fals, només s'utilitzaran icones genèriques "
+"segons el tipus MIME."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:9
 msgid "Window height"
@@ -176,36 +187,44 @@ msgstr "Alçada de la finestra"
 msgid "Window width"
 msgstr "Amplada de la finestra"
 
-#~ msgid "Go Back in Time"
-#~ msgstr "Torna endarrere en el temps"
-#~ msgid "Look into the Future"
-#~ msgstr "Mira al futur"
-#~ msgid "Jump to Today"
-#~ msgstr "Vés a avui"
-
-#, fuzzy
-#~ msgid "%s: %s"
-#~ msgstr "%s: %s"
-#~ msgid "Journal"
-#~ msgstr "Diari"
-#~ msgid "Search..."
-#~ msgstr "Cerca..."
 #~ msgid "Recent Events"
 #~ msgstr "Esdeveniments recents"
+
 #~ msgid "Show Options"
 #~ msgstr "Mostra les opcions"
+
 #~ msgid "Personal Timeline"
 #~ msgstr "Línia cronològica personal"
+
 #~ msgid "Related files..."
 #~ msgstr "Fitxers relacionats..."
+
 #~ msgid "Properties..."
 #~ msgstr "Propietats..."
+
+#~ msgid "Search..."
+#~ msgstr "Cerca..."
+
 #~ msgid "Days to display:"
 #~ msgstr "Dies a mostrar:"
+
 #~ msgid "3 days"
 #~ msgstr "3 dies"
+
 #~ msgid "1 week"
 #~ msgstr "1 setmana"
+
 #~ msgid "1 month"
 #~ msgstr "1 mes"
 
+#~ msgid "Go Back in Time"
+#~ msgstr "Torna endarrere en el temps"
+
+#~ msgid "Look into the Future"
+#~ msgstr "Mira al futur"
+
+#~ msgid "Jump to Today"
+#~ msgstr "Vés a avui"
+
+#~ msgid "Journal"
+#~ msgstr "Diari"

@@ -1,19 +1,23 @@
+# Romanian translation for gnome-activity-journal
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gnome-activity-journal package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: GNOME Activity Journal\n"
-"Report-Msgid-Bugs-To: zeitgeist@lists.launchpad.net\n"
+"Project-Id-Version: gnome-activity-journal\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-01-22 14:44+0100\n"
-"PO-Revision-Date: 2010-01-17 23:36+0000\n"
-"Last-Translator: hbons <Unknown>\n"
-"Language-Team: \n"
+"PO-Revision-Date: 2010-01-11 21:13+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Romanian <ro@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"Plural-Forms: nplurals=3; plural=(n == 1 ? 0: (((n % 100 > 19) || ((n % 100 "
+"== 0) && (n != 0))) ? 2: 1));\n"
 "X-Launchpad-Export-Date: 2010-02-13 05:04+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
-"X-Poedit-Country: NETHERLANDS\n"
-"X-Poedit-Language: Dutch\n"
 
 #: ../gnome-activity-journal:76
 msgid "print additional debugging information"
@@ -29,86 +33,86 @@ msgstr ""
 
 #: ../src/main.py:45 ../extra/gnome-activity-journal.desktop.in.h:1
 msgid "Activity Journal"
-msgstr "Activiteitendagboek"
+msgstr ""
 
 #. TODO: Move this into Zeitgeist's library, implemented properly
 #: ../src/sources.py:40
 msgid "Worked with a Video"
-msgstr "Met een video gewerkt"
+msgstr ""
 
 #: ../src/sources.py:40
 msgid "Worked with Videos"
-msgstr "Met video's gewerkt"
+msgstr ""
 
 #: ../src/sources.py:41
 msgid "Worked with Audio"
-msgstr "Met audio gewerkt"
+msgstr ""
 
 #: ../src/sources.py:42
 msgid "Worked with an Image"
-msgstr "Met afbeelding gewerkt"
+msgstr ""
 
 #: ../src/sources.py:42
 msgid "Worked with Images"
-msgstr "Met afbeeldingen gewerkt"
+msgstr ""
 
 #: ../src/sources.py:43
 msgid "Edited or Read Document"
-msgstr "Document gelezen of bewerkt"
+msgstr ""
 
 #: ../src/sources.py:43
 msgid "Edited or Read Documents"
-msgstr "Bewerkte of gelezen documenten"
+msgstr ""
 
 #: ../src/sources.py:44
 msgid "Edited or Read Code"
-msgstr "Code bewerkt of gelezen"
+msgstr ""
 
 #: ../src/sources.py:45
 msgid "Other Activity"
-msgstr "Andere activiteit"
+msgstr ""
 
 #: ../src/sources.py:45
 msgid "Other Activities"
-msgstr "Andere activiteiten"
+msgstr ""
 
 #: ../src/daywidgets.py:51
 msgid "Morning"
-msgstr "Ochtend"
+msgstr ""
 
 #: ../src/daywidgets.py:52
 msgid "Afternoon"
-msgstr "Middag"
+msgstr ""
 
 #: ../src/daywidgets.py:53
 msgid "Evening"
-msgstr "Avond"
+msgstr ""
 
 #: ../src/daywidgets.py:72 ../src/daywidgets.py:214
 #: ../src/histogramwidget/histogramview.py:233
 msgid "Today"
-msgstr "vandaag"
+msgstr ""
 
 #: ../src/daywidgets.py:74
 msgid "Yesterday"
-msgstr "gisteren"
+msgstr ""
 
 #. Initialize the widget
 #: ../src/daywidgets.py:412
 msgid "Pinned items"
-msgstr "Vastgepind"
+msgstr ""
 
 #: ../src/widgets.py:180
 msgid "Type here to search..."
-msgstr "Type hier om te zoeken..."
+msgstr ""
 
 #: ../src/widgets.py:474 ../src/widgets.py:546
 msgid "Remove Pin"
-msgstr "Verwijder punaise"
+msgstr ""
 
 #: ../src/widgets.py:546
 msgid "Pin to Today"
-msgstr "Pin vast aan vandaag"
+msgstr ""
 
 #: ../src/widgets.py:550
 msgid "Delete item from Journal"
@@ -129,8 +133,6 @@ msgid ""
 "Browse a chronological log of your activities and easily find files, "
 "contacts, etc."
 msgstr ""
-"Blader door een chronologisch dagboek van je activiteiten om gemakkelijk "
-"bestanden terug te vinden."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:1
 msgid "Accessibility"
@@ -178,15 +180,3 @@ msgstr ""
 #: ../extra/gnome-activity-journal.schemas.in.h:10
 msgid "Window width"
 msgstr ""
-
-#~ msgid "Go Back in Time"
-#~ msgstr "Ga terug in de tijd"
-
-#~ msgid "Look into the Future"
-#~ msgstr "Kijk in de toekomst"
-
-#~ msgid "Jump to Today"
-#~ msgstr "Spring naar vandaag"
-
-#~ msgid "Today "
-#~ msgstr "vandaag "

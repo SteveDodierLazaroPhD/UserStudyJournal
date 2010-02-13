@@ -1,197 +1,181 @@
-
-# Italian translation for gnome-activity-journal package
-# Copyright (C) 2010 the Free Software Foundation, Inc.
+# Italian translation for gnome-activity-journal
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
 # This file is distributed under the same license as the gnome-activity-journal package.
-# Daniele Napolitano <dnax88@gmail.com>, 2010.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: GNOME Activity Journal\n"
-"Report-Msgid-Bugs-To: zeitgeist@lists.launchpad.net\n"
-"POT-Creation-Date: 2010-01-19 20:57+0000\n"
-"PO-Revision-Date: 1010-01-20 18:38+0100\n"
-"Last-Translator: Daniele Napolitano <dnax88@gmail.com>\n"
-"Language-Team: Italian <tp@lists.linux.it>\n"
+"Project-Id-Version: gnome-activity-journal\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-01-22 14:44+0100\n"
+"PO-Revision-Date: 2010-01-08 01:52+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Italian <it@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Launchpad-Export-Date: 2010-02-13 05:04+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
 
-#: ../gnome-activity-journal:75
+#: ../gnome-activity-journal:76
 msgid "print additional debugging information"
-msgstr "stampa informazioni aggiuntive di debug"
+msgstr ""
 
-#: ../gnome-activity-journal:82
+#: ../gnome-activity-journal:83
 msgid "ERROR"
-msgstr "ERRORE"
+msgstr ""
 
-#: ../gnome-activity-journal:82
+#: ../gnome-activity-journal:83
 msgid "Unable to connect to Zeitgeist:"
-msgstr "Impossibile connettersi a Zeitgeist:"
+msgstr ""
+
+#: ../src/main.py:45 ../extra/gnome-activity-journal.desktop.in.h:1
+msgid "Activity Journal"
+msgstr ""
 
 #. TODO: Move this into Zeitgeist's library, implemented properly
 #: ../src/sources.py:40
 msgid "Worked with a Video"
-msgstr "Attività con un video"
+msgstr ""
 
 #: ../src/sources.py:40
 msgid "Worked with Videos"
-msgstr "Attività con video"
+msgstr ""
 
 #: ../src/sources.py:41
 msgid "Worked with Audio"
-msgstr "Attività con audio"
+msgstr ""
 
 #: ../src/sources.py:42
 msgid "Worked with an Image"
-msgstr "Attività con una immagine"
+msgstr ""
 
 #: ../src/sources.py:42
 msgid "Worked with Images"
-msgstr "Attività con immagini"
+msgstr ""
 
 #: ../src/sources.py:43
 msgid "Edited or Read Document"
-msgstr "Documento letto o modificato"
+msgstr ""
 
 #: ../src/sources.py:43
 msgid "Edited or Read Documents"
-msgstr "Documenti letti o modificati"
+msgstr ""
 
 #: ../src/sources.py:44
 msgid "Edited or Read Code"
-msgstr "Codice letto o modificato"
+msgstr ""
 
 #: ../src/sources.py:45
 msgid "Other Activity"
-msgstr "Altra attività"
+msgstr ""
 
 #: ../src/sources.py:45
 msgid "Other Activities"
-msgstr "Altre attività"
-
-#: ../src/main.py:43 ../extra/gnome-activity-journal.desktop.in.h:1
-msgid "Activity Journal"
-msgstr "Giornale attività"
-
-#: ../src/main.py:75
-msgid "Go Back in Time"
-msgstr "Vai indietro nel tempo"
-
-#: ../src/main.py:82
-msgid "Look into the Future"
-msgstr "Guarda nel futuro"
-
-#: ../src/main.py:89
-msgid "Jump to Today"
-msgstr "Salta a oggi"
-
-#: ../src/widgets.py:178
-msgid "Type here to search..."
-msgstr "Scrivi qui per cercare..."
-
-#: ../src/widgets.py:472 ../src/widgets.py:542
-msgid "Remove Pin"
-msgstr "Rimuovi appunto"
-
-#: ../src/widgets.py:544
-msgid "Pin to Today"
-msgstr "Appunta ad oggi"
+msgstr ""
 
 #: ../src/daywidgets.py:51
 msgid "Morning"
-msgstr "Mattino"
+msgstr ""
 
 #: ../src/daywidgets.py:52
 msgid "Afternoon"
-msgstr "Pomeriggio"
+msgstr ""
 
 #: ../src/daywidgets.py:53
 msgid "Evening"
-msgstr "Sera"
+msgstr ""
 
 #: ../src/daywidgets.py:72 ../src/daywidgets.py:214
-#: ../src/histogramwidget/histogramview.py:299
+#: ../src/histogramwidget/histogramview.py:233
 msgid "Today"
-msgstr "Oggi"
+msgstr ""
 
 #: ../src/daywidgets.py:74
 msgid "Yesterday"
-msgstr "Ieri"
+msgstr ""
 
 #. Initialize the widget
 #: ../src/daywidgets.py:412
 msgid "Pinned items"
-msgstr "Oggetti appuntati"
+msgstr ""
 
-#: ../src/histogramwidget/histogramview.py:82
+#: ../src/widgets.py:180
+msgid "Type here to search..."
+msgstr ""
+
+#: ../src/widgets.py:474 ../src/widgets.py:546
+msgid "Remove Pin"
+msgstr ""
+
+#: ../src/widgets.py:546
+msgid "Pin to Today"
+msgstr ""
+
+#: ../src/widgets.py:550
+msgid "Delete item from Journal"
+msgstr ""
+
+#: ../src/histogramwidget/histogramview.py:79
 msgid "item"
 msgid_plural "items"
-msgstr[0] "oggetto"
-msgstr[1] "oggetti"
+msgstr[0] ""
+msgstr[1] ""
 
-#: ../src/histogramwidget/histogramview.py:84
+#: ../src/histogramwidget/histogramview.py:81
 msgid "Click today to return to today"
-msgstr "Clicca oggi per tornare a oggi"
+msgstr ""
 
 #: ../extra/gnome-activity-journal.desktop.in.h:2
 msgid ""
 "Browse a chronological log of your activities and easily find files, "
 "contacts, etc."
 msgstr ""
-"Esplora un registro cronologico delle tua attività e trova facilmente "
-"file, contatti, ecc."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:1
 msgid "Accessibility"
-msgstr "Accessibilità"
+msgstr ""
 
 #: ../extra/gnome-activity-journal.schemas.in.h:2
 msgid "Allow thumbnails as icons"
-msgstr "Autorizza anteprime come icone"
+msgstr ""
 
 #: ../extra/gnome-activity-journal.schemas.in.h:3
 msgid "Amount of visible days"
-msgstr "Quantità di giorni visibili"
+msgstr ""
 
 #: ../extra/gnome-activity-journal.schemas.in.h:4
 msgid ""
 "Customized height for the main window, in pixels (requires restart). Can't "
 "be bigger than the desktop's size."
 msgstr ""
-"Altezza personalizzata della finestra principale, in pixel (richiede riavvio). "
-"Non può essere maggiore delle dimensioni della scrivania."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:5
 msgid ""
 "Customized width for the main window, in pixels (requires restart). Can't be "
 "bigger than the desktop's size."
 msgstr ""
-"Larghezza personalizzata della finestra principale, in pixel (richiede riavvio). "
-"Non può essere maggiore delle dimensioni della scrivania."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:6
 msgid "The amount of days to show at once."
-msgstr "La quantità di giorni da mostrare alla volta"
+msgstr ""
 
 #: ../extra/gnome-activity-journal.schemas.in.h:7
 msgid ""
 "Whether special accessibility options should be enabled (requires restart)."
 msgstr ""
-"Se vanno abilitate opzioni speciali per l'accessibilità (richiede riavvio)"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:8
 msgid ""
 "Whether to allow showing little thumbnails next to each activity (requires "
 "restart). If False, only generic mime-type icons will be used."
 msgstr ""
-"Se consentire la visualizzazione di piccola anteprima vicino ogni attività "
-"(richiede riavvio). Se falso, verranno usate solo le icone mime-type generiche."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:9
 msgid "Window height"
-msgstr "Altezza della finestra"
+msgstr ""
 
 #: ../extra/gnome-activity-journal.schemas.in.h:10
 msgid "Window width"
-msgstr "Larghezza della finestra"
+msgstr ""
