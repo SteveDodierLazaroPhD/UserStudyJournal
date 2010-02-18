@@ -146,12 +146,15 @@ class ActivityView(gtk.VBox):
     def set_dayrange(self, start, end):
         self.start = start
         self.end = end
+        notebook_page = self.notebook.get_current_page()
         self.dayrange = int(int((end - start)) / 86400) + 1
         self.set_views()
         widget = self.daysbox.get_children()[self.dayrange -1]
-        self.daybox.set_day(widget.day_start, widget.day_end)
-        self.thumbbox.set_day(widget.day_start, widget.day_end)
-        if self.notebook.get_current_page() in (1, 2):
+        if notebook_page == 1:
+            self.daybox.set_day(widget.day_start, widget.day_end)
+        elif notebook_page == 2:
+            self.thumbbox.set_day(widget.day_start, widget.day_end)
+        if notebook_page in (1, 2):
             val = True
         else: val = False
         self.emit("date-updated", start, end, val)
@@ -187,6 +190,11 @@ class ActivityView(gtk.VBox):
         self.notebook.set_current_page(page)
         self.jump(i*-86400)
         self.cal.histogram.set_single_day(True)
+        if page == 1:
+            self.daybox.set_day(widget.day_start, widget.day_end)
+        elif page == 2:
+            self.thumbbox.set_day(widget.day_start, widget.day_end)
+
 
     def set_views(self):
         if not self.daysbox:
