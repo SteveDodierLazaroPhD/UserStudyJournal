@@ -595,5 +595,8 @@ class Item(gtk.HBox):
             self.gio_file.launch()
 
 searchbox = SearchBox()
-VideoPreviewTooltip = VideoPreviewTooltip()
+if gst is not None:
+    VideoPreviewTooltip = VideoPreviewTooltip()
+else:
+    VideoPreviewTooltip = None
 StaticPreviewTooltip = StaticPreviewTooltip()
