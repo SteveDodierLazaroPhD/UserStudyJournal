@@ -350,7 +350,7 @@ class DetailedView(gtk.DrawingArea):
               interpretation in FILETYPESNAMES.keys() else "Unknown")
         t1 = "<b>" + t1 + "</b>"
         t2 = "<span color='%s'>%s</span> " % (self.colors["f"], text)
-        return str(t1) + "\n" + str(t2) + ""
+        return (str(t1) + "\n" + str(t2) + "").replace("&", "&amp;")
 
     def set_text_handler(self, fn):
         """

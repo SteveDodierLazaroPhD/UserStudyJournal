@@ -107,9 +107,13 @@ class ActivityView(gtk.VBox):
                 self.remove(w)
         self.daysbox = gtk.HBox(True)
         self.daybox = SingleDayWidget()
+        self.thumbbox = ThumbnailDayWidget()
         hbox  = gtk.HBox()
         hbox.pack_start(self.daybox, True, True, 3)
+        hbox2  = gtk.HBox()
+        hbox2.pack_start(self.thumbbox, True, True, 3)
         self.daybox.connect("unfocus-day", self._zoom_out_day)
+        self.thumbbox.connect("unfocus-day", self._zoom_out_day)
 
         self.notebook = gtk.Notebook()
         self.notebook.set_show_tabs(False)
@@ -117,6 +121,7 @@ class ActivityView(gtk.VBox):
 
         self.notebook.append_page(self.daysbox, gtk.Label("Group View"))
         self.notebook.append_page(hbox, gtk.Label("Day View"))
+        self.notebook.append_page(hbox2, gtk.Label("Thumbnail View"))
 
         self.pack_start(self.notebook, True, True, 0)
         if refresh:
@@ -145,7 +150,8 @@ class ActivityView(gtk.VBox):
         self.set_views()
         widget = self.daysbox.get_children()[self.dayrange -1]
         self.daybox.set_day(widget.day_start, widget.day_end)
-        if self.notebook.get_current_page() == 1:
+        self.thumbbox.set_day(widget.day_start, widget.day_end)
+        if self.notebook.get_current_page() in (1, 2):
             val = True
         else: val = False
         self.emit("date-updated", start, end, val)
@@ -172,13 +178,13 @@ class ActivityView(gtk.VBox):
         self.cal.histogram.set_single_day(False)
         self.emit("date-updated", self.start, self.end, False)
 
-    def _zoom_in_day(self, widget):
+    def _zoom_in_day(self, widget, page):
         i = self.dayrange - 1
         for w in self.daysbox:
             if w == widget: break
             i -= 1
         self._prezoom_position = i
-        self.notebook.set_current_page(1)
+        self.notebook.set_current_page(page)
         self.jump(i*-86400)
         self.cal.histogram.set_single_day(True)
 

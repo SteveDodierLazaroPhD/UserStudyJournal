@@ -35,10 +35,109 @@ from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
     ResultType, TimeRange
 
 from widgets import *
+from thumbview import ThumbBox
 import logwidget
 from eventgatherer import get_dayevents
 
 CLIENT = ZeitgeistClient()
+
+
+class ThumbnailDayWidget(gtk.VBox):
+
+    __gsignals__ = {
+        "unfocus-day" : (gobject.SIGNAL_RUN_FIRST,
+                    gobject.TYPE_NONE,
+                    ())
+        }
+
+    def __init__(self):
+        gtk.VBox.__init__(self)
+        self.daylabel = None
+        self.scrolledwindow = gtk.ScrolledWindow()
+        self.scrolledwindow.set_shadow_type(gtk.SHADOW_NONE)
+        self.scrolledwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
+        self.view = ThumbBox()
+        self.scrolledwindow.add_with_viewport(self.view)
+        self.scrolledwindow.get_children()[0].set_shadow_type(gtk.SHADOW_NONE)
+        self.pack_end(self.scrolledwindow)
+
+        def change_style(widget, style):
+            rc_style = self.style
+            color = rc_style.bg[gtk.STATE_NORMAL]
+            color.red = min(color.red * 102/100, 65535.0)
+            color.green = min(color.green * 102/100, 65535.0)
+            color.blue = min(color.blue * 102/100, 65535.0)
+            self.view.modify_bg(gtk.STATE_NORMAL, color)
+
+        self.connect("style-set", change_style)
+
+    def _set_date_strings(self):
+        self.date_string = date.fromtimestamp(self.day_start).strftime("%d %B")
+        self.year_string = date.fromtimestamp(self.day_start).strftime("%Y")
+        if time.time() < self.day_end and time.time() > self.day_start:
+            self.week_day_string = _("Today")
+        elif time.time() - 86400 < self.day_end and time.time() - 86400> self.day_start:
+            self.week_day_string = _("Yesterday")
+        else:
+            self.week_day_string = date.fromtimestamp(self.day_start).strftime("%A")
+        self.emit("style-set", None)
+
+    def set_day(self, start, end):
+        self.day_start = start
+        self.day_end = end
+        for widget in self:
+            if self.scrolledwindow != widget:
+                self.remove(widget)
+        self._set_date_strings()
+        today = int(time.time() ) - 7*86400
+        if self.daylabel:
+            #Disconnect here
+            pass
+        if self.day_start < today:
+            self.daylabel = DayLabel(self.date_string, self.week_day_string+", "+ self.year_string)
+        else:
+            self.daylabel = DayLabel(self.week_day_string, self.date_string+", "+ self.year_string)
+        self.daylabel.set_size_request(100, 60)
+        self.daylabel.connect("button-press-event", self.click)
+        self.pack_start(self.daylabel, False, False)
+        get_dayevents(start*1000, end*1000, self.set_events)
+        self.show_all()
+
+    def set_events(self, massevents):
+        """
+        Sets three ImageViews events based on times of day
+
+        Arguments:
+        -- events: a list of zeitgeist events
+        """
+        events = []
+        for event in massevents:
+            events.append(event[0][0])
+        if len(events) < 10:
+            self.view.set_morning_events(events)
+            self.view.set_afternoon_events(None)
+            self.view.set_evening_events(None)
+            self.view.labels[0].hide()
+            return True
+        morning = []
+        afternoon = []
+        evening = []
+        for event in events:
+            timeremaining = (int(event.timestamp)/1000 - time.timezone) % 86400
+            if timeremaining < 86400/2:
+                morning.append(event)
+            elif timeremaining > 3*86400/4:
+                evening.append(event)
+            else:
+                afternoon.append(event)
+        self.view.set_morning_events(morning)
+        self.view.set_afternoon_events(afternoon)
+        self.view.set_evening_events(evening)
+
+    def click(self, widget, event):
+        if event.button == 1:
+            self.emit("unfocus-day")
+
 
 class SingleDayWidget(gtk.VBox):
 
@@ -123,7 +222,7 @@ class DayWidget(gtk.VBox):
     __gsignals__ = {
         "focus-day" : (gobject.SIGNAL_RUN_FIRST,
                     gobject.TYPE_NONE,
-                    ())
+                    (gobject.TYPE_INT,))
         }
 
     def __init__(self, start, end):
@@ -150,7 +249,7 @@ class DayWidget(gtk.VBox):
 
     def refresh(self):
         pass
-    
+
     def _set_date_strings(self):
         self.date_string = date.fromtimestamp(self.day_start).strftime("%d %B")
         self.year_string = date.fromtimestamp(self.day_start).strftime("%Y")
@@ -252,7 +351,9 @@ class DayWidget(gtk.VBox):
 
     def click(self, widget, event):
         if event.button == 1:
-            self.emit("focus-day")
+            self.emit("focus-day", 1)
+        elif event.button == 2:
+            self.emit("focus-day", 2)
 
     def _init_events(self):
         for w in self.view:
