@@ -44,6 +44,8 @@ def get_dayevents(start, end, callback):
 
     def event_exists(uri):
         # TODO: Move this into Zeitgeist's datamodel.py
+        if uri.startswith("trash://"):
+            return False
         return not uri.startswith("file://") or os.path.exists(
             urllib.unquote(str(uri[7:])))
 
@@ -58,7 +60,7 @@ def get_dayevents(start, end, callback):
                     results[uri].append([event, 0])
                 else:
                     if not len(results[uri]) == 0:
-                        print "***", results[uri]
+                        #print "***", results[uri]
                         results[uri][len(results[uri])-1][1] = (int(event.timestamp)) -  int(results[uri][-1][0].timestamp)
                     else:
                         tend = int(event.timestamp)
