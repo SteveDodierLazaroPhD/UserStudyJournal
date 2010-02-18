@@ -51,15 +51,19 @@ def get_dayevents(start, end, callback):
         results = {}
         for event in events:
             uri = event.subjects[0].uri
-            if not event_exists(uri):
-                continue
-            if not event.subjects[0].uri in results:
-                results[uri] = []
-            if not event.interpretation == Interpretation.CLOSE_EVENT.uri:
-                results[uri].append([event, 0])
-            else:
-                results[uri][len(results[uri])-1][1] = (int(event.timestamp)) -  int(results[uri][-1][0].timestamp)
-                        
+            if event_exists(uri):
+                if not event.subjects[0].uri in results:
+                    results[uri] = []
+                if not event.interpretation == Interpretation.CLOSE_EVENT.uri:
+                    results[uri].append([event, 0])
+                else:
+                    if not len(results[uri]) == 0:
+                        print "***", results[uri]
+                        results[uri][len(results[uri])-1][1] = (int(event.timestamp)) -  int(results[uri][-1][0].timestamp)
+                    else:
+                        tend = int(event.timestamp)
+                        event.timestamp = str(start)
+                        results[uri].append([event, tend - start])
         events = list(sorted(results.itervalues(), key=lambda r: \
             r[0][0].timestamp))
         EVENTS[start+end] = events
