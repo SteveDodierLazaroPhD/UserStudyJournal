@@ -113,12 +113,6 @@ class ThumbnailDayWidget(gtk.VBox):
         events = []
         for event in massevents:
             events.append(event[0][0])
-        if len(events) < 10:
-            self.view.set_morning_events(events)
-            self.view.set_afternoon_events(None)
-            self.view.set_evening_events(None)
-            self.view.labels[0].hide()
-            return True
         morning = []
         afternoon = []
         evening = []
