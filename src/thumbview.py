@@ -42,7 +42,6 @@ class ImageView(gtk.IconView):
     last_active = -1
     child_width = PreviewRenderer.width
     child_height = PreviewRenderer.height
-
     def __init__(self):
         super(ImageView, self).__init__()
         self.add_events(gtk.gdk.LEAVE_NOTIFY_MASK)
@@ -65,6 +64,20 @@ class ImageView(gtk.IconView):
         self.add_attribute(render, "isthumb", 4)
         self.set_margin(10)
 
+    def _set_model_in_thread(self, events):
+        liststore = gtk.ListStore(gtk.gdk.Pixbuf, gobject.TYPE_PYOBJECT, gobject.TYPE_BOOLEAN, gobject.TYPE_PYOBJECT, gobject.TYPE_BOOLEAN)
+        for event in events:
+            pb, isthumb = common.get_pixbuf(event, self.child_width, self.child_height)
+            emblems = tuple()
+            if isthumb and common.get_interpretation(event) != common.Interpretation.IMAGE.uri:
+                emblem = common.get_event_icon(event, 16)
+                if emblem:
+                    emblems = (emblem,)
+            liststore.append((pb, emblems, False, event, isthumb))
+        gtk.gdk.threads_enter()
+        self.set_model(liststore)
+        gtk.gdk.threads_leave()
+
     def set_model_from_list(self, events):
         """
         Sets creates/sets a model from a list of zeitgeist events
@@ -75,21 +88,8 @@ class ImageView(gtk.IconView):
         if not events:
             self.set_model(None)
             return
-        def _thread(self, events):
-            liststore = gtk.ListStore(gtk.gdk.Pixbuf, gobject.TYPE_PYOBJECT, gobject.TYPE_BOOLEAN, gobject.TYPE_PYOBJECT, gobject.TYPE_BOOLEAN)
-            for event in events:
-                pb, isthumb = common.get_pixbuf(event, self.child_width, self.child_height)
-                emblems = tuple()
-                if isthumb:
-                    emblem = common.get_event_icon(event, 16)
-                    if emblem:
-                        emblems = (emblem,)
-                liststore.append((pb, emblems, False, event, isthumb))
-            gtk.gdk.threads_enter()
-            self.set_model(liststore)
-            gtk.gdk.threads_leave()
-        t = threading.Thread(target=_thread, args=(self, events))
-        t.start()
+        thread = threading.Thread(target=self._set_model_in_thread, args=(events,))
+        thread.start()
 
     def on_button_press(self, widget, event):
         return False
