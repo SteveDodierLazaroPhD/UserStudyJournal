@@ -251,10 +251,14 @@ class CategoryButton(gtk.HBox):
 
         self.btn.set_focus_on_click(False)
         self.btn.add(hbox)
-        self.img = gtk.Image()
-        self.img.set_from_stock("gtk-add", gtk.ICON_SIZE_SMALL_TOOLBAR)
+        self.img = gtk.Label()
+        self.img.set_markup("<span><b>+</b></span>")
+        self.img.set_size_request(8, 8)
+        btn = gtk.Button()
+        #btn.set_sensitive(False)
+        btn.add(self.img)
         hbox.pack_start(gtk.Label(""), False, False, 1)
-        hbox.pack_start(self.img, False, False, 0)
+        hbox.pack_start(btn, False, False, 0)
         hbox.pack_start(gtk.Label(""), False, False, 3)
         self.active = False
 
@@ -294,9 +298,9 @@ class CategoryButton(gtk.HBox):
     def toggle(self, widget):
         self.active = not self.active
         if self.active:
-            self.img.set_from_stock("gtk-remove", gtk.ICON_SIZE_SMALL_TOOLBAR)
+            self.img.set_markup("<span><b>-</b></span>")
         else:
-            self.img.set_from_stock("gtk-add", gtk.ICON_SIZE_SMALL_TOOLBAR)
+            self.img.set_markup("<span><b>+</b></span>")
         self.emit("toggle", self.active)
         
 
