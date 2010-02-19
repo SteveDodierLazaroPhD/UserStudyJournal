@@ -100,7 +100,7 @@ class ThumbnailDayWidget(gtk.VBox):
         self.daylabel.set_size_request(100, 60)
         self.daylabel.connect("button-press-event", self.click)
         self.pack_start(self.daylabel, False, False)
-        get_dayevents(start*1000, end*1000, self.set_events)
+        get_dayevents(start*1000, end*1000, 2, self.set_events)
         self.show_all()
 
     def set_events(self, massevents):
@@ -199,7 +199,7 @@ class SingleDayWidget(gtk.VBox):
         self.daylabel.set_size_request(100, 60)
         self.daylabel.connect("button-press-event", self.click)
         self.pack_start(self.daylabel, False, False)
-        get_dayevents(start*1000, end*1000, self.view.set_datastore)
+        get_dayevents(start*1000, end*1000, 1, self.view.set_datastore)
         self.show_all()
 
     def click(self, widget, event):

@@ -40,7 +40,7 @@ event_templates = (
 
 EVENTS = {}
 
-def get_dayevents(start, end, callback):
+def get_dayevents(start, end, result_type, callback):
 
     def event_exists(uri):
         # TODO: Move this into Zeitgeist's datamodel.py
@@ -74,7 +74,7 @@ def get_dayevents(start, end, callback):
     if not EVENTS.has_key(start+end):
         CLIENT.find_events_for_templates(event_templates, handle_find_events,
                                          [start, end], num_events=50000,
-                                         result_type=ResultType.LeastRecentEvents)
+                                         result_type=result_type)
     else:
         callback(EVENTS[start+end]) 
 
