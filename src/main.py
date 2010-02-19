@@ -100,18 +100,18 @@ class Portal(gtk.Window):
 
         self.vbox.pack_start(hbox, True, True, 6)
 
-        zimage = AnimatedImage("data/zlogo/zg%d.png", 300)
-        zimage.set_tooltip_text("Powered by zeitgeist")
-        zimage.set_has_tooltip(True)
-        zimage.start()
+        #zimage = AnimatedImage("data/zlogo/zg%d.png", 200)
+        #zimage.set_tooltip_text("Powered by zeitgeist")
+        #zimage.set_has_tooltip(True)
+        #zimage.start()
 
         align = gtk.Alignment()
         align.add(self.cal)
         align.set(0, 0, 1, 1)
-        align.set_padding(0, 0, 28, 0)
+        align.set_padding(0, 0, 28, 28)
         calhbox = gtk.HBox()
         calhbox.pack_start(align, True, True, 0)
-        calhbox.pack_start(zimage, False, False, 4)
+        #calhbox.pack_start(zimage, False, False, 4)
         self.vbox.pack_end(calhbox, False, False)
 
         self._request_size()

@@ -175,7 +175,7 @@ class PreviewRenderer(gtk.GenericCellRenderer):
         nw = w + 26
         x = x - (nw - w)/2
         width, height = window.get_geometry()[2:4]
-        popupy = min(y+h+10, height-popuph-5) - 5
+        popupy = min(y+h+10, height-popuph-6) - 5
         drawing.draw_speech_bubble(context, layout, x, popupy, nw, popuph)
         context.fill()
         return False
