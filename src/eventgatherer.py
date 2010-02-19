@@ -40,7 +40,7 @@ event_templates = (
 
 EVENTS = {}
 
-def get_dayevents(start, end, result_type, callback):
+def get_dayevents(start, end, result_type, callback, force = False):
 
     def event_exists(uri):
         # TODO: Move this into Zeitgeist's datamodel.py
@@ -71,7 +71,7 @@ def get_dayevents(start, end, result_type, callback):
         EVENTS[start+end] = events
         callback(events)
 
-    if not EVENTS.has_key(start+end):
+    if not EVENTS.has_key(start+end) or force:
         CLIENT.find_events_for_templates(event_templates, handle_find_events,
                                          [start, end], num_events=50000,
                                          result_type=result_type)
@@ -80,7 +80,7 @@ def get_dayevents(start, end, result_type, callback):
 
 
 
-def get_file_events(start, end, callback):
+def get_file_events(start, end, callback, force = False):
     def event_exists(uri):
         return not uri.startswith("file://") or os.path.exists(
             urllib.unquote(str(uri[7:])))
@@ -96,7 +96,7 @@ def get_file_events(start, end, callback):
         events = [result[0] for result in results.values()]
         EVENTS[start+end] = events
         callback(events)
-    if not EVENTS.has_key(start+end):
+    if not EVENTS.has_key(start+end) or force:
         CLIENT.find_events_for_templates(event_templates, handle_find_events,
                                          [start, end], num_events=50000,
                                          result_type=ResultType.LeastRecentEvents)

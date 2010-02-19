@@ -114,13 +114,13 @@ class ThumbnailDayWidget(gtk.VBox):
         )
         # FIXME: Move this into EventGroup
         def notify_insert_handler_morning(time_range, events):
-            get_file_events(start*1000, (start + 12*hour -1) * 1000, self.view.set_morning_events)
+            get_file_events(start*1000, (start + 12*hour -1) * 1000, self.view.set_morning_events, True)
             self.view.show_all()
         def notify_insert_handler_afternoon(time_range, events):
-            get_file_events((start + 12*hour)*1000, (start + 18*hour - 1)*1000, self.view.set_afternoon_events)
+            get_file_events((start + 12*hour)*1000, (start + 18*hour - 1)*1000, self.view.set_afternoon_events, True)
             self.view.show_all()
         def notify_insert_handler_evening(time_range, events):
-            get_file_events((start + 18*hour)*1000, end*1000, self.view.set_evening_events)
+            get_file_events((start + 18*hour)*1000, end*1000, self.view.set_evening_events, True)
             self.view.show_all()
 
         CLIENT.install_monitor([start*1000, (start + 12*hour -1) * 1000], event_templates,
