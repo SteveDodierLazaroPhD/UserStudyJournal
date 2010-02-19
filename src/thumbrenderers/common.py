@@ -21,6 +21,7 @@
 
 import gtk
 import time
+import threading
 
 from zeitgeist.datamodel import Event, Subject, Interpretation
 from gio_file import GioFile, SIZE_LARGE, SIZE_NORMAL

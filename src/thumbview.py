@@ -26,6 +26,7 @@ import pango
 import time
 import math
 import operator
+import threading
 
 from widgets import StaticPreviewTooltip, VideoPreviewTooltip
 from gio_file import GioFile
@@ -74,16 +75,21 @@ class ImageView(gtk.IconView):
         if not events:
             self.set_model(None)
             return
-        liststore = gtk.ListStore(gtk.gdk.Pixbuf, gobject.TYPE_PYOBJECT, gobject.TYPE_BOOLEAN, gobject.TYPE_PYOBJECT, gobject.TYPE_BOOLEAN)
-        for event in events:
-            pb, isthumb = common.get_pixbuf(event, self.child_width, self.child_height)
-            emblems = tuple()
-            if isthumb:
-                emblem = common.get_event_icon(event, 16)
-                if emblem:
-                    emblems = (emblem,)
-            liststore.append((pb, emblems, False, event, isthumb))
-        self.set_model(liststore)
+        def _thread(self, events):
+            liststore = gtk.ListStore(gtk.gdk.Pixbuf, gobject.TYPE_PYOBJECT, gobject.TYPE_BOOLEAN, gobject.TYPE_PYOBJECT, gobject.TYPE_BOOLEAN)
+            for event in events:
+                pb, isthumb = common.get_pixbuf(event, self.child_width, self.child_height)
+                emblems = tuple()
+                if isthumb:
+                    emblem = common.get_event_icon(event, 16)
+                    if emblem:
+                        emblems = (emblem,)
+                liststore.append((pb, emblems, False, event, isthumb))
+            gtk.gdk.threads_enter()
+            self.set_model(liststore)
+            gtk.gdk.threads_leave()
+        t = threading.Thread(target=_thread, args=(self, events))
+        t.start()
 
     def on_button_press(self, widget, event):
         return False
@@ -138,7 +144,7 @@ class ThumbBox(gtk.VBox):
             self.labels[i].set_justify(gtk.JUSTIFY_RIGHT)
             self.labels[i].set_alignment(0.05, 0)
             self.pack_start(self.labels[i], False, False)
-            self.pack_start(self.views[i], True, True)
+            self.pack_start(self.views[i], False, False)
         self.connect("style-set", self.change_style)
 
     def set_phase_events(self, i, events):
