@@ -146,7 +146,18 @@ class PreviewRenderer(gtk.GenericCellRenderer):
         """
         Renders the defined emblems from the emblems property
         """
+        corners = [[x, y],
+                   [x+w, y],
+                   [x, y+h],
+                   [x+w, y+h]]
         context = window.cairo_create()
+        emblems = self.emblems
+        i = 0
+        for pixbuf in emblems:
+            pbw, pbh = pixbuf.get_width()/2, pixbuf.get_height()/2
+            context.set_source_pixbuf(pixbuf, corners[i][0]-pbw, corners[i][1]-pbh)
+            context.rectangle(corners[i][0]-pbw, corners[i][1]-pbh, pbw*2, pbh*2)
+            context.fill()
 
     def render_info_box(self, window, widget, cell_area, expose_area, event):
         """

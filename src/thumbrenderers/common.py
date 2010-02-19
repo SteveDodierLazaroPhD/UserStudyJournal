@@ -90,6 +90,14 @@ def get_pixbuf_from_uri(uri, size=SIZE_LARGE, iconscale=1):
         thumb = False
     return pb, thumb
 
+def get_event_icon(event, size):
+    gfile = GioFile(get_uri(event))
+    if gfile:
+        pb = gfile.get_icon(size=size)
+        if pb:
+            return pb
+    return False
+
 def get_event_markup(event):
     """
     Returns a typename and event formatted to be displayed in a info bubble

@@ -78,6 +78,10 @@ class ImageView(gtk.IconView):
         for event in events:
             pb, isthumb = common.get_pixbuf(event, self.child_width, self.child_height)
             emblems = tuple()
+            if isthumb:
+                emblem = common.get_event_icon(event, 16)
+                if emblem:
+                    emblems = (emblem,)
             liststore.append((pb, emblems, False, event, isthumb))
         self.set_model(liststore)
 
