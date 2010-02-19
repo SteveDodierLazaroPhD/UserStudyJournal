@@ -20,6 +20,7 @@
 # Purpose:
 
 import gtk
+import os
 import time
 import threading
 
@@ -39,6 +40,46 @@ FILETYPESNAMES = {
     Interpretation.SOURCECODE.uri : "Source Code",
     Interpretation.UNKNOWN.uri : "Unknown",
     }
+
+def shash(item): return str(hash(item))
+
+class PixbufCache(dict):
+    def __init__(self, *args, **kwargs):
+        """"""
+        super(PixbufCache, self).__init__()
+
+    def check_cache(self, uri):
+        return self[uri]
+
+    def get_buff(self, key):
+        thumbpath = os.path.expanduser("~/.cache/GAJ/1_" + shash(key))
+        iconpath = os.path.expanduser("~/.cache/GAJ/0_" + shash(key))
+        if os.path.exists(thumbpath):
+            self[key] = (gtk.gdk.pixbuf_new_from_file(thumbpath), True)
+            return self[key]
+        elif os.path.exists(iconpath):
+            self[key] = (gtk.gdk.pixbuf_new_from_file(iconpath), False)
+            return self[key]
+        return None
+
+    def __getitem__(self, key):
+        if self.has_key(key):
+            return super(PixbufCache, self).__getitem__(key)
+        return self.get_buff(key)
+
+    def __setitem__(self, key, (pb, isthumb)):
+        dir_ = os.path.expanduser("~/.cache/GAJ/")
+        if not os.path.exists(os.path.expanduser("~/.cache/GAJ/")):
+            os.makedirs(dir_)
+        path = dir_ + shash(isthumb) + "_" + shash(key)
+        if not os.path.exists(path):
+            open(path, 'w').close()
+            pb.save(path, "png", {"quality":"100"})
+        return super(PixbufCache, self).__setitem__(key, (pb, isthumb))
+
+
+PIXBUFCACHE = PixbufCache()
+
 
 def launch_event(event):
     gfile = GioFile(get_uri(event))
@@ -76,6 +117,9 @@ def get_pixbuf_from_uri(uri, size=SIZE_LARGE, iconscale=1):
     -- size: a size tuple from thumbfactory
     -- iconscale: a factor to reduce other icons by
     """
+    cached = PIXBUFCACHE.check_cache(uri)
+    if cached:
+        return cached
     gfile = GioFile(uri)
     thumb = True
     if gfile:
@@ -89,6 +133,8 @@ def get_pixbuf_from_uri(uri, size=SIZE_LARGE, iconscale=1):
     if not pb:
         pb = ICON_THEME.lookup_icon(gtk.STOCK_MISSING_IMAGE, 64, gtk.ICON_LOOKUP_FORCE_SVG).load_icon()
         thumb = False
+    if thumb:
+        PIXBUFCACHE[uri] = (pb, thumb)
     return pb, thumb
 
 def get_event_icon(event, size):
@@ -118,13 +164,4 @@ def get_pixbuf(event, w, h):
         #    pb = drawing.new_grayscale_pixbuf(pb)
         #    isthumb = False
     return pb, isthumb
-
-
-
-
-
-
-
-
-
 
