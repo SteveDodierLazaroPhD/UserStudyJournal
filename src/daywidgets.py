@@ -37,7 +37,7 @@ from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
 from widgets import *
 from thumbview import ThumbBox
 import logwidget
-from eventgatherer import get_dayevents
+from eventgatherer import get_dayevents, get_file_events
 
 CLIENT = ZeitgeistClient()
 
@@ -100,33 +100,40 @@ class ThumbnailDayWidget(gtk.VBox):
         self.daylabel.set_size_request(100, 60)
         self.daylabel.connect("button-press-event", self.click)
         self.pack_start(self.daylabel, False, False)
-        get_dayevents(start*1000, end*1000, 2, self.set_events)
+        hour = 60*60
+        get_file_events(start*1000, (start + 12*hour -1) * 1000, self.view.set_morning_events)
+        get_file_events((start + 12*hour)*1000, (start + 18*hour - 1)*1000, self.view.set_afternoon_events)
+        get_file_events((start + 18*hour)*1000, end*1000, self.view.set_evening_events)
+        
+        self.event_timerange = [start * 1000, end * 1000]
+        event_templates = (
+            Event.new_for_values(interpretation=Interpretation.VISIT_EVENT.uri),
+            Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri),
+            Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri),
+            Event.new_for_values(interpretation=Interpretation.OPEN_EVENT.uri),
+        )
+        # FIXME: Move this into EventGroup
+        def notify_insert_handler_morning(time_range, events):
+            get_file_events(start*1000, (start + 12*hour -1) * 1000, self.view.set_morning_events)
+            self.view.show_all()
+        def notify_insert_handler_afternoon(time_range, events):
+            get_file_events((start + 12*hour)*1000, (start + 18*hour - 1)*1000, self.view.set_afternoon_events)
+            self.view.show_all()
+        def notify_insert_handler_evening(time_range, events):
+            get_file_events((start + 18*hour)*1000, end*1000, self.view.set_evening_events)
+            self.view.show_all()
+
+        CLIENT.install_monitor([start*1000, (start + 12*hour -1) * 1000], event_templates,
+            notify_insert_handler_morning, notify_insert_handler_morning)
+        
+        CLIENT.install_monitor([(start + 12*hour)*1000, (start + 18*hour - 1)*1000], event_templates,
+            notify_insert_handler_afternoon, notify_insert_handler_afternoon)
+        
+        CLIENT.install_monitor([(start + 18*hour)*1000, end*1000], event_templates,
+            notify_insert_handler_evening, notify_insert_handler_evening)
+        
         self.show_all()
 
-    def set_events(self, massevents):
-        """
-        Sets three ImageViews events based on times of day
-
-        Arguments:
-        -- events: a list of zeitgeist events
-        """
-        events = []
-        for event in massevents:
-            events.append(event[0][0])
-        morning = []
-        afternoon = []
-        evening = []
-        for event in events:
-            timeremaining = (int(event.timestamp)/1000 - time.timezone) % 86400
-            if timeremaining < 86400/2:
-                morning.append(event)
-            elif timeremaining > 3*86400/4:
-                evening.append(event)
-            else:
-                afternoon.append(event)
-        self.view.set_morning_events(morning)
-        self.view.set_afternoon_events(afternoon)
-        self.view.set_evening_events(evening)
 
     def click(self, widget, event):
         if event.button == 1:

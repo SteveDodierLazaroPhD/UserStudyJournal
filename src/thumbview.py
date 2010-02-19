@@ -148,6 +148,7 @@ class ThumbBox(gtk.VBox):
         self.connect("style-set", self.change_style)
 
     def set_phase_events(self, i, events):
+        print "refreshing", i, "with", len(events), "events"
         """
         Set a time phases events
 

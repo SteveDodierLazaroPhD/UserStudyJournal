@@ -70,13 +70,38 @@ def get_dayevents(start, end, result_type, callback):
             r[0][0].timestamp))
         EVENTS[start+end] = events
         callback(events)
-    
+
     if not EVENTS.has_key(start+end):
         CLIENT.find_events_for_templates(event_templates, handle_find_events,
                                          [start, end], num_events=50000,
                                          result_type=result_type)
     else:
-        callback(EVENTS[start+end]) 
+        callback(EVENTS[start+end])
+
+
+
+def get_file_events(start, end, callback):
+    def event_exists(uri):
+        return not uri.startswith("file://") or os.path.exists(
+            urllib.unquote(str(uri[7:])))
+    def handle_find_events(events):
+        results = {}
+        for event in events:
+            uri = event.subjects[0].uri
+            if not event_exists(uri):
+                continue
+            if not event.subjects[0].uri in results:
+                results[uri] = []
+            results[uri].append(event)
+        events = [result[0] for result in results.values()]
+        EVENTS[start+end] = events
+        callback(events)
+    if not EVENTS.has_key(start+end):
+        CLIENT.find_events_for_templates(event_templates, handle_find_events,
+                                         [start, end], num_events=50000,
+                                         result_type=ResultType.LeastRecentEvents)
+    else: callback(EVENTS[start+end])
+
 
 def datelist(n, callback):
     if n == -1:
