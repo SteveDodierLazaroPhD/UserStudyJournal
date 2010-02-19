@@ -163,6 +163,7 @@ class PreviewRenderer(gtk.GenericCellRenderer):
         """
         Renders a info box when the item is active
         """
+        #window.get
         x = cell_area.x
         y = cell_area.y - 10
         w = cell_area.width
@@ -171,11 +172,12 @@ class PreviewRenderer(gtk.GenericCellRenderer):
         text = common.get_event_markup(event)
         layout = widget.create_pango_layout(text)
         layout.set_markup(text)
-        popuph = h/3 + 5
+        textw, texth = layout.get_pixel_size()
+        popuph = max(h/3 + 5, texth)
         nw = w + 26
         x = x - (nw - w)/2
         width, height = window.get_geometry()[2:4]
-        popupy = min(y+h+10, height-popuph-6) - 5
+        popupy = min(y+h+10, height-popuph-5-1) - 5
         drawing.draw_speech_bubble(context, layout, x, popupy, nw, popuph)
         context.fill()
         return False
