@@ -138,11 +138,11 @@ class ThumbBox(gtk.VBox):
         self.labels = [gtk.Label() for x in xrange(3)]
         for i in xrange(3):
             text = TIMELABELS[i]
-            line = 65 - len(text)
+            line = 125 - len(text)
             self.labels[i].set_markup(
-                "<span size='10336'>%s <s>%s</s></span>" % (text, " "*line))
+                "\n  <span size='10336'>%s <s>%s</s></span>" % (text, " "*line))
             self.labels[i].set_justify(gtk.JUSTIFY_RIGHT)
-            self.labels[i].set_alignment(0.05, 0)
+            self.labels[i].set_alignment(0, 0)
             self.pack_start(self.labels[i], False, False)
             self.pack_start(self.views[i], False, False)
         self.connect("style-set", self.change_style)
@@ -160,8 +160,6 @@ class ThumbBox(gtk.VBox):
         label = self.labels[i]
         if not events:
             view.set_model_from_list(None)
-            view.hide()
-            label.hide()
             return False
         view.show()
         label.show()
