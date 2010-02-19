@@ -71,10 +71,31 @@ def get_dayevents(start, end, result_type, callback, force = False):
         EVENTS[start+end] = events
         callback(events)
 
-    if not EVENTS.has_key(start+end) or force:
+    def notify_insert_handler_morning(timerange, events):
+        find_events()
+        
+    def find_events():
+        event_templates = []
         CLIENT.find_events_for_templates(event_templates, handle_find_events,
                                          [start, end], num_events=50000,
                                          result_type=result_type)
+
+    if not EVENTS.has_key(start+end) or force:
+        find_events()
+        event_timerange = [start, end]
+        event_templates = (
+            Event.new_for_values(interpretation=Interpretation.VISIT_EVENT.uri),
+            Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri),
+            Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri),
+            Event.new_for_values(interpretation=Interpretation.OPEN_EVENT.uri),
+        )
+        # FIXME: Move this into EventGroup
+        
+        CLIENT.install_monitor([start, end], event_templates,
+            notify_insert_handler_morning, notify_insert_handler_morning)
+
+
+
     else:
         callback(EVENTS[start+end])
 
@@ -84,6 +105,7 @@ def get_file_events(start, end, callback, force = False):
     def event_exists(uri):
         return not uri.startswith("file://") or os.path.exists(
             urllib.unquote(str(uri[7:])))
+        
     def handle_find_events(events):
         results = {}
         for event in events:
@@ -96,11 +118,35 @@ def get_file_events(start, end, callback, force = False):
         events = [result[0] for result in results.values()]
         EVENTS[start+end] = events
         callback(events)
-    if not EVENTS.has_key(start+end) or force:
+        
+    def notify_insert_handler_morning(timerange, events):
+        find_events()
+    
+    event_templates = (
+            Event.new_for_values(interpretation=Interpretation.VISIT_EVENT.uri),
+            Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri),
+            Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri),
+            Event.new_for_values(interpretation=Interpretation.OPEN_EVENT.uri),
+        )    
+    
+    def find_events():
         CLIENT.find_events_for_templates(event_templates, handle_find_events,
                                          [start, end], num_events=50000,
                                          result_type=ResultType.LeastRecentEvents)
-    else: callback(EVENTS[start+end])
+
+    if not EVENTS.has_key(start+end) or force:
+        find_events()
+        event_timerange = [start, end]
+        
+        # FIXME: Move this into EventGroup
+        
+        CLIENT.install_monitor([start, end], event_templates,
+            notify_insert_handler_morning, notify_insert_handler_morning)
+
+
+
+    else:
+        callback(EVENTS[start+end])
 
 
 def datelist(n, callback):

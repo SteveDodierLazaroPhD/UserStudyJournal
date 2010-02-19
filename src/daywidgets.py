@@ -103,36 +103,38 @@ class ThumbnailDayWidget(gtk.VBox):
         self.daylabel.connect("button-press-event", self.click)
         self.pack_start(self.daylabel, False, False)
         hour = 60*60
-        get_file_events(start*1000, (start + 12*hour -1) * 1000, self.view.set_morning_events)
-        get_file_events((start + 12*hour)*1000, (start + 18*hour - 1)*1000, self.view.set_afternoon_events)
-        get_file_events((start + 18*hour)*1000, end*1000, self.view.set_evening_events)
+        get_file_events(start*1000, (start + 12*hour -1) * 1000, self.set_morning_events)
+        get_file_events((start + 12*hour)*1000, (start + 18*hour - 1)*1000, self.set_afternoon_events)
+        get_file_events((start + 18*hour)*1000, end*1000, self.set_evening_events)
         
-        self.event_timerange = [start * 1000, end * 1000]
-        event_templates = (
-            Event.new_for_values(interpretation=Interpretation.VISIT_EVENT.uri),
-            Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri),
-            Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri),
-            Event.new_for_values(interpretation=Interpretation.OPEN_EVENT.uri),
-        )
-        # FIXME: Move this into EventGroup
-        def notify_insert_handler_morning(time_range, events):
-            if start*1000 <= time_range[0] and time_range[0] <= (start + 12*hour -1) * 1000:
-                get_file_events(start*1000, (start + 12*hour -1) * 1000, self.view.set_morning_events, True)
-        def notify_insert_handler_afternoon(time_range, events):            
-            if (start + 12*hour)*1000 <= time_range[0] and time_range[0] <= (start + 18*hour - 1)*1000:
-                get_file_events((start + 12*hour)*1000, (start + 18*hour - 1)*1000, self.view.set_afternoon_events, True)
-        def notify_insert_handler_evening(time_range, events): 
-            if (start + 18*hour)*1000 <= time_range[0] and time_range[0] <= end*1000:
-                get_file_events((start + 18*hour)*1000, end*1000, self.view.set_evening_events, True)
-        
-        CLIENT.install_monitor([start*1000, (start + 12*hour -1) * 1000], event_templates,
-            notify_insert_handler_morning, notify_insert_handler_morning)
-        CLIENT.install_monitor([(start + 12*hour)*1000, (start + 18*hour - 1)*1000], event_templates,
-            notify_insert_handler_afternoon, notify_insert_handler_afternoon)
-        CLIENT.install_monitor([(start + 18*hour)*1000, end*1000], event_templates,
-            notify_insert_handler_evening, notify_insert_handler_evening)
         self.show_all()
 
+    def set_morning_events(self, events):
+        if len(events) > 0:
+            timestamp = int(events[0].timestamp)
+            if self.day_start*1000 <= timestamp and timestamp < (self.day_start + 12*60*60)*1000:
+                self.view.set_morning_events(events)
+        else:
+            self.view.set_morning_events(events)
+            
+                
+    def set_afternoon_events(self, events):
+        if len(events) > 0:
+            timestamp = int(events[0].timestamp)
+            if (self.day_start + 12*60*60)*1000 <= timestamp and timestamp < (self.day_start + 18*60*60)*1000:
+                self.view.set_afternoon_events(events)
+        else:
+            self.view.set_afternoon_events(events)
+                
+    def set_evening_events(self, events):
+        if len(events) > 0:
+            timestamp = int(events[0].timestamp)
+            if (self.day_start + 18*60*60)*1000 <= timestamp and timestamp < self.day_end*1000:
+                self.view.set_evening_events(events)
+        else:
+            self.view.set_evening_events(events)
+
+        
 
     def click(self, widget, event):
         if event.button == 1:
