@@ -53,6 +53,7 @@ class ThumbnailDayWidget(gtk.VBox):
     def __init__(self):
         gtk.VBox.__init__(self)
         self.daylabel = None
+        self.monitors = []
         self.scrolledwindow = gtk.ScrolledWindow()
         self.scrolledwindow.set_shadow_type(gtk.SHADOW_NONE)
         self.scrolledwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
@@ -83,6 +84,11 @@ class ThumbnailDayWidget(gtk.VBox):
         self.emit("style-set", None)
 
     def set_day(self, start, end):
+        
+        for monitor in self.monitors:
+            CLIENT.remove_monitor(monitor)
+        self.monitors = []
+        
         self.day_start = start
         self.day_end = end
         for widget in self:
@@ -114,24 +120,27 @@ class ThumbnailDayWidget(gtk.VBox):
         )
         # FIXME: Move this into EventGroup
         def notify_insert_handler_morning(time_range, events):
-            get_file_events(start*1000, (start + 12*hour -1) * 1000, self.view.set_morning_events, True)
-            self.view.show_all()
+            if time_range[0] <= self.day_start*1000 and self.day_start*1000 <= time_range[1]:
+                get_file_events(start*1000, (start + 12*hour -1) * 1000, self.view.set_morning_events, True)
+                self.view.show_all()
         def notify_insert_handler_afternoon(time_range, events):
-            get_file_events((start + 12*hour)*1000, (start + 18*hour - 1)*1000, self.view.set_afternoon_events, True)
-            self.view.show_all()
+            if time_range[0] <= self.day_start*1000 and self.day_start*1000 >= time_range[1]:
+                get_file_events((start + 12*hour)*1000, (start + 18*hour - 1)*1000, self.view.set_afternoon_events, True)
+                self.view.show_all()
         def notify_insert_handler_evening(time_range, events):
-            get_file_events((start + 18*hour)*1000, end*1000, self.view.set_evening_events, True)
-            self.view.show_all()
-
-        CLIENT.install_monitor([start*1000, (start + 12*hour -1) * 1000], event_templates,
-            notify_insert_handler_morning, notify_insert_handler_morning)
+            if time_range[0] <= self.day_start*1000 and self.day_start*1000 >= time_range[1]:
+                get_file_events((start + 18*hour)*1000, end*1000, self.view.set_evening_events, True)
+                self.view.show_all()
         
+        monitor = CLIENT.install_monitor([start*1000, (start + 12*hour -1) * 1000], event_templates,
+            notify_insert_handler_morning, notify_insert_handler_morning)
+        self.monitors.append(monitor)
         CLIENT.install_monitor([(start + 12*hour)*1000, (start + 18*hour - 1)*1000], event_templates,
             notify_insert_handler_afternoon, notify_insert_handler_afternoon)
-        
+        self.monitors.append(monitor)
         CLIENT.install_monitor([(start + 18*hour)*1000, end*1000], event_templates,
             notify_insert_handler_evening, notify_insert_handler_evening)
-        
+        self.monitors.append(monitor)
         self.show_all()
 
 
