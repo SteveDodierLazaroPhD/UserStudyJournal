@@ -97,7 +97,7 @@ def make_area_from_event(x, max_width, timestamp, duration):
     - timestamp: a timestamp int or string from which to calulate the start position
     - duration: the length to calulate the width
     """
-    _f = lambda duration: max(duration/3600.0/1000.0/24.0 * max_width, max_width/48)
+    _f = lambda duration: max(duration/3600.0/1000.0/24.0 * max_width, 10)
     _e = lambda timestamp: max(((int(timestamp)/1000.0 - time.timezone)%86400)/3600/24.0 * max_width, 2)
     x = x + _e(int(timestamp))
     width = min(_f(duration), max_width-x)

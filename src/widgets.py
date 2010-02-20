@@ -639,9 +639,14 @@ class AboutDialog(gtk.AboutDialog):
         "Randal Barlow <email.tehk@gmail.com>",
         "Siegfried-Angel Gevatter <siegfried@gevatter.com>",
         "Peter Lund <peterfirefly@gmail.com>",
-        "Hylke Bons <hylkebons@gmail.com>\n"
+        "Hylke Bons <hylkebons@gmail.com>",
         "Markus Korn <thekorn@gmx.de>",
+        "Mikkel Kamstrup <mikkel.kamstrup@gmail.com>"
         )
+    artists = ( 
+               "Hylke Bons <hylkebons@gmail.com>",
+               "Thorsten Prante <thorsten@prante.eu>"
+                )
     copyright_ = "Copyright © 2009-2010 Activity Journal authors"
     comment = "A viewport into the past powered by Zeitgeist"
     version = VERSION
@@ -652,6 +657,13 @@ class AboutDialog(gtk.AboutDialog):
         self.set_comments(self.comment)
         self.set_copyright(self.copyright_)
         self.set_authors(self.authors)
+        self.set_artists(self.artists)
+        
+        f = open("./COPYING", "r")
+        license = f.read()
+        f.close
+        
+        self.set_license(license)
         #self.set_logo_icon_name("gnome-activity-journal")
         self.set_logo(gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path(
             "hicolor/scalable/apps/gnome-activity-journal.svg"), 48, 48))
