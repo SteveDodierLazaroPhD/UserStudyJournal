@@ -56,7 +56,7 @@ class ThumbnailDayWidget(gtk.VBox):
         self.monitors = []
         self.scrolledwindow = gtk.ScrolledWindow()
         self.scrolledwindow.set_shadow_type(gtk.SHADOW_NONE)
-        self.scrolledwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
+        self.scrolledwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         self.view = ThumbBox()
         self.scrolledwindow.add_with_viewport(self.view)
         self.scrolledwindow.get_children()[0].set_shadow_type(gtk.SHADOW_NONE)
@@ -102,39 +102,54 @@ class ThumbnailDayWidget(gtk.VBox):
         self.daylabel.set_size_request(100, 60)
         self.daylabel.connect("button-press-event", self.click)
         self.pack_start(self.daylabel, False, False)
-        hour = 60*60
+        self.show_all()
+        self.view.hide_all()
+        self.daylabel.show_all()
+        self.view.show()
+        
+        
+        hour = 60*60 
         get_file_events(start*1000, (start + 12*hour -1) * 1000, self.set_morning_events)
         get_file_events((start + 12*hour)*1000, (start + 18*hour - 1)*1000, self.set_afternoon_events)
         get_file_events((start + 18*hour)*1000, end*1000, self.set_evening_events)
+        #self.view.show()
         
-        self.show_all()
-
     def set_morning_events(self, events):
         if len(events) > 0:
             timestamp = int(events[0].timestamp)
             if self.day_start*1000 <= timestamp and timestamp < (self.day_start + 12*60*60)*1000:
                 self.view.set_morning_events(events)
+            self.view.views[0].show_all()
+            self.view.labels[0].show_all()
         else:
             self.view.set_morning_events(events)
-            
-                
+            self.view.views[0].hide_all()            
+            self.view.labels[0].hide_all()
+
     def set_afternoon_events(self, events):
         if len(events) > 0:
             timestamp = int(events[0].timestamp)
             if (self.day_start + 12*60*60)*1000 <= timestamp and timestamp < (self.day_start + 18*60*60)*1000:
                 self.view.set_afternoon_events(events)
+            self.view.views[1].show_all()
+            self.view.labels[1].show_all()
         else:
             self.view.set_afternoon_events(events)
+            self.view.views[1].hide_all()
+            self.view.labels[1].hide_all()
                 
     def set_evening_events(self, events):
         if len(events) > 0:
             timestamp = int(events[0].timestamp)
             if (self.day_start + 18*60*60)*1000 <= timestamp and timestamp < self.day_end*1000:
                 self.view.set_evening_events(events)
+            self.view.views[2].show_all()
+            self.view.labels[2].show_all()
         else:
             self.view.set_evening_events(events)
-
-        
+            self.view.views[2].hide_all()
+            self.view.labels[2].hide_all()
+            
 
     def click(self, widget, event):
         if event.button == 1:

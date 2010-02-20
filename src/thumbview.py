@@ -138,7 +138,7 @@ class ThumbBox(gtk.VBox):
         self.labels = [gtk.Label() for x in xrange(3)]
         for i in xrange(3):
             text = TIMELABELS[i]
-            line = 125 - len(text)
+            line = 50 - len(text)
             self.labels[i].set_markup(
                 "\n  <span size='10336'>%s <s>%s</s></span>" % (text, " "*line))
             self.labels[i].set_justify(gtk.JUSTIFY_RIGHT)
@@ -157,12 +157,16 @@ class ThumbBox(gtk.VBox):
         """
         view = self.views[i]
         label = self.labels[i]
-        if not events:
+        if not events or len(events) == 0:
             view.set_model_from_list(None)
             return False
-        view.show()
-        label.show()
+        view.show_all()
+        label.show_all()
         view.set_model_from_list(events)
+        
+        if len(events) == 0:
+            view.hide_all()
+            label.hide_all()
 
     def set_morning_events(self, events): self.set_phase_events(0, events)
     def set_afternoon_events(self, events): self.set_phase_events(1, events)
