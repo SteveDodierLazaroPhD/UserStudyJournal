@@ -631,6 +631,32 @@ class AnimatedImage(gtk.Image):
         gobject.timeout_add_seconds(seconds, self.stop)
 
 
+class AboutDialog(gtk.AboutDialog):
+    name = "Activity Journal"
+    authors = (
+        "Seif Lotfy <seif@lotfy.com>",
+        "Randal Barlow <email.tehk@gmail.com>",
+        "Siegfried-Angel Gevatter <siegfried@gevatter.com>",
+        "Peter Lund <peterfirefly@gmail.com>",
+        "Hylke Bons <hylkebons@gmail.com>\n"
+        "Markus Korn <thekorn@gmx.de>",
+        )
+    copyright_ = "Copyright © 2009-2010 Activity Journal authors"
+    comment = "A viewport into the past powered by Zeitgeist"
+    version = "0.3.3"
+    def __init__(self):
+        super(AboutDialog, self).__init__()
+        self.set_name(self.name)
+        self.set_version(self.version)
+        self.set_comments(self.comment)
+        self.set_copyright(self.copyright_)
+        self.set_authors(self.authors)
+        #lf.set_logo_icon_name("gnome-activity-journal")
+        self.set_logo(gtk.gdk.pixbuf_new_from_file_at_size("data/icons/hicolor/scalable/apps/gnome-activity-journal.svg",48, 48))
+
+
+
+
 searchbox = SearchBox()
 if gst is not None:
     VideoPreviewTooltip = VideoPreviewTooltip()

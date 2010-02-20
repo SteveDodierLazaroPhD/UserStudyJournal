@@ -105,15 +105,16 @@ class Portal(gtk.Window):
         self.throbber.set_tooltip_text(_("Powered by Zeitgeist"))
         self.throbber.set_has_tooltip(True)
         self.throbber.set_alignment(0.9, 0.98)
-        #zimage.start()
-
+        aboutbox = gtk.EventBox()
+        aboutbox.add(self.throbber)
+        aboutbox.connect("button-press-event", self.show_about_window)
         align = gtk.Alignment()
         align.add(self.cal)
         align.set(0, 0, 1, 1)
-        align.set_padding(0, 0, 28, 0)
+        align.set_padding(0, 0, 28, 4)
         calhbox = gtk.HBox()
         calhbox.pack_start(align, True, True, 0)
-        calhbox.pack_start(self.throbber, False, False, 6)
+        calhbox.pack_start(aboutbox, False, False)
         self.vbox.pack_end(calhbox, False, False)
 
         self._request_size()
@@ -131,6 +132,12 @@ class Portal(gtk.Window):
         self.activityview.connect("date-updated", self._title_handler)
         start = datetime.date.fromtimestamp(self.activityview.start).strftime("%A ")
         self.set_title(start + _("to") + _(" Today") + " - Activity Journal")
+
+    def show_about_window(self, widget, event):
+        aboutwindow = AboutDialog()
+        aboutwindow.set_transient_for(self)
+        aboutwindow.run()
+        aboutwindow.destroy()
 
     def _title_handler(self, widget, starti, endi, singleday):
 
