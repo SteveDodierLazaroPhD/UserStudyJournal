@@ -610,7 +610,7 @@ class AnimatedImage(gtk.Image):
         if speed: self.speed = speed
         self.frames = []
         for i in (6, 5, 4, 3, 2, 1, 0):
-            self.frames.append(gtk.gdk.pixbuf_new_from_file_at_size(uri % i, 16, 16))
+            self.frames.append(gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path(uri % i), 16, 16))
         self.set_from_pixbuf(self.frames[0])
 
     def next(self):
