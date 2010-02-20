@@ -131,7 +131,7 @@ def get_pixbuf_from_uri(uri, size=SIZE_LARGE, iconscale=1, w=0, h=0):
             thumb = False
     else: pb = None
     if not pb:
-        pb = ICON_THEME.lookup_icon(gtk.STOCK_MISSING_IMAGE, 64, gtk.ICON_LOOKUP_FORCE_SVG).load_icon()
+        pb = ICON_THEME.lookup_icon(gtk.STOCK_MISSING_IMAGE, size[0]*iconscale, gtk.ICON_LOOKUP_FORCE_SVG).load_icon()
         thumb = False
     if thumb:
         pb = drawing.scale_to_fill(pb, w, h)
@@ -156,7 +156,7 @@ def get_event_markup(event):
 
 def get_pixbuf(event, w, h):
     uri = get_uri(event)
-    pb, isthumb = get_pixbuf_from_uri(uri, SIZE_LARGE, iconscale=2/9.0, w=w, h=h)
+    pb, isthumb = get_pixbuf_from_uri(uri, SIZE_LARGE, iconscale=0.1875, w=w, h=h)
     if isthumb:
         rendering_functions = {}
         #pb = drawing.scale_to_fill(pb, w, h)
