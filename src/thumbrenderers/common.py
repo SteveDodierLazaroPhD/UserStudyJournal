@@ -19,6 +19,7 @@
 
 # Purpose:
 
+import gobject
 import gtk
 import os
 import time
@@ -117,7 +118,10 @@ def get_pixbuf_from_uri(uri, size=SIZE_LARGE, iconscale=1, w=0, h=0):
     -- size: a size tuple from thumbfactory
     -- iconscale: a factor to reduce other icons by
     """
-    cached = PIXBUFCACHE.check_cache(uri)
+    try:
+        cached = PIXBUFCACHE.check_cache(uri)
+    except gobject.GError:
+        cached = None
     if cached:
         return cached
     gfile = GioFile(uri)
@@ -131,7 +135,7 @@ def get_pixbuf_from_uri(uri, size=SIZE_LARGE, iconscale=1, w=0, h=0):
             thumb = False
     else: pb = None
     if not pb:
-        pb = ICON_THEME.lookup_icon(gtk.STOCK_MISSING_IMAGE, size[0]*iconscale, gtk.ICON_LOOKUP_FORCE_SVG).load_icon()
+        pb = ICON_THEME.lookup_icon(gtk.STOCK_MISSING_IMAGE, int(size[0]*iconscale), gtk.ICON_LOOKUP_FORCE_SVG).load_icon()
         thumb = False
     if thumb:
         pb = drawing.scale_to_fill(pb, w, h)
