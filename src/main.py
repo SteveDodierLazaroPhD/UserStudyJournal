@@ -26,7 +26,7 @@ import time
 import datetime
 import os
 
-from config import BASE_PATH, ACCESSIBILITY, settings
+from config import ACCESSIBILITY, settings, get_data_path, get_icon_path
 from widgets import *
 from view import ActivityView
 from histogram import HistogramWidget, JournalHistogram, CairoHistogram
@@ -48,13 +48,13 @@ class Portal(gtk.Window):
         self.connect("window-state-event", self._on_window_state_changed)
 
         self.set_icon_name("gnome-activity-journal")
-        self.set_icon_list(*[gtk.gdk.pixbuf_new_from_file(
-            os.path.join(BASE_PATH, name)) for name in (
-                "data/icons/hicolor/16x16/apps/gnome-activity-journal.png",
-                "data/icons/hicolor/24x24/apps/gnome-activity-journal.png",
-                "data/icons/hicolor/32x32/apps/gnome-activity-journal.png",
-                "data/icons/hicolor/48x48/apps/gnome-activity-journal.png",
-                "data/icons/hicolor/256x256/apps/gnome-activity-journal.png")])
+        self.set_icon_list(
+            *[gtk.gdk.pixbuf_new_from_file(get_icon_path(f)) for f in (
+                "hicolor/16x16/apps/gnome-activity-journal.png",
+                "hicolor/24x24/apps/gnome-activity-journal.png",
+                "hicolor/32x32/apps/gnome-activity-journal.png",
+                "hicolor/48x48/apps/gnome-activity-journal.png",
+                "hicolor/256x256/apps/gnome-activity-journal.png")])
 
         self.vbox = gtk.VBox()
         #color = gtk.gdk.rgb_get_colormap().alloc_color('#EEEEEC')
@@ -101,7 +101,7 @@ class Portal(gtk.Window):
 
         self.vbox.pack_start(hbox, True, True, 6)
 
-        self.throbber = AnimatedImage("data/zlogo/zg%d.png", 150)
+        self.throbber = AnimatedImage(get_data_path("zlogo/zg%d.png"), 150)
         self.throbber.set_tooltip_text(_("Powered by Zeitgeist"))
         self.throbber.set_has_tooltip(True)
         self.throbber.set_alignment(0.9, 0.98)

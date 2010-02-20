@@ -24,7 +24,7 @@ import cPickle
 import gobject
 import urllib
 
-from config import DATA_PATH
+from config import USER_DATA_PATH
 
 def event_exists(uri):
         # TODO: Move this into Zeitgeist's datamodel.py
@@ -44,7 +44,7 @@ class Bookmarker(gobject.GObject):
     
     def __init__(self):
         gobject.GObject.__init__(self)
-        self.bookmarks_file = os.path.join(DATA_PATH, "bookmarks.pickled")
+        self.bookmarks_file = os.path.join(USER_DATA_PATH, "bookmarks.pickled")
         self._load()
     
     def _load(self):

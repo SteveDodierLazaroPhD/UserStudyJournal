@@ -36,7 +36,7 @@ from zeitgeist.client import ZeitgeistClient
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
     ResultType
 
-from config import settings
+from config import VERSION, settings, get_icon_path
 from sources import Source, SUPPORTED_SOURCES
 from gio_file import GioFile, SIZE_NORMAL, SIZE_LARGE
 from bookmarker import bookmarker
@@ -476,7 +476,8 @@ class Item(gtk.HBox):
         hbox.pack_start(self.label, True, True, 4)
 
         if self.allow_pin:
-            img = gtk.image_new_from_file("data/icons/hicolor/24x24/status/pin.png") # todo: get the name "pin" from theme when icons are properly installed
+            # TODO: get the name "pin" from theme when icons are properly installed
+            img = gtk.image_new_from_file(get_icon_path("hicolor/24x24/status/pin.png"))
             self.pin = gtk.Button()
             self.pin.add(img)
             self.pin.set_tooltip_text(_("Remove Pin"))
@@ -643,7 +644,7 @@ class AboutDialog(gtk.AboutDialog):
         )
     copyright_ = "Copyright © 2009-2010 Activity Journal authors"
     comment = "A viewport into the past powered by Zeitgeist"
-    version = "0.3.3"
+    version = VERSION
     def __init__(self):
         super(AboutDialog, self).__init__()
         self.set_name(self.name)
@@ -651,11 +652,9 @@ class AboutDialog(gtk.AboutDialog):
         self.set_comments(self.comment)
         self.set_copyright(self.copyright_)
         self.set_authors(self.authors)
-        #lf.set_logo_icon_name("gnome-activity-journal")
-        self.set_logo(gtk.gdk.pixbuf_new_from_file_at_size("data/icons/hicolor/scalable/apps/gnome-activity-journal.svg",48, 48))
-
-
-
+        #self.set_logo_icon_name("gnome-activity-journal")
+        self.set_logo(gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path(
+            "hicolor/scalable/apps/gnome-activity-journal.svg"), 48, 48))
 
 searchbox = SearchBox()
 if gst is not None:
