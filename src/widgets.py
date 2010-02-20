@@ -19,6 +19,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import with_statement
+import os
 import gtk
 import gettext
 import datetime
@@ -36,7 +38,7 @@ from zeitgeist.client import ZeitgeistClient
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
     ResultType
 
-from config import VERSION, settings, get_icon_path
+from config import BASE_PATH, VERSION, settings, get_icon_path
 from sources import Source, SUPPORTED_SOURCES
 from gio_file import GioFile, SIZE_NORMAL, SIZE_LARGE
 from bookmarker import bookmarker
@@ -659,9 +661,15 @@ class AboutDialog(gtk.AboutDialog):
         self.set_authors(self.authors)
         self.set_artists(self.artists)
         
-        f = open("./COPYING", "r")
-        license = f.read()
-        f.close
+        license = None
+        for name in ("/usr/share/common-licenses/GPL",
+            os.path.join(BASE_PATH, "COPYING")):
+            if os.path.isfile(name):
+                with open(name) as licensefile:
+                    license = licensefile.read()
+                    break
+        if not license:
+            license = "GNU General Public License, version 3 or later."
         
         self.set_license(license)
         #self.set_logo_icon_name("gnome-activity-journal")
