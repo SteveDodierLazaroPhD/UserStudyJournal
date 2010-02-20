@@ -158,12 +158,12 @@ class PreviewRenderer(gtk.GenericCellRenderer):
             context.set_source_pixbuf(pixbuf, corners[i][0]-pbw, corners[i][1]-pbh)
             context.rectangle(corners[i][0]-pbw, corners[i][1]-pbh, pbw*2, pbh*2)
             context.fill()
+            i+=1
 
     def render_info_box(self, window, widget, cell_area, expose_area, event):
         """
         Renders a info box when the item is active
         """
-        #window.get
         x = cell_area.x
         y = cell_area.y - 10
         w = cell_area.width

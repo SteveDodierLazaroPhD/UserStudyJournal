@@ -163,7 +163,7 @@ class ThumbBox(gtk.VBox):
         view.show_all()
         label.show_all()
         view.set_model_from_list(events)
-        
+
         if len(events) == 0:
             view.hide_all()
             label.hide_all()
@@ -178,10 +178,6 @@ class ThumbBox(gtk.VBox):
         if parent:
             parent = self.get_parent()
         color = rc_style.bg[gtk.STATE_NORMAL]
-        #color.red = min(65535, color.red * 1.0)
-        #color.green = min(65535, color.green * 1.0)
-        #color.blue = min(65535, color.blue * 1.0)
-        #if color != rc_style.bg[gtk.STATE_NORMAL]:
         parent.modify_bg(gtk.STATE_NORMAL, color)
         for view in self.views: view.modify_base(gtk.STATE_NORMAL, color)
         color = rc_style.text[4]

@@ -601,7 +601,7 @@ class Item(gtk.HBox):
 
 class AnimatedImage(gtk.Image):
     animating = None
-    mod = 6
+    mod = 7
     i = 0
     speed = 100
     def __init__(self, uri, speed = 0):
