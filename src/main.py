@@ -95,9 +95,9 @@ class Portal(gtk.Window):
 
         hbox = gtk.HBox()
 
-        hbox.pack_start(self.backbtn, False, False, 3)
-        hbox.pack_start(self.activityview)
-        hbox.pack_start(self.rbox, False, False, 3)
+        hbox.pack_start(self.backbtn, False, False)
+        hbox.pack_start(self.activityview,3)
+        hbox.pack_start(self.rbox, False, False)
 
         self.vbox.pack_start(hbox, True, True, 6)
 
