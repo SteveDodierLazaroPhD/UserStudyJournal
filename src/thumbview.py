@@ -35,7 +35,7 @@ import thumbrenderers.common as common
 from thumbrenderers.renderers import PreviewRenderer
 
 
-TIMELABELS = ["Morning", "Afternoon", "Evening"]
+TIMELABELS = [_("Morning"), _("Afternoon"), _("Evening")]
 
 
 class ImageView(gtk.IconView):

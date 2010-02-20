@@ -34,12 +34,12 @@ ICON_THEME = gtk.icon_theme_get_default()
 
 
 FILETYPESNAMES = {
-    Interpretation.VIDEO.uri : "Video",
-    Interpretation.MUSIC.uri : "Music",
-    Interpretation.DOCUMENT.uri : "Document",
-    Interpretation.IMAGE.uri : "Image",
-    Interpretation.SOURCECODE.uri : "Source Code",
-    Interpretation.UNKNOWN.uri : "Unknown",
+    Interpretation.VIDEO.uri : _("Video"),
+    Interpretation.MUSIC.uri : _("Music"),
+    Interpretation.DOCUMENT.uri : _("Document"),
+    Interpretation.IMAGE.uri : _("Image"),
+    Interpretation.SOURCECODE.uri : _("Source Code"),
+    Interpretation.UNKNOWN.uri : _("Unknown"),
     }
 
 def shash(item): return str(hash(item))
