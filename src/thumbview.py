@@ -148,7 +148,6 @@ class ThumbBox(gtk.VBox):
         self.connect("style-set", self.change_style)
 
     def set_phase_events(self, i, events):
-        print "refreshing", i, "with", len(events), "events"
         """
         Set a time phases events
 
@@ -172,13 +171,19 @@ class ThumbBox(gtk.VBox):
     def change_style(self, widget, style):
         rc_style = self.style
         parent = self.get_parent()
-        color = rc_style.base[gtk.STATE_NORMAL]
-        if color != rc_style.bg[gtk.STATE_NORMAL]:
-            parent.modify_bg(gtk.STATE_NORMAL, color)
+        if parent:
+            parent = self.get_parent()
+        color = rc_style.bg[gtk.STATE_NORMAL]
+        #color.red = min(65535, color.red * 1.0)
+        #color.green = min(65535, color.green * 1.0)
+        #color.blue = min(65535, color.blue * 1.0)
+        #if color != rc_style.bg[gtk.STATE_NORMAL]:
+        parent.modify_bg(gtk.STATE_NORMAL, color)
+        for view in self.views: view.modify_base(gtk.STATE_NORMAL, color)
         color = rc_style.text[4]
         color.red = min(65535, color.red * 0.95)
-        color.green = min(65535, color.red * 0.95)
-        color.blue = min(65535, color.red * 0.95)
+        color.green = min(65535, color.green * 0.95)
+        color.blue = min(65535, color.blue * 0.95)
         for label in self.labels:
             label.modify_fg(0, color)
 
