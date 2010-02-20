@@ -102,7 +102,7 @@ class Portal(gtk.Window):
         self.vbox.pack_start(hbox, True, True, 6)
 
         self.throbber = AnimatedImage("data/zlogo/zg%d.png", 150)
-        self.throbber.set_tooltip_text("Powered by zeitgeist")
+        self.throbber.set_tooltip_text(_("Powered by Zeitgeist"))
         self.throbber.set_has_tooltip(True)
         self.throbber.set_alignment(0.9, 0.98)
         #zimage.start()
