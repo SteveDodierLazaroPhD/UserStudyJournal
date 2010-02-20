@@ -84,7 +84,7 @@ class ThumbnailDayWidget(gtk.VBox):
         self.emit("style-set", None)
 
     def set_day(self, start, end):
-        
+
         self.day_start = start
         self.day_end = end
         for widget in self:
@@ -106,14 +106,14 @@ class ThumbnailDayWidget(gtk.VBox):
         self.view.hide_all()
         self.daylabel.show_all()
         self.view.show()
-        
-        
-        hour = 60*60 
+
+
+        hour = 60*60
         get_file_events(start*1000, (start + 12*hour -1) * 1000, self.set_morning_events)
         get_file_events((start + 12*hour)*1000, (start + 18*hour - 1)*1000, self.set_afternoon_events)
         get_file_events((start + 18*hour)*1000, end*1000, self.set_evening_events)
         #self.view.show()
-        
+
     def set_morning_events(self, events):
         if len(events) > 0:
             timestamp = int(events[0].timestamp)
@@ -123,7 +123,7 @@ class ThumbnailDayWidget(gtk.VBox):
             self.view.labels[0].show_all()
         else:
             self.view.set_morning_events(events)
-            self.view.views[0].hide_all()            
+            self.view.views[0].hide_all()
             self.view.labels[0].hide_all()
 
     def set_afternoon_events(self, events):
@@ -137,7 +137,7 @@ class ThumbnailDayWidget(gtk.VBox):
             self.view.set_afternoon_events(events)
             self.view.views[1].hide_all()
             self.view.labels[1].hide_all()
-                
+
     def set_evening_events(self, events):
         if len(events) > 0:
             timestamp = int(events[0].timestamp)
@@ -149,10 +149,10 @@ class ThumbnailDayWidget(gtk.VBox):
             self.view.set_evening_events(events)
             self.view.views[2].hide_all()
             self.view.labels[2].hide_all()
-            
+
 
     def click(self, widget, event):
-        if event.button == 1:
+        if event.button in (1, 3):
             self.emit("unfocus-day")
 
 
@@ -369,7 +369,7 @@ class DayWidget(gtk.VBox):
     def click(self, widget, event):
         if event.button == 1:
             self.emit("focus-day", 1)
-        elif event.button == 2:
+        elif event.button == 3:
             self.emit("focus-day", 2)
 
     def _init_events(self):
