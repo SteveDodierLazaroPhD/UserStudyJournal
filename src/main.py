@@ -111,7 +111,7 @@ class Portal(gtk.Window):
         align = gtk.Alignment()
         align.add(self.cal)
         align.set(0, 0, 1, 1)
-        align.set_padding(0, 0, 28, 4)
+        align.set_padding(0, 0, 23, 7)
         calhbox = gtk.HBox()
         calhbox.pack_start(align, True, True, 0)
         calhbox.pack_start(aboutbox, False, False)
