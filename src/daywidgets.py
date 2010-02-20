@@ -220,7 +220,7 @@ class SingleDayWidget(gtk.VBox):
         self.show_all()
 
     def click(self, widget, event):
-        if event.button == 1:
+        if event.button in (1, 3):
             self.emit("unfocus-day")
 
     def area_clicked(self, widget, zevent):
