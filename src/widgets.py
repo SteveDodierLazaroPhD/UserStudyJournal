@@ -584,9 +584,9 @@ class Item(gtk.HBox):
         menuitem.connect("activate", lambda x: self.set_bookmarked(not bookmarked))
         menu.append(menuitem)
 
-        #menuitem = gtk.MenuItem(_("Delete item from Journal"))
-        #menuitem.connect("activate", self._delete_subject)
-        #menu.append(menuitem)
+        menuitem = gtk.MenuItem(_("Delete item from Journal"))
+        menuitem.connect("activate", self._delete_subject)
+        menu.append(menuitem)
 
         menu.show_all()
 

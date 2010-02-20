@@ -25,17 +25,6 @@ from distutils.core import setup
 from distutils.command.install import install as orig_install
 from DistUtilsExtra.command import *
 
-if __name__ == "__main__":
-    """ Generate POTFILES.in from POTFILES.in.in. """
-    os.chdir(os.path.realpath(os.path.dirname(__file__)))
-    if os.path.isfile("po/POTFILES.in.in"):
-        lines = []
-        with open("po/POTFILES.in.in") as f:
-            for line in f:
-                lines.extend(glob(line.strip()))
-        with open("po/POTFILES.in", "w") as f:
-            f.write("\n".join(lines) + "\n")
-
 class _install(orig_install):
     
     def _create_symlink(self, src, dst):
@@ -73,6 +62,20 @@ class _install(orig_install):
         self._create_symlink(
             'share/icons/',
             'share/gnome-activity-journal/data/icons')
+
+class _build_i18n(build_i18n.build_i18n):
+
+	def run(self):
+		# Generate POTFILES.in from POTFILES.in.in
+		if os.path.isfile("po/POTFILES.in.in"):
+			lines = []
+			with open("po/POTFILES.in.in") as f:
+				for line in f:
+					lines.extend(glob(line.strip()))
+			with open("po/POTFILES.in", "w") as f:
+				f.write("\n".join(lines) + "\n")
+		
+		build_i18n.build_i18n.run(self)
 
 def recursive_install(dst, directory, prefix=None, ext=None):
     l = []
@@ -125,7 +128,7 @@ setup(
     cmdclass = {
         'install': _install,
         'build': build_extra.build_extra,
-        'build_i18n': build_i18n.build_i18n,
+        'build_i18n': _build_i18n,
         #'build_help':  build_help.build_help,
         #'build_icons': build_icons.build_icons,
         },
