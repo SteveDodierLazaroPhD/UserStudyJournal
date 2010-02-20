@@ -600,7 +600,7 @@ class Item(gtk.HBox):
 
 
 class AnimatedImage(gtk.Image):
-    animate = False
+    animating = None
     mod = 6
     i = 0
     speed = 100
@@ -615,16 +615,20 @@ class AnimatedImage(gtk.Image):
     def next(self):
         self.set_from_pixbuf(self.frames[self.i % self.mod])
         self.i += 1
-        if self.animate:
-            return True
-        return False
+        return True
 
     def start(self):
-        self.animate = True
-        gobject.timeout_add(self.speed, self.next)
+        if self.animating: gobject.source_remove(self.animating)
+        self.animating = gobject.timeout_add(self.speed, self.next)
 
     def stop(self):
-        self.animate = False
+        if self.animating: gobject.source_remove(self.animating)
+        self.animating = None
+        return False
+
+    def animate_for_seconds(self, seconds):
+        self.start()
+        gobject.timeout_add_seconds(seconds, self.stop)
 
 
 searchbox = SearchBox()

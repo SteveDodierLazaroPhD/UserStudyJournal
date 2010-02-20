@@ -74,6 +74,7 @@ class Portal(gtk.Window):
         self.fwdbtn.set_sensitive(False)
 
         def _c(widget, i, ii):
+            self.throbber.animate_for_seconds(1)
             if i == len(widget.get_datastore()) - widget.selected_range - 1:
                 self.fwdbtn.leading = True
             else:
@@ -100,18 +101,19 @@ class Portal(gtk.Window):
 
         self.vbox.pack_start(hbox, True, True, 6)
 
-        #zimage = AnimatedImage("data/zlogo/zg%d.png", 200)
-        #zimage.set_tooltip_text("Powered by zeitgeist")
-        #zimage.set_has_tooltip(True)
+        self.throbber = AnimatedImage("data/zlogo/zg%d.png", 150)
+        self.throbber.set_tooltip_text("Powered by zeitgeist")
+        self.throbber.set_has_tooltip(True)
+        self.throbber.set_alignment(0.9, 0.98)
         #zimage.start()
 
         align = gtk.Alignment()
         align.add(self.cal)
         align.set(0, 0, 1, 1)
-        align.set_padding(0, 0, 28, 28)
+        align.set_padding(0, 0, 28, 0)
         calhbox = gtk.HBox()
         calhbox.pack_start(align, True, True, 0)
-        #calhbox.pack_start(zimage, False, False, 4)
+        calhbox.pack_start(self.throbber, False, False, 6)
         self.vbox.pack_end(calhbox, False, False)
 
         self._request_size()
@@ -131,6 +133,7 @@ class Portal(gtk.Window):
         self.set_title(start + _("to") + _(" Today") + " - Activity Journal")
 
     def _title_handler(self, widget, starti, endi, singleday):
+
         endday = datetime.date.fromtimestamp(endi)
         startday = datetime.date.fromtimestamp(starti)
         if endday.day == datetime.date.today().day:
