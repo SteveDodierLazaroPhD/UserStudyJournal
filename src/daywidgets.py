@@ -186,25 +186,15 @@ class SingleDayWidget(gtk.VBox):
     def __init__(self):
         gtk.VBox.__init__(self)
         self.daylabel = None
-        self.ruler = gtk.HRuler()
-        self.ruler.set_range(0, 24, 0, 24)
-        self.ruler.set_metric(gtk.PIXELS)
-        self.ruler.set_size_request(10,20)
-        self.evbox = evbox = gtk.EventBox()
+        self.ruler = gtk.Label("2:00")
         self.scrolledwindow = gtk.ScrolledWindow()
         self.scrolledwindow.set_shadow_type(gtk.SHADOW_NONE)
         self.scrolledwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
         self.view = logwidget.TimelineView()
         self.scrolledwindow.add(self.view)
-        evbox.add(self.scrolledwindow)
-        self.pack_end(evbox)
+        self.pack_end(self.scrolledwindow)
         self.pack_end(self.ruler, False, False)
-
-        def motion(ruler, event):
-            print event
-            return ruler.emit("motion_notify_event", event)
-        evbox.connect("motion-notify-event", motion, self.ruler)
-
+        self.view.set_events(gtk.gdk.POINTER_MOTION_MASK | gtk.gdk.POINTER_MOTION_HINT_MASK)
         def change_style(widget, style):
             rc_style = self.style
             color = rc_style.bg[gtk.STATE_NORMAL]
@@ -230,7 +220,7 @@ class SingleDayWidget(gtk.VBox):
         self.day_start = start
         self.day_end = end
         for widget in self:
-            if widget not in (self.ruler, self.evbox):
+            if widget not in (self.ruler, self.scrolledwindow):
                 self.remove(widget)
         self._set_date_strings()
         today = int(time.time() ) - 7*86400
