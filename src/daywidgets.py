@@ -42,6 +42,25 @@ from eventgatherer import get_dayevents, get_file_events
 CLIENT = ZeitgeistClient()
 
 
+def get_gtk_rgba(style, palette, i, shade = 1, alpha = 1):
+    """Takes a gtk style and returns a RGB tuple
+
+    Arguments:
+    - style: a gtk_style object
+    - palette: a string representing the palette you want to pull a color from
+        Example: "bg", "fg"
+    - shade: how much you want to shade the color
+    """
+    f = lambda num: (num/65535.0) * shade
+    color = getattr(style, palette)[i]
+    if isinstance(color, gtk.gdk.Color):
+        red = f(color.red)
+        green = f(color.green)
+        blue = f(color.blue)
+        return (min(red, 1), min(green, 1), min(blue, 1), alpha)
+    raise TypeError("Not a valid gdk.Color")
+
+
 class ThumbnailDayWidget(gtk.VBox):
 
     __gsignals__ = {
@@ -166,15 +185,14 @@ class SingleDayWidget(gtk.VBox):
 
     def __init__(self):
         gtk.VBox.__init__(self)
+        ruler = gtk.HRuler()
+        self.pack_start(ruler, True, True)
         self.daylabel = None
         self.scrolledwindow = gtk.ScrolledWindow()
         self.scrolledwindow.set_shadow_type(gtk.SHADOW_NONE)
         self.scrolledwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
-        self.view = logwidget.DetailedView()
-        self.view.connect("area-clicked", self.area_clicked)
-        self.view.connect("private-area-clicked", self.private_area_clicked)
-        self.scrolledwindow.add_with_viewport(self.view)
-        self.scrolledwindow.get_children()[0].set_shadow_type(gtk.SHADOW_NONE)
+        self.view = logwidget.TimelineView()
+        self.scrolledwindow.add(self.view)
         self.pack_end(self.scrolledwindow)
 
         def change_style(widget, style):
@@ -216,22 +234,12 @@ class SingleDayWidget(gtk.VBox):
         self.daylabel.set_size_request(100, 60)
         self.daylabel.connect("button-press-event", self.click)
         self.pack_start(self.daylabel, False, False)
-        get_dayevents(start*1000, end*1000, 1, self.view.set_datastore)
+        get_dayevents(start*1000, end*1000, 1, self.view.set_model_from_list)
         self.show_all()
 
     def click(self, widget, event):
         if event.button in (1, 3):
             self.emit("unfocus-day")
-
-    def area_clicked(self, widget, zevent):
-        """
-        A sample event for clicks
-        """
-        gio_file = GioFile.create(zevent.subjects[0].uri)
-        if gio_file: gio_file.launch()
-
-    def private_area_clicked(self, widget, obj):
-        widget.queue_draw()
 
 
 class DayWidget(gtk.VBox):
@@ -601,13 +609,13 @@ class DayButton(gtk.DrawingArea):
         return True
 
     def change_style(self, *args, **kwargs):
-        self.bg_color = logwidget.get_gtk_rgba(self.style, "bg", 0)
-        self.header_color = logwidget.get_gtk_rgba(self.style, "bg", 0, 1.25)
-        self.leading_header_color = logwidget.get_gtk_rgba(self.style, "bg", 3)
-        self.internal_color = logwidget.get_gtk_rgba(self.style, "bg", 0, 1.02)
-        self.arrow_color = logwidget.get_gtk_rgba(self.style, "text", 0, 0.6)
-        self.arrow_color_selected = logwidget.get_gtk_rgba(self.style, "bg", 3)
-        self.arrow_color_insensitive = logwidget.get_gtk_rgba(self.style, "text", 4)
+        self.bg_color = get_gtk_rgba(self.style, "bg", 0)
+        self.header_color = get_gtk_rgba(self.style, "bg", 0, 1.25)
+        self.leading_header_color = get_gtk_rgba(self.style, "bg", 3)
+        self.internal_color = get_gtk_rgba(self.style, "bg", 0, 1.02)
+        self.arrow_color = get_gtk_rgba(self.style, "text", 0, 0.6)
+        self.arrow_color_selected = get_gtk_rgba(self.style, "bg", 3)
+        self.arrow_color_insensitive = get_gtk_rgba(self.style, "text", 4)
 
     def expose(self, widget, event):
         context = widget.window.cairo_create()
