@@ -84,9 +84,7 @@ class ThumbnailDayWidget(gtk.VBox):
         def change_style(widget, style):
             rc_style = self.style
             color = rc_style.bg[gtk.STATE_NORMAL]
-            color.red = min(color.red * 102/100, 65535.0)
-            color.green = min(color.green * 102/100, 65535.0)
-            color.blue = min(color.blue * 102/100, 65535.0)
+            color = shade_gdk_color(color, 102/100.0)
             self.view.modify_bg(gtk.STATE_NORMAL, color)
 
         self.connect("style-set", change_style)
@@ -204,9 +202,7 @@ class SingleDayWidget(gtk.VBox):
         def change_style(widget, style):
             rc_style = self.style
             color = rc_style.bg[gtk.STATE_NORMAL]
-            color.red = min(color.red * 102/100, 65535.0)
-            color.green = min(color.green * 102/100, 65535.0)
-            color.blue = min(color.blue * 102/100, 65535.0)
+            color = shade_gdk_color(color, 102/100.0)
             self.view.modify_base(gtk.STATE_NORMAL, color)
             self.ruler_box.modify_bg(gtk.STATE_NORMAL, color)
         self.connect("style-set", change_style)
@@ -329,21 +325,7 @@ class DayWidget(gtk.VBox):
         def change_style(widget, style):
             rc_style = self.style
             color = rc_style.bg[gtk.STATE_NORMAL]
-
-            if color.red * 102/100 > 65535.0:
-                color.red = 65535.0
-            else:
-                color.red = color.red * 102 / 100
-
-            if color.green * 102/100 > 65535.0:
-                color.green = 65535.0
-            else:
-                color.green = color.green * 102 / 100
-
-            if color.blue * 102/100 > 65535.0:
-                color.blue = 65535.0
-            else:
-                color.blue = color.blue * 102 / 100
+            color = shade_gdk_color(color, 102/100.0)
             evbox2.modify_bg(gtk.STATE_NORMAL, color)
 
         self.connect("style-set", change_style)
@@ -700,9 +682,7 @@ class EventGroup(gtk.VBox):
         """ Update used colors according to the system theme. """
         color = self.style.bg[gtk.STATE_NORMAL]
         fcolor = self.style.fg[gtk.STATE_NORMAL]
-        color.red = (2 * color.red + fcolor.red) / 3
-        color.green = (2 * color.green + fcolor.green) / 3
-        color.blue = (2 * color.blue + fcolor.blue) / 3
+        color = combine_gdk_color(color, fcolor)
         self.label.modify_fg(gtk.STATE_NORMAL, color)
 
     @staticmethod

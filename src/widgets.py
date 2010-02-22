@@ -90,29 +90,12 @@ class SearchBox(gtk.EventBox):
 
             rc_style = self.style
             color = rc_style.bg[gtk.STATE_NORMAL]
-
-            if color.red * 102/100 > 65535.0:
-                color.red = 65535.0
-            else:
-                color.red = color.red * 102 / 100
-
-            if color.green * 102/100 > 65535.0:
-                color.green = 65535.0
-            else:
-                color.green = color.green * 102 / 100
-
-            if color.blue * 102/100 > 65535.0:
-                color.blue = 65535.0
-            else:
-                color.blue = color.blue * 102 / 100
-
+            color = shade_gdk_color(color, 102/100.0)
             self.modify_bg(gtk.STATE_NORMAL, color)
 
             color = rc_style.bg[gtk.STATE_NORMAL]
             fcolor = rc_style.fg[gtk.STATE_NORMAL]
-            color.red = (2*color.red + fcolor.red)/3
-            color.green = (2*color.green + fcolor.green)/3
-            color.blue = (2*color.blue + fcolor.blue)/3
+            color = combine_gdk_color(color, fcolor)
 
             self.search.modify_text(gtk.STATE_NORMAL, color)
 
@@ -288,9 +271,7 @@ class CategoryButton(gtk.HBox):
 
             color = rc_style.bg[gtk.STATE_NORMAL]
             fcolor = rc_style.fg[gtk.STATE_NORMAL]
-            color.red = (2*color.red + fcolor.red)/3
-            color.green = (2*color.green + fcolor.green)/3
-            color.blue = (2*color.blue + fcolor.blue)/3
+            color = combine_gdk_color(color, fcolor)
             label.modify_fg(gtk.STATE_NORMAL, color)
             self.img.modify_fg(gtk.STATE_NORMAL, color)
 
@@ -506,9 +487,7 @@ class Item(gtk.HBox):
             rc_style = self.style
             color = rc_style.bg[gtk.STATE_NORMAL]
             fcolor = rc_style.fg[gtk.STATE_NORMAL]
-            color.red = (2*color.red + fcolor.red)/3
-            color.green = (2*color.green + fcolor.green)/3
-            color.blue = (2*color.blue + fcolor.blue)/3
+            color = combine_gdk_color(color, fcolor)
 
             if self.in_search:
                 color = rc_style.bg[gtk.STATE_SELECTED]
@@ -519,21 +498,7 @@ class Item(gtk.HBox):
             self.highlight()
 
             color = rc_style.bg[gtk.STATE_NORMAL]
-
-            if color.red * 102/100 > 65535.0:
-                color.red = 65535.0
-            else:
-                color.red = color.red * 102 / 100
-
-            if color.green * 102/100 > 65535.0:
-                color.green = 65535.0
-            else:
-                color.green = color.green * 102 / 100
-
-            if color.blue * 102/100 > 65535.0:
-                color.blue = 65535.0
-            else:
-                color.blue = color.blue * 102 / 100
+            color = shade_gdk_color(color, 102/100.0)
             evbox.modify_bg(gtk.STATE_NORMAL, color)
 
         self.connect("style-set", change_style)
@@ -645,7 +610,7 @@ class AboutDialog(gtk.AboutDialog):
         "Markus Korn <thekorn@gmx.de>",
         "Mikkel Kamstrup <mikkel.kamstrup@gmail.com>"
         )
-    artists = ( 
+    artists = (
                "Hylke Bons <hylkebons@gmail.com>",
                "Thorsten Prante <thorsten@prante.eu>"
                 )
@@ -660,7 +625,7 @@ class AboutDialog(gtk.AboutDialog):
         self.set_copyright(self.copyright_)
         self.set_authors(self.authors)
         self.set_artists(self.artists)
-        
+
         license = None
         for name in ("/usr/share/common-licenses/GPL",
             os.path.join(BASE_PATH, "COPYING")):
@@ -670,11 +635,51 @@ class AboutDialog(gtk.AboutDialog):
                     break
         if not license:
             license = "GNU General Public License, version 3 or later."
-        
+
         self.set_license(license)
         #self.set_logo_icon_name("gnome-activity-journal")
         self.set_logo(gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path(
             "hicolor/scalable/apps/gnome-activity-journal.svg"), 48, 48))
+
+def shade_gdk_color(color, shade):
+    """
+    Shades a color by a fraction
+
+    Arguments:
+    -- color - a gdk color
+    -- shade - fraction by which to shade the color
+    """
+    f = lambda num: min((num * shade, 65535.0))
+    if gtk.pygtk_version >= (2, 16, 0):
+        color.red = f(color.red)
+        color.green = f(color.green)
+        color.blue = f(color.blue)
+    else:
+        red = int(f(color.red)/65535.0)
+        green = int(f(color.green)/65535.0)
+        blue = int(f(color.blue)/65535.0)
+        color = gtk.gdk.Color(red=red, green=green, blue=blue, pixel=color.pixel)
+    return color
+
+def combine_gdk_color(color, fcolor):
+    """
+    Shades a color by a fraction
+
+    Arguments:
+    -- color - a gdk color
+    -- fcolor - a gdk color to combine with color
+    """
+    f = lambda num: min((num * shade, 65535.0))
+    if gtk.pygtk_version >= (2, 16, 0):
+        color.red = (2*color.red + fcolor.red)/3
+        color.green = (2*color.green + fcolor.green)/3
+        color.blue = (2*color.blue + fcolor.blue)/3
+    else:
+        red = int(((2*color.red + fcolor.red)/3))
+        green = int(((2*color.green + fcolor.green)/3))
+        blue = int(((2*color.blue + fcolor.blue)/3))
+        color = gtk.gdk.Color(red=red, green=green, blue=blue, pixel=color.pixel)
+    return color
 
 searchbox = SearchBox()
 if gst is not None:

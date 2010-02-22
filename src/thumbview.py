@@ -32,7 +32,7 @@ import threading
 
 from zeitgeist.datamodel import Interpretation
 
-from widgets import StaticPreviewTooltip, VideoPreviewTooltip
+from widgets import StaticPreviewTooltip, VideoPreviewTooltip, shade_gdk_color
 from gio_file import GioFile, SIZE_LARGE, SIZE_NORMAL
 
 
@@ -610,9 +610,7 @@ class ThumbBox(gtk.VBox):
         parent.modify_bg(gtk.STATE_NORMAL, color)
         for view in self.views: view.modify_base(gtk.STATE_NORMAL, color)
         color = rc_style.text[4]
-        color.red = min(65535, color.red * 0.95)
-        color.green = min(65535, color.green * 0.95)
-        color.blue = min(65535, color.blue * 0.95)
+        color = shade_gdk_color(color, 0.95)
         for label in self.labels:
             label.modify_fg(0, color)
 

@@ -34,6 +34,11 @@ else:
     from pygments import highlight
     from pygments.formatters import ImageFormatter
 
+try:
+    import chardet
+except ImportError:
+    chardet = None
+
 THUMBS = collections.defaultdict(dict)
 ICONS = collections.defaultdict(dict)
 ICON_SIZES = SIZE_NORMAL, SIZE_LARGE = ((128, 128), (256, 256))
@@ -81,7 +86,7 @@ def add_background(pixbuf, color=0xffffffff):
                         gtk.gdk.INTERP_NEAREST,
                         255)
     return result
-    
+
 def crop_pixbuf(pixbuf, x, y, size=SIZE_LARGE):
     """ returns a part of the given pixbuf as new one """
     result = gtk.gdk.Pixbuf(pixbuf.get_colorspace(),
@@ -108,7 +113,7 @@ def create_opendocument_thumb(path):
     pixbuf = gtk.gdk.pixbuf_new_from_file(thumb.name)
     thumb.close()
     return add_background(pixbuf)
-    
+
 def create_text_thumb(gio_file, size=None, threshold=2):
     """ tries to use pygments to get a thumbnail of a text file """
     if pygments is None:
@@ -117,6 +122,8 @@ def create_text_thumb(gio_file, size=None, threshold=2):
         lexer = get_lexer_for_mimetype(gio_file.mime_type)
     except pygments.util.ClassNotFound:
         lexer = get_lexer_for_mimetype("text/plain")
+    if chardet:
+        lexer.encoding = "chardet"
     thumb = tempfile.NamedTemporaryFile()
     formatter = ImageFormatter(font_name="DejaVu Sans Mono", line_numbers=False, font_size=10)
     # to speed things up only highlight the first 20 lines
@@ -142,7 +149,7 @@ def create_text_thumb(gio_file, size=None, threshold=2):
 
 
 class GioFile(object):
-    
+
     @classmethod
     def create(cls, path):
         """ save method to create a GioFile object, if a file does not exist
@@ -151,28 +158,28 @@ class GioFile(object):
             return cls(path)
         except gio.Error:
             return None
-    
+
     def __init__(self, path):
         self._file_object = gio.File(path)
         self._file_info = self._file_object.query_info(
             "standard::content-type,standard::icon,time::modified")
-            
+
     @property
     def mime_type(self):
         return self._file_info.get_attribute_string("standard::content-type")
-            
+
     @property
     def mtime(self):
         return self._file_info.get_attribute_uint64("time::modified")
-        
+
     @property
     def basename(self):
         return self._file_object.get_basename()
-        
+
     @property
     def uri(self):
         return self._file_object.get_uri()
-        
+
     def get_content(self):
         f = open(self._file_object.get_path())
         try:
@@ -180,14 +187,14 @@ class GioFile(object):
         finally:
             f.close()
         return content
-        
+
     @property
     def icon_names(self):
         try:
             return self._file_info.get_attribute_object("standard::icon").get_names()
         except AttributeError:
             return list()
-        
+
     def get_thumbnail(self, size=SIZE_NORMAL, border=0):
         assert size in ICON_SIZES
         try:
@@ -217,7 +224,7 @@ class GioFile(object):
                             scale = min(float(size[0])/width, float(size[1])/height)
                             thumb = gnome.ui.thumbnail_scale_down_pixbuf(
                                 thumb, int(scale*width), int(scale*height))
-                        factory.save_thumbnail(thumb, self.uri, self.mtime) 
+                        factory.save_thumbnail(thumb, self.uri, self.mtime)
                         THUMBS[size][self.uri] = (thumb, self.mtime)
         else:
             if thumb is not None:
@@ -228,18 +235,18 @@ class GioFile(object):
         if thumb is not None and border:
             thumb = make_icon_frame(thumb, border=border, color=0x00000080)
         return thumb
-            
+
     @property
     def thumbnail(self):
         return self.get_thumbnail()
-        
+
     def get_monitor(self):
         return self._file_object.monitor_file()
-        
+
     def refresh(self):
         self._file_info = self._file_object.query_info(
             "standard::content-type,standard::icon,time::modified")
-        
+
     def get_icon(self, size=24, can_thumb=False, border=0):
         icon = None
         if can_thumb:
@@ -273,15 +280,15 @@ class GioFile(object):
         if icon is not None and border:
             icon = make_icon_frame(icon, border=border, color=0x00000080)
         return icon
-        
+
     @property
     def icon(self):
         return self.get_icon()
-        
+
     def launch(self):
         appinfo = gio.app_info_get_default_for_type(self.mime_type, False)
         appinfo.launch([self._file_object,], None)
-        
+
     def has_preview(self):
         icon_names = self.icon_names
         is_opendocument = filter(lambda name: "application-vnd.oasis.opendocument" in name, icon_names)
@@ -290,7 +297,7 @@ class GioFile(object):
             or "application-pdf" in icon_names \
             or (("text-x-generic" in icon_names or "text-x-script" in icon_names) and pygments is not None) \
             or is_opendocument
-            
+
     def thumb_icon_allowed(self):
         icon_names = self.icon_names
         is_opendocument = filter(lambda name: "application-vnd.oasis.opendocument" in name, icon_names)
@@ -298,7 +305,7 @@ class GioFile(object):
             or "image-x-generic" in icon_names \
             or "application-pdf" in icon_names \
             or is_opendocument
-    
+
     def __eq__(self, other):
         if not isinstance(other, GioFile):
             return False

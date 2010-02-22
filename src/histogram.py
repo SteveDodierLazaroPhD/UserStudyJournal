@@ -35,6 +35,7 @@ import gobject
 import gtk
 from math import pi as PI
 import pango
+from widgets import shade_gdk_color
 
 gdk = gtk.gdk
 
@@ -78,10 +79,7 @@ def get_gc_from_colormap(widget, shade):
     gc = widget.style.text_gc[gtk.STATE_INSENSITIVE]
     if gc:
         color = widget.style.text[4]
-        f = lambda num: min((num * shade, 65535.0))
-        color.red = f(color.red)
-        color.green = f(color.green)
-        color.blue = f(color.blue)
+        color = shade_gdk_color(color, shade)
         gc.set_rgb_fg_color(color)
     return gc
 
