@@ -209,7 +209,6 @@ class SingleDayWidget(gtk.VBox):
             color.blue = min(color.blue * 102/100, 65535.0)
             self.view.modify_base(gtk.STATE_NORMAL, color)
             self.ruler_box.modify_bg(gtk.STATE_NORMAL, color)
-
         self.connect("style-set", change_style)
 
     def _set_date_strings(self):

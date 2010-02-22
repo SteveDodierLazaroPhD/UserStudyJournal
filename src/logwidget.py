@@ -165,6 +165,9 @@ class TimelineRenderer(gtk.GenericCellRenderer):
     barsize = 5
     properties = {}
 
+    textcolor = {gtk.STATE_NORMAL : ("#ff", "#ff"),
+                 gtk.STATE_ACTIVE : ("#ff", "#ff")}
+
     @property
     def phases(self):
         return self.get_property("phases")
@@ -182,7 +185,6 @@ class TimelineRenderer(gtk.GenericCellRenderer):
         super(TimelineRenderer, self).__init__()
         self.properties = {}
         self.set_fixed_size(self.width, self.height)
-        self.style = gtk.widget_get_default_style()
         self.set_property("mode", gtk.CELL_RENDERER_MODE_ACTIVATABLE)
 
     def do_set_property(self, pspec, value):
@@ -233,7 +235,8 @@ class TimelineRenderer(gtk.GenericCellRenderer):
         w = window.get_geometry()[2]
         y+= 2
         x += 5
-        color1, color2 = self._handle_text_coloring(flags)
+        state = gtk.STATE_SELECTED if gtk.CELL_RENDERER_SELECTED & flags else gtk.STATE_NORMAL
+        color1, color2 = self.textcolor[state]
         text = self.text % (color1, color2)
         layout = widget.create_pango_layout("")
         layout.set_markup(text)
@@ -250,15 +253,6 @@ class TimelineRenderer(gtk.GenericCellRenderer):
         pcontext.set_source_rgb(0, 0, 0)
         pcontext.move_to(x, y + self.barsize)
         pcontext.show_layout(layout)
-
-    def _handle_text_coloring(self, flags):
-        if gtk.CELL_RENDERER_SELECTED & flags:
-            color1 = self.style.text[gtk.STATE_SELECTED]
-            color2 = self.style.text[gtk.STATE_SELECTED]
-        else:
-            color1 = self.style.text[gtk.STATE_NORMAL]
-            color2 = self.style.text[gtk.STATE_INSENSITIVE]
-        return color1, color2
 
     def on_start_editing(self, event, widget, path, background_area, cell_area, flags):
         pass
@@ -346,7 +340,6 @@ class TimelineView(gtk.TreeView):
         """
         Sets the widgets style and coloring
         """
-
         layout = self.create_pango_layout("")
         layout.set_markup("<b>qPqPqP|</b>\nqPqPqP|")
         tw, th = layout.get_pixel_size()
@@ -355,6 +348,11 @@ class TimelineView(gtk.TreeView):
             width = self.window.get_geometry()[2] - 4
             self.render.width = max(TimelineRenderer.width, width)
         self.render.set_fixed_size(self.render.width, self.render.height)
+
+        normal = (self.style.text[gtk.STATE_NORMAL], self.style.text[gtk.STATE_INSENSITIVE])
+        selected = (self.style.text[gtk.STATE_SELECTED], self.style.text[gtk.STATE_SELECTED])
+        self.render.textcolor[gtk.STATE_NORMAL] = normal
+        self.render.textcolor[gtk.STATE_SELECTED] = selected
 
 
 
