@@ -94,7 +94,7 @@ def make_area_from_event(timestamp, duration):
     - timestamp: a timestamp int or string from which to calulate the start position
     - duration: the length to calulate the width
     """
-    w = max(duration/3600.0/1000.0/24.0, 1/72.0)
+    w = max(duration/3600.0/1000.0/24.0, 0)
     x = ((int(timestamp)/1000.0 - time.timezone)%86400)/3600/24.0
     return [x, w]
 
@@ -213,7 +213,9 @@ class TimelineRenderer(gtk.GenericCellRenderer):
         phases = self.phases
         for start, end in phases:
             start = int(start * w)
-            end = int(end * w)
+            end = max(int(end * w), 8)
+            if start + 8 > w:
+                start = w - 8
             context.rectangle(x+ start, y, end, self.barsize)
             context.fill()
         x = int(phases[0][0]*w)
