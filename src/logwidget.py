@@ -231,6 +231,7 @@ class TimelineRenderer(gtk.GenericCellRenderer):
 
     def render_text(self, window, widget, x, y, w, h, flags):
         w = window.get_geometry()[2]
+        y+= 2
         x += 5
         color1, color2 = self._handle_text_coloring(flags)
         text = self.text % (color1, color2)
