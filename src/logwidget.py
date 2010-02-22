@@ -348,8 +348,12 @@ class TimelineView(gtk.TreeView):
             width = self.window.get_geometry()[2] - 4
             self.render.width = max(TimelineRenderer.width, width)
         self.render.set_fixed_size(self.render.width, self.render.height)
-
-        normal = (self.style.text[gtk.STATE_NORMAL], self.style.text[gtk.STATE_INSENSITIVE])
+        def change_color(color, inc):
+            color.red = min(color.red * inc/100, 65535.0)
+            color.green = min(color.green * inc/100, 65535.0)
+            color.blue = min(color.blue * inc/100, 65535.0)
+            return color
+        normal = (self.style.text[gtk.STATE_NORMAL], change_color(self.style.text[gtk.STATE_INSENSITIVE], 70))
         selected = (self.style.text[gtk.STATE_SELECTED], self.style.text[gtk.STATE_SELECTED])
         self.render.textcolor[gtk.STATE_NORMAL] = normal
         self.render.textcolor[gtk.STATE_SELECTED] = selected
