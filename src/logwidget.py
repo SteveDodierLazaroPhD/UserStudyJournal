@@ -166,7 +166,7 @@ class TimelineRenderer(gtk.GenericCellRenderer):
     properties = {}
 
     textcolor = {gtk.STATE_NORMAL : ("#ff", "#ff"),
-                 gtk.STATE_ACTIVE : ("#ff", "#ff")}
+                 gtk.STATE_SELECTED : ("#ff", "#ff")}
 
     @property
     def phases(self):
