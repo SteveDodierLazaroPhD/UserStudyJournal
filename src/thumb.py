@@ -491,7 +491,11 @@ class ImageView(gtk.IconView):
         self.set_margin(10)
 
     def _set_model_in_thread(self, events):
+        lock = threading.Lock()
         liststore = gtk.ListStore(gtk.gdk.Pixbuf, gobject.TYPE_PYOBJECT, gobject.TYPE_BOOLEAN, gobject.TYPE_PYOBJECT, gobject.TYPE_BOOLEAN)
+        gtk.gdk.threads_enter()
+        self.set_model(liststore)
+        gtk.gdk.threads_leave()
         for event in events:
             pb, isthumb = get_pixbuf(event, self.child_width, self.child_height)
             emblems = tuple()
@@ -499,10 +503,12 @@ class ImageView(gtk.IconView):
                 emblem = get_event_icon(event, 16)
                 if emblem:
                     emblems = (emblem,)
+            gtk.gdk.threads_enter()
+            lock.acquire()
             liststore.append((pb, emblems, False, event, isthumb))
-        gtk.gdk.threads_enter()
-        self.set_model(liststore)
-        gtk.gdk.threads_leave()
+            lock.release()
+            gtk.gdk.threads_leave()
+
 
     def set_model_from_list(self, events):
         """
