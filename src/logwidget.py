@@ -200,24 +200,31 @@ class TimelineRenderer(gtk.GenericCellRenderer):
         The primary rendering function. It calls either the classes rendering functions
         or special one defined in the rendering_functions dict
         """
-        x = cell_area.x
-        y = cell_area.y
-        w = cell_area.width
-        h = cell_area.height
+        x = int(cell_area.x)
+        y = int(cell_area.y)
+        w = int(cell_area.width)
+        h = int(cell_area.height)
         self.render_phases(window, widget, x, y, w, h, flags)
         return True
 
     def render_phases(self, window, widget, x, y, w, h, flags):
         context = window.cairo_create()
-        context.set_source_rgb(*self.color)
         phases = self.phases
         for start, end in phases:
+            context.set_source_rgb(*self.color)
             start = int(start * w)
             end = max(int(end * w), 8)
             if start + 8 > w:
                 start = w - 8
             context.rectangle(x+ start, y, end, self.barsize)
             context.fill()
+            i = (TANGOCOLORS.index(self.color)/3)*3
+            if i == len(TANGOCOLORS): i -= 2
+            color = TANGOCOLORS[i]
+            context.set_source_rgb(*color)
+            context.set_line_width(1)
+            context.rectangle(x + start+0.5, y+0.5, end, self.barsize)
+            context.stroke()
         x = int(phases[0][0]*w)
         self.render_text(window, widget, x, y, w, h, flags)
 
