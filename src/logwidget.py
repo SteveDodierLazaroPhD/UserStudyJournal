@@ -345,10 +345,14 @@ class TimelineView(gtk.TreeView):
         """
         Sets the widgets style and coloring
         """
+
         layout = self.create_pango_layout("")
         layout.set_markup("<b>qPqPqP|</b>\nqPqPqP|")
         tw, th = layout.get_pixel_size()
         self.render.height = max(TimelineRenderer.height, th + 3 + TimelineRenderer.barsize)
+        if self.window:
+            width = self.window.get_geometry()[2] - 4
+            self.render.width = max(TimelineRenderer.width, width)
         self.render.set_fixed_size(self.render.width, self.render.height)
 
 
