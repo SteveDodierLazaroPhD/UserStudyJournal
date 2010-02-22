@@ -31,6 +31,7 @@ import threading
 
 from zeitgeist.datamodel import Interpretation
 from gio_file import GioFile
+from widgets import StaticPreviewTooltip, VideoPreviewTooltip
 
 TANGOCOLORS = (
     (252/255.0, 234/255.0,  79/255.0),#0
@@ -264,6 +265,7 @@ class TimelineRenderer(gtk.GenericCellRenderer):
     def on_activate(self, event, widget, path, background_area, cell_area, flags):
         pass
 
+
 gobject.type_register(TimelineRenderer)
 
 
@@ -286,6 +288,10 @@ class TimelineView(gtk.TreeView):
         pcolumn.add_attribute(render, "color", 2)
         pcolumn.add_attribute(render, "text", 3)
         self.set_headers_visible(False)
+        self.connect("query-tooltip", self.query_tooltip)
+        self.set_property("has-tooltip", True)
+        self.set_tooltip_window(StaticPreviewTooltip)
+
 
     def set_model_from_list(self, events):
         """
@@ -315,6 +321,25 @@ class TimelineView(gtk.TreeView):
     def on_activate(self, widget, path, column):
         model = self.get_model()
         launch_event(model[path][1])
+
+    def query_tooltip(self, widget, x, y, keyboard_mode, tooltip):
+        """
+        Displays a tooltip based on x, y
+        """
+        path = self.get_dest_row_at_pos(int(x), int(y))
+        if path:
+            model = self.get_model()
+            event = model[path[0]][1]
+            uri = event.subjects[0].uri
+            interpretation = event.subjects[0].interpretation
+            tooltip_window = widget.get_tooltip_window()
+            if interpretation == Interpretation.VIDEO.uri:
+                self.set_tooltip_window(VideoPreviewTooltip)
+            else:
+                self.set_tooltip_window(StaticPreviewTooltip)
+            gio_file = GioFile.create(uri)
+            return tooltip_window.preview(gio_file)
+        return False
 
     def change_style(self, widget, old_style):
         """
