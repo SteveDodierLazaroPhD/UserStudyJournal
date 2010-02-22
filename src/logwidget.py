@@ -345,13 +345,6 @@ class TimelineView(gtk.TreeView):
         """
         Sets the widgets style and coloring
         """
-        color = widget.style.bg[gtk.STATE_NORMAL]
-        color.red = min(color.red * 102/100, 65535.0)
-        color.green = min(color.green * 102/100, 65535.0)
-        color.blue = min(color.blue * 102/100, 65535.0)
-        if color != widget.style.base[gtk.STATE_NORMAL]:
-            self.modify_base(gtk.STATE_NORMAL, color)
-        # get size
         layout = self.create_pango_layout("")
         layout.set_markup("<b>qPqPqP|</b>\nqPqPqP|")
         tw, th = layout.get_pixel_size()
