@@ -655,9 +655,9 @@ def shade_gdk_color(color, shade):
         color.green = f(color.green)
         color.blue = f(color.blue)
     else:
-        red = int(f(color.red)/65535.0)
-        green = int(f(color.green)/65535.0)
-        blue = int(f(color.blue)/65535.0)
+        red = int(f(color.red))
+        green = int(f(color.green))
+        blue = int(f(color.blue))
         color = gtk.gdk.Color(red=red, green=green, blue=blue, pixel=color.pixel)
     return color
 
