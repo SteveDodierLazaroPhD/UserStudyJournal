@@ -219,7 +219,7 @@ class TimelineRenderer(gtk.GenericCellRenderer):
             context.rectangle(x+ start, y, end, self.barsize)
             context.fill()
             i = (TANGOCOLORS.index(self.color)/3)*3
-            if i == len(TANGOCOLORS): i -= 2
+            if i == TANGOCOLORS.index(self.color): i += 1
             color = TANGOCOLORS[i]
             context.set_source_rgb(*color)
             context.set_line_width(1)
