@@ -30,6 +30,7 @@ import operator
 import threading
 
 from zeitgeist.datamodel import Interpretation
+from gio_file import GioFile
 
 TANGOCOLORS = (
     (252/255.0, 234/255.0,  79/255.0),#0
@@ -203,12 +204,6 @@ class TimelineRenderer(gtk.GenericCellRenderer):
         y = cell_area.y
         w = cell_area.width
         h = cell_area.height
-        # test
-        #context = window.cairo_create()
-        #context.set_source_rgb(1, 0, 1)
-        #context.rectangle(x + 2, y + 2, w - 4, h - 4)
-        #context.fill_preserve()
-        #context.stroke()
         self.render_phases(window, widget, x, y, w, h, flags)
         return True
 
@@ -217,11 +212,11 @@ class TimelineRenderer(gtk.GenericCellRenderer):
         context.set_source_rgb(*self.color)
         phases = self.phases
         for start, end in phases:
-            start = start * w
-            end = end * w
+            start = int(start * w)
+            end = int(end * w)
             context.rectangle(x+ start, y, end, self.barsize)
             context.fill()
-        x = phases[0][0]*w
+        x = int(phases[0][0]*w)
         self.render_text(window, widget, x, y, w, h, flags)
 
     def render_text(self, window, widget, x, y, w, h, flags):
@@ -239,7 +234,6 @@ class TimelineRenderer(gtk.GenericCellRenderer):
             textw, texth = layout.get_pixel_size()
             if x + textw > w:
                 x = w - textw
-            pass
         context = window.cairo_create()
         pcontext = pangocairo.CairoContext(context)
         pcontext.set_source_rgb(0, 0, 0)
@@ -247,7 +241,7 @@ class TimelineRenderer(gtk.GenericCellRenderer):
         pcontext.show_layout(layout)
 
     def _handle_text_coloring(self, flags):
-        if flags  == gtk.CELL_RENDERER_SELECTED:
+        if gtk.CELL_RENDERER_SELECTED & flags:
             color1 = self.style.text[gtk.STATE_SELECTED]
             color2 = self.style.text[gtk.STATE_SELECTED]
         else:

@@ -186,14 +186,20 @@ class SingleDayWidget(gtk.VBox):
     def __init__(self):
         gtk.VBox.__init__(self)
         self.daylabel = None
-        self.ruler = gtk.Label("2:00")
+        self.ruler_box = gtk.EventBox()
+        ruler = gtk.HBox()
+        self.ruler_box.add(ruler)
+        for time_str in ("4:00", "8:00", "12:00", "16:00", "20:00"):
+            label = gtk.Label()
+            label.set_markup("<tt>%s</tt>" % time_str)
+            ruler.pack_start(label, True, True)
         self.scrolledwindow = gtk.ScrolledWindow()
         self.scrolledwindow.set_shadow_type(gtk.SHADOW_NONE)
         self.scrolledwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
         self.view = logwidget.TimelineView()
         self.scrolledwindow.add(self.view)
         self.pack_end(self.scrolledwindow)
-        self.pack_end(self.ruler, False, False)
+        self.pack_end(self.ruler_box, False, False)
         self.view.set_events(gtk.gdk.POINTER_MOTION_MASK | gtk.gdk.POINTER_MOTION_HINT_MASK)
         def change_style(widget, style):
             rc_style = self.style
@@ -201,7 +207,8 @@ class SingleDayWidget(gtk.VBox):
             color.red = min(color.red * 102/100, 65535.0)
             color.green = min(color.green * 102/100, 65535.0)
             color.blue = min(color.blue * 102/100, 65535.0)
-            self.view.modify_bg(gtk.STATE_NORMAL, color)
+            self.view.modify_base(gtk.STATE_NORMAL, color)
+            self.ruler_box.modify_bg(gtk.STATE_NORMAL, color)
 
         self.connect("style-set", change_style)
 
@@ -220,7 +227,7 @@ class SingleDayWidget(gtk.VBox):
         self.day_start = start
         self.day_end = end
         for widget in self:
-            if widget not in (self.ruler, self.scrolledwindow):
+            if widget not in (self.ruler_box, self.scrolledwindow):
                 self.remove(widget)
         self._set_date_strings()
         today = int(time.time() ) - 7*86400
