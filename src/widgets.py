@@ -658,7 +658,7 @@ def shade_gdk_color(color, shade):
         red = int(f(color.red))
         green = int(f(color.green))
         blue = int(f(color.blue))
-        color = gtk.gdk.Color(red=red, green=green, blue=blue, pixel=color.pixel)
+        color = gtk.gdk.Color(red=red, green=green, blue=blue)
     return color
 
 def combine_gdk_color(color, fcolor):
@@ -678,7 +678,7 @@ def combine_gdk_color(color, fcolor):
         red = int(((2*color.red + fcolor.red)/3))
         green = int(((2*color.green + fcolor.green)/3))
         blue = int(((2*color.blue + fcolor.blue)/3))
-        color = gtk.gdk.Color(red=red, green=green, blue=blue, pixel=color.pixel)
+        color = gtk.gdk.Color(red=red, green=green, blue=blue)
     return color
 
 searchbox = SearchBox()
