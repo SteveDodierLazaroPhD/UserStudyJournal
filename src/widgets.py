@@ -663,7 +663,7 @@ def shade_gdk_color(color, shade):
 
 def combine_gdk_color(color, fcolor):
     """
-    Shades a color by a fraction
+    Combines a color with another color
 
     Arguments:
     -- color - a gdk color
