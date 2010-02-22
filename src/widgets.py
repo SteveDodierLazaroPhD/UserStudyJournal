@@ -5,6 +5,7 @@
 # Copyright © 2009-2010 Seif Lotfy <seif@lotfy.com>
 # Copyright © 2010 Siegfried Gevatter <siegfried@gevatter.com>
 # Copyright © 2010 Markus Korn <thekorn@gmx.de>
+# Copyright © 2010 Randal Barlow <email.tehk@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

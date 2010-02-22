@@ -2,7 +2,7 @@
 #
 # GNOME Activity Journal
 #
-# Copyright © 2010 Randal Barlow
+# Copyright © 2010 Randal Barlow <email.tehk@gmail.com>
 # Copyright © 2010 Markus Korn
 # Copyright © 2010 Siegfried Gevatter <siegfried@gevatter.com>
 #

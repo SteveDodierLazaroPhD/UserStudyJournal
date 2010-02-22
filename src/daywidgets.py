@@ -35,8 +35,8 @@ from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
     ResultType, TimeRange
 
 from widgets import *
-from thumbview import ThumbBox
-import logwidget
+from thumb import ThumbBox
+from timeline import TimelineView
 from eventgatherer import get_dayevents, get_file_events
 
 CLIENT = ZeitgeistClient()
@@ -194,7 +194,7 @@ class SingleDayWidget(gtk.VBox):
         self.scrolledwindow = gtk.ScrolledWindow()
         self.scrolledwindow.set_shadow_type(gtk.SHADOW_NONE)
         self.scrolledwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
-        self.view = logwidget.TimelineView()
+        self.view = TimelineView()
         self.scrolledwindow.add(self.view)
         self.pack_end(self.scrolledwindow)
         self.pack_end(self.ruler_box, False, False)

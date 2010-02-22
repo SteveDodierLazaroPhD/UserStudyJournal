@@ -2,7 +2,7 @@
 #
 # Filename
 #
-# Copyright © 2010 Randal Barlow
+# Copyright © 2010 Randal Barlow <email.tehk@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
