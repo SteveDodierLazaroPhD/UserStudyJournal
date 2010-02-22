@@ -33,7 +33,7 @@ from zeitgeist.datamodel import Interpretation
 from gio_file import GioFile
 from widgets import StaticPreviewTooltip, VideoPreviewTooltip
 
-TANGOCOLORS = (
+TANGOCOLORS = [
     (252/255.0, 234/255.0,  79/255.0),#0
     (237/255.0, 212/255.0,   0/255.0),
     (196/255.0, 160/255.0,   0/255.0),
@@ -65,7 +65,7 @@ TANGOCOLORS = (
     (136/255.0, 138/255.0, 133/255.0),#21
     ( 85/255.0,  87/255.0,  83/255.0),
     ( 46/255.0,  52/255.0,  54/255.0),
-    )
+    ]
 
 FILETYPES = {
     Interpretation.VIDEO.uri : 0,
