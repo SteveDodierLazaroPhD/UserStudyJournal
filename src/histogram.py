@@ -38,24 +38,6 @@ import pango
 from common import *
 
 
-def get_gtk_rgba(style, palette, i, shade = 1, alpha = 1):
-    """Takes a gtk style and returns a RGB tuple
-
-    Arguments:
-    - style: a gtk_style object
-    - palette: a string representing the palette you want to pull a color from
-        Example: "bg", "fg"
-    - shade: how much you want to shade the color
-    """
-    f = lambda num: (num/65535.0) * shade
-    color = getattr(style, palette)[i]
-    if isinstance(color, gtk.gdk.Color):
-        red = f(color.red)
-        green = f(color.green)
-        blue = f(color.blue)
-        return (min(red, 1), min(green, 1), min(blue, 1), alpha)
-    else: raise TypeError("Not a valid gtk.gdk.Color")
-
 def get_gc_from_colormap(widget, shade):
     """
     Gets a gtk.gdk.GC and modifies the color by shade

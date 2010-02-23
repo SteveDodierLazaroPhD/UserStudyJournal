@@ -34,32 +34,13 @@ from zeitgeist.client import ZeitgeistClient
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
     ResultType, TimeRange
 
-from common import shade_gdk_color, combine_gdk_color
+from common import shade_gdk_color, combine_gdk_color, get_gtk_rgba
 from widgets import *
 from thumb import ThumbBox
 from timeline import TimelineView
 from eventgatherer import get_dayevents, get_file_events
 
 CLIENT = ZeitgeistClient()
-
-
-def get_gtk_rgba(style, palette, i, shade = 1, alpha = 1):
-    """Takes a gtk style and returns a RGB tuple
-
-    Arguments:
-    - style: a gtk_style object
-    - palette: a string representing the palette you want to pull a color from
-        Example: "bg", "fg"
-    - shade: how much you want to shade the color
-    """
-    f = lambda num: (num/65535.0) * shade
-    color = getattr(style, palette)[i]
-    if isinstance(color, gtk.gdk.Color):
-        red = f(color.red)
-        green = f(color.green)
-        blue = f(color.blue)
-        return (min(red, 1), min(green, 1), min(blue, 1), alpha)
-    raise TypeError("Not a valid gdk.Color")
 
 
 class ThumbnailDayWidget(gtk.VBox):

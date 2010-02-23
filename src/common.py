@@ -235,6 +235,9 @@ def draw_text(context, layout, markup = "", x=0, y=0, maxw=0, color = (0.3, 0.3,
     pcontext.move_to(x, y)
     pcontext.show_layout(layout)
 
+##
+## Color functions
+
 def shade_gdk_color(color, shade):
     """
     Shades a color by a fraction
@@ -274,6 +277,25 @@ def combine_gdk_color(color, fcolor):
         blue = int(((2*color.blue + fcolor.blue)/3))
         color = gtk.gdk.Color(red=red, green=green, blue=blue)
     return color
+
+def get_gtk_rgba(style, palette, i, shade = 1, alpha = 1):
+    """Takes a gtk style and returns a RGB tuple
+
+    Arguments:
+    - style: a gtk_style object
+    - palette: a string representing the palette you want to pull a color from
+        Example: "bg", "fg"
+    - shade: how much you want to shade the color
+    """
+    f = lambda num: (num/65535.0) * shade
+    color = getattr(style, palette)[i]
+    if isinstance(color, gtk.gdk.Color):
+        red = f(color.red)
+        green = f(color.green)
+        blue = f(color.blue)
+        return (min(red, 1), min(green, 1), min(blue, 1), alpha)
+    else: raise TypeError("Not a valid gtk.gdk.Color")
+
 
 ##
 ## Pixbuff work
