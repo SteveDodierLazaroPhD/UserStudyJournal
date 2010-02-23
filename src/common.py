@@ -395,7 +395,7 @@ class PixbufCache(dict):
         path = dir_ + str(hash(isthumb)) + "_" + str(hash(key))
         if not os.path.exists(path):
             open(path, 'w').close()
-            pb.save(path, "png", {"quality":"100"})
+            pb.save(path, "png")
         return super(PixbufCache, self).__setitem__(key, (pb, isthumb))
 
 PIXBUFCACHE = PixbufCache()
