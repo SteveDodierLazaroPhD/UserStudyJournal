@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-activity-journal\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-01-22 14:44+0100\n"
+"POT-Creation-Date: 2010-02-21 00:28+0100\n"
 "PO-Revision-Date: 2010-01-08 01:52+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Italian <it@li.org>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2010-02-13 05:04+0000\n"
+"X-Launchpad-Export-Date: 2010-02-23 05:16+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../gnome-activity-journal:76
@@ -30,8 +30,76 @@ msgstr ""
 msgid "Unable to connect to Zeitgeist:"
 msgstr ""
 
-#: ../src/main.py:45 ../extra/gnome-activity-journal.desktop.in.h:1
+#: ../src/logwidget.py:81
+msgid "Video"
+msgstr ""
+
+#: ../src/logwidget.py:82
+msgid "Music"
+msgstr ""
+
+#: ../src/logwidget.py:83
+msgid "Document"
+msgstr ""
+
+#: ../src/logwidget.py:84
+msgid "Image"
+msgstr ""
+
+#: ../src/logwidget.py:85
+msgid "Source Code"
+msgstr ""
+
+#: ../src/logwidget.py:86
+msgid "Unknown"
+msgstr ""
+
+#: ../src/thumbview.py:38 ../src/daywidgets.py:253
+msgid "Morning"
+msgstr ""
+
+#: ../src/thumbview.py:38 ../src/daywidgets.py:254
+msgid "Afternoon"
+msgstr ""
+
+#: ../src/thumbview.py:38 ../src/daywidgets.py:255
+msgid "Evening"
+msgstr ""
+
+#: ../src/histogram.py:510 ../src/main.py:147 ../src/daywidgets.py:79
+#: ../src/daywidgets.py:194 ../src/daywidgets.py:274 ../src/daywidgets.py:447
+msgid "Today"
+msgstr ""
+
+#: ../src/histogram.py:545
+msgid "item"
+msgid_plural "items"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../src/histogram.py:547
+msgid "Click today to return to today"
+msgstr ""
+
+#: ../src/main.py:44 ../extra/gnome-activity-journal.desktop.in.h:1
 msgid "Activity Journal"
+msgstr ""
+
+#: ../src/main.py:105
+msgid "Powered by Zeitgeist"
+msgstr ""
+
+#: ../src/main.py:134 ../src/main.py:161
+msgid "to"
+msgstr ""
+
+#: ../src/main.py:134
+msgid " Today"
+msgstr ""
+
+#: ../src/main.py:150 ../src/daywidgets.py:81 ../src/daywidgets.py:196
+#: ../src/daywidgets.py:276
+msgid "Yesterday"
 msgstr ""
 
 #. TODO: Move this into Zeitgeist's library, implemented properly
@@ -75,56 +143,25 @@ msgstr ""
 msgid "Other Activities"
 msgstr ""
 
-#: ../src/daywidgets.py:51
-msgid "Morning"
-msgstr ""
-
-#: ../src/daywidgets.py:52
-msgid "Afternoon"
-msgstr ""
-
-#: ../src/daywidgets.py:53
-msgid "Evening"
-msgstr ""
-
-#: ../src/daywidgets.py:72 ../src/daywidgets.py:214
-#: ../src/histogramwidget/histogramview.py:233
-msgid "Today"
-msgstr ""
-
-#: ../src/daywidgets.py:74
-msgid "Yesterday"
-msgstr ""
-
 #. Initialize the widget
-#: ../src/daywidgets.py:412
+#: ../src/daywidgets.py:805
 msgid "Pinned items"
 msgstr ""
 
-#: ../src/widgets.py:180
+#: ../src/widgets.py:183
 msgid "Type here to search..."
 msgstr ""
 
-#: ../src/widgets.py:474 ../src/widgets.py:546
+#: ../src/widgets.py:485 ../src/widgets.py:583
 msgid "Remove Pin"
 msgstr ""
 
-#: ../src/widgets.py:546
+#: ../src/widgets.py:583
 msgid "Pin to Today"
 msgstr ""
 
-#: ../src/widgets.py:550
+#: ../src/widgets.py:587
 msgid "Delete item from Journal"
-msgstr ""
-
-#: ../src/histogramwidget/histogramview.py:79
-msgid "item"
-msgid_plural "items"
-msgstr[0] ""
-msgstr[1] ""
-
-#: ../src/histogramwidget/histogramview.py:81
-msgid "Click today to return to today"
 msgstr ""
 
 #: ../extra/gnome-activity-journal.desktop.in.h:2
