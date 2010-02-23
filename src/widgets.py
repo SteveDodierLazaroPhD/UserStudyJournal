@@ -39,6 +39,7 @@ from zeitgeist.client import ZeitgeistClient
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
     ResultType
 
+from common import shade_gdk_color, combine_gdk_color
 from config import BASE_PATH, VERSION, settings, get_icon_path
 from sources import Source, SUPPORTED_SOURCES
 from gio_file import GioFile, SIZE_NORMAL, SIZE_LARGE
@@ -642,45 +643,6 @@ class AboutDialog(gtk.AboutDialog):
         self.set_logo(gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path(
             "hicolor/scalable/apps/gnome-activity-journal.svg"), 48, 48))
 
-def shade_gdk_color(color, shade):
-    """
-    Shades a color by a fraction
-
-    Arguments:
-    -- color - a gdk color
-    -- shade - fraction by which to shade the color
-    """
-    f = lambda num: min((num * shade, 65535.0))
-    if gtk.pygtk_version >= (2, 16, 0):
-        color.red = f(color.red)
-        color.green = f(color.green)
-        color.blue = f(color.blue)
-    else:
-        red = int(f(color.red))
-        green = int(f(color.green))
-        blue = int(f(color.blue))
-        color = gtk.gdk.Color(red=red, green=green, blue=blue)
-    return color
-
-def combine_gdk_color(color, fcolor):
-    """
-    Combines a color with another color
-
-    Arguments:
-    -- color - a gdk color
-    -- fcolor - a gdk color to combine with color
-    """
-    f = lambda num: min((num * shade, 65535.0))
-    if gtk.pygtk_version >= (2, 16, 0):
-        color.red = (2*color.red + fcolor.red)/3
-        color.green = (2*color.green + fcolor.green)/3
-        color.blue = (2*color.blue + fcolor.blue)/3
-    else:
-        red = int(((2*color.red + fcolor.red)/3))
-        green = int(((2*color.green + fcolor.green)/3))
-        blue = int(((2*color.blue + fcolor.blue)/3))
-        color = gtk.gdk.Color(red=red, green=green, blue=blue)
-    return color
 
 searchbox = SearchBox()
 if gst is not None:

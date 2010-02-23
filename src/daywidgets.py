@@ -34,6 +34,7 @@ from zeitgeist.client import ZeitgeistClient
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
     ResultType, TimeRange
 
+from common import shade_gdk_color, combine_gdk_color
 from widgets import *
 from thumb import ThumbBox
 from timeline import TimelineView

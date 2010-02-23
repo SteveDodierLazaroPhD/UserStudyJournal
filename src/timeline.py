@@ -32,58 +32,7 @@ import threading
 from zeitgeist.datamodel import Interpretation
 from gio_file import GioFile
 from widgets import StaticPreviewTooltip, VideoPreviewTooltip, shade_gdk_color
-
-TANGOCOLORS = [
-    (252/255.0, 234/255.0,  79/255.0),#0
-    (237/255.0, 212/255.0,   0/255.0),
-    (196/255.0, 160/255.0,   0/255.0),
-
-    (252/255.0, 175/255.0,  62/255.0),#3
-    (245/255.0, 121/255.0,   0/255.0),
-    (206/255.0,  92/255.0,   0/255.0),
-
-    (233/255.0, 185/255.0, 110/255.0),#6
-    (193/255.0, 125/255.0,  17/255.0),
-    (143/255.0,  89/255.0,  02/255.0),
-
-    (138/255.0, 226/255.0,  52/255.0),#9
-    (115/255.0, 210/255.0,  22/255.0),
-    ( 78/255.0, 154/255.0,  06/255.0),
-
-    (114/255.0, 159/255.0, 207/255.0),#12
-    ( 52/255.0, 101/255.0, 164/255.0),
-    ( 32/255.0,  74/255.0, 135/255.0),
-
-    (173/255.0, 127/255.0, 168/255.0),#15
-    (117/255.0,  80/255.0, 123/255.0),
-    ( 92/255.0,  53/255.0, 102/255.0),
-
-    (239/255.0,  41/255.0,  41/255.0),#18
-    (204/255.0,   0/255.0,   0/255.0),
-    (164/255.0,   0/255.0,   0/255.0),
-
-    (136/255.0, 138/255.0, 133/255.0),#21
-    ( 85/255.0,  87/255.0,  83/255.0),
-    ( 46/255.0,  52/255.0,  54/255.0),
-    ]
-
-FILETYPES = {
-    Interpretation.VIDEO.uri : 0,
-    Interpretation.MUSIC.uri : 3,
-    Interpretation.DOCUMENT.uri : 12,
-    Interpretation.IMAGE.uri : 15,
-    Interpretation.SOURCECODE.uri : 12,
-    Interpretation.UNKNOWN.uri : 21,
-    }
-
-FILETYPESNAMES = {
-    Interpretation.VIDEO.uri : _("Video"),
-    Interpretation.MUSIC.uri : _("Music"),
-    Interpretation.DOCUMENT.uri : _("Document"),
-    Interpretation.IMAGE.uri : _("Image"),
-    Interpretation.SOURCECODE.uri : _("Source Code"),
-    Interpretation.UNKNOWN.uri : _("Unknown"),
-    }
+from common import *
 
 def make_area_from_event(timestamp, duration):
     """
@@ -98,15 +47,6 @@ def make_area_from_event(timestamp, duration):
     w = max(duration/3600.0/1000.0/24.0, 0)
     x = ((int(timestamp)/1000.0 - time.timezone)%86400)/3600/24.0
     return [x, w]
-
-def get_file_color(ftype, fmime):
-    """Uses hashing to choose a shade from a hue in the color tuple above
-    """
-    if ftype in FILETYPES.keys():
-        i = FILETYPES[ftype]
-        l = int(math.fabs(hash(fmime))) % 3
-        return TANGOCOLORS[min(i+l, len(TANGOCOLORS)-1)]
-    return (136/255.0, 138/255.0, 133/255.0)
 
 def text_handler(obj):
     """
@@ -123,10 +63,6 @@ def text_handler(obj):
     t1 = "<span color='!s'><b>%s</b></span>" % t
     t2 = "<span color='!s'>%s</span> " % (text)
     return (str(t1) + "\n" + str(t2) + "").replace("&", "&amp;").replace("!s", "%s")
-
-def launch_event(event):
-    gfile = GioFile(event.subjects[0].uri)
-    gfile.launch()
 
 
 class TimelineRenderer(gtk.GenericCellRenderer):

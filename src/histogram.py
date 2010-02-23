@@ -36,6 +36,7 @@ import gtk
 from math import pi as PI
 import pango
 from widgets import shade_gdk_color
+from common import *
 
 gdk = gtk.gdk
 
@@ -68,7 +69,6 @@ def get_gtk_rgba(style, palette, i, shade = 1, alpha = 1):
         red = f(color.red)
         green = f(color.green)
         blue = f(color.blue)
-
         return (min(red, 1), min(green, 1), min(blue, 1), alpha)
     else: raise TypeError("Not a valid gdk.Color")
 
