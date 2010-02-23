@@ -35,7 +35,6 @@ import gobject
 import gtk
 from math import pi as PI
 import pango
-from widgets import shade_gdk_color
 from common import *
 
 gdk = gtk.gdk

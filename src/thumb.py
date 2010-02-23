@@ -32,7 +32,7 @@ import threading
 
 from zeitgeist.datamodel import Interpretation
 
-from widgets import StaticPreviewTooltip, VideoPreviewTooltip, shade_gdk_color
+from widgets import StaticPreviewTooltip, VideoPreviewTooltip
 from gio_file import GioFile, SIZE_LARGE, SIZE_NORMAL
 from common import *
 

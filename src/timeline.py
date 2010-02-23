@@ -31,7 +31,7 @@ import threading
 
 from zeitgeist.datamodel import Interpretation
 from gio_file import GioFile
-from widgets import StaticPreviewTooltip, VideoPreviewTooltip, shade_gdk_color
+from widgets import StaticPreviewTooltip, VideoPreviewTooltip
 from common import *
 
 def make_area_from_event(timestamp, duration):
