@@ -173,7 +173,7 @@ class TimelineRenderer(gtk.GenericCellRenderer):
         x += 5
         state = gtk.STATE_SELECTED if gtk.CELL_RENDERER_SELECTED & flags else gtk.STATE_NORMAL
         color1, color2 = self.textcolor[state]
-        text = self.text % (color1, color2)
+        text = self.text % (color1.to_string(), color2.to_string())
         layout = widget.create_pango_layout("")
         layout.set_markup(text)
 

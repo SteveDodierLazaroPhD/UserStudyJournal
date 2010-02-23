@@ -374,12 +374,8 @@ class PixbufCache(dict):
 
     def get_buff(self, key):
         thumbpath = os.path.expanduser("~/.cache/GAJ/1_" + str(hash(key)))
-        iconpath = os.path.expanduser("~/.cache/GAJ/0_" + str(hash(key)))
         if os.path.exists(thumbpath):
             self[key] = (gtk.gdk.pixbuf_new_from_file(thumbpath), True)
-            return self[key]
-        elif os.path.exists(iconpath):
-            self[key] = (gtk.gdk.pixbuf_new_from_file(iconpath), False)
             return self[key]
         return None
 

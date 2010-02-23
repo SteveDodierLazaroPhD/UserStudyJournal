@@ -103,7 +103,6 @@ class Portal(gtk.Window):
 
         self.throbber = AnimatedImage(get_data_path("zlogo/zg%d.png"), 150)
         self.throbber.set_tooltip_text(_("Powered by Zeitgeist"))
-        self.throbber.set_has_tooltip(True)
         self.throbber.set_alignment(0.9, 0.98)
         aboutbox = gtk.EventBox()
         aboutbox.add(self.throbber)
