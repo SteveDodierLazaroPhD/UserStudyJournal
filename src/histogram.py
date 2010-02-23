@@ -37,21 +37,6 @@ from math import pi as PI
 import pango
 from common import *
 
-gdk = gtk.gdk
-
-def check_for_new_month(date):
-    if datetime.date.fromtimestamp(date).day == 1:
-        return True
-    return False
-
-def _in_area(coord_x, coord_y, area):
-    """check if some given X,Y coordinates are within an area.
-    area is either None or a (top_left_x, top_left_y, width, height)-tuple"""
-    if area is None:
-        return False
-    area_x, area_y, area_width, area_height = area
-    return (area_x <= coord_x <= area_x + area_width) and \
-        (area_y <= coord_y <= area_y + area_height)
 
 def get_gtk_rgba(style, palette, i, shade = 1, alpha = 1):
     """Takes a gtk style and returns a RGB tuple
@@ -64,16 +49,16 @@ def get_gtk_rgba(style, palette, i, shade = 1, alpha = 1):
     """
     f = lambda num: (num/65535.0) * shade
     color = getattr(style, palette)[i]
-    if isinstance(color, gdk.Color):
+    if isinstance(color, gtk.gdk.Color):
         red = f(color.red)
         green = f(color.green)
         blue = f(color.blue)
         return (min(red, 1), min(green, 1), min(blue, 1), alpha)
-    else: raise TypeError("Not a valid gdk.Color")
+    else: raise TypeError("Not a valid gtk.gdk.Color")
 
 def get_gc_from_colormap(widget, shade):
     """
-    Gets a gdk.GC and modifies the color by shade
+    Gets a gtk.gdk.GC and modifies the color by shade
     """
     gc = widget.style.text_gc[gtk.STATE_INSENSITIVE]
     if gc:
@@ -309,7 +294,7 @@ class CairoHistogram(gtk.DrawingArea):
         months_positions = []
         i = 0
         for date, nitems in self._datastore:
-            if check_for_new_month(date):
+            if datetime.date.fromtimestamp(date).day == 1:
                 months_positions += [(date, x)]
             if len(self._highlighted) > 0 and i >= self._highlighted[0] and i <= self._highlighted[-1] and i in self._highlighted:
                 color = self.colors["column_selected_alternative"] if i in selected else self.colors["column_alternative"]
@@ -458,7 +443,7 @@ class CairoHistogram(gtk.DrawingArea):
         """
         Reacts to mouse moving (while pressed), and clicks
         """
-        #if (event.state == gdk.BUTTON1_MASK and not self._disable_mouse_motion):
+        #if (event.state == gtk.gdk.BUTTON1_MASK and not self._disable_mouse_motion):
         location = min((self.get_datastore_index_from_cartesian(event.x, event.y), len(self._datastore) - 1))
         if location != self._last_location:
             self.change_location(location)
@@ -478,10 +463,10 @@ class CairoHistogram(gtk.DrawingArea):
 
     def mouse_scroll_interaction(self, widget, event):
         i = self.get_selected()[-1]
-        if (event.direction in (gdk.SCROLL_UP, gdk.SCROLL_RIGHT)):
+        if (event.direction in (gtk.gdk.SCROLL_UP, gtk.gdk.SCROLL_RIGHT)):
             if i+1< len(self.get_datastore()):
                 self.change_location(i+1)
-        elif (event.direction in (gdk.SCROLL_DOWN, gdk.SCROLL_LEFT)):
+        elif (event.direction in (gtk.gdk.SCROLL_DOWN, gtk.gdk.SCROLL_LEFT)):
             if 0 <= i-1:
                 self.change_location(i-1)
 
@@ -508,6 +493,25 @@ class CairoHistogram(gtk.DrawingArea):
         self.queue_draw()
         return True
 
+
+def _in_area(coord_x, coord_y, area):
+    """check if some given X,Y coordinates are within an area.
+    area is either None or a (top_left_x, top_left_y, width, height)-tuple"""
+    if area is None:
+        return False
+    area_x, area_y, area_width, area_height = area
+    return (area_x <= coord_x <= area_x + area_width) and \
+        (area_y <= coord_y <= area_y + area_height)
+
+
+def _in_area(coord_x, coord_y, area):
+    """check if some given X,Y coordinates are within an area.
+    area is either None or a (top_left_x, top_left_y, width, height)-tuple"""
+    if area is None:
+        return False
+    area_x, area_y, area_width, area_height = area
+    return (area_x <= coord_x <= area_x + area_width) and \
+        (area_y <= coord_y <= area_y + area_height)
 
 class TooltipEventBox(gtk.EventBox):
     """
