@@ -18,7 +18,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """
-Common Functions and classes which are used by the alternative views
+Common Functions and classes which are used to create the alternative views,
+and handle colors, pixbufs, and text
 """
 
 import cairo
@@ -93,6 +94,10 @@ ICON_THEME = gtk.icon_theme_get_default()
 
 def get_file_color(ftype, fmime):
     """Uses hashing to choose a shade from a hue in the color tuple above
+
+    Arguments:
+    -- ftype - a zeitgeist interpretation
+    -- fmime - a mime type
     """
     if ftype in FILETYPES.keys():
         i = FILETYPES[ftype]
@@ -100,7 +105,9 @@ def get_file_color(ftype, fmime):
         return TANGOCOLORS[min(i+l, len(TANGOCOLORS)-1)]
     return (136/255.0, 138/255.0, 133/255.0)
 
+##
 # Zeitgeist event helper functions
+
 def launch_event(event):
     """
     Launches a uri which is found using a zeitgeist event
@@ -130,12 +137,14 @@ def get_uri(event):
     """
     Returns a uri from a event's first subject
     """
-    return event.subjects[0].uri#[7:].replace("%20", " ")
+    return event.subjects[0].uri
 
 def get_timestamp(event):
     return float(event.timestamp)
 
+##
 # Cairo drawing functions
+
 def draw_frame(context, x, y, w, h):
     """
     Draws a 2 pixel frame around a area defined by x, y, w, h using a cairo context
@@ -177,7 +186,6 @@ def draw_rounded_rectangle(context, x=0, y=0, w=1, h=1, r=0.05):
     context.arc(w-r+x, h-r+y, r, 0, math.pi/2)
     context.arc(r+x, h-r+y, r, math.pi/2, math.pi)
     context.close_path()
-    #context.close_path()
     return context
 
 def draw_speech_bubble(context, layout, x=0, y=0, w=1, h=1):
@@ -300,6 +308,15 @@ def get_gtk_rgba(style, palette, i, shade = 1, alpha = 1):
 ##
 ## Pixbuff work
 ##
+
+def new_grayscale_pixbuf(pixbuf):
+    """
+    Makes a pixbuf grayscale
+    """
+    pixbuf2 = pixbuf.copy()
+    pixbuf.saturate_and_pixelate(pixbuf2, 0.0, False)
+    return pixbuf2
+
 def crop_pixbuf(pb, src_x, src_y, width, height):
     """
     Crop a pixbuf
@@ -343,10 +360,13 @@ def scale_to_fill(image, neww, newh):
 class PixbufCache(dict):
     """
     A pixbuf cache dict which stores, loads, and saves pixbufs to a cache and to
-    the users filesystem
+    the users filesystem. The naming scheme for thumb files are use hash
+
+    There are huge flaws with this object. It does not have a ceiling, and it
+    does not remove thumbnails from the file system. Essentially meaning the
+    cache directory can grow forever.
     """
     def __init__(self, *args, **kwargs):
-        """"""
         super(PixbufCache, self).__init__()
 
     def check_cache(self, uri):
@@ -383,12 +403,13 @@ PIXBUFCACHE = PixbufCache()
 
 def get_pixbuf_from_uri(uri, size=SIZE_LARGE, iconscale=1, w=0, h=0):
     """
-    Return a pixbuf and True if a thumbnail was found, else False
+    Returns a pixbuf and True if a thumbnail was found, else False. Uses the
+    Pixbuf Cache for thumbnail compatible files
 
     Arguments:
     -- uri: a uri on the disk
     -- size: a size tuple from thumbfactory
-    -- iconscale: a factor to reduce other icons by (not thumbs)
+    -- iconscale: a factor to reduce icons by (not thumbs)
     -- w - resulting width
     -- h - resulting height
     """
@@ -415,14 +436,6 @@ def get_pixbuf_from_uri(uri, size=SIZE_LARGE, iconscale=1, w=0, h=0):
         pb = scale_to_fill(pb, w, h)
         PIXBUFCACHE[uri] = (pb, thumb)
     return pb, thumb
-
-def new_grayscale_pixbuf(pixbuf):
-    """
-    Makes a pixbuf grayscale
-    """
-    pixbuf2 = pixbuf.copy()
-    pixbuf.saturate_and_pixelate(pixbuf2, 0.0, False)
-    return pixbuf2
 
 def get_event_icon(event, size):
     """

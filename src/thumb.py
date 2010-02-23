@@ -37,15 +37,6 @@ from gio_file import GioFile, SIZE_LARGE, SIZE_NORMAL
 from common import *
 
 
-def get_event_markup(event):
-    """
-    Returns a typename and event formatted to be displayed in a info bubble
-    """
-    t0 = get_typename(event)
-    t1 = get_text(event)
-    return ("<span size='10240'>%s</span>\n<span size='8192'>%s</span>" % (t0, t1)).replace("&", "&amp;")
-
-
 class PreviewRenderer(gtk.GenericCellRenderer):
     """
     A IconView renderer to be added to a celllayout. It displays a pixbuf and
@@ -187,7 +178,9 @@ class PreviewRenderer(gtk.GenericCellRenderer):
         w = cell_area.width
         h = cell_area.height
         context = window.cairo_create()
-        text = get_event_markup(event)
+        t0 = get_typename(event)
+        t1 = get_text(event)
+        text = ("<span size='10240'>%s</span>\n<span size='8192'>%s</span>" % (t0, t1)).replace("&", "&amp;")
         layout = widget.create_pango_layout(text)
         layout.set_markup(text)
         textw, texth = layout.get_pixel_size()
@@ -235,7 +228,8 @@ def file_render_pixbuf(self, window, widget, x, y, h, w):
 # Display widgets
 class ImageView(gtk.IconView):
     """
-    A iconview which shows just formatted pixbufs
+    A iconview which uses a custom cellrenderer to render square pixbufs
+    based on zeitgeist events
     """
     last_active = -1
     child_width = PreviewRenderer.width
