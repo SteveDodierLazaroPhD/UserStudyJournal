@@ -171,21 +171,19 @@ class TimelineRenderer(gtk.GenericCellRenderer):
         # Pixbuf related
         uri = get_event_uri(self.event)
         if uri in PIXBUFCACHE.keys():
-            pixbuf, thumb = PIXBUFCACHE.get_pixbuf_from_uri(uri)
-            pixbuf = pixbuf.scale_simple(24, 18, gtk.gdk.INTERP_TILES)
-            imgw, imgh = pixbuf.get_width(), pixbuf.get_height()
-            x += imgw/2 + 4
-        else: pixbuf = False
-        # Non pixbuf related
-        x, y = self.render_text(window, widget, x, y, w, h, flags)
-        # Pixbuf related
-        if pixbuf:
-            x -= imgw + 4
-            self.render_pixbuf(window, widget, x, y, w, h, flags, pixbuf)
+            self.render_text_with_pixbuf(window, widget, x, y, w, h, flags)
+        else:
+            self.render_text(window, widget, x, y, w, h, flags)
         return True
 
-    def render_pixbuf(self, window, widget, x, y, w, h, flags, pixbuf):
+    def render_text_with_pixbuf(self, window, widget, x, y, w, h, flags):
+        uri = get_event_uri(self.event)
+        pixbuf, thumb = PIXBUFCACHE.get_pixbuf_from_uri(uri)
+        pixbuf = pixbuf.scale_simple(24, 18, gtk.gdk.INTERP_TILES)
         imgw, imgh = pixbuf.get_width(), pixbuf.get_height()
+        x = max(x + imgw/2 + 4, 0 + imgw + 4)
+        x, y = self.render_text(window, widget, x, y, w, h, flags)
+        x -= imgw + 4
         y += self.barsize + 6
         PreviewRenderer.render_pixbuf(window, widget, x, y, imgw, imgh, pixbuf)
 
