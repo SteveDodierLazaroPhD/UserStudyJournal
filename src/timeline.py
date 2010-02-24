@@ -168,17 +168,24 @@ class TimelineRenderer(gtk.GenericCellRenderer):
             context.rectangle(x + start+0.5, y+0.5, end, self.barsize)
             context.stroke()
         x = int(phases[0][0]*w)
-        x, y = self.render_text(window, widget, x, y, w, h, flags)
+        # Pixbuf related
         uri = get_event_uri(self.event)
         if uri in PIXBUFCACHE.keys():
-            pixbuf, thumb = PIXBUFCACHE[uri]
+            pixbuf, thumb = PIXBUFCACHE.get_pixbuf_from_uri(uri)
+            pixbuf = pixbuf.scale_simple(24, 18, gtk.gdk.INTERP_TILES)
+            imgw, imgh = pixbuf.get_width(), pixbuf.get_height()
+            x += imgw/2 + 4
+        else: pixbuf = False
+        # Non pixbuf related
+        x, y = self.render_text(window, widget, x, y, w, h, flags)
+        # Pixbuf related
+        if pixbuf:
+            x -= imgw + 4
             self.render_pixbuf(window, widget, x, y, w, h, flags, pixbuf)
         return True
 
     def render_pixbuf(self, window, widget, x, y, w, h, flags, pixbuf):
-        pixbuf = pixbuf.scale_simple(24, 18, gtk.gdk.INTERP_TILES)
         imgw, imgh = pixbuf.get_width(), pixbuf.get_height()
-        x -= imgw + 10
         y += self.barsize + 6
         PreviewRenderer.render_pixbuf(window, widget, x, y, imgw, imgh, pixbuf)
 
