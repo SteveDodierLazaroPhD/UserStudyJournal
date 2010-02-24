@@ -126,22 +126,22 @@ class PreviewRenderer(gtk.GenericCellRenderer):
         w = cell_area.width
         h = cell_area.height
         if self.isthumb:
-            self.render_pixbuf(window, widget, x, y, h, w)
+            self.render_pixbuf(window, widget, x, y, h, w, self.pixbuf)
         else: file_render_pixbuf(self, window, widget, x, y, h, w)
-        self.render_emblems(window, widget, x, y, h, w)
+        self.render_emblems(window, widget, x, y, h, w, self.emblems)
         if self.active:
             gobject.timeout_add(2, self.render_info_box, window, widget, cell_area, expose_area, self.event)
         return True
 
-    def render_pixbuf(self, window, widget, x, y, h, w):
+    @staticmethod
+    def render_pixbuf(window, widget, x, y, h, w, pixbuf):
         """
         Renders a pixbuf to be displayed on the cell
         """
-        pixbuf = self.pixbuf
         imgw, imgh = pixbuf.get_width(), pixbuf.get_height()
         context = window.cairo_create()
-        x += (self.width - imgw)/2
-        y += self.height - imgh
+        x += (w - imgw)/2
+        y += h - imgh
         context.rectangle(x, y, imgw, imgh)
         context.set_source_rgb(1, 1, 1)
         context.fill_preserve()
@@ -150,17 +150,17 @@ class PreviewRenderer(gtk.GenericCellRenderer):
         # Frame
         draw_frame(context, x, y, imgw, imgh)
 
-    def render_emblems(self, window, widget, x, y, w, h):
+    @staticmethod
+    def render_emblems(window, widget, x, y, w, h, emblems):
         """
         Renders the defined emblems from the emblems property
         """
-        w = max(self.width, w)
+        # w = max(self.width, w)
         corners = [[x, y],
                    [x+w, y],
                    [x, y+h],
                    [x+w, y+h]]
         context = window.cairo_create()
-        emblems = self.emblems
         for i in xrange(len(emblems)):
             i = i % len(emblems)
             pixbuf = emblems[i]
@@ -169,7 +169,8 @@ class PreviewRenderer(gtk.GenericCellRenderer):
             context.rectangle(corners[i][0]-pbw, corners[i][1]-pbh, pbw*2, pbh*2)
             context.fill()
 
-    def render_info_box(self, window, widget, cell_area, expose_area, event):
+    @staticmethod
+    def render_info_box(window, widget, cell_area, expose_area, event):
         """
         Renders a info box when the item is active
         """

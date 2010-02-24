@@ -33,6 +33,7 @@ from zeitgeist.datamodel import Interpretation
 from gio_file import GioFile
 from widgets import StaticPreviewTooltip, VideoPreviewTooltip
 from common import *
+from thumb import PreviewRenderer
 
 def make_area_from_event(timestamp, duration):
     """
@@ -166,6 +167,17 @@ class TimelineRenderer(gtk.GenericCellRenderer):
             context.stroke()
         x = int(phases[0][0]*w)
         self.render_text(window, widget, x, y, w, h, flags)
+        uri = get_event_uri(self.event)
+        #if uri in PIXBUFCACHE.keys():
+        #    pixbuf, thumb = PIXBUFCACHE[uri]
+        #    self.render_pixbuf(window, widget, x, y, w, h, flags, pixbuf)
+        return True
+
+    def render_pixbuf(self, window, widget, x, y, w, h, flags, pixbuf):
+        pixbuf = pixbuf.scale_simple(10, 10, gtk.gdk.INTERP_TILES)
+        imgw, imgh = pixbuf.get_width(), pixbuf.get_height()
+        #x -= imgw
+        PreviewRenderer.render_pixbuf(window, widget, x, y, h, w, pixbuf)
 
     def render_text(self, window, widget, x, y, w, h, flags):
         w = window.get_geometry()[2]
