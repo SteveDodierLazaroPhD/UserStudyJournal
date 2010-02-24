@@ -24,6 +24,7 @@ import gobject
 import gtk
 import pango
 import pangocairo
+import string
 import time
 import math
 import operator
@@ -61,10 +62,10 @@ def text_handler(obj):
     interpretation = get_event_interpretation(obj)
     t = (FILETYPESNAMES[interpretation] if
           interpretation in FILETYPESNAMES.keys() else "Unknown")
-    text = text.replace("%", "\%")
-    t1 = "<span color='!s'><b>%s</b></span>" % t
-    t2 = "<span color='!s'>%s</span> " % (text)
-    return (str(t1) + "\n" + str(t2) + "").replace("&", "&amp;").replace("!s", "%s")
+    text = text.replace("%", "%%")
+    t1 = "<span color='!color!'><b>" + t + "</b></span>"
+    t2 = "<span color='!color!'>" + text + "</span> "
+    return (str(t1) + "\n" + str(t2) + "").replace("&", "&amp;").replace("!color!", "%s")
 
 
 class TimelineRenderer(gtk.GenericCellRenderer):
@@ -168,10 +169,10 @@ class TimelineRenderer(gtk.GenericCellRenderer):
             context.stroke()
         x = int(phases[0][0]*w)
         x, y = self.render_text(window, widget, x, y, w, h, flags)
-        #uri = get_event_uri(self.event)
-        #if uri in PIXBUFCACHE.keys():
-        #    pixbuf, thumb = PIXBUFCACHE[uri]
-        #    self.render_pixbuf(window, widget, x, y, w, h, flags, pixbuf)
+        uri = get_event_uri(self.event)
+        if uri in PIXBUFCACHE.keys():
+            pixbuf, thumb = PIXBUFCACHE[uri]
+            self.render_pixbuf(window, widget, x, y, w, h, flags, pixbuf)
         return True
 
     def render_pixbuf(self, window, widget, x, y, w, h, flags, pixbuf):
