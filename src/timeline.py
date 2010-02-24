@@ -167,10 +167,10 @@ class TimelineRenderer(gtk.GenericCellRenderer):
             context.stroke()
         x = int(phases[0][0]*w)
         x, y = self.render_text(window, widget, x, y, w, h, flags)
-        uri = get_event_uri(self.event)
-        if uri in PIXBUFCACHE.keys():
-            pixbuf, thumb = PIXBUFCACHE[uri]
-            self.render_pixbuf(window, widget, x, y, w, h, flags, pixbuf)
+        #uri = get_event_uri(self.event)
+        #if uri in PIXBUFCACHE.keys():
+        #    pixbuf, thumb = PIXBUFCACHE[uri]
+        #    self.render_pixbuf(window, widget, x, y, w, h, flags, pixbuf)
         return True
 
     def render_pixbuf(self, window, widget, x, y, w, h, flags, pixbuf):
