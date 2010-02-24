@@ -123,9 +123,15 @@ def get_event_interpretation(event):
 
 def get_event_typename(event):
     """
-    Gets a plain text version of a interpretation
+    Returns a plain text version of a interpretation
     """
     return FILETYPESNAMES[event.subjects[0].interpretation]
+
+def get_event_mimetype(event):
+    """
+    Returns a plain text version of a mimetype
+    """
+    return event.subjects[0].mimetype
 
 def get_event_text(event):
     """

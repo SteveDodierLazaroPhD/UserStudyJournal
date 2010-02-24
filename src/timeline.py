@@ -56,8 +56,8 @@ def text_handler(obj):
     Arguments:
     - obj: A event object
     """
-    text = obj.subjects[0].text
-    interpretation = obj.subjects[0].interpretation
+    text = get_event_text(obj)
+    interpretation = get_event_interpretation(obj)
     t = (FILETYPESNAMES[interpretation] if
           interpretation in FILETYPESNAMES.keys() else "Unknown")
     t1 = "<span color='!s'><b>%s</b></span>" % t
@@ -236,11 +236,13 @@ class TimelineView(gtk.TreeView):
         liststore = gtk.ListStore(gobject.TYPE_PYOBJECT, gobject.TYPE_PYOBJECT,
                                   gobject.TYPE_PYOBJECT, gobject.TYPE_STRING)
         for row in events:
-            subject = row[0][0].subjects[0]
-            color = get_file_color(subject.interpretation, subject.mimetype)
+            event = row[0][0]
+            interpretation = get_event_interpretation(event)
+            mimetype = get_event_mimetype(event)
+            color = get_file_color(interpretation, mimetype)
             bars = [make_area_from_event(event.timestamp, stop) for (event, stop) in row]
-            text = text_handler(row[0][0])
-            liststore.append((bars, row[0][0], color, text))
+            text = text_handler(event)
+            liststore.append((bars, event, color, text))
         self.set_model(liststore)
 
     def on_leave_notify(self, widget, event):
@@ -261,8 +263,8 @@ class TimelineView(gtk.TreeView):
         if path:
             model = self.get_model()
             event = model[path[0]][1]
-            uri = event.subjects[0].uri
-            interpretation = event.subjects[0].interpretation
+            uri = get_event_uri(event)
+            interpretation = get_event_interpretation(event)
             tooltip_window = widget.get_tooltip_window()
             if interpretation == Interpretation.VIDEO.uri:
                 self.set_tooltip_window(VideoPreviewTooltip)
