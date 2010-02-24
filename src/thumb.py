@@ -178,8 +178,8 @@ class PreviewRenderer(gtk.GenericCellRenderer):
         w = cell_area.width
         h = cell_area.height
         context = window.cairo_create()
-        t0 = get_typename(event)
-        t1 = get_text(event)
+        t0 = get_event_typename(event)
+        t1 = get_event_text(event)
         text = ("<span size='10240'>%s</span>\n<span size='8192'>%s</span>" % (t0, t1)).replace("&", "&amp;")
         layout = widget.create_pango_layout(text)
         layout.set_markup(text)
@@ -220,7 +220,7 @@ def file_render_pixbuf(self, window, widget, x, y, h, w):
     context.fill()
     draw_frame(context, x, y, w, h)
     context = window.cairo_create()
-    text = get_text(self.event)
+    text = get_event_text(self.event)
     layout = widget.create_pango_layout(text)
     draw_text(context, layout, text, x+5, y+5, self.width-10)
 
@@ -260,10 +260,10 @@ class ImageView(gtk.IconView):
         self.set_model(liststore)
         gtk.gdk.threads_leave()
         for event in events:
-            uri = get_uri(event)
+            uri = get_event_uri(event)
             pb, isthumb = get_pixbuf_from_uri(uri, SIZE_LARGE, iconscale=0.1875, w=self.child_width, h=self.child_height)
             emblems = tuple()
-            if isthumb and get_interpretation(event) != Interpretation.IMAGE.uri:
+            if isthumb and get_event_interpretation(event) != Interpretation.IMAGE.uri:
                 emblem = get_event_icon(event, 16)
                 if emblem:
                     emblems = (emblem,)
@@ -314,8 +314,8 @@ class ImageView(gtk.IconView):
         path = self.get_path_at_pos(int(x), int(y))
         if path:
             model = self.get_model()
-            uri = get_uri(model[path[0]][3])
-            interpretation = get_interpretation(model[path[0]][3])
+            uri = get_event_uri(model[path[0]][3])
+            interpretation = get_event_interpretation(model[path[0]][3])
             tooltip_window = widget.get_tooltip_window()
             if interpretation == Interpretation.VIDEO.uri:
                 self.set_tooltip_window(VideoPreviewTooltip)

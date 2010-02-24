@@ -112,28 +112,28 @@ def launch_event(event):
     """
     Launches a uri which is found using a zeitgeist event
     """
-    gfile = GioFile(get_uri(event))
+    gfile = GioFile(get_event_uri(event))
     gfile.launch()
 
-def get_interpretation(event):
+def get_event_interpretation(event):
     """
     Returns a interpretation uri from a event
     """
     return event.subjects[0].interpretation
 
-def get_typename(event):
+def get_event_typename(event):
     """
     Gets a plain text version of a interpretation
     """
     return FILETYPESNAMES[event.subjects[0].interpretation]
 
-def get_text(event):
+def get_event_text(event):
     """
     Returns the file name text of a event
     """
     return event.subjects[0].text
 
-def get_uri(event):
+def get_event_uri(event):
     """
     Returns a uri from a event's first subject
     """
@@ -441,7 +441,7 @@ def get_event_icon(event, size):
     -- event - a zeitgeist event
     -- size - size in pixels of the icon
     """
-    gfile = GioFile(get_uri(event))
+    gfile = GioFile(get_event_uri(event))
     if gfile:
         pb = gfile.get_icon(size=size)
         if pb:
