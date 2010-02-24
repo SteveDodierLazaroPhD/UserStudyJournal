@@ -126,15 +126,15 @@ class PreviewRenderer(gtk.GenericCellRenderer):
         w = cell_area.width
         h = cell_area.height
         if self.isthumb:
-            self.render_pixbuf(window, widget, x, y, h, w, self.pixbuf)
-        else: file_render_pixbuf(self, window, widget, x, y, h, w)
-        self.render_emblems(window, widget, x, y, h, w, self.emblems)
+            self.render_pixbuf(window, widget, x, y, w, h, self.pixbuf)
+        else: file_render_pixbuf(self, window, widget, x, y, w, h)
+        self.render_emblems(window, widget, x, y, w, h, self.emblems)
         if self.active:
             gobject.timeout_add(2, self.render_info_box, window, widget, cell_area, expose_area, self.event)
         return True
 
     @staticmethod
-    def render_pixbuf(window, widget, x, y, h, w, pixbuf):
+    def render_pixbuf(window, widget, x, y, w, h, pixbuf):
         """
         Renders a pixbuf to be displayed on the cell
         """
@@ -205,7 +205,7 @@ gobject.type_register(PreviewRenderer)
 
 
 # Special rendering functions
-def file_render_pixbuf(self, window, widget, x, y, h, w):
+def file_render_pixbuf(self, window, widget, x, y, w, h):
     """
     Renders a icon and file name for non-thumb objects
     """

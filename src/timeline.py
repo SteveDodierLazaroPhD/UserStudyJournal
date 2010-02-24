@@ -166,18 +166,19 @@ class TimelineRenderer(gtk.GenericCellRenderer):
             context.rectangle(x + start+0.5, y+0.5, end, self.barsize)
             context.stroke()
         x = int(phases[0][0]*w)
-        self.render_text(window, widget, x, y, w, h, flags)
+        x, y = self.render_text(window, widget, x, y, w, h, flags)
         uri = get_event_uri(self.event)
-        #if uri in PIXBUFCACHE.keys():
-        #    pixbuf, thumb = PIXBUFCACHE[uri]
-        #    self.render_pixbuf(window, widget, x, y, w, h, flags, pixbuf)
+        if uri in PIXBUFCACHE.keys():
+            pixbuf, thumb = PIXBUFCACHE[uri]
+            self.render_pixbuf(window, widget, x, y, w, h, flags, pixbuf)
         return True
 
     def render_pixbuf(self, window, widget, x, y, w, h, flags, pixbuf):
-        pixbuf = pixbuf.scale_simple(10, 10, gtk.gdk.INTERP_TILES)
+        pixbuf = pixbuf.scale_simple(24, 18, gtk.gdk.INTERP_TILES)
         imgw, imgh = pixbuf.get_width(), pixbuf.get_height()
-        #x -= imgw
-        PreviewRenderer.render_pixbuf(window, widget, x, y, h, w, pixbuf)
+        x -= imgw + 10
+        y += self.barsize + 6
+        PreviewRenderer.render_pixbuf(window, widget, x, y, imgw, imgh, pixbuf)
 
     def render_text(self, window, widget, x, y, w, h, flags):
         w = window.get_geometry()[2]
@@ -201,6 +202,7 @@ class TimelineRenderer(gtk.GenericCellRenderer):
         pcontext.set_source_rgb(0, 0, 0)
         pcontext.move_to(x, y + self.barsize)
         pcontext.show_layout(layout)
+        return x, y
 
     def on_start_editing(self, event, widget, path, background_area, cell_area, flags):
         pass
