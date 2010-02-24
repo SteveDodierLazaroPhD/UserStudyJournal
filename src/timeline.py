@@ -61,6 +61,7 @@ def text_handler(obj):
     interpretation = get_event_interpretation(obj)
     t = (FILETYPESNAMES[interpretation] if
           interpretation in FILETYPESNAMES.keys() else "Unknown")
+    text = text.replace("%", "\%")
     t1 = "<span color='!s'><b>%s</b></span>" % t
     t2 = "<span color='!s'>%s</span> " % (text)
     return (str(t1) + "\n" + str(t2) + "").replace("&", "&amp;").replace("!s", "%s")
