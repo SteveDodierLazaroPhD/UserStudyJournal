@@ -261,7 +261,7 @@ class ImageView(gtk.IconView):
         gtk.gdk.threads_leave()
         for event in events:
             uri = get_event_uri(event)
-            pb, isthumb = get_pixbuf_from_uri(uri, SIZE_LARGE, iconscale=0.1875, w=self.child_width, h=self.child_height)
+            pb, isthumb = PIXBUFCACHE.get_pixbuf_from_uri(uri, SIZE_LARGE, iconscale=0.1875, w=self.child_width, h=self.child_height)
             emblems = tuple()
             if isthumb and get_event_interpretation(event) != Interpretation.IMAGE.uri:
                 emblem = get_event_icon(event, 16)

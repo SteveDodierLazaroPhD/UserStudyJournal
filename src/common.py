@@ -148,6 +148,21 @@ def get_event_uri(event):
 def get_timestamp(event):
     return float(event.timestamp)
 
+def get_event_icon(event, size):
+    """
+    Returns a icon from a event at size
+
+    Argument:
+    -- event - a zeitgeist event
+    -- size - size in pixels of the icon
+    """
+    gfile = GioFile(get_event_uri(event))
+    if gfile:
+        pb = gfile.get_icon(size=size)
+        if pb:
+            return pb
+    return False
+
 ##
 # Cairo drawing functions
 
@@ -400,57 +415,40 @@ class PixbufCache(dict):
             pb.save(path, "png")
         return super(PixbufCache, self).__setitem__(key, (pb, isthumb))
 
-PIXBUFCACHE = PixbufCache()
+    def get_pixbuf_from_uri(self, uri, size=SIZE_LARGE, iconscale=1, w=0, h=0):
+        """
+        Returns a pixbuf and True if a thumbnail was found, else False. Uses the
+        Pixbuf Cache for thumbnail compatible files
 
-
-def get_pixbuf_from_uri(uri, size=SIZE_LARGE, iconscale=1, w=0, h=0):
-    """
-    Returns a pixbuf and True if a thumbnail was found, else False. Uses the
-    Pixbuf Cache for thumbnail compatible files
-
-    Arguments:
-    -- uri: a uri on the disk
-    -- size: a size tuple from thumbfactory
-    -- iconscale: a factor to reduce icons by (not thumbs)
-    -- w - resulting width
-    -- h - resulting height
-    """
-    try:
-        cached = PIXBUFCACHE.check_cache(uri)
-    except gobject.GError:
-        cached = None
-    if cached:
-        return cached
-    gfile = GioFile(uri)
-    thumb = True
-    if gfile:
-        if gfile.has_preview():
-            pb = gfile.get_thumbnail(size=size)
-        else:
-            iconsize = int(size[0]*iconscale)
-            pb = gfile.get_icon(size=iconsize)
+        Arguments:
+        -- uri: a uri on the disk
+        -- size: a size tuple from thumbfactory
+        -- iconscale: a factor to reduce icons by (not thumbs)
+        -- w - resulting width
+        -- h - resulting height
+        """
+        try:
+            cached = self.check_cache(uri)
+        except gobject.GError:
+            cached = None
+        if cached:
+            return cached
+        gfile = GioFile(uri)
+        thumb = True
+        if gfile:
+            if gfile.has_preview():
+                pb = gfile.get_thumbnail(size=size)
+            else:
+                iconsize = int(size[0]*iconscale)
+                pb = gfile.get_icon(size=iconsize)
+                thumb = False
+        else: pb = None
+        if not pb:
+            pb = ICON_THEME.lookup_icon(gtk.STOCK_MISSING_IMAGE, int(size[0]*iconscale), gtk.ICON_LOOKUP_FORCE_SVG).load_icon()
             thumb = False
-    else: pb = None
-    if not pb:
-        pb = ICON_THEME.lookup_icon(gtk.STOCK_MISSING_IMAGE, int(size[0]*iconscale), gtk.ICON_LOOKUP_FORCE_SVG).load_icon()
-        thumb = False
-    if thumb:
-        pb = scale_to_fill(pb, w, h)
-        PIXBUFCACHE[uri] = (pb, thumb)
-    return pb, thumb
+        if thumb:
+            pb = scale_to_fill(pb, w, h)
+            self[uri] = (pb, thumb)
+        return pb, thumb
 
-def get_event_icon(event, size):
-    """
-    Returns a icon from a event at size
-
-    Argument:
-    -- event - a zeitgeist event
-    -- size - size in pixels of the icon
-    """
-    gfile = GioFile(get_event_uri(event))
-    if gfile:
-        pb = gfile.get_icon(size=size)
-        if pb:
-            return pb
-    return False
-
+PIXBUFCACHE = PixbufCache()
