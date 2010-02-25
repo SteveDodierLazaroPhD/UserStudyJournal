@@ -195,25 +195,30 @@ class TimelineRenderer(gtk.GenericCellRenderer):
             context.rectangle(x + start+0.5, y+0.5, end, self.barsize)
             context.stroke()
         x = int(phases[0][0]*w)
-        # Pixbuf related
+        # Pixbuf related junk which is really dirty
         uri = get_event_uri(self.event)
-        if uri in PIXBUFCACHE.keys():
-            self.render_text_with_pixbuf(window, widget, x, y, w, h, flags)
-        else:
-            self.render_text(window, widget, x, y, w, h, flags)
-        return True
-
-    def render_text_with_pixbuf(self, window, widget, x, y, w, h, flags):
-        uri = get_event_uri(self.event)
-        if not self.pixbuf:
+        if uri not in PIXBUFCACHE.keys():
+            # If the thumbnail is not loaded or it can't thumb
+            self.pixbuf = get_event_icon(self.event, 24)
+            thumb = False
+        else: # if it is in cache we check it againts our current one and replace the icon
+            if self.pixbuf != PIXBUFCACHE[uri][0]:
+                pixbuf, thumb = PIXBUFCACHE[uri]
+                self.pixbuf = pixbuf.scale_simple(32, 24, gtk.gdk.INTERP_TILES)
+        if not self.pixbuf: # If the pixbuf has not been created we query one
             pixbuf, thumb = PIXBUFCACHE.get_pixbuf_from_uri(uri)
             self.pixbuf = pixbuf.scale_simple(32, 24, gtk.gdk.INTERP_TILES)
+        self.render_text_with_pixbuf(window, widget, x, y, w, h, flags, drawframe = thumb)
+        return True
+
+    def render_text_with_pixbuf(self, window, widget, x, y, w, h, flags, drawframe = True):
+        uri = get_event_uri(self.event)
         imgw, imgh = self.pixbuf.get_width(), self.pixbuf.get_height()
         x = max(x + imgw/2 + 4, 0 + imgw + 4)
         x, y = self.render_text(window, widget, x, y, w, h, flags)
         x -= imgw + 4
         y += self.barsize + 3
-        render_pixbuf(window, x, y, self.pixbuf)
+        render_pixbuf(window, x, y, self.pixbuf, drawframe=drawframe)
 
     def render_text(self, window, widget, x, y, w, h, flags):
         w = window.get_geometry()[2]

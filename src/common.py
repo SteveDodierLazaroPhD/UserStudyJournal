@@ -300,8 +300,9 @@ def render_pixbuf(window, x, y, pixbuf, drawframe = True):
     imgw, imgh = pixbuf.get_width(), pixbuf.get_height()
     context = window.cairo_create()
     context.rectangle(x, y, imgw, imgh)
-    context.set_source_rgb(1, 1, 1)
-    context.fill_preserve()
+    if drawframe:
+        context.set_source_rgb(1, 1, 1)
+        context.fill_preserve()
     context.set_source_pixbuf(pixbuf, x, y)
     context.fill()
     if drawframe: # Draw a pretty frame
