@@ -210,7 +210,7 @@ class TimelineRenderer(gtk.GenericCellRenderer):
         x, y = self.render_text(window, widget, x, y, w, h, flags)
         x -= imgw + 4
         y += self.barsize + 3
-        PreviewRenderer.render_pixbuf(window, widget, x, y, imgw, imgh, self.pixbuf)
+        render_pixbuf(window, widget, x, y, imgw, imgh, self.pixbuf)
 
     def render_text(self, window, widget, x, y, w, h, flags):
         w = window.get_geometry()[2]

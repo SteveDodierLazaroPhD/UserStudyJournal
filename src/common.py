@@ -264,6 +264,64 @@ def draw_text(context, layout, markup = "", x=0, y=0, maxw=0, color = (0.3, 0.3,
     pcontext.move_to(x, y)
     pcontext.show_layout(layout)
 
+def render_pixbuf(window, widget, x, y, w, h, pixbuf):
+    """
+    Renders a pixbuf to be displayed on the cell
+    """
+    imgw, imgh = pixbuf.get_width(), pixbuf.get_height()
+    context = window.cairo_create()
+    x += (w - imgw)/2
+    y += h - imgh
+    context.rectangle(x, y, imgw, imgh)
+    context.set_source_rgb(1, 1, 1)
+    context.fill_preserve()
+    context.set_source_pixbuf(pixbuf, x, y)
+    context.fill()
+    # Frame
+    draw_frame(context, x, y, imgw, imgh)
+
+def render_emblems(window, widget, x, y, w, h, emblems):
+    """
+    Renders the defined emblems from the emblems property
+    """
+    # w = max(self.width, w)
+    corners = [[x, y],
+               [x+w, y],
+               [x, y+h],
+               [x+w, y+h]]
+    context = window.cairo_create()
+    for i in xrange(len(emblems)):
+        i = i % len(emblems)
+        pixbuf = emblems[i]
+        pbw, pbh = pixbuf.get_width()/2, pixbuf.get_height()/2
+        context.set_source_pixbuf(pixbuf, corners[i][0]-pbw, corners[i][1]-pbh)
+        context.rectangle(corners[i][0]-pbw, corners[i][1]-pbh, pbw*2, pbh*2)
+        context.fill()
+
+def render_info_box(window, widget, cell_area, expose_area, event):
+    """
+    Renders a info box when the item is active
+    """
+    x = cell_area.x
+    y = cell_area.y - 10
+    w = cell_area.width
+    h = cell_area.height
+    context = window.cairo_create()
+    t0 = get_event_typename(event)
+    t1 = get_event_text(event)
+    text = ("<span size='10240'>%s</span>\n<span size='8192'>%s</span>" % (t0, t1)).replace("&", "&amp;")
+    layout = widget.create_pango_layout(text)
+    layout.set_markup(text)
+    textw, texth = layout.get_pixel_size()
+    popuph = max(h/3 + 5, texth)
+    nw = w + 26
+    x = x - (nw - w)/2
+    width, height = window.get_geometry()[2:4]
+    popupy = min(y+h+10, height-popuph-5-1) - 5
+    draw_speech_bubble(context, layout, x, popupy, nw, popuph)
+    context.fill()
+    return False
+
 ##
 ## Color functions
 

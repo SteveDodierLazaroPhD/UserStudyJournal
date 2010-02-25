@@ -126,73 +126,32 @@ class PreviewRenderer(gtk.GenericCellRenderer):
         w = cell_area.width
         h = cell_area.height
         if self.isthumb:
-            self.render_pixbuf(window, widget, x, y, w, h, self.pixbuf)
-        else: file_render_pixbuf(self, window, widget, x, y, w, h)
-        self.render_emblems(window, widget, x, y, w, h, self.emblems)
+            render_pixbuf(window, widget, x, y, w, h, self.pixbuf)
+        else: self.file_render_pixbuf(window, widget, x, y, w, h)
+        render_emblems(window, widget, x, y, w, h, self.emblems)
         if self.active:
-            gobject.timeout_add(2, self.render_info_box, window, widget, cell_area, expose_area, self.event)
+            gobject.timeout_add(2, render_info_box, window, widget, cell_area, expose_area, self.event)
         return True
 
-    @staticmethod
-    def render_pixbuf(window, widget, x, y, w, h, pixbuf):
+    def file_render_pixbuf(self, window, widget, x, y, w, h):
         """
-        Renders a pixbuf to be displayed on the cell
+        Renders a icon and file name for non-thumb objects
         """
+        pixbuf = self.pixbuf
         imgw, imgh = pixbuf.get_width(), pixbuf.get_height()
         context = window.cairo_create()
-        x += (w - imgw)/2
-        y += h - imgh
-        context.rectangle(x, y, imgw, imgh)
+        ix = x + (self.width - imgw)
+        iy = y + self.height - imgh
+        context.rectangle(x, y, w, h)
         context.set_source_rgb(1, 1, 1)
         context.fill_preserve()
-        context.set_source_pixbuf(pixbuf, x, y)
+        context.set_source_pixbuf(pixbuf, ix, iy)
         context.fill()
-        # Frame
-        draw_frame(context, x, y, imgw, imgh)
-
-    @staticmethod
-    def render_emblems(window, widget, x, y, w, h, emblems):
-        """
-        Renders the defined emblems from the emblems property
-        """
-        # w = max(self.width, w)
-        corners = [[x, y],
-                   [x+w, y],
-                   [x, y+h],
-                   [x+w, y+h]]
+        draw_frame(context, x, y, w, h)
         context = window.cairo_create()
-        for i in xrange(len(emblems)):
-            i = i % len(emblems)
-            pixbuf = emblems[i]
-            pbw, pbh = pixbuf.get_width()/2, pixbuf.get_height()/2
-            context.set_source_pixbuf(pixbuf, corners[i][0]-pbw, corners[i][1]-pbh)
-            context.rectangle(corners[i][0]-pbw, corners[i][1]-pbh, pbw*2, pbh*2)
-            context.fill()
-
-    @staticmethod
-    def render_info_box(window, widget, cell_area, expose_area, event):
-        """
-        Renders a info box when the item is active
-        """
-        x = cell_area.x
-        y = cell_area.y - 10
-        w = cell_area.width
-        h = cell_area.height
-        context = window.cairo_create()
-        t0 = get_event_typename(event)
-        t1 = get_event_text(event)
-        text = ("<span size='10240'>%s</span>\n<span size='8192'>%s</span>" % (t0, t1)).replace("&", "&amp;")
+        text = get_event_text(self.event)
         layout = widget.create_pango_layout(text)
-        layout.set_markup(text)
-        textw, texth = layout.get_pixel_size()
-        popuph = max(h/3 + 5, texth)
-        nw = w + 26
-        x = x - (nw - w)/2
-        width, height = window.get_geometry()[2:4]
-        popupy = min(y+h+10, height-popuph-5-1) - 5
-        draw_speech_bubble(context, layout, x, popupy, nw, popuph)
-        context.fill()
-        return False
+        draw_text(context, layout, text, x+5, y+5, self.width-10)
 
     def on_start_editing(self, event, widget, path, background_area, cell_area, flags):
         pass
@@ -205,25 +164,6 @@ gobject.type_register(PreviewRenderer)
 
 
 # Special rendering functions
-def file_render_pixbuf(self, window, widget, x, y, w, h):
-    """
-    Renders a icon and file name for non-thumb objects
-    """
-    pixbuf = self.pixbuf
-    imgw, imgh = pixbuf.get_width(), pixbuf.get_height()
-    context = window.cairo_create()
-    ix = x + (self.width - imgw)
-    iy = y + self.height - imgh
-    context.rectangle(x, y, w, h)
-    context.set_source_rgb(1, 1, 1)
-    context.fill_preserve()
-    context.set_source_pixbuf(pixbuf, ix, iy)
-    context.fill()
-    draw_frame(context, x, y, w, h)
-    context = window.cairo_create()
-    text = get_event_text(self.event)
-    layout = widget.create_pango_layout(text)
-    draw_text(context, layout, text, x+5, y+5, self.width-10)
 
 
 # Display widgets
