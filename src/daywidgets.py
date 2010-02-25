@@ -47,8 +47,6 @@ class GenericViewWidget(gtk.VBox):
     __gsignals__ = {
         "unfocus-day" : (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ()),
         # Sends a list zeitgeist events
-        "assemble-context-menu" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,
-                                   (gobject.TYPE_PYOBJECT,)),
         }
 
     def __init__(self):

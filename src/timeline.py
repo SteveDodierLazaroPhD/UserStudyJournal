@@ -270,8 +270,9 @@ class TimelineView(gtk.TreeView):
     def __init__(self):
         super(TimelineView, self).__init__()
         self.add_events(gtk.gdk.LEAVE_NOTIFY_MASK)
-        self.connect("motion-notify-event", self.on_motion_notify)
-        self.connect("leave-notify-event", self.on_leave_notify)
+        self.connect("button-press-event", self.on_button_press)
+        # self.connect("motion-notify-event", self.on_motion_notify)
+        # self.connect("leave-notify-event", self.on_leave_notify)
         self.connect("row-activated" , self.on_activate)
         self.connect("style-set", self.change_style)
         pcolumn = gtk.TreeViewColumn("Timeline")
@@ -313,6 +314,16 @@ class TimelineView(gtk.TreeView):
                         in MEDIAINTERPRETATIONS else False)
             liststore.append((bars, event, color, text, Plug(), usethumb))
         self.set_model(liststore)
+
+    def on_button_press(self, widget, event):
+        if event.button == 3:
+            path = self.get_dest_row_at_pos(int(event.x), int(event.y))
+            if path:
+                model = self.get_model()
+                event = model[path[0]][1]
+                self.emit("assemble-context-menu", [event])
+                return True
+        return False
 
     def on_leave_notify(self, widget, event):
         return True
