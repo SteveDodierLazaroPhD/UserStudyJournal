@@ -265,6 +265,11 @@ gobject.type_register(TimelineRenderer)
 
 
 class TimelineView(gtk.TreeView):
+    __gsignals__ = {
+        "assemble-context-menu" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,
+                                   (gobject.TYPE_PYOBJECT,)),
+        }
+
     child_width = TimelineRenderer.width
     child_height = TimelineRenderer.height
     def __init__(self):
