@@ -310,8 +310,9 @@ class TimelineView(gtk.TreeView):
         """
         Displays a tooltip based on x, y
         """
+        model, paths = self.get_selection().get_selected_rows()
         path = self.get_dest_row_at_pos(int(x), int(y))
-        if path:
+        if path and path[0] in paths:
             model = self.get_model()
             event = model[path[0]][1]
             uri = get_event_uri(event)
