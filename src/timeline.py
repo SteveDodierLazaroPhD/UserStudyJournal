@@ -114,6 +114,13 @@ class TimelineRenderer(gtk.GenericCellRenderer):
          "A gtk.gdk.Pixbuf",
          gobject.PARAM_READWRITE,
          ),
+        "usethumb" :
+        (gobject.TYPE_BOOLEAN,
+         "Should the renderer use a thumb",
+         "True if pixbuf should be a thumb",
+         False,
+         gobject.PARAM_READWRITE),
+
     }
 
     width = 32
@@ -146,6 +153,10 @@ class TimelineRenderer(gtk.GenericCellRenderer):
     @pixbuf.setter
     def pixbuf(self, obj):
         self.pixbuf_plug.obj = obj
+
+    @property
+    def usethumb(self):
+        return self.get_property("usethumb")
 
     def __init__(self):
         super(TimelineRenderer, self).__init__()
@@ -197,16 +208,15 @@ class TimelineRenderer(gtk.GenericCellRenderer):
         x = int(phases[0][0]*w)
         # Pixbuf related junk which is really dirty
         uri = get_event_uri(self.event)
-        if uri not in PIXBUFCACHE.keys():
-            # If the thumbnail is not loaded or it can't thumb
-            self.pixbuf = get_event_icon(self.event, 24)
-            thumb = False
-        else: # if it is in cache we check it againts our current one and replace the icon
-            if self.pixbuf != PIXBUFCACHE[uri][0]:
+        thumb = False
+        if not self.pixbuf:
+            if PIXBUFCACHE.has_key(uri) and self.usethumb:
                 pixbuf, thumb = PIXBUFCACHE[uri]
                 self.pixbuf = pixbuf.scale_simple(32, 24, gtk.gdk.INTERP_TILES)
-        if not self.pixbuf: # If the pixbuf has not been created we query one
-            pixbuf, thumb = PIXBUFCACHE.get_pixbuf_from_uri(uri)
+            else:
+                self.pixbuf = get_event_icon(self.event, 24)
+        if PIXBUFCACHE.has_key(uri) and self.usethumb and self.pixbuf != PIXBUFCACHE[uri][0]:
+            pixbuf, thumb = PIXBUFCACHE[uri]
             self.pixbuf = pixbuf.scale_simple(32, 24, gtk.gdk.INTERP_TILES)
         self.render_text_with_pixbuf(window, widget, x, y, w, h, flags, drawframe = thumb)
         return True
@@ -273,6 +283,7 @@ class TimelineView(gtk.TreeView):
         pcolumn.add_attribute(render, "color", 2)
         pcolumn.add_attribute(render, "text", 3)
         pcolumn.add_attribute(render, "pixbuf_plug", 4)
+        pcolumn.add_attribute(render, "usethumb", 5)
         self.set_headers_visible(False)
         self.connect("query-tooltip", self.query_tooltip)
         self.set_property("has-tooltip", True)
@@ -290,7 +301,7 @@ class TimelineView(gtk.TreeView):
             return
         liststore = gtk.ListStore(gobject.TYPE_PYOBJECT, gobject.TYPE_PYOBJECT,
                                   gobject.TYPE_PYOBJECT, gobject.TYPE_STRING,
-                                  gobject.TYPE_PYOBJECT)
+                                  gobject.TYPE_PYOBJECT, gobject.TYPE_BOOLEAN)
         for row in events:
             event = row[0][0]
             interpretation = get_event_interpretation(event)
@@ -298,7 +309,9 @@ class TimelineView(gtk.TreeView):
             color = get_file_color(interpretation, mimetype)
             bars = [make_area_from_event(event.timestamp, stop) for (event, stop) in row]
             text = text_handler(event)
-            liststore.append((bars, event, color, text, Plug()))
+            usethumb = (True if get_event_interpretation(event)
+                        in MEDIAINTERPRETATIONS else False)
+            liststore.append((bars, event, color, text, Plug(), usethumb))
         self.set_model(liststore)
 
     def on_leave_notify(self, widget, event):

@@ -89,6 +89,11 @@ FILETYPESNAMES = {
     Interpretation.UNKNOWN.uri : _("Unknown"),
     }
 
+MEDIAINTERPRETATIONS = [
+    Interpretation.VIDEO.uri,
+    Interpretation.IMAGE.uri,
+    ]
+
 TIMELABELS = [_("Morning"), _("Afternoon"), _("Evening")]
 ICON_THEME = gtk.icon_theme_get_default()
 

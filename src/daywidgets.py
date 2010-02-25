@@ -43,33 +43,18 @@ from eventgatherer import get_dayevents, get_file_events
 CLIENT = ZeitgeistClient()
 
 
-class ThumbnailDayWidget(gtk.VBox):
-
+class GenericViewWidget(gtk.VBox):
     __gsignals__ = {
-        "unfocus-day" : (gobject.SIGNAL_RUN_FIRST,
-                    gobject.TYPE_NONE,
-                    ())
+        "unfocus-day" : (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ()),
+        # Sends a list zeitgeist events
+        "assemble-context-menu" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,
+                                   (gobject.TYPE_PYOBJECT,)),
         }
 
     def __init__(self):
         gtk.VBox.__init__(self)
         self.daylabel = None
-        self.monitors = []
-        self.scrolledwindow = gtk.ScrolledWindow()
-        self.scrolledwindow.set_shadow_type(gtk.SHADOW_NONE)
-        self.scrolledwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        self.view = ThumbBox()
-        self.scrolledwindow.add_with_viewport(self.view)
-        self.scrolledwindow.get_children()[0].set_shadow_type(gtk.SHADOW_NONE)
-        self.pack_end(self.scrolledwindow)
-
-        def change_style(widget, style):
-            rc_style = self.style
-            color = rc_style.bg[gtk.STATE_NORMAL]
-            color = shade_gdk_color(color, 102/100.0)
-            self.view.modify_bg(gtk.STATE_NORMAL, color)
-
-        self.connect("style-set", change_style)
+        self.connect("style-set", self.change_style)
 
     def _set_date_strings(self):
         self.date_string = date.fromtimestamp(self.day_start).strftime("%d %B")
@@ -81,6 +66,31 @@ class ThumbnailDayWidget(gtk.VBox):
         else:
             self.week_day_string = date.fromtimestamp(self.day_start).strftime("%A")
         self.emit("style-set", None)
+
+    def click(self, widget, event):
+        if event.button in (1, 3):
+            self.emit("unfocus-day")
+
+    def change_style(self, widget, style):
+        rc_style = self.style
+        color = rc_style.bg[gtk.STATE_NORMAL]
+        color = shade_gdk_color(color, 102/100.0)
+        self.view.modify_bg(gtk.STATE_NORMAL, color)
+        self.view.modify_base(gtk.STATE_NORMAL, color)
+
+
+class ThumbnailDayWidget(GenericViewWidget):
+
+    def __init__(self):
+        GenericViewWidget.__init__(self)
+        self.monitors = []
+        self.scrolledwindow = gtk.ScrolledWindow()
+        self.scrolledwindow.set_shadow_type(gtk.SHADOW_NONE)
+        self.scrolledwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        self.view = ThumbBox()
+        self.scrolledwindow.add_with_viewport(self.view)
+        self.scrolledwindow.get_children()[0].set_shadow_type(gtk.SHADOW_NONE)
+        self.pack_end(self.scrolledwindow)
 
     def set_day(self, start, end):
 
@@ -150,22 +160,10 @@ class ThumbnailDayWidget(gtk.VBox):
             self.view.labels[2].hide_all()
 
 
-    def click(self, widget, event):
-        if event.button in (1, 3):
-            self.emit("unfocus-day")
-
-
-class SingleDayWidget(gtk.VBox):
-
-    __gsignals__ = {
-        "unfocus-day" : (gobject.SIGNAL_RUN_FIRST,
-                    gobject.TYPE_NONE,
-                    ())
-        }
+class SingleDayWidget(GenericViewWidget):
 
     def __init__(self):
-        gtk.VBox.__init__(self)
-        self.daylabel = None
+        GenericViewWidget.__init__(self)
         self.ruler_box = gtk.EventBox()
         ruler = gtk.HBox()
         self.ruler_box.add(ruler)
@@ -181,24 +179,6 @@ class SingleDayWidget(gtk.VBox):
         self.pack_end(self.scrolledwindow)
         self.pack_end(self.ruler_box, False, False)
         self.view.set_events(gtk.gdk.POINTER_MOTION_MASK | gtk.gdk.POINTER_MOTION_HINT_MASK)
-        def change_style(widget, style):
-            rc_style = self.style
-            color = rc_style.bg[gtk.STATE_NORMAL]
-            color = shade_gdk_color(color, 102/100.0)
-            self.view.modify_base(gtk.STATE_NORMAL, color)
-            self.ruler_box.modify_bg(gtk.STATE_NORMAL, color)
-        self.connect("style-set", change_style)
-
-    def _set_date_strings(self):
-        self.date_string = date.fromtimestamp(self.day_start).strftime("%d %B")
-        self.year_string = date.fromtimestamp(self.day_start).strftime("%Y")
-        if time.time() < self.day_end and time.time() > self.day_start:
-            self.week_day_string = _("Today")
-        elif time.time() - 86400 < self.day_end and time.time() - 86400> self.day_start:
-            self.week_day_string = _("Yesterday")
-        else:
-            self.week_day_string = date.fromtimestamp(self.day_start).strftime("%A")
-        self.emit("style-set", None)
 
     def set_day(self, start, end):
         self.day_start = start
@@ -220,10 +200,6 @@ class SingleDayWidget(gtk.VBox):
         self.pack_start(self.daylabel, False, False)
         get_dayevents(start*1000, end*1000, 1, self.view.set_model_from_list)
         self.show_all()
-
-    def click(self, widget, event):
-        if event.button in (1, 3):
-            self.emit("unfocus-day")
 
 
 class DayWidget(gtk.VBox):
