@@ -126,7 +126,7 @@ class PreviewRenderer(gtk.GenericCellRenderer):
         w = cell_area.width
         h = cell_area.height
         if self.isthumb:
-            render_pixbuf(window, x, y, w, h, self.pixbuf)
+            render_pixbuf(window, x, y, self.pixbuf)
         else: self.file_render_pixbuf(window, widget, x, y, w, h)
         render_emblems(window, x, y, w, h, self.emblems)
         if self.active:

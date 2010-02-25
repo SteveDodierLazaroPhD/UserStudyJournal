@@ -190,7 +190,7 @@ def draw_frame(context, x, y, w, h):
     context.rectangle(x+1, y+1, w-2, h-2)
     context.stroke()
 
-def draw_rounded_rectangle(context, x=0, y=0, w=1, h=1, r=0.05):
+def draw_rounded_rectangle(context, x, y, w, h, r=5):
     """Draws a rounded rectangle
 
     Arguments:
@@ -209,7 +209,7 @@ def draw_rounded_rectangle(context, x=0, y=0, w=1, h=1, r=0.05):
     context.close_path()
     return context
 
-def draw_speech_bubble(context, layout, x=0, y=0, w=1, h=1):
+def draw_speech_bubble(context, layout, x, y, w, h):
     """
     Draw a speech bubble at a position
 
@@ -220,8 +220,6 @@ def draw_speech_bubble(context, layout, x=0, y=0, w=1, h=1):
     -- y - y position of the bubble
     -- w - width of the bubble
     -- h - height of the bubble
-    -- r - radius of the bubble
-
     """
     layout.set_width((w-10)*1024)
     layout.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
@@ -243,7 +241,7 @@ def draw_speech_bubble(context, layout, x=0, y=0, w=1, h=1):
     pcontext.move_to(x+5, y+5)
     pcontext.show_layout(layout)
 
-def draw_text(context, layout, markup = "", x=0, y=0, maxw=0, color = (0.3, 0.3, 0.3)):
+def draw_text(context, layout, markup, x, y, maxw = 0, color = (0.3, 0.3, 0.3)):
     """
     Draw text using a cairo context and a pango layout
 
@@ -264,7 +262,7 @@ def draw_text(context, layout, markup = "", x=0, y=0, maxw=0, color = (0.3, 0.3,
     pcontext.move_to(x, y)
     pcontext.show_layout(layout)
 
-def render_pixbuf(window, x, y, w, h, pixbuf, drawframe = True):
+def render_pixbuf(window, x, y, pixbuf, drawframe = True):
     """
     Renders a pixbuf to be displayed on the cell
 
@@ -272,14 +270,10 @@ def render_pixbuf(window, x, y, w, h, pixbuf, drawframe = True):
     -- window - a gdk window
     -- x - x position
     -- y - y position
-    -- w - the width of the rectangle viewing area of the pixbuf
-    -- y - the height of the rectangle viewing area of the pixbuf
     -- drawframe - if true we draw a frame around the pixbuf
     """
     imgw, imgh = pixbuf.get_width(), pixbuf.get_height()
     context = window.cairo_create()
-    x += (w - imgw)/2
-    y += h - imgh
     context.rectangle(x, y, imgw, imgh)
     context.set_source_rgb(1, 1, 1)
     context.fill_preserve()
@@ -345,7 +339,6 @@ def combine_gdk_color(color, fcolor):
     -- color - a gdk color
     -- fcolor - a gdk color to combine with color
     """
-    f = lambda num: min((num * shade, 65535.0))
     if gtk.pygtk_version >= (2, 16, 0):
         color.red = (2*color.red + fcolor.red)/3
         color.green = (2*color.green + fcolor.green)/3
@@ -383,49 +376,53 @@ def get_gtk_rgba(style, palette, i, shade = 1, alpha = 1):
 def new_grayscale_pixbuf(pixbuf):
     """
     Makes a pixbuf grayscale
+
+    Arguments:
+    -- pixbuf - a gtk.gdk.Pixbuf
     """
     pixbuf2 = pixbuf.copy()
     pixbuf.saturate_and_pixelate(pixbuf2, 0.0, False)
     return pixbuf2
 
-def crop_pixbuf(pb, src_x, src_y, width, height):
+def crop_pixbuf(pixbuf, src_x, src_y, width, height):
     """
     Crop a pixbuf
 
     Arguments:
+    -- pixbuf - a gtk.gdk.Pixbuf
     -- src_x - the x position to crop from
     -- src_y - the y position to crop from
     -- width - crop width
     -- height - crop height
     """
     dest_pixbuf = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, True, 8, width, height)
-    pb.copy_area(src_x, src_y, width, height, dest_pixbuf, 0, 0)
+    pixbuf.copy_area(src_x, src_y, width, height, dest_pixbuf, 0, 0)
     return dest_pixbuf
 
-def scale_to_fill(image, neww, newh):
+def scale_to_fill(pixbuf, neww, newh):
     """
     Scales/crops a new pixbuf to a width and height at best fit and returns it
 
     Arguments:
-    -- image - a pixbuf
+    -- pixbuf - a gtk.gdk.Pixbuf
     -- neww - new width of the new pixbuf
     -- newh - a new height of the new pixbuf
     """
-    imagew, imageh = image.get_width(), image.get_height()
+    imagew, imageh = pixbuf.get_width(), pixbuf.get_height()
     if (imagew, imageh) != (neww, newh):
         imageratio = float(imagew) / float(imageh)
         newratio = float(neww) / float(newh)
         if imageratio > newratio:
             transformw = int(round(newh * imageratio))
-            image = image.scale_simple(transformw, newh, gtk.gdk.INTERP_BILINEAR)
-            image = crop_pixbuf(image, 0, 0, neww, newh)
+            pixbuf = pixbuf.scale_simple(transformw, newh, gtk.gdk.INTERP_BILINEAR)
+            pixbuf = crop_pixbuf(pixbuf, 0, 0, neww, newh)
         elif imageratio < newratio:
             transformh = int(round(neww / imageratio))
-            image = image.scale_simple(neww, transformh, gtk.gdk.INTERP_BILINEAR)
-            image = crop_pixbuf(image, 0, 0, neww, newh)
+            pixbuf = pixbuf.scale_simple(neww, transformh, gtk.gdk.INTERP_BILINEAR)
+            pixbuf = crop_pixbuf(pixbuf, 0, 0, neww, newh)
         else:
-            image = image.scale_simple(neww, newh, gtk.gdk.INTERP_BILINEAR)
-    return image
+            pixbuf = pixbuf.scale_simple(neww, newh, gtk.gdk.INTERP_BILINEAR)
+    return pixbuf
 
 
 class PixbufCache(dict):
