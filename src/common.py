@@ -490,7 +490,8 @@ class PixbufCache(dict):
     def get_pixbuf_from_uri(self, uri, size=SIZE_LARGE, iconscale=1, w=0, h=0):
         """
         Returns a pixbuf and True if a thumbnail was found, else False. Uses the
-        Pixbuf Cache for thumbnail compatible files
+        Pixbuf Cache for thumbnail compatible files. If the pixbuf is a thumb
+        it is cached.
 
         Arguments:
         -- uri: a uri on the disk
@@ -498,6 +499,8 @@ class PixbufCache(dict):
         -- iconscale: a factor to reduce icons by (not thumbs)
         -- w - resulting width
         -- h - resulting height
+
+        Warning! This function is in need of a serious clean up.
         """
         try:
             cached = self.check_cache(uri)

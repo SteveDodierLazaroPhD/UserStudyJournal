@@ -185,10 +185,9 @@ class PreviewRenderer(gtk.GenericCellRenderer):
         launch_event(self.event)
         return True
 
+# Registed the type to avoid errors using it as a renderer
 gobject.type_register(PreviewRenderer)
 
-
-# Special rendering functions
 
 
 # Display widgets
@@ -220,6 +219,10 @@ class ImageView(gtk.IconView):
         self.set_margin(10)
 
     def _set_model_in_thread(self, events):
+        """
+        A threaded which generates pixbufs and emblems for a list of events.
+        It takes those properties and appends them to the view's model
+        """
         lock = threading.Lock()
         liststore = gtk.ListStore(gtk.gdk.Pixbuf, gobject.TYPE_PYOBJECT, gobject.TYPE_BOOLEAN, gobject.TYPE_PYOBJECT, gobject.TYPE_BOOLEAN)
         gtk.gdk.threads_enter()

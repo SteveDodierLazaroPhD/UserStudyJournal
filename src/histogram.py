@@ -20,7 +20,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """
-Takes a two dementional lis store of ints and turns it into a graph based on
+Takes a two dementional list of ints and turns it into a graph based on
 the first value a int date, and the second value the number of items on that date
 where items are
 datastore = []
@@ -52,7 +52,12 @@ def get_gc_from_colormap(widget, shade):
 
 class CairoHistogram(gtk.DrawingArea):
     """
-    A histogram which is represented by a list of dates, and nitems
+    A histogram which is represented by a list of dates, and nitems.
+
+    There are a few maintenance issues due to the movement abilities. The widget
+    currently is able to capture motion events when the mouse is outside
+    the widget and the button is pressed if it was initially pressed inside
+    the widget. This event mask magic leaves a few flaws open.
     """
     _selected = (0,)
     padding = 2

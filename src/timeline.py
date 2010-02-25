@@ -38,11 +38,10 @@ from thumb import PreviewRenderer
 
 def make_area_from_event(timestamp, duration):
     """
-    Generates a time box based on a objects timestamp and duration
+    Generates a time box based on a objects timestamp and duration over 1.
+    Multiply the results by the width to get usable positions
 
     Arguments
-    - x: The start x postion
-    - max_width: The max gdk.window width
     - timestamp: a timestamp int or string from which to calulate the start position
     - duration: the length to calulate the width
     """
@@ -67,6 +66,7 @@ def text_handler(obj):
     t2 = "<span color='!color!'>" + text + "</span> "
     return (str(t1) + "\n" + str(t2) + "").replace("&", "&amp;").replace("!color!", "%s")
 
+
 class Plug(object):
     """
     A pointer/reference holder that makes up for the inability to access a
@@ -77,6 +77,9 @@ class Plug(object):
 
 
 class TimelineRenderer(gtk.GenericCellRenderer):
+    """
+    Renders timeline columns, and text for a for properties
+    """
 
     __gtype_name__ = "TimelineRenderer"
     __gproperties__ = {
