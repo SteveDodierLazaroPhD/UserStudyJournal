@@ -265,11 +265,6 @@ gobject.type_register(TimelineRenderer)
 
 
 class TimelineView(gtk.TreeView):
-    __gsignals__ = {
-        "assemble-context-menu" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,
-                                   (gobject.TYPE_PYOBJECT,)),
-        }
-
     child_width = TimelineRenderer.width
     child_height = TimelineRenderer.height
     def __init__(self):
@@ -326,7 +321,7 @@ class TimelineView(gtk.TreeView):
             if path:
                 model = self.get_model()
                 event = model[path[0]][1]
-                self.emit("assemble-context-menu", [event])
+                # self.popup.popup( None, None, None, event.button, event.time)
                 return True
         return False
 
