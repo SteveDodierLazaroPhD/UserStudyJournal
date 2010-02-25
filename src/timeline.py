@@ -67,6 +67,14 @@ def text_handler(obj):
     t2 = "<span color='!color!'>" + text + "</span> "
     return (str(t1) + "\n" + str(t2) + "").replace("&", "&amp;").replace("!color!", "%s")
 
+class Plug(object):
+    """
+    A pointer/reference holder that makes up for the inability to access a
+    model directly from within a cellrenderer. So instances holds a reference
+    to a object in 'obj'.
+    """
+    obj = None
+
 
 class TimelineRenderer(gtk.GenericCellRenderer):
 
@@ -97,6 +105,12 @@ class TimelineRenderer(gtk.GenericCellRenderer):
          "",
          gobject.PARAM_READWRITE,
          ),
+        "pixbuf_plug" :
+        (gobject.TYPE_PYOBJECT,
+         "A pixbuf representation",
+         "A gtk.gdk.Pixbuf",
+         gobject.PARAM_READWRITE,
+         ),
     }
 
     width = 32
@@ -119,6 +133,16 @@ class TimelineRenderer(gtk.GenericCellRenderer):
     @property
     def text(self):
         return self.get_property("text")
+
+    @property
+    def pixbuf_plug(self):
+        return self.get_property("pixbuf_plug")
+    @property
+    def pixbuf(self):
+        return self.pixbuf_plug.obj
+    @pixbuf.setter
+    def pixbuf(self, obj):
+        self.pixbuf_plug.obj = obj
 
     def __init__(self):
         super(TimelineRenderer, self).__init__()
@@ -178,14 +202,15 @@ class TimelineRenderer(gtk.GenericCellRenderer):
 
     def render_text_with_pixbuf(self, window, widget, x, y, w, h, flags):
         uri = get_event_uri(self.event)
-        pixbuf, thumb = PIXBUFCACHE.get_pixbuf_from_uri(uri)
-        pixbuf = pixbuf.scale_simple(24, 18, gtk.gdk.INTERP_TILES)
-        imgw, imgh = pixbuf.get_width(), pixbuf.get_height()
+        if not self.pixbuf:
+            pixbuf, thumb = PIXBUFCACHE.get_pixbuf_from_uri(uri)
+            self.pixbuf = pixbuf.scale_simple(32, 24, gtk.gdk.INTERP_TILES)
+        imgw, imgh = self.pixbuf.get_width(), self.pixbuf.get_height()
         x = max(x + imgw/2 + 4, 0 + imgw + 4)
         x, y = self.render_text(window, widget, x, y, w, h, flags)
         x -= imgw + 4
-        y += self.barsize + 6
-        PreviewRenderer.render_pixbuf(window, widget, x, y, imgw, imgh, pixbuf)
+        y += self.barsize + 3
+        PreviewRenderer.render_pixbuf(window, widget, x, y, imgw, imgh, self.pixbuf)
 
     def render_text(self, window, widget, x, y, w, h, flags):
         w = window.get_geometry()[2]
@@ -239,6 +264,7 @@ class TimelineView(gtk.TreeView):
         pcolumn.add_attribute(render, "event", 1)
         pcolumn.add_attribute(render, "color", 2)
         pcolumn.add_attribute(render, "text", 3)
+        pcolumn.add_attribute(render, "pixbuf_plug", 4)
         self.set_headers_visible(False)
         self.connect("query-tooltip", self.query_tooltip)
         self.set_property("has-tooltip", True)
@@ -255,7 +281,8 @@ class TimelineView(gtk.TreeView):
             self.set_model(None)
             return
         liststore = gtk.ListStore(gobject.TYPE_PYOBJECT, gobject.TYPE_PYOBJECT,
-                                  gobject.TYPE_PYOBJECT, gobject.TYPE_STRING)
+                                  gobject.TYPE_PYOBJECT, gobject.TYPE_STRING,
+                                  gobject.TYPE_PYOBJECT)
         for row in events:
             event = row[0][0]
             interpretation = get_event_interpretation(event)
@@ -263,7 +290,7 @@ class TimelineView(gtk.TreeView):
             color = get_file_color(interpretation, mimetype)
             bars = [make_area_from_event(event.timestamp, stop) for (event, stop) in row]
             text = text_handler(event)
-            liststore.append((bars, event, color, text))
+            liststore.append((bars, event, color, text, Plug()))
         self.set_model(liststore)
 
     def on_leave_notify(self, widget, event):
