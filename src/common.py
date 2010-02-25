@@ -106,11 +106,15 @@ def get_file_color(ftype, fmime):
     return (136/255.0, 138/255.0, 133/255.0)
 
 ##
-# Zeitgeist event helper functions
+## Zeitgeist event helper functions because Randal really hates doing
+## event.subject[0].uri, it makes him cry
 
 def launch_event(event):
     """
-    Launches a uri which is found using a zeitgeist event
+    Launches a uri from a event
+
+    Arguments:
+    -- event - a zeitgeist event
     """
     gfile = GioFile(get_event_uri(event))
     gfile.launch()
@@ -118,34 +122,55 @@ def launch_event(event):
 def get_event_interpretation(event):
     """
     Returns a interpretation uri from a event
+
+    Arguments:
+    -- event - a zeitgeist event
     """
     return event.subjects[0].interpretation
 
 def get_event_typename(event):
     """
     Returns a plain text version of a interpretation
+
+    Arguments:
+    -- event - a zeitgeist event
     """
     return FILETYPESNAMES[event.subjects[0].interpretation]
 
 def get_event_mimetype(event):
     """
     Returns a plain text version of a mimetype
+
+    Arguments:
+    -- event - a zeitgeist event
     """
     return event.subjects[0].mimetype
 
 def get_event_text(event):
     """
     Returns the file name text of a event
+
+    Arguments:
+    -- event - a zeitgeist event
     """
     return event.subjects[0].text
 
 def get_event_uri(event):
     """
     Returns a uri from a event's first subject
+
+    Arguments:
+    -- event - a zeitgeist event
     """
     return event.subjects[0].uri
 
 def get_timestamp(event):
+    """
+    returns a float event timestamp in miliseconds
+
+    Arguments:
+    -- event - a zeitgeist event
+    """
     return float(event.timestamp)
 
 def get_event_icon(event, size):
@@ -384,19 +409,19 @@ def new_grayscale_pixbuf(pixbuf):
     pixbuf.saturate_and_pixelate(pixbuf2, 0.0, False)
     return pixbuf2
 
-def crop_pixbuf(pixbuf, src_x, src_y, width, height):
+def crop_pixbuf(pixbuf, x, y, width, height):
     """
     Crop a pixbuf
 
     Arguments:
     -- pixbuf - a gtk.gdk.Pixbuf
-    -- src_x - the x position to crop from
-    -- src_y - the y position to crop from
+    -- x - the x position to crop from in the source
+    -- y - the y position to crop from in the source
     -- width - crop width
     -- height - crop height
     """
     dest_pixbuf = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, True, 8, width, height)
-    pixbuf.copy_area(src_x, src_y, width, height, dest_pixbuf, 0, 0)
+    pixbuf.copy_area(x, y, width, height, dest_pixbuf, 0, 0)
     return dest_pixbuf
 
 def scale_to_fill(pixbuf, neww, newh):
