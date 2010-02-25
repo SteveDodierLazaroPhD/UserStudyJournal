@@ -264,9 +264,17 @@ def draw_text(context, layout, markup = "", x=0, y=0, maxw=0, color = (0.3, 0.3,
     pcontext.move_to(x, y)
     pcontext.show_layout(layout)
 
-def render_pixbuf(window, widget, x, y, w, h, pixbuf):
+def render_pixbuf(window, x, y, w, h, pixbuf, drawframe = True):
     """
     Renders a pixbuf to be displayed on the cell
+
+    Arguments:
+    -- window - a gdk window
+    -- x - x position
+    -- y - y position
+    -- w - the width of the rectangle viewing area of the pixbuf
+    -- y - the height of the rectangle viewing area of the pixbuf
+    -- drawframe - if true we draw a frame around the pixbuf
     """
     imgw, imgh = pixbuf.get_width(), pixbuf.get_height()
     context = window.cairo_create()
@@ -277,12 +285,20 @@ def render_pixbuf(window, widget, x, y, w, h, pixbuf):
     context.fill_preserve()
     context.set_source_pixbuf(pixbuf, x, y)
     context.fill()
-    # Frame
-    draw_frame(context, x, y, imgw, imgh)
+    if drawframe: # Draw a pretty frame
+        draw_frame(context, x, y, imgw, imgh)
 
-def render_emblems(window, widget, x, y, w, h, emblems):
+def render_emblems(window, x, y, w, h, emblems):
     """
-    Renders the defined emblems from the emblems property
+    Renders emblems on the four corners of the rectangle
+
+    Arguments:
+    -- window - a gdk window
+    -- x - x position
+    -- y - y position
+    -- w - the width of the rectangle
+    -- y - the height of the rectangle
+    -- emblems - a list of pixbufs
     """
     # w = max(self.width, w)
     corners = [[x, y],
@@ -297,30 +313,6 @@ def render_emblems(window, widget, x, y, w, h, emblems):
         context.set_source_pixbuf(pixbuf, corners[i][0]-pbw, corners[i][1]-pbh)
         context.rectangle(corners[i][0]-pbw, corners[i][1]-pbh, pbw*2, pbh*2)
         context.fill()
-
-def render_info_box(window, widget, cell_area, expose_area, event):
-    """
-    Renders a info box when the item is active
-    """
-    x = cell_area.x
-    y = cell_area.y - 10
-    w = cell_area.width
-    h = cell_area.height
-    context = window.cairo_create()
-    t0 = get_event_typename(event)
-    t1 = get_event_text(event)
-    text = ("<span size='10240'>%s</span>\n<span size='8192'>%s</span>" % (t0, t1)).replace("&", "&amp;")
-    layout = widget.create_pango_layout(text)
-    layout.set_markup(text)
-    textw, texth = layout.get_pixel_size()
-    popuph = max(h/3 + 5, texth)
-    nw = w + 26
-    x = x - (nw - w)/2
-    width, height = window.get_geometry()[2:4]
-    popupy = min(y+h+10, height-popuph-5-1) - 5
-    draw_speech_bubble(context, layout, x, popupy, nw, popuph)
-    context.fill()
-    return False
 
 ##
 ## Color functions

@@ -126,11 +126,11 @@ class PreviewRenderer(gtk.GenericCellRenderer):
         w = cell_area.width
         h = cell_area.height
         if self.isthumb:
-            render_pixbuf(window, widget, x, y, w, h, self.pixbuf)
+            render_pixbuf(window, x, y, w, h, self.pixbuf)
         else: self.file_render_pixbuf(window, widget, x, y, w, h)
-        render_emblems(window, widget, x, y, w, h, self.emblems)
+        render_emblems(window, x, y, w, h, self.emblems)
         if self.active:
-            gobject.timeout_add(2, render_info_box, window, widget, cell_area, expose_area, self.event)
+            gobject.timeout_add(2, self.render_info_box, window, widget, cell_area, expose_area, self.event)
         return True
 
     def file_render_pixbuf(self, window, widget, x, y, w, h):
@@ -152,6 +152,31 @@ class PreviewRenderer(gtk.GenericCellRenderer):
         text = get_event_text(self.event)
         layout = widget.create_pango_layout(text)
         draw_text(context, layout, text, x+5, y+5, self.width-10)
+
+    @staticmethod
+    def render_info_box(window, widget, cell_area, expose_area, event):
+        """
+        Renders a info box when the item is active
+        """
+        x = cell_area.x
+        y = cell_area.y - 10
+        w = cell_area.width
+        h = cell_area.height
+        context = window.cairo_create()
+        t0 = get_event_typename(event)
+        t1 = get_event_text(event)
+        text = ("<span size='10240'>%s</span>\n<span size='8192'>%s</span>" % (t0, t1)).replace("&", "&amp;")
+        layout = widget.create_pango_layout(text)
+        layout.set_markup(text)
+        textw, texth = layout.get_pixel_size()
+        popuph = max(h/3 + 5, texth)
+        nw = w + 26
+        x = x - (nw - w)/2
+        width, height = window.get_geometry()[2:4]
+        popupy = min(y+h+10, height-popuph-5-1) - 5
+        draw_speech_bubble(context, layout, x, popupy, nw, popuph)
+        context.fill()
+        return False
 
     def on_start_editing(self, event, widget, path, background_area, cell_area, flags):
         pass
