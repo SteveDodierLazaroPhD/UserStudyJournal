@@ -685,9 +685,10 @@ class ContextMenu(gtk.Menu):
     def do_set_bookmarked(self, menuitem, bool_):
         for uri in self.subjects:
             uri = unicode(uri)
-            if bool_:
-                bookmarker.bookmark(uri)
-            else:
+            isbookmarked = bookmarker.is_bookmarked(uri)
+            if bool_ and not isbookmarked:
+                    bookmarker.bookmark(uri)
+            elif isbookmarked:
                 bookmarker.unbookmark(uri)
 
     def do_delete(self, menuitem):
