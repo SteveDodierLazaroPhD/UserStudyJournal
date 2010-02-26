@@ -1,6 +1,6 @@
 # -.- coding: utf-8 -.-
 #
-# Filename
+# GNOME Activity Journal
 #
 # Copyright © 2010 Randal Barlow <email.tehk@gmail.com>
 #
@@ -147,12 +147,14 @@ class TimelineRenderer(gtk.GenericCellRenderer):
     @property
     def pixbuf_plug(self):
         return self.get_property("pixbuf_plug")
-    @property
-    def pixbuf(self):
+    #@property
+    def __pixbuf(self):
         return self.pixbuf_plug.obj
-    @pixbuf.setter
-    def pixbuf(self, obj):
+    #@pixbuf.setter
+    def __pixbuf_setter(self, obj):
         self.pixbuf_plug.obj = obj
+    # For compatibility with Python 2.5 
+    pixbuf = property(__pixbuf, __pixbuf_setter)
 
     @property
     def usethumb(self):
