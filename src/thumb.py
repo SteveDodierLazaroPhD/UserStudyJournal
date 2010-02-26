@@ -201,7 +201,7 @@ class ImageView(gtk.IconView):
     child_height = PreviewRenderer.height
     def __init__(self):
         super(ImageView, self).__init__()
-        self.popupmenu = ContextMenu()
+        self.popupmenu = ContextMenu
         self.add_events(gtk.gdk.LEAVE_NOTIFY_MASK)
         self.connect("button-press-event", self.on_button_press)
         self.connect("motion-notify-event", self.on_motion_notify)

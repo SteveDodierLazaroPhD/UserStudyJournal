@@ -531,7 +531,7 @@ class Item(gtk.HBox):
     def _show_item_popup(self, widget, ev):
         if ev.button == 3:
             items = [self.subject.uri]
-            PopupMenu.do_popup(ev.time, items)
+            ContextMenu.do_popup(ev.time, items)
 
     def set_bookmarked(self, bool_):
         uri = unicode(self.subject.uri)
@@ -701,4 +701,4 @@ if gst is not None:
 else:
     VideoPreviewTooltip = None
 StaticPreviewTooltip = StaticPreviewTooltip()
-PopupMenu = ContextMenu()
+ContextMenu = ContextMenu()
