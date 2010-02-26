@@ -108,12 +108,12 @@ class ThumbnailDayWidget(GenericViewWidget):
             self.daylabel = DayLabel(self.week_day_string, self.date_string+", "+ self.year_string)
         self.daylabel.set_size_request(100, 60)
         self.daylabel.connect("button-press-event", self.click)
+        self.daylabel.set_tooltip_text(_("Click to return multiday view"))
         self.pack_start(self.daylabel, False, False)
         self.show_all()
         self.view.hide_all()
         self.daylabel.show_all()
         self.view.show()
-
 
         hour = 60*60
         get_file_events(start*1000, (start + 12*hour -1) * 1000, self.set_morning_events)
@@ -196,6 +196,8 @@ class SingleDayWidget(GenericViewWidget):
             self.daylabel = DayLabel(self.week_day_string, self.date_string+", "+ self.year_string)
         self.daylabel.set_size_request(100, 60)
         self.daylabel.connect("button-press-event", self.click)
+        self.daylabel.set_tooltip_text(_("Click to return multiday view"))
+
         self.pack_start(self.daylabel, False, False)
         get_dayevents(start*1000, end*1000, 1, self.view.set_model_from_list)
         self.show_all()
@@ -306,7 +308,10 @@ class DayWidget(gtk.VBox):
         else:
             self.daylabel = DayLabel(self.week_day_string, self.date_string+", "+ self.year_string)
         self.daylabel.connect("button-press-event", self.click)
-
+        self.daylabel.set_tooltip_text(
+            _("Left click for a detailed timeline view")
+            + u"\n" +
+            _("Right click for a thumbnail view"))
         self.daylabel.set_size_request(100, 60)
         evbox = gtk.EventBox()
         evbox.add(self.daylabel)
