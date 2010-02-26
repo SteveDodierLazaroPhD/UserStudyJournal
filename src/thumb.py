@@ -149,7 +149,7 @@ class PreviewRenderer(gtk.GenericCellRenderer):
         context.fill()
         draw_frame(context, x, y, w, h)
         context = window.cairo_create()
-        text = get_event_text(self.event)
+        text = get_event_text(self.event).replace("&", "&amp;")
         layout = widget.create_pango_layout(text)
         draw_text(context, layout, text, x+5, y+5, self.width-10)
 
