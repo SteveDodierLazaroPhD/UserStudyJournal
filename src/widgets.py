@@ -649,14 +649,14 @@ class ContextMenu(gtk.Menu):
 
     def do_popup(self, time, subjects):
         self.subjects = subjects
-        #if len(subjects) == 1:
-            #uri = subjects[0]
-            #if bookmarker.is_bookmarked(uri):
-                #self.menuitems["2pin"].hide()
-                #self.menuitems["1unpin"].show()
-            #else:
-                #self.menuitems["2pin"].show()
-                #self.menuitems["1unpin"].hide()
+        if len(subjects) == 1:
+            uri = subjects[0]
+            if bookmarker.is_bookmarked(uri):
+                self.menuitems["2pin"].hide()
+                self.menuitems["1unpin"].show()
+            else:
+                self.menuitems["2pin"].show()
+                self.menuitems["1unpin"].hide()
 
         self.popup(None, None, None, 3, time)
 
