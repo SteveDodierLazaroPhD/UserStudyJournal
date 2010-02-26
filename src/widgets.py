@@ -626,22 +626,20 @@ class ContextMenu(gtk.Menu):
     def __init__(self):
         super(ContextMenu, self).__init__()
         self.menuitems = {
-            "0open" : gtk.ImageMenuItem(gtk.STOCK_OPEN),
-            "1unpin" : gtk.MenuItem(_("Remove Pin")),
-            "2pin" : gtk.MenuItem(_("Pin to Today")),
-            "3delete" : gtk.MenuItem(_("Delete item from Journal")),
-            "4related" : gtk.MenuItem(_("Most used with ...")),
+            "open" : gtk.ImageMenuItem(gtk.STOCK_OPEN),
+            "unpin" : gtk.MenuItem(_("Remove Pin")),
+            "pin" : gtk.MenuItem(_("Pin to Today")),
+            "delete" : gtk.MenuItem(_("Delete item from Journal")),
+            "related" : gtk.MenuItem(_("Most used with ...")),
             }
         callbacks = {
-            "0open" : self.do_open,
-            "1unpin" : self.do_unbookmark,
-            "2pin" : self.do_bookmark,
-            "3delete" : self.do_delete,
-            "4related" : self.do_get_related,
+            "open" : self.do_open,
+            "unpin" : self.do_unbookmark,
+            "pin" : self.do_bookmark,
+            "delete" : self.do_delete,
+            "related" : self.do_get_related,
             }
-        names = callbacks.keys()
-        names.sort()
-        for name in names:
+        for name in ("open", "unpin", "pin", "delete", "related"):
             item = self.menuitems[name]
             self.append(item)
             item.connect("activate", callbacks[name])
@@ -652,11 +650,11 @@ class ContextMenu(gtk.Menu):
         if len(subjects) == 1:
             uri = subjects[0]
             if bookmarker.is_bookmarked(uri):
-                self.menuitems["2pin"].hide()
-                self.menuitems["1unpin"].show()
+                self.menuitems["pin"].hide()
+                self.menuitems["unpin"].show()
             else:
-                self.menuitems["2pin"].show()
-                self.menuitems["1unpin"].hide()
+                self.menuitems["pin"].show()
+                self.menuitems["unpin"].hide()
 
         self.popup(None, None, None, 3, time)
 
