@@ -377,4 +377,59 @@ class TimelineView(gtk.TreeView):
         self.render.textcolor[gtk.STATE_SELECTED] = selected
 
 
+class TimelineHeader(gtk.DrawingArea):
+    time_text = {4:"4:00", 8:"8:00", 12:"12:00", 16:"16:00", 20:"20:00"}
+    odd_line_height = 6
+    even_line_height = 12
+
+    line_color = (0, 0, 0, 1)
+    def __init__(self):
+        super(TimelineHeader, self).__init__()
+        self.connect("expose-event", self.expose)
+        self.connect("style-set", self.change_style)
+        self.set_size_request(100, 12)
+
+    def expose(self, widget, event):
+        window = widget.window
+        context = widget.window.cairo_create()
+        layout = self.create_pango_layout("   ")
+        width = event.area.width
+        widget.style.set_background(window, gtk.STATE_NORMAL)
+        context.set_source_rgba(*self.line_color)
+        context.set_line_width(2)
+        self.draw_lines(window, context, layout, width)
+
+    def draw_text(self, window, context, layout, x, text):
+        x = int(x)
+        color = self.style.text[gtk.STATE_NORMAL]
+        markup = "<span color='%s'>%s</span>" % (color.to_string(), text)
+        pcontext = pangocairo.CairoContext(context)
+        layout.set_markup(markup)
+        xs, ys = layout.get_pixel_size()
+        pcontext.move_to(x - xs/2, 0)
+        pcontext.show_layout(layout)
+
+    def draw_line(self, window, context, x, even):
+        x = int(x)+0.5
+        height = self.even_line_height if even else self.odd_line_height
+        context.move_to(x, 0)
+        context.line_to(x, height)
+        context.stroke()
+
+    def draw_lines(self, window, context, layout, width):
+        xinc = width/24
+        for hour in xrange(1, 24):
+            if self.time_text.has_key(hour):
+                self.draw_text(window, context, layout, xinc*hour, self.time_text[hour])
+            else:
+                self.draw_line(window, context, xinc*hour, bool(hour % 2))
+
+    def change_style(self, widget, old_style):
+        layout = self.create_pango_layout("")
+        layout.set_markup("<b>qPqPqP|</b>")
+        tw, th = layout.get_pixel_size()
+        self.set_size_request(tw*5, th+4)
+        self.line_color = get_gtk_rgba(widget.style, "fg", 3, 0.7)
+
+
 

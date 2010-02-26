@@ -37,7 +37,7 @@ from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
 from common import shade_gdk_color, combine_gdk_color, get_gtk_rgba
 from widgets import *
 from thumb import ThumbBox
-from timeline import TimelineView
+from timeline import TimelineView, TimelineHeader
 from eventgatherer import get_dayevents, get_file_events
 
 CLIENT = ZeitgeistClient()
@@ -162,27 +162,28 @@ class SingleDayWidget(GenericViewWidget):
 
     def __init__(self):
         GenericViewWidget.__init__(self)
-        self.ruler_box = gtk.EventBox()
-        ruler = gtk.HBox()
-        self.ruler_box.add(ruler)
-        for time_str in ("4:00", "8:00", "12:00", "16:00", "20:00"):
-            label = gtk.Label()
-            label.set_markup("<tt>%s</tt>" % time_str)
-            ruler.pack_start(label, True, True)
+        self.ruler = TimelineHeader()
+        #self.ruler_box = gtk.EventBox()
+        #ruler = gtk.HBox()
+        #self.ruler_box.add(ruler)
+        #for time_str in ("4:00", "8:00", "12:00", "16:00", "20:00"):
+        #    label = gtk.Label()
+        #    label.set_markup("<tt>%s</tt>" % time_str)
+        #    ruler.pack_start(label, True, True)
         self.scrolledwindow = gtk.ScrolledWindow()
         self.scrolledwindow.set_shadow_type(gtk.SHADOW_NONE)
         self.scrolledwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
         self.view = TimelineView()
         self.scrolledwindow.add(self.view)
         self.pack_end(self.scrolledwindow)
-        self.pack_end(self.ruler_box, False, False)
+        self.pack_end(self.ruler, False, False)
         self.view.set_events(gtk.gdk.POINTER_MOTION_MASK | gtk.gdk.POINTER_MOTION_HINT_MASK)
 
     def set_day(self, start, end):
         self.day_start = start
         self.day_end = end
         for widget in self:
-            if widget not in (self.ruler_box, self.scrolledwindow):
+            if widget not in (self.ruler, self.scrolledwindow):
                 self.remove(widget)
         self._set_date_strings()
         today = int(time.time() ) - 7*86400
@@ -198,6 +199,13 @@ class SingleDayWidget(GenericViewWidget):
         self.pack_start(self.daylabel, False, False)
         get_dayevents(start*1000, end*1000, 1, self.view.set_model_from_list)
         self.show_all()
+
+    def change_style(self, widget, style):
+        GenericViewWidget.change_style(self, widget, style)
+        rc_style = self.style
+        color = rc_style.bg[gtk.STATE_NORMAL]
+        color = shade_gdk_color(color, 102/100.0)
+        self.ruler.modify_bg(gtk.STATE_NORMAL, color)
 
 
 class DayWidget(gtk.VBox):
