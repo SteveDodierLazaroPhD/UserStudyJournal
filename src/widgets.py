@@ -634,8 +634,8 @@ class ContextMenu(gtk.Menu):
             }
         callbacks = {
             "0open" : self.do_open,
-            "1unpin" : (self.do_set_bookmarked, False),
-            "2pin" : (self.do_set_bookmarked, True),
+            "1unpin" : self.do_unbookmark,
+            "2pin" : self.do_bookmark,
             "3delete" : self.do_delete,
             "4related" : self.do_get_related,
             }
@@ -644,22 +644,19 @@ class ContextMenu(gtk.Menu):
         for name in names:
             item = self.menuitems[name]
             self.append(item)
-            if isinstance(callbacks[name], tuple):
-                item.connect("activate", callbacks[name][0], callbacks[name][1])
-            else:
-                item.connect("activate", callbacks[name])
+            item.connect("activate", callbacks[name])
         self.show_all()
 
     def do_popup(self, time, subjects):
         self.subjects = subjects
-        if len(subjects) == 1:
-            uri = subjects[0]
-            if bookmarker.is_bookmarked(uri):
-                self.menuitems["2pin"].hide()
-                self.menuitems["1unpin"].show()
-            else:
-                self.menuitems["2pin"].show()
-                self.menuitems["1unpin"].hide()
+        #if len(subjects) == 1:
+            #uri = subjects[0]
+            #if bookmarker.is_bookmarked(uri):
+                #self.menuitems["2pin"].hide()
+                #self.menuitems["1unpin"].show()
+            #else:
+                #self.menuitems["2pin"].show()
+                #self.menuitems["1unpin"].hide()
 
         self.popup(None, None, None, 3, time)
 
@@ -682,13 +679,18 @@ class ContextMenu(gtk.Menu):
             start = end - 60*60*14*1000
             CLIENT.find_related_uris_for_uris([uri], handler)
 
-    def do_set_bookmarked(self, menuitem, bool_):
+    def do_bookmark(self, menuitem):
         for uri in self.subjects:
             uri = unicode(uri)
             isbookmarked = bookmarker.is_bookmarked(uri)
-            if bool_ and not isbookmarked:
-                    bookmarker.bookmark(uri)
-            elif isbookmarked:
+            if not isbookmarked:
+                bookmarker.bookmark(uri)
+
+    def do_unbookmark(self, menuitem):
+        for uri in self.subjects:
+            uri = unicode(uri)
+            isbookmarked = bookmarker.is_bookmarked(uri)
+            if isbookmarked:
                 bookmarker.unbookmark(uri)
 
     def do_delete(self, menuitem):
