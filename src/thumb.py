@@ -32,7 +32,7 @@ import threading
 
 from zeitgeist.datamodel import Interpretation
 
-from widgets import StaticPreviewTooltip, VideoPreviewTooltip
+from widgets import StaticPreviewTooltip, VideoPreviewTooltip, ContextMenu
 from gio_file import GioFile, SIZE_LARGE, SIZE_NORMAL
 from common import *
 
@@ -201,6 +201,7 @@ class ImageView(gtk.IconView):
     child_height = PreviewRenderer.height
     def __init__(self):
         super(ImageView, self).__init__()
+        self.popupmenu = ContextMenu()
         self.add_events(gtk.gdk.LEAVE_NOTIFY_MASK)
         self.connect("button-press-event", self.on_button_press)
         self.connect("motion-notify-event", self.on_motion_notify)
@@ -257,6 +258,13 @@ class ImageView(gtk.IconView):
         thread.start()
 
     def on_button_press(self, widget, event):
+        if event.button == 3:
+            val = self.get_item_at_pos(int(event.x), int(event.y))
+            if val:
+                path, cell = val
+                model = self.get_model()
+                uri = get_event_uri(model[path[0]][3])
+                self.popupmenu.do_popup(event.time, [uri])
         return False
 
     def on_leave_notify(self, widget, event):

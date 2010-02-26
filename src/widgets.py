@@ -530,58 +530,16 @@ class Item(gtk.HBox):
 
     def _show_item_popup(self, widget, ev):
         if ev.button == 3:
-            item = self.subject
-            if item:
-                menu = gtk.Menu()
-                menu.attach_to_widget(widget, None)
-                self._populate_popup(menu, item)
-                menu.popup(None, None, None, ev.button, ev.time)
+            items = [self.subject.uri]
+            PopupMenu.do_popup(ev.time, items)
 
-    def _delete_subject(self, *discard):
-        CLIENT.find_event_ids_for_template(
-            Event.new_for_values(subject_uri=self.subject.uri),
-            lambda ids: CLIENT.delete_events(map(int, ids)))
-
-    def _populate_popup(self, menu, item):
-        menuitem = gtk.ImageMenuItem(gtk.STOCK_OPEN)
-        menu.append(menuitem)
-
-        bookmarked = bookmarker.is_bookmarked(self.subject.uri)
-        menuitem = gtk.MenuItem(_("Remove Pin") if bookmarked else _("Pin to Today"))
-        menuitem.connect("activate", lambda x: self.set_bookmarked(not bookmarked))
-        menu.append(menuitem)
-
-        menuitem = gtk.MenuItem(_("Delete item from Journal"))
-        menuitem.connect("activate", self._delete_subject)
-        menu.append(menuitem)
-                
-        menuitem = gtk.MenuItem(_("Most used with ..."))
-        menuitem.connect("activate", self._get_related)
-        menu.append(menuitem)
-
-
-        menu.show_all()
-
-    def _get_related(self, *discard):
-        def handler(uris):
-            print "........"
-            print "***", self.subject.uri, "***"
-            print "--- related to ---" 
-            for uri in uris:
-                print uri
-            print "........"
-                
-        end = time.time() * 1000
-        start = end - 60*60*14*1000
-        CLIENT.find_related_uris_for_uris([self.subject.uri], handler)
-        
-
-    def set_bookmarked(self, bool):
+    def set_bookmarked(self, bool_):
         uri = unicode(self.subject.uri)
-        if bool:
+        if bool_:
             bookmarker.bookmark(uri)
         else:
             bookmarker.unbookmark(uri)
+
 
     def launch(self, *discard):
         if self.gio_file is not None:
@@ -662,6 +620,80 @@ class AboutDialog(gtk.AboutDialog):
         self.set_logo(gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path(
             "hicolor/scalable/apps/gnome-activity-journal.svg"), 48, 48))
 
+class ContextMenu(gtk.Menu):
+    subjects = []# A list of Zeitgeist event uris
+    def __init__(self):
+        super(ContextMenu, self).__init__()
+        self.menuitems = {
+            "0open" : gtk.ImageMenuItem(gtk.STOCK_OPEN),
+            "1unpin" : gtk.MenuItem(_("Remove Pin")),
+            "2pin" : gtk.MenuItem(_("Pin to Today")),
+            "3delete" : gtk.MenuItem(_("Delete item from Journal")),
+            "4related" : gtk.MenuItem(_("Most used with ...")),
+            }
+        callbacks = {
+            "0open" : self.do_open,
+            "1unpin" : (self.do_set_bookmarked, False),
+            "2pin" : (self.do_set_bookmarked, True),
+            "3delete" : self.do_delete,
+            "4related" : self.do_get_related,
+            }
+        names = callbacks.keys()
+        names.sort()
+        for name in names:
+            item = self.menuitems[name]
+            self.append(item)
+            if isinstance(callbacks[name], tuple):
+                item.connect("activate", callbacks[name][0], callbacks[name][1])
+            else:
+                item.connect("activate", callbacks[name])
+        self.show_all()
+
+    def do_popup(self, time, subjects):
+        self.subjects = subjects
+        if len(subjects) == 1:
+            uri = subjects[0]
+            if bookmarker.is_bookmarked(uri):
+                self.menuitems["2pin"].hide()
+                self.menuitems["1unpin"].show()
+            else:
+                self.menuitems["2pin"].show()
+                self.menuitems["1unpin"].hide()
+
+        self.popup(None, None, None, 3, time)
+
+    def do_open(self, menuitem):
+        uri = self.subjects[0]
+        gfile = GioFile(uri)
+        gfile.launch()
+
+    def do_get_related(self, menuitem):
+        uri = self.subjects[0]
+        def handler(uris):
+            print "........"
+            print "***", uri, "***"
+            print "--- related to ---"
+            for uri_ in uris:
+                print uri_
+            print "........"
+
+        end = time.time() * 1000
+        start = end - 60*60*14*1000
+        CLIENT.find_related_uris_for_uris([uri], handler)
+
+    def do_set_bookmarked(self, menuitem, bool_):
+        uri = unicode(self.subjects[0])
+        if bool_:
+            bookmarker.bookmark(uri)
+        else:
+            bookmarker.unbookmark(uri)
+
+    def do_delete(self, menuitem):
+        uri = self.subjects[0]
+        CLIENT.find_event_ids_for_template(
+            Event.new_for_values(subject_uri=uri),
+            lambda ids: CLIENT.delete_events(map(int, ids)))
+
 
 searchbox = SearchBox()
 if gst is not None:
@@ -669,3 +701,4 @@ if gst is not None:
 else:
     VideoPreviewTooltip = None
 StaticPreviewTooltip = StaticPreviewTooltip()
+PopupMenu = ContextMenu()

@@ -32,7 +32,7 @@ import threading
 
 from zeitgeist.datamodel import Interpretation
 from gio_file import GioFile
-from widgets import StaticPreviewTooltip, VideoPreviewTooltip
+from widgets import StaticPreviewTooltip, VideoPreviewTooltip, ContextMenu
 from common import *
 from thumb import PreviewRenderer
 
@@ -269,6 +269,7 @@ class TimelineView(gtk.TreeView):
     child_height = TimelineRenderer.height
     def __init__(self):
         super(TimelineView, self).__init__()
+        self.popupmenu = ContextMenu()
         self.add_events(gtk.gdk.LEAVE_NOTIFY_MASK)
         self.connect("button-press-event", self.on_button_press)
         # self.connect("motion-notify-event", self.on_motion_notify)
@@ -320,8 +321,8 @@ class TimelineView(gtk.TreeView):
             path = self.get_dest_row_at_pos(int(event.x), int(event.y))
             if path:
                 model = self.get_model()
-                event = model[path[0]][1]
-                # self.popup.popup( None, None, None, event.button, event.time)
+                uri = get_event_uri(model[path[0]][1])
+                self.popupmenu.do_popup(event.time, [uri])
                 return True
         return False
 
