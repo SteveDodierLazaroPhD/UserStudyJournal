@@ -622,6 +622,7 @@ class AboutDialog(gtk.AboutDialog):
 
 class ContextMenu(gtk.Menu):
     subjects = []# A list of Zeitgeist event uris
+
     def __init__(self):
         super(ContextMenu, self).__init__()
         self.menuitems = {
@@ -663,12 +664,11 @@ class ContextMenu(gtk.Menu):
         self.popup(None, None, None, 3, time)
 
     def do_open(self, menuitem):
-        uri = self.subjects[0]
-        gfile = GioFile(uri)
-        gfile.launch()
+        for uri in self.subjects:
+            gfile = GioFile(uri)
+            gfile.launch()
 
     def do_get_related(self, menuitem):
-        uri = self.subjects[0]
         def handler(uris):
             print "........"
             print "***", uri, "***"
@@ -677,22 +677,24 @@ class ContextMenu(gtk.Menu):
                 print uri_
             print "........"
 
-        end = time.time() * 1000
-        start = end - 60*60*14*1000
-        CLIENT.find_related_uris_for_uris([uri], handler)
+        for uri in self.subjects:
+            end = time.time() * 1000
+            start = end - 60*60*14*1000
+            CLIENT.find_related_uris_for_uris([uri], handler)
 
     def do_set_bookmarked(self, menuitem, bool_):
-        uri = unicode(self.subjects[0])
-        if bool_:
-            bookmarker.bookmark(uri)
-        else:
-            bookmarker.unbookmark(uri)
+        for uri in self.subjects:
+            uri = unicode(uri)
+            if bool_:
+                bookmarker.bookmark(uri)
+            else:
+                bookmarker.unbookmark(uri)
 
     def do_delete(self, menuitem):
-        uri = self.subjects[0]
-        CLIENT.find_event_ids_for_template(
-            Event.new_for_values(subject_uri=uri),
-            lambda ids: CLIENT.delete_events(map(int, ids)))
+        for uri in self.subjects:
+            CLIENT.find_event_ids_for_template(
+                Event.new_for_values(subject_uri=uri),
+                lambda ids: CLIENT.delete_events(map(int, ids)))
 
 
 searchbox = SearchBox()
