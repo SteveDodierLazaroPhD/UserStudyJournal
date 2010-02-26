@@ -554,8 +554,27 @@ class Item(gtk.HBox):
         menuitem = gtk.MenuItem(_("Delete item from Journal"))
         menuitem.connect("activate", self._delete_subject)
         menu.append(menuitem)
+                
+        menuitem = gtk.MenuItem(_("Most used with ..."))
+        menuitem.connect("activate", self._get_related)
+        menu.append(menuitem)
+
 
         menu.show_all()
+
+    def _get_related(self, *discard):
+        def handler(uris):
+            print "........"
+            print "***", self.subject.uri, "***"
+            print "--- related to ---" 
+            for uri in uris:
+                print uri
+            print "........"
+                
+        end = time.time() * 1000
+        start = end - 60*60*14*1000
+        CLIENT.find_related_uris_for_uris([self.subject.uri], handler)
+        
 
     def set_bookmarked(self, bool):
         uri = unicode(self.subject.uri)
