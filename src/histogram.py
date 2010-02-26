@@ -299,7 +299,10 @@ class CairoHistogram(gtk.DrawingArea):
         if x > event.area.width: # Check for resize
             self.set_size_request(x+self.xincrement, event.area.height)
         for date, xpos in months_positions:
-            self.draw_month(context, xpos - self.padding, event.area.height, date)
+            edge = 0
+            if (date, xpos) == months_positions[-1]:
+                edge = len(self._datastore)*self.xincrement
+            self.draw_month(context, xpos - self.padding, event.area.height, date, edge)
         self.max_width = x # remove me
 
     def draw_column(self, context, x, maxheight, nitems, color):
@@ -335,7 +338,7 @@ class CairoHistogram(gtk.DrawingArea):
         context.close_path()
         context.fill()
 
-    def draw_month(self, context, x, height, date):
+    def draw_month(self, context, x, height, date, edge=0):
         """
         Draws a line signifying the start of a month
         """
@@ -350,6 +353,8 @@ class CairoHistogram(gtk.DrawingArea):
         layout = self.create_pango_layout(date)
         layout.set_font_description(self.pangofont)
         w, h = layout.get_pixel_size()
+        if edge:
+            if x + w > edge: x = edge - w - 5
         self.window.draw_layout(self.gc, int(x + 3), int(height - self.bottom_padding/2 - h/2), layout)
 
     def set_selected(self, i):
