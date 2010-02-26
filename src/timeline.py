@@ -429,7 +429,7 @@ class TimelineHeader(gtk.DrawingArea):
         layout.set_markup("<b>qPqPqP|</b>")
         tw, th = layout.get_pixel_size()
         self.set_size_request(tw*5, th+4)
-        self.line_color = get_gtk_rgba(widget.style, "fg", 3, 0.7)
+        self.line_color = get_gtk_rgba(widget.style, "bg", 0, 0.94)
 
 
 
