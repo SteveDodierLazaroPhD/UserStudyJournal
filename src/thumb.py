@@ -247,8 +247,7 @@ class ImageView(gtk.IconView):
     def set_model_from_list(self, events):
         """
         Sets creates/sets a model from a list of zeitgeist events
-        Arguments:
-        -- events: a list of events
+        :param events: a list of :class:`Events <zeitgeist.datamodel.Event>`
         """
         self.last_active = -1
         if not events:
@@ -327,9 +326,8 @@ class ThumbBox(gtk.VBox):
         """
         Set a time phases events
 
-        Arguments:
-        -- i: a index for the three items in self.views. 0:Morning,1:AfterNoon,2:Evening
-        -- events: a list of zeitgeist events
+        :param i: a index for the three items in self.views. 0:Morning,1:AfterNoon,2:Evening
+        :param events: a list of :class:`Events <zeitgeist.datamodel.Event>`
         """
         view = self.views[i]
         label = self.labels[i]

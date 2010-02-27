@@ -41,6 +41,11 @@ event_templates = (
 EVENTS = {}
 
 def get_dayevents(start, end, result_type, callback, force = False):
+    """
+    :param start: a int time from which to start gathering events in milliseconds
+    :param end: a int time from which to stop gathering events in milliseconds
+    :callback: a callable to be called when the query is done
+    """
 
     def event_exists(uri):
         # TODO: Move this into Zeitgeist's datamodel.py
@@ -73,7 +78,7 @@ def get_dayevents(start, end, result_type, callback, force = False):
 
     def notify_insert_handler_morning(timerange, events):
         find_events()
-        
+
     def find_events():
         event_templates = []
         CLIENT.find_events_for_templates(event_templates, handle_find_events,
@@ -90,7 +95,7 @@ def get_dayevents(start, end, result_type, callback, force = False):
             Event.new_for_values(interpretation=Interpretation.OPEN_EVENT.uri),
         )
         # FIXME: Move this into EventGroup
-        
+
         CLIENT.install_monitor([start, end], event_templates,
             notify_insert_handler_morning, notify_insert_handler_morning)
 
@@ -102,10 +107,15 @@ def get_dayevents(start, end, result_type, callback, force = False):
 
 
 def get_file_events(start, end, callback, force = False):
+    """
+    :param start: a int time from which to start gathering events in milliseconds
+    :param end: a int time from which to stop gathering events in milliseconds
+    :callback: a callable to be called when the query is done
+    """
     def event_exists(uri):
         return not uri.startswith("file://") or os.path.exists(
             urllib.unquote(str(uri[7:])))
-        
+
     def handle_find_events(events):
         results = {}
         for event in events:
@@ -118,17 +128,17 @@ def get_file_events(start, end, callback, force = False):
         events = [result[0] for result in results.values()]
         EVENTS[start+end] = events
         callback(events)
-        
+
     def notify_insert_handler_morning(timerange, events):
         find_events()
-    
+
     event_templates = (
             Event.new_for_values(interpretation=Interpretation.VISIT_EVENT.uri),
             Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri),
             Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri),
             Event.new_for_values(interpretation=Interpretation.OPEN_EVENT.uri),
-        )    
-    
+        )
+
     def find_events():
         CLIENT.find_events_for_templates(event_templates, handle_find_events,
                                          [start, end], num_events=50000,
@@ -137,9 +147,9 @@ def get_file_events(start, end, callback, force = False):
     if not EVENTS.has_key(start+end) or force:
         find_events()
         event_timerange = [start, end]
-        
+
         # FIXME: Move this into EventGroup
-        
+
         CLIENT.install_monitor([start, end], event_templates,
             notify_insert_handler_morning, notify_insert_handler_morning)
 
@@ -150,6 +160,10 @@ def get_file_events(start, end, callback, force = False):
 
 
 def datelist(n, callback):
+    """
+    :param n: number of days to query
+    :callback: a callable to be called when the query is done
+    """
     if n == -1:
         n = int(time.time()/86400)
     today = int(time.mktime(time.strptime(time.strftime("%d %B %Y"),

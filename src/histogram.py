@@ -120,9 +120,8 @@ class CairoHistogram(gtk.DrawingArea):
 
     def __init__(self, datastore = None, selected_range = 0):
         """
-        Arguments:
-        - datastore: The.CairoHistograms two dimensional list of dates and nitems
-        - selected_range: the number of days displayed at once
+        :param datastore: The.CairoHistograms two dimensional list of dates and nitems
+        :param selected_range: the number of days displayed at once
         """
         super(CairoHistogram, self).__init__()
         self.set_events(self._events)
@@ -157,8 +156,7 @@ class CairoHistogram(gtk.DrawingArea):
         """
         Set the number of days to be colored as selected
 
-        Arguments:
-        - selected_range: the range to be used when setting selected coloring
+        :param selected_range: the range to be used when setting selected coloring
         """
         self.selected_range = selected_range
         return True
@@ -167,9 +165,8 @@ class CairoHistogram(gtk.DrawingArea):
         """
         Sets the objects datastore attribute using a list
 
-        Arguments:
-        -datastore: A list that is comprised of rows containing
-          a int time and a int nitems
+        :param datastore: A list that is comprised of rows containing
+        a int time and a int nitems
         """
         if isinstance(datastore, list):
             self._datastore = datastore
@@ -190,8 +187,7 @@ class CairoHistogram(gtk.DrawingArea):
         """
         Adds the items of a new list before the items of the current datastore
 
-        Arguments:
-        - newdatastore: the new list to be prepended
+        :param newdatastore: the new list to be prepended
 
         ## WARNING SELECTION WILL CHANGE WHEN DOING THIS TO BE FIXED ##
         """
@@ -203,10 +199,6 @@ class CairoHistogram(gtk.DrawingArea):
     def _expose(self, widget, event):
         """
         The major drawing method that the expose event calls directly
-
-        Arguments:
-        - widget: the widget
-        - event: a gtk event with x and y values
         """
         context = widget.window.cairo_create()
         self.expose(widget, event, context)
@@ -217,10 +209,8 @@ class CairoHistogram(gtk.DrawingArea):
         """
         The minor drawing method
 
-        Arguments:
-        - widget: the widget
-        - event: a gtk event with x and y values
-        - context: The drawingarea's cairo context from the expose event
+        :param event: a gtk event with x and y values
+        :param context: This drawingarea's cairo context from the expose event
         """
         if not self.pangofont:
             self.pangofont = pango.FontDescription(self.font_name + " %d" % self.font_size)
@@ -272,10 +262,9 @@ class CairoHistogram(gtk.DrawingArea):
         """
         Draws columns from a datastore
 
-        Arguments:
-        - context: The drawingarea's cairo context from the expose event
-        - event: a gtk event with x and y values
-        - selected: a list of the selected columns
+        :param context: This drawingarea's cairo context from the expose event
+        :param event: a gtk event with x and y values
+        :param selected: a list of the selected columns
         """
         x = self.start_x_padding
         months_positions = []
@@ -309,13 +298,11 @@ class CairoHistogram(gtk.DrawingArea):
         """
         Draws a columns at x with height based on nitems, and maxheight
 
-        Arguments:
-        - context: The drawingarea's cairo context from the expose event
-        - x: The current position in the image
-        - maxheight: The event areas height
-        - nitems: The number of items in the column to be drawn
-        - color: A RGBA tuple
-            Example: (0.3, 0.4, 0.8, 1)
+        :param context: The drawingarea's cairo context from the expose event
+        :param x: The current position in the image
+        :param maxheight: The event areas height
+        :param nitems: The number of items in the column to be drawn
+        :param color: A RGBA tuple Example: (0.3, 0.4, 0.8, 1)
         """
         if nitems < 2:
             nitems = 2
@@ -365,8 +352,7 @@ class CairoHistogram(gtk.DrawingArea):
         Emits:
          self._selected[0] and self._selected[-1]
 
-        Arguments:
-        - i: a list or a int where the int will select i + selected_range
+        :param i: a list or a int where the int will select i + selected_range
         """
         if len(self._selected):
             if i == self._selected[0]:
@@ -394,8 +380,8 @@ class CairoHistogram(gtk.DrawingArea):
     def set_highlighted(self, highlighted):
         """
         Sets the widgets which should be highlighted with an alternative color
-        Argument:
-        - highlighted: a list of indexes to be highlighted
+
+        :param highlighted: a list of indexes to be highlighted
         """
         if isinstance(highlighted, list):
             self._highlighted = highlighted
@@ -584,8 +570,7 @@ class HistogramWidget(gtk.Viewport):
 
     def __init__(self, histo_type, size = (600, 75)):
         """
-        Arguments:
-        - histo_type = a CairoHistogram or a derivative
+        :param histo_type: a :class:`CairoHistogram <CairoHistogram>` or a derivative
         """
         super(HistogramWidget, self).__init__()
         self.set_shadow_type(gtk.SHADOW_NONE)

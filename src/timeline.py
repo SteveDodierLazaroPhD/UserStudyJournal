@@ -41,9 +41,8 @@ def make_area_from_event(timestamp, duration):
     Generates a time box based on a objects timestamp and duration over 1.
     Multiply the results by the width to get usable positions
 
-    Arguments
-    - timestamp: a timestamp int or string from which to calulate the start position
-    - duration: the length to calulate the width
+    :param timestamp: a timestamp int or string from which to calulate the start position
+    :param duration: the length to calulate the width
     """
     w = max(duration/3600.0/1000.0/24.0, 0)
     x = ((int(timestamp)/1000.0 - time.timezone)%86400)/3600/24.0
@@ -54,8 +53,7 @@ def text_handler(obj):
     A default text handler that returns the text to be drawn by the
     draw_event_widget
 
-    Arguments:
-    - obj: A event object
+    :param obj: a :class:`Events <zeitgeist.datamodel.Event>`
     """
     text = get_event_text(obj)
     interpretation = get_event_interpretation(obj)
@@ -153,7 +151,7 @@ class TimelineRenderer(gtk.GenericCellRenderer):
     #@pixbuf.setter
     def __pixbuf_setter(self, obj):
         self.pixbuf_plug.obj = obj
-    # For compatibility with Python 2.5 
+    # For compatibility with Python 2.5
     pixbuf = property(__pixbuf, __pixbuf_setter)
 
     @property
@@ -297,8 +295,8 @@ class TimelineView(gtk.TreeView):
     def set_model_from_list(self, events):
         """
         Sets creates/sets a model from a list of zeitgeist events
-        Arguments:
-        -- events: a list of events
+
+        :param events: a list of :class:`Events <zeitgeist.datamodel.Event>`
         """
         if not events:
             self.set_model(None)

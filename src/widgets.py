@@ -646,6 +646,12 @@ class ContextMenu(gtk.Menu):
         self.show_all()
 
     def do_popup(self, time, subjects):
+        """
+        Call this method to popup the context menu
+
+        :param time: the event time from the button press event
+        :param subjects: a list of uris
+        """
         self.subjects = subjects
         if len(subjects) == 1:
             uri = subjects[0]

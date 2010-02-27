@@ -34,7 +34,7 @@ import operator
 
 from gio_file import GioFile, SIZE_LARGE, SIZE_NORMAL
 
-from zeitgeist.datamodel import Interpretation
+from zeitgeist.datamodel import Interpretation, Event
 
 
 TANGOCOLORS = [
@@ -100,9 +100,8 @@ ICON_THEME = gtk.icon_theme_get_default()
 def get_file_color(ftype, fmime):
     """Uses hashing to choose a shade from a hue in the color tuple above
 
-    Arguments:
-    -- ftype - a zeitgeist interpretation
-    -- fmime - a mime type
+    :param ftype: a :class:`Event <zeitgeist.datamodel.Interpretation>`
+    :param fmime: a mime type string
     """
     if ftype in FILETYPES.keys():
         i = FILETYPES[ftype]
@@ -118,63 +117,56 @@ def launch_event(event):
     """
     Launches a uri from a event
 
-    Arguments:
-    -- event - a zeitgeist event
+    :param event: a :class:`Event <zeitgeist.datamodel.Event>`
     """
     gfile = GioFile(get_event_uri(event))
     gfile.launch()
 
 def get_event_interpretation(event):
     """
-    Returns a interpretation uri from a event
+    :param event: a :class:`Event <zeitgeist.datamodel.Event>`
 
-    Arguments:
-    -- event - a zeitgeist event
+    :returns: a interpretation uri from a event
     """
     return event.subjects[0].interpretation
 
 def get_event_typename(event):
     """
-    Returns a plain text version of a interpretation
+    :param event: a :class:`Event <zeitgeist.datamodel.Event>`
 
-    Arguments:
-    -- event - a zeitgeist event
+    :returns: a plain text version of a interpretation
     """
     return FILETYPESNAMES[event.subjects[0].interpretation]
 
 def get_event_mimetype(event):
     """
-    Returns a plain text version of a mimetype
+    :param event: a :class:`Event <zeitgeist.datamodel.Event>`
 
-    Arguments:
-    -- event - a zeitgeist event
+    :returns: a plain text version of a mimetype
     """
     return event.subjects[0].mimetype
 
 def get_event_text(event):
     """
-    Returns the file name text of a event
+    :param event: a :class:`Event <zeitgeist.datamodel.Event>`
 
-    Arguments:
-    -- event - a zeitgeist event
+    :returns: the file name text of a event
     """
     return event.subjects[0].text
 
 def get_event_uri(event):
     """
-    Returns a uri from a event's first subject
+    :param event: a :class:`Event <zeitgeist.datamodel.Event>`
 
-    Arguments:
-    -- event - a zeitgeist event
+    :returns: a uri from a event's first subject
     """
     return event.subjects[0].uri
 
 def get_timestamp(event):
     """
-    returns a float event timestamp in miliseconds
+    :param event: a :class:`Event <zeitgeist.datamodel.Event>`
 
-    Arguments:
-    -- event - a zeitgeist event
+    :returns: a float event timestamp in miliseconds
     """
     return float(event.timestamp)
 
@@ -182,9 +174,10 @@ def get_event_icon(event, size):
     """
     Returns a icon from a event at size
 
-    Argument:
-    -- event - a zeitgeist event
-    -- size - size in pixels of the icon
+    :param event: a :class:`Event <zeitgeist.datamodel.Event>`
+    :param size: a int representing the size in pixels of the icon
+
+    :returns: a :class:`Pixbuf <gtk.gdk.Pixbuf>`
     """
     gfile = GioFile(get_event_uri(event))
     if gfile:
@@ -200,12 +193,11 @@ def draw_frame(context, x, y, w, h):
     """
     Draws a 2 pixel frame around a area defined by x, y, w, h using a cairo context
 
-    Arguments:
-    -- context - a cairo context
-    -- x - x position of the frame
-    -- y - y position of the frame
-    -- w - width of the frame
-    -- h - height of the frame
+    :param context: a cairo context
+    :param x: x position of the frame
+    :param y: y position of the frame
+    :param w: width of the frame
+    :param h: height of the frame
     """
     x, y = int(x)+0.5, int(y)+0.5
     w, h = int(w), int(h)
@@ -223,13 +215,12 @@ def draw_frame(context, x, y, w, h):
 def draw_rounded_rectangle(context, x, y, w, h, r=5):
     """Draws a rounded rectangle
 
-    Arguments:
-    -- context - a cairo context
-    -- x - x position of the rectangle
-    -- y - y position of the rectangle
-    -- w - width of the rectangle
-    -- h - height of the rectangle
-    -- r - radius of the rectangle
+    :param context: a cairo context
+    :param x: x position of the rectangle
+    :param y: y position of the rectangle
+    :param w: width of the rectangle
+    :param h: height of the rectangle
+    :param r: radius of the rectangle
     """
     context.new_sub_path()
     context.arc(r+x, r+y, r, math.pi, 3 * math.pi /2)
@@ -244,12 +235,12 @@ def draw_speech_bubble(context, layout, x, y, w, h):
     Draw a speech bubble at a position
 
     Arguments:
-    -- context - a cairo context
-    -- layout - a pango layout
-    -- x - x position of the bubble
-    -- y - y position of the bubble
-    -- w - width of the bubble
-    -- h - height of the bubble
+    :param context: a cairo context
+    :param layout: a pango layout
+    :param x: x position of the bubble
+    :param y: y position of the bubble
+    :param w: width of the bubble
+    :param h: height of the bubble
     """
     layout.set_width((w-10)*1024)
     layout.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
@@ -276,12 +267,12 @@ def draw_text(context, layout, markup, x, y, maxw = 0, color = (0.3, 0.3, 0.3)):
     Draw text using a cairo context and a pango layout
 
     Arguments:
-    -- context - a cairo context
-    -- layout - a pango layout
-    -- x - x position of the bubble
-    -- y - y position of the bubble
-    -- maxw - the max text width in pixels
-    -- color - a rgb tuple
+    :param context: a cairo context
+    :param layout: a pango layout
+    :param x: x position of the bubble
+    :param y: y position of the bubble
+    :param maxw: the max text width in pixels
+    :param color: a rgb tuple
     """
     pcontext = pangocairo.CairoContext(context)
     layout.set_markup(markup)
@@ -297,10 +288,10 @@ def render_pixbuf(window, x, y, pixbuf, drawframe = True):
     Renders a pixbuf to be displayed on the cell
 
     Arguments:
-    -- window - a gdk window
-    -- x - x position
-    -- y - y position
-    -- drawframe - if true we draw a frame around the pixbuf
+    :param window: a gdk window
+    :param x: x position
+    :param y: y position
+    :param drawframe: if true we draw a frame around the pixbuf
     """
     imgw, imgh = pixbuf.get_width(), pixbuf.get_height()
     context = window.cairo_create()
@@ -318,12 +309,12 @@ def render_emblems(window, x, y, w, h, emblems):
     Renders emblems on the four corners of the rectangle
 
     Arguments:
-    -- window - a gdk window
-    -- x - x position
-    -- y - y position
-    -- w - the width of the rectangle
-    -- y - the height of the rectangle
-    -- emblems - a list of pixbufs
+    :param window: a gdk window
+    :param x: x position
+    :param y: y position
+    :param w: the width of the rectangle
+    :param y: the height of the rectangle
+    :param emblems: a list of pixbufs
     """
     # w = max(self.width, w)
     corners = [[x, y],
@@ -347,8 +338,10 @@ def shade_gdk_color(color, shade):
     Shades a color by a fraction
 
     Arguments:
-    -- color - a gdk color
-    -- shade - fraction by which to shade the color
+    :param color: a gdk color
+    :param shade: fraction by which to shade the color
+
+    :returns: a :class:`Color <gtk.gdk.Color>`
     """
     f = lambda num: min((num * shade, 65535.0))
     if gtk.pygtk_version >= (2, 16, 0):
@@ -367,8 +360,10 @@ def combine_gdk_color(color, fcolor):
     Combines a color with another color
 
     Arguments:
-    -- color - a gdk color
-    -- fcolor - a gdk color to combine with color
+    :param color: a gdk color
+    :param fcolor: a gdk color to combine with color
+
+    :returns: a :class:`Color <gtk.gdk.Color>`
     """
     if gtk.pygtk_version >= (2, 16, 0):
         color.red = (2*color.red + fcolor.red)/3
@@ -385,10 +380,12 @@ def get_gtk_rgba(style, palette, i, shade = 1, alpha = 1):
     """Takes a gtk style and returns a RGB tuple
 
     Arguments:
-    - style: a gtk_style object
-    - palette: a string representing the palette you want to pull a color from
+    :param style: a gtk_style object
+    :param palette: a string representing the palette you want to pull a color from
         Example: "bg", "fg"
-    - shade: how much you want to shade the color
+    :param shade: how much you want to shade the color
+
+    :returns: a rgba tuple
     """
     f = lambda num: (num/65535.0) * shade
     color = getattr(style, palette)[i]
@@ -408,8 +405,10 @@ def new_grayscale_pixbuf(pixbuf):
     """
     Makes a pixbuf grayscale
 
-    Arguments:
-    -- pixbuf - a gtk.gdk.Pixbuf
+    :param pixbuf: a :class:`Pixbuf <gtk.gdk.Pixbuf>`
+
+    :returns: a :class:`Pixbuf <gtk.gdk.Pixbuf>`
+
     """
     pixbuf2 = pixbuf.copy()
     pixbuf.saturate_and_pixelate(pixbuf2, 0.0, False)
@@ -420,11 +419,13 @@ def crop_pixbuf(pixbuf, x, y, width, height):
     Crop a pixbuf
 
     Arguments:
-    -- pixbuf - a gtk.gdk.Pixbuf
-    -- x - the x position to crop from in the source
-    -- y - the y position to crop from in the source
-    -- width - crop width
-    -- height - crop height
+    :param pixbuf: a :class:`Pixbuf <gtk.gdk.Pixbuf>`
+    :param x: the x position to crop from in the source
+    :param y: the y position to crop from in the source
+    :param width: crop width
+    :param height: crop height
+
+    :returns: a :class:`Pixbuf <gtk.gdk.Pixbuf>`
     """
     dest_pixbuf = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, True, 8, width, height)
     pixbuf.copy_area(x, y, width, height, dest_pixbuf, 0, 0)
@@ -435,9 +436,11 @@ def scale_to_fill(pixbuf, neww, newh):
     Scales/crops a new pixbuf to a width and height at best fit and returns it
 
     Arguments:
-    -- pixbuf - a gtk.gdk.Pixbuf
-    -- neww - new width of the new pixbuf
-    -- newh - a new height of the new pixbuf
+    :param pixbuf: a :class:`Pixbuf <gtk.gdk.Pixbuf>`
+    :param neww: new width of the new pixbuf
+    :param newh: a new height of the new pixbuf
+
+    :returns: a :class:`Pixbuf <gtk.gdk.Pixbuf>`
     """
     imagew, imageh = pixbuf.get_width(), pixbuf.get_height()
     if (imagew, imageh) != (neww, newh):
@@ -500,13 +503,16 @@ class PixbufCache(dict):
         it is cached.
 
         Arguments:
-        -- uri: a uri on the disk
-        -- size: a size tuple from thumbfactory
-        -- iconscale: a factor to reduce icons by (not thumbs)
-        -- w - resulting width
-        -- h - resulting height
+        :param uri: a uri on the disk
+        :param size: a size tuple from thumbfactory
+        :param iconscale: a factor to reduce icons by (not thumbs)
+        :param w: resulting width
+        :param h: resulting height
 
         Warning! This function is in need of a serious clean up.
+
+        :returns: a tuple containing a :class:`Pixbuf <gtk.gdk.Pixbuf>` and bool
+        which is True if a thumbnail was found
         """
         try:
             cached = self.check_cache(uri)
