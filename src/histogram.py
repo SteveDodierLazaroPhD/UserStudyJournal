@@ -268,8 +268,7 @@ class CairoHistogram(gtk.DrawingArea):
         """
         x = self.start_x_padding
         months_positions = []
-        i = 0
-        for date, nitems in self._datastore:
+        for i, (date, nitems) in enumerate(self.get_datastore()):
             if datetime.date.fromtimestamp(date).day == 1:
                 months_positions += [(date, x)]
             if len(self._highlighted) > 0 and i >= self._highlighted[0] and i <= self._highlighted[-1] and i in self._highlighted:
@@ -284,7 +283,6 @@ class CairoHistogram(gtk.DrawingArea):
                 color = self.colors["column_normal"]
             self.draw_column(context, x, event.area.height, nitems, color)
             x += self.xincrement
-            i += 1
         if x > event.area.width: # Check for resize
             self.set_size_request(x+self.xincrement, event.area.height)
         for date, xpos in months_positions:

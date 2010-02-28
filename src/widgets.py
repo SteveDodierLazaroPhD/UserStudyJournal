@@ -560,20 +560,33 @@ class AnimatedImage(gtk.Image):
         self.set_from_pixbuf(self.frames[0])
 
     def next(self):
+        """
+        Move to next frame
+        """
         self.set_from_pixbuf(self.frames[self.i % self.mod])
         self.i += 1
         return True
 
     def start(self):
+        """
+        start the image's animation
+        """
         if self.animating: gobject.source_remove(self.animating)
         self.animating = gobject.timeout_add(self.speed, self.next)
 
     def stop(self):
+        """
+        stop the image's animation
+        """
         if self.animating: gobject.source_remove(self.animating)
         self.animating = None
         return False
 
     def animate_for_seconds(self, seconds):
+        """
+        :param seconds: int seconds for the amount of time when you want
+        animate the throbber
+        """
         self.start()
         gobject.timeout_add_seconds(seconds, self.stop)
 
