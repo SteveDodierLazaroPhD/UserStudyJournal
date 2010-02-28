@@ -294,7 +294,7 @@ class TimelineView(gtk.TreeView):
             if PIXBUFCACHE.has_key(uri) and usethumb and pixbuf != PIXBUFCACHE[uri][0]:
                 pixbuf, thumb = PIXBUFCACHE[uri]
                 pixbuf = pixbuf.scale_simple(32, 24, gtk.gdk.INTERP_TILES)
-            liststore.append((bars, event, color, text, pixbuf, usethumb*thumb))
+            liststore.append((bars, event, color, text, pixbuf, usethumb&thumb))
         self.set_model(liststore)
 
     def on_button_press(self, widget, event):
