@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GNOME Activity Journal\n"
 "Report-Msgid-Bugs-To: zeitgeist@lists.launchpad.net\n"
-"POT-Creation-Date: 2010-02-21 00:28+0100\n"
-"PO-Revision-Date: 2010-01-21 19:45+0000\n"
-"Last-Translator: Siegfried Gevatter <rainct@ubuntu.com>\n"
+"POT-Creation-Date: 2010-02-28 19:33+0100\n"
+"PO-Revision-Date: 2010-02-28 19:34+0100\n"
+"Last-Translator: Siegfried-Angel Gevatter Pujals <rainct@ubuntu.com>\n"
 "Language-Team: Siegfried Gevatter <siegfried@gevatter.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -26,77 +26,50 @@ msgstr "Error"
 msgid "Unable to connect to Zeitgeist:"
 msgstr "No s'ha pogut establir connexió amb el Zeitgeist:"
 
-#: ../src/logwidget.py:81
-msgid "Video"
-msgstr ""
-
-#: ../src/logwidget.py:82
-msgid "Music"
-msgstr ""
-
-#: ../src/logwidget.py:83
-msgid "Document"
-msgstr ""
-
-#: ../src/logwidget.py:84
-msgid "Image"
-msgstr ""
-
-#: ../src/logwidget.py:85
-msgid "Source Code"
-msgstr ""
-
-#: ../src/logwidget.py:86
-msgid "Unknown"
-msgstr ""
-
-#: ../src/thumbview.py:38 ../src/daywidgets.py:253
-msgid "Morning"
-msgstr "Matí"
-
-#: ../src/thumbview.py:38 ../src/daywidgets.py:254
-msgid "Afternoon"
-msgstr "Tarda"
-
-#: ../src/thumbview.py:38 ../src/daywidgets.py:255
-msgid "Evening"
-msgstr "Vespre"
-
-#: ../src/histogram.py:510 ../src/main.py:147 ../src/daywidgets.py:79
-#: ../src/daywidgets.py:194 ../src/daywidgets.py:274 ../src/daywidgets.py:447
+#: ../src/histogram.py:468
+#: ../src/main.py:187
+#: ../src/daywidgets.py:61
+#: ../src/daywidgets.py:250
+#: ../src/daywidgets.py:412
 msgid "Today"
 msgstr "Avui"
 
-#: ../src/histogram.py:545
+#: ../src/histogram.py:522
 msgid "item"
 msgid_plural "items"
 msgstr[0] "element"
 msgstr[1] "elements"
 
-#: ../src/histogram.py:547
+#: ../src/histogram.py:524
 msgid "Click today to return to today"
 msgstr "Feu clic sobre «Avui» per a tornar a avui"
 
-#: ../src/main.py:44 ../extra/gnome-activity-journal.desktop.in.h:1
+#: ../src/main.py:86
+msgid "Powered by Zeitgeist"
+msgstr "Funciona amb Zeitgeist"
+
+#: ../src/main.py:158
+#: ../src/main.py:180
+#: ../src/main.py:201
+#: ../extra/gnome-activity-journal.desktop.in.h:1
 msgid "Activity Journal"
 msgstr "Diari d'activitats"
 
-#: ../src/main.py:105
-msgid "Powered by Zeitgeist"
-msgstr ""
+#: ../src/main.py:180
+#, python-format
+msgid "%s to today"
+msgstr "%s a avui"
 
-#: ../src/main.py:134 ../src/main.py:161
-msgid "to"
-msgstr ""
-
-#: ../src/main.py:134
-msgid " Today"
-msgstr ""
-
-#: ../src/main.py:150 ../src/daywidgets.py:81 ../src/daywidgets.py:196
-#: ../src/daywidgets.py:276
+#: ../src/main.py:190
+#: ../src/daywidgets.py:63
+#: ../src/daywidgets.py:252
 msgid "Yesterday"
 msgstr "Ahir"
+
+#: ../src/main.py:201
+#, python-format
+msgid "%s to %s"
+msgstr "%s a %s"
 
 #. TODO: Move this into Zeitgeist's library, implemented properly
 #: ../src/sources.py:40
@@ -139,34 +112,87 @@ msgstr ""
 msgid "Other Activities"
 msgstr "Altres actiivtats"
 
+#: ../src/daywidgets.py:111
+#: ../src/daywidgets.py:199
+msgid "Click to return multiday view"
+msgstr ""
+
+#: ../src/daywidgets.py:229
+#: ../src/common.py:97
+msgid "Morning"
+msgstr "Matí"
+
+#: ../src/daywidgets.py:230
+#: ../src/common.py:97
+msgid "Afternoon"
+msgstr "Tarda"
+
+#: ../src/daywidgets.py:231
+#: ../src/common.py:97
+msgid "Evening"
+msgstr "Vespre"
+
+#: ../src/daywidgets.py:312
+msgid "Left click for a detailed timeline view"
+msgstr ""
+
+#: ../src/daywidgets.py:314
+msgid "Right click for a thumbnail view"
+msgstr ""
+
 #. Initialize the widget
-#: ../src/daywidgets.py:805
+#: ../src/daywidgets.py:768
 msgid "Pinned items"
 msgstr ""
 
-#: ../src/widgets.py:183
+#: ../src/common.py:84
+msgid "Video"
+msgstr "Vídeo"
+
+#: ../src/common.py:85
+msgid "Music"
+msgstr "Música"
+
+#: ../src/common.py:86
+msgid "Document"
+msgstr "Document"
+
+#: ../src/common.py:87
+msgid "Image"
+msgstr "Imatge"
+
+#: ../src/common.py:88
+msgid "Source Code"
+msgstr "Codi font"
+
+#: ../src/common.py:89
+msgid "Unknown"
+msgstr "Desconegut"
+
+#: ../src/widgets.py:168
 msgid "Type here to search..."
 msgstr "Escriviu aquí per a cercar..."
 
-#: ../src/widgets.py:485 ../src/widgets.py:583
+#: ../src/widgets.py:468
+#: ../src/widgets.py:643
 msgid "Remove Pin"
 msgstr ""
 
-#: ../src/widgets.py:583
+#: ../src/widgets.py:644
 msgid "Pin to Today"
 msgstr ""
 
-#: ../src/widgets.py:587
+#: ../src/widgets.py:645
 msgid "Delete item from Journal"
-msgstr "Suprimeix aquest element del Diari"
+msgstr "Suprimeix aquest element del diari"
+
+#: ../src/widgets.py:646
+msgid "Most used with..."
+msgstr "Més utilitzat amb..."
 
 #: ../extra/gnome-activity-journal.desktop.in.h:2
-msgid ""
-"Browse a chronological log of your activities and easily find files, "
-"contacts, etc."
-msgstr ""
-"Vegeu un registre cronològic de les vostres activitats i trobeu fàcilment "
-"fitxers, contactes, etc."
+msgid "Browse a chronological log of your activities and easily find files, contacts, etc."
+msgstr "Vegeu un registre cronològic de les vostres activitats i trobeu fàcilment fitxers, contactes, etc."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:1
 msgid "Accessibility"
@@ -181,40 +207,24 @@ msgid "Amount of visible days"
 msgstr "Nombre de dies visibles"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:4
-msgid ""
-"Customized height for the main window, in pixels (requires restart). Can't "
-"be bigger than the desktop's size."
-msgstr ""
-"Alçada de la finestra personalitzada, en píxels (necessita reiniciar). No "
-"pot ser superior a la mida de l'escriptori."
+msgid "Customized height for the main window, in pixels (requires restart). Can't be bigger than the desktop's size."
+msgstr "Alçada de la finestra personalitzada, en píxels (necessita reiniciar). No pot ser superior a la mida de l'escriptori."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:5
-msgid ""
-"Customized width for the main window, in pixels (requires restart). Can't be "
-"bigger than the desktop's size."
-msgstr ""
-"Amplada de la finestra personalitzada, en píxels (necessita reiniciar). No "
-"pot ser superior a la mida de l'escriptori."
+msgid "Customized width for the main window, in pixels (requires restart). Can't be bigger than the desktop's size."
+msgstr "Amplada de la finestra personalitzada, en píxels (necessita reiniciar). No pot ser superior a la mida de l'escriptori."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:6
 msgid "The amount of days to show at once."
 msgstr "El nombre de dies a mostrar alhora."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:7
-msgid ""
-"Whether special accessibility options should be enabled (requires restart)."
-msgstr ""
-"Si les opcions especials d'accessibilitat s'han d'habilitar (necessita "
-"reiniciar)."
+msgid "Whether special accessibility options should be enabled (requires restart)."
+msgstr "Si les opcions especials d'accessibilitat s'han d'habilitar (necessita reiniciar)."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:8
-msgid ""
-"Whether to allow showing little thumbnails next to each activity (requires "
-"restart). If False, only generic mime-type icons will be used."
-msgstr ""
-"Si és permès mostrar petites miniaturitzacions al costat de cada activitat "
-"(necessita reiniciar). Si és Fals, només s'utilitzaran icones genèriques "
-"segons el tipus MIME."
+msgid "Whether to allow showing little thumbnails next to each activity (requires restart). If False, only generic mime-type icons will be used."
+msgstr "Si és permès mostrar petites miniaturitzacions al costat de cada activitat (necessita reiniciar). Si és Fals, només s'utilitzaran icones genèriques segons el tipus MIME."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:9
 msgid "Window height"
@@ -224,44 +234,33 @@ msgstr "Alçada de la finestra"
 msgid "Window width"
 msgstr "Amplada de la finestra"
 
+#, fuzzy
+#~ msgid "to"
+#~ msgstr "a "
 #~ msgid "Recent Events"
 #~ msgstr "Esdeveniments recents"
-
 #~ msgid "Show Options"
 #~ msgstr "Mostra les opcions"
-
 #~ msgid "Personal Timeline"
 #~ msgstr "Línia cronològica personal"
-
 #~ msgid "Related files..."
 #~ msgstr "Fitxers relacionats..."
-
 #~ msgid "Properties..."
 #~ msgstr "Propietats..."
-
 #~ msgid "Search..."
 #~ msgstr "Cerca..."
-
 #~ msgid "Days to display:"
 #~ msgstr "Dies a mostrar:"
-
 #~ msgid "3 days"
 #~ msgstr "3 dies"
-
 #~ msgid "1 week"
 #~ msgstr "1 setmana"
-
 #~ msgid "1 month"
 #~ msgstr "1 mes"
-
 #~ msgid "Go Back in Time"
 #~ msgstr "Torna endarrere en el temps"
-
 #~ msgid "Look into the Future"
 #~ msgstr "Mira al futur"
-
-#~ msgid "Jump to Today"
-#~ msgstr "Vés a avui"
-
 #~ msgid "Journal"
 #~ msgstr "Diari"
+

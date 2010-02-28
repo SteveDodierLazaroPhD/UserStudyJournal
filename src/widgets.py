@@ -643,7 +643,7 @@ class ContextMenu(gtk.Menu):
             "unpin" : gtk.MenuItem(_("Remove Pin")),
             "pin" : gtk.MenuItem(_("Pin to Today")),
             "delete" : gtk.MenuItem(_("Delete item from Journal")),
-            "related" : gtk.MenuItem(_("Most used with ...")),
+            "related" : gtk.MenuItem(_("Most used with...")),
             }
         callbacks = {
             "open" : self.do_open,

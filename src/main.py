@@ -176,8 +176,8 @@ class PortalWindow(gtk.Window):
 
         self._request_size()
         self.connect("configure-event", self._on_size_changed)
-        start = datetime.date.fromtimestamp(self.portal.activityview.start).strftime("%A ")
-        self.set_title(start + _("to") + _(" Today") + " - Activity Journal")
+        start = datetime.date.fromtimestamp(self.portal.activityview.start).strftime("%A")
+        self.set_title(_("%s to today") % start + " - " + _("Activity Journal"))
         self.show()
 
     def _title_handler(self, widget, starti, endi, singleday):
@@ -198,7 +198,7 @@ class PortalWindow(gtk.Window):
         if singleday:
             self.set_title(end + " - Activity Journal")
         else:
-            self.set_title(start + " " + _("to") + " " + end + " - Activity Journal")
+            self.set_title(_("%s to %s") % (start, end) + " - " + _("Activity Journal"))
 
     def _on_window_state_changed (self, win, event):
         # When maximized we configure the view so that the left/right buttons
