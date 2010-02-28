@@ -65,15 +65,6 @@ def text_handler(obj):
     return (str(t1) + "\n" + str(t2) + "").replace("&", "&amp;").replace("!color!", "%s")
 
 
-class Plug(object):
-    """
-    A pointer/reference holder that makes up for the inability to access a
-    model directly from within a cellrenderer. So instances holds a reference
-    to a object in 'obj'.
-    """
-    obj = None
-
-
 class TimelineRenderer(gtk.GenericCellRenderer):
     """
     Renders timeline columns, and text for a for properties
@@ -106,19 +97,18 @@ class TimelineRenderer(gtk.GenericCellRenderer):
          "",
          gobject.PARAM_READWRITE,
          ),
-        "pixbuf_plug" :
+        "pixbuf" :
         (gobject.TYPE_PYOBJECT,
          "A pixbuf representation",
          "A gtk.gdk.Pixbuf",
          gobject.PARAM_READWRITE,
          ),
-        "usethumb" :
+        "isthumb" :
         (gobject.TYPE_BOOLEAN,
          "Should the renderer use a thumb",
          "True if pixbuf should be a thumb",
          False,
          gobject.PARAM_READWRITE),
-
     }
 
     width = 32
@@ -143,20 +133,12 @@ class TimelineRenderer(gtk.GenericCellRenderer):
         return self.get_property("text")
 
     @property
-    def pixbuf_plug(self):
-        return self.get_property("pixbuf_plug")
-    #@property
-    def __pixbuf(self):
-        return self.pixbuf_plug.obj
-    #@pixbuf.setter
-    def __pixbuf_setter(self, obj):
-        self.pixbuf_plug.obj = obj
-    # For compatibility with Python 2.5
-    pixbuf = property(__pixbuf, __pixbuf_setter)
+    def pixbuf(self):
+        return self.get_property("pixbuf")
 
     @property
-    def usethumb(self):
-        return self.get_property("usethumb")
+    def isthumb(self):
+        return self.get_property("isthumb")
 
     def __init__(self):
         super(TimelineRenderer, self).__init__()
@@ -207,18 +189,7 @@ class TimelineRenderer(gtk.GenericCellRenderer):
             context.stroke()
         x = int(phases[0][0]*w)
         # Pixbuf related junk which is really dirty
-        uri = get_event_uri(self.event)
-        thumb = False
-        if not self.pixbuf:
-            if PIXBUFCACHE.has_key(uri) and self.usethumb:
-                pixbuf, thumb = PIXBUFCACHE[uri]
-                self.pixbuf = pixbuf.scale_simple(32, 24, gtk.gdk.INTERP_TILES)
-            else:
-                self.pixbuf = get_event_icon(self.event, 24)
-        if PIXBUFCACHE.has_key(uri) and self.usethumb and self.pixbuf != PIXBUFCACHE[uri][0]:
-            pixbuf, thumb = PIXBUFCACHE[uri]
-            self.pixbuf = pixbuf.scale_simple(32, 24, gtk.gdk.INTERP_TILES)
-        self.render_text_with_pixbuf(window, widget, x, y, w, h, flags, drawframe = thumb)
+        self.render_text_with_pixbuf(window, widget, x, y, w, h, flags, drawframe = self.isthumb)
         return True
 
     def render_text_with_pixbuf(self, window, widget, x, y, w, h, flags, drawframe = True):
@@ -284,8 +255,8 @@ class TimelineView(gtk.TreeView):
         pcolumn.add_attribute(render, "event", 1)
         pcolumn.add_attribute(render, "color", 2)
         pcolumn.add_attribute(render, "text", 3)
-        pcolumn.add_attribute(render, "pixbuf_plug", 4)
-        pcolumn.add_attribute(render, "usethumb", 5)
+        pcolumn.add_attribute(render, "pixbuf", 4)
+        pcolumn.add_attribute(render, "isthumb", 5)
         self.set_headers_visible(False)
         self.connect("query-tooltip", self.query_tooltip)
         self.set_property("has-tooltip", True)
@@ -313,7 +284,17 @@ class TimelineView(gtk.TreeView):
             text = text_handler(event)
             usethumb = (True if get_event_interpretation(event)
                         in MEDIAINTERPRETATIONS else False)
-            liststore.append((bars, event, color, text, Plug(), usethumb))
+            uri = get_event_uri(event)
+            thumb = False
+            if PIXBUFCACHE.has_key(uri) and usethumb:
+                pixbuf, thumb = PIXBUFCACHE[uri]
+                pixbuf = pixbuf.scale_simple(32, 24, gtk.gdk.INTERP_TILES)
+            else:
+                pixbuf = get_event_icon(event, 24)
+            if PIXBUFCACHE.has_key(uri) and usethumb and pixbuf != PIXBUFCACHE[uri][0]:
+                pixbuf, thumb = PIXBUFCACHE[uri]
+                pixbuf = pixbuf.scale_simple(32, 24, gtk.gdk.INTERP_TILES)
+            liststore.append((bars, event, color, text, pixbuf, usethumb*thumb))
         self.set_model(liststore)
 
     def on_button_press(self, widget, event):
