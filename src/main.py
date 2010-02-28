@@ -33,32 +33,13 @@ from histogram import HistogramWidget, JournalHistogram, CairoHistogram
 from daywidgets import DayButton
 
 
-class Portal(gtk.Window):
+class Portal(gtk.HBox):
 
     def __init__(self):
-
-        gtk.Window.__init__(self)
-        self._requested_size = None
-
-        self.connect("destroy", self.quit)
-        self.set_title(_("Activity Journal"))
-        self.set_position(gtk.WIN_POS_CENTER)
-
-        # Detect when we are maximized
-        self.connect("window-state-event", self._on_window_state_changed)
-
-        self.set_icon_name("gnome-activity-journal")
-        self.set_icon_list(
-            *[gtk.gdk.pixbuf_new_from_file(get_icon_path(f)) for f in (
-                "hicolor/16x16/apps/gnome-activity-journal.png",
-                "hicolor/24x24/apps/gnome-activity-journal.png",
-                "hicolor/32x32/apps/gnome-activity-journal.png",
-                "hicolor/48x48/apps/gnome-activity-journal.png",
-                "hicolor/256x256/apps/gnome-activity-journal.png")])
+        super(Portal, self).__init__()
 
         self.vbox = gtk.VBox()
-        #color = gtk.gdk.rgb_get_colormap().alloc_color('#EEEEEC')
-        #self.modify_bg(gtk.STATE_NORMAL, color)
+
         if ACCESSIBILITY:
             self.cal = HistogramWidget(CairoHistogram)
         else:
@@ -73,7 +54,7 @@ class Portal(gtk.Window):
         self.fwdbtn = DayButton(1)
         self.fwdbtn.set_sensitive(False)
 
-        def _c(widget, i, ii):
+        def handle_fwd_leading(widget, i, ii):
             self.throbber.animate_for_seconds(1)
             if i == len(widget.get_datastore()) - widget.selected_range - 1:
                 self.fwdbtn.leading = True
@@ -84,7 +65,7 @@ class Portal(gtk.Window):
             else:
                 self.fwdbtn.set_sensitive(False)
             return True
-        self.cal.histogram.connect("selection-set", _c)
+        self.cal.histogram.connect("selection-set", handle_fwd_leading)
 
         self.backbtn.connect("clicked", self.moveback)
         self.fwdbtn.connect("clicked", self.moveup)
@@ -116,60 +97,21 @@ class Portal(gtk.Window):
         calhbox.pack_start(aboutbox, False, False)
         self.vbox.pack_end(calhbox, False, False)
 
-        self._request_size()
 
         # FIXME: We give focus to the text entry so that it doesn't go to the
         # "go back" button. Ideally it would be on the first event of the
         # current day.
-        self.set_focus(self.activityview.searchbox.search)
 
         self.show_all()
         self.activityview.searchbox.hide()
-        self.connect("configure-event", self._on_size_changed)
         self.connect("key-press-event", self._global_keypress_handler)
         self.cal.histogram.connect("column_clicked", self.handle_fwd_sensitivity)
-        self.activityview.connect("date-updated", self._title_handler)
-        start = datetime.date.fromtimestamp(self.activityview.start).strftime("%A ")
-        self.set_title(start + _("to") + _(" Today") + " - Activity Journal")
 
     def show_about_window(self, widget, event):
         aboutwindow = AboutDialog()
         aboutwindow.set_transient_for(self)
         aboutwindow.run()
         aboutwindow.destroy()
-
-    def _title_handler(self, widget, starti, endi, singleday):
-
-        endday = datetime.date.fromtimestamp(endi)
-        startday = datetime.date.fromtimestamp(starti)
-        if endday.day == datetime.date.today().day:
-            end = _("Today")
-            start = startday.strftime("%A")
-        elif endday.day == datetime.date.today().day-1:
-            end = _("Yesterday")
-            start = startday.strftime("%A")
-        elif endday.day + 6 > datetime.date.today().day:
-            end = endday.strftime("%A")
-            start = startday.strftime("%A")
-        else:
-            start = startday.strftime("%d %B")
-            end = endday.strftime("%d %B")
-        if singleday:
-            self.set_title(end + " - Activity Journal")
-        else:
-            self.set_title(start + " " + _("to") + " " + end + " - Activity Journal")
-
-    def _on_window_state_changed (self, win, event):
-        # When maximized we configure the view so that the left/right buttons
-        # touch the left/right edges of the screen in order to utilize Fitts law
-        if event.new_window_state & gtk.gdk.WINDOW_STATE_MAXIMIZED:
-            # FIXME: Keep vertical padding on self.vbox children withou
-            #        introducing horizontal padding
-            self.set_border_width(0)
-            self.vbox.set_border_width(0)
-        else:
-            self.set_border_width(0)
-            self.vbox.set_property("border-width", 0)
 
     def _global_keypress_handler(self, widget, event):
         if event.state & gtk.gdk.CONTROL_MASK:
@@ -203,6 +145,72 @@ class Portal(gtk.Window):
     def moveback(self, data=None):
         self.activityview.jump(-86400)
         self.fwdbtn.set_sensitive(True)
+
+
+class PortalWindow(gtk.Window):
+    def __init__(self):
+        """"""
+        gtk.Window.__init__(self)
+        gtk.Window.__init__(self)
+        self._requested_size = None
+
+        self.connect("destroy", self.quit)
+        self.set_title(_("Activity Journal"))
+        self.set_position(gtk.WIN_POS_CENTER)
+
+        # Detect when we are maximized
+        self.connect("window-state-event", self._on_window_state_changed)
+
+        self.set_icon_name("gnome-activity-journal")
+        self.set_icon_list(
+            *[gtk.gdk.pixbuf_new_from_file(get_icon_path(f)) for f in (
+                "hicolor/16x16/apps/gnome-activity-journal.png",
+                "hicolor/24x24/apps/gnome-activity-journal.png",
+                "hicolor/32x32/apps/gnome-activity-journal.png",
+                "hicolor/48x48/apps/gnome-activity-journal.png",
+                "hicolor/256x256/apps/gnome-activity-journal.png")])
+        self.portal = Portal()
+        self.add(self.portal)
+        self.set_focus(self.portal.activityview.searchbox.search)
+        self.portal.activityview.connect("date-updated", self._title_handler)
+
+        self._request_size()
+        self.connect("configure-event", self._on_size_changed)
+        start = datetime.date.fromtimestamp(self.portal.activityview.start).strftime("%A ")
+        self.set_title(start + _("to") + _(" Today") + " - Activity Journal")
+        self.show()
+
+    def _title_handler(self, widget, starti, endi, singleday):
+        endday = datetime.date.fromtimestamp(endi)
+        startday = datetime.date.fromtimestamp(starti)
+        if endday.day == datetime.date.today().day:
+            end = _("Today")
+            start = startday.strftime("%A")
+        elif endday.day == datetime.date.today().day-1:
+            end = _("Yesterday")
+            start = startday.strftime("%A")
+        elif endday.day + 6 > datetime.date.today().day:
+            end = endday.strftime("%A")
+            start = startday.strftime("%A")
+        else:
+            start = startday.strftime("%d %B")
+            end = endday.strftime("%d %B")
+        if singleday:
+            self.set_title(end + " - Activity Journal")
+        else:
+            self.set_title(start + " " + _("to") + " " + end + " - Activity Journal")
+
+    def _on_window_state_changed (self, win, event):
+        # When maximized we configure the view so that the left/right buttons
+        # touch the left/right edges of the screen in order to utilize Fitts law
+        if event.new_window_state & gtk.gdk.WINDOW_STATE_MAXIMIZED:
+            # FIXME: Keep vertical padding on self.vbox children withou
+            #        introducing horizontal padding
+            self.set_border_width(0)
+            self.vbox.set_border_width(0)
+        else:
+            self.set_border_width(0)
+            self.portal.vbox.set_property("border-width", 0)
 
     def _request_size(self):
         screen = self.get_screen().get_monitor_geometry(

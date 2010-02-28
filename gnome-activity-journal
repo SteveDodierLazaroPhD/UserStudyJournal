@@ -89,9 +89,9 @@ if CLIENT.get_version() < [0, 3, 1, 99]:
     print "https://launchpad.net/zeitgeist"
     sys.exit(1)
 
-from src.main import Portal
+from src.main import PortalWindow
 
 if __name__ == "__main__":
-    portal = Portal()
+    portal = PortalWindow()
     gtk.gdk.threads_init()
     gtk.main()
