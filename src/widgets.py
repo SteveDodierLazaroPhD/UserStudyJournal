@@ -39,7 +39,8 @@ from zeitgeist.client import ZeitgeistClient
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
     ResultType
 
-from common import shade_gdk_color, combine_gdk_color
+from common import shade_gdk_color, combine_gdk_color, is_command_available, \
+    launch_command
 from config import BASE_PATH, VERSION, settings, get_icon_path
 from sources import Source, SUPPORTED_SOURCES
 from gio_file import GioFile, SIZE_NORMAL, SIZE_LARGE
@@ -652,7 +653,12 @@ class ContextMenu(gtk.Menu):
             "delete" : self.do_delete,
             "related" : self.do_get_related,
             }
-        for name in ("open", "unpin", "pin", "delete", "related"):
+        names = ["open", "unpin", "pin", "delete", "related"]
+        if is_command_available("nautilus-sendto"):
+            self.menuitems["sendto"] = gtk.MenuItem(_("Send To..."))
+            callbacks["sendto"] = self.do_send_to
+            names.append("sendto")
+        for name in names:
             item = self.menuitems[name]
             self.append(item)
             item.connect("activate", callbacks[name])
@@ -715,6 +721,9 @@ class ContextMenu(gtk.Menu):
             CLIENT.find_event_ids_for_template(
                 Event.new_for_values(subject_uri=uri),
                 lambda ids: CLIENT.delete_events(map(int, ids)))
+    
+    def do_send_to(self, menuitem):
+        launch_command("nautilus-sendto", self.subjects)
 
 
 searchbox = SearchBox()

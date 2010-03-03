@@ -2,7 +2,8 @@
 #
 # Filename
 #
-# Copyright © 2010 Randal Barlow
+# Copyright © 2010 Randal Barlow <email.tehk@gmail.com>
+# Copyright © 2010 Siegfried Gevatter <siegfried@gevatter.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -31,6 +32,7 @@ import pangocairo
 import time
 import math
 import operator
+import subprocess
 
 from gio_file import GioFile, SIZE_LARGE, SIZE_NORMAL
 
@@ -539,3 +541,32 @@ class PixbufCache(dict):
         return pb, thumb
 
 PIXBUFCACHE = PixbufCache()
+
+
+##
+## Other useful methods
+##
+
+def is_command_available(command):
+	"""
+	Checks whether the given command is available, by looking for it in
+	the PATH.
+	
+	This is useful for ensuring that optional dependencies on external
+	applications are fulfilled.
+	"""
+	assert len(" a".split()) == 1, "No arguments are accepted in command"
+	for directory in os.environ["PATH"].split(os.pathsep):
+		if os.path.exists(os.path.join(directory, command)):
+			return True
+	return False
+
+def launch_command(command, arguments=None):
+	"""
+	Launches a program as an independent process.
+	"""
+	if not arguments:
+		arguments = []
+	null = os.open(os.devnull, os.O_RDWR)
+	subprocess.Popen([command] + arguments, stdout=null, stderr=null,
+		close_fds=True)
