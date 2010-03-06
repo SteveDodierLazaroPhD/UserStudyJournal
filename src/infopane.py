@@ -81,6 +81,8 @@ class InformationPane(gtk.Frame):
                 pixbuf = gfile.get_icon(size=256)
             self.image.set_from_pixbuf(pixbuf)
             filename = os.path.basename(uri).replace("&", "&amp;")
+            if not filename:
+                filename = uri.replace("&", "&amp;")
             self.label.set_markup("<span size='18336'>" + filename + "</span>")
 
 
