@@ -51,7 +51,6 @@ def get_media_type(uri):
     if not mime:
         return GENERIC_DISPLAY_NAME
     majortype = mime.split("/")[0]
-    print majortype
     for key, mimes in MIMETYPEMAP.iteritems():
         if majortype in mimes:
             return key
@@ -105,28 +104,45 @@ class InformationPane(gtk.Frame):
     def __init__(self):
         """"""
         super(InformationPane, self).__init__()
+        vbox = gtk.VBox()
+        buttonhbox = gtk.HBox()
+        self.box = gtk.Frame()
+        self.label = gtk.Label()
+        self.openbutton = gtk.Button(stock=gtk.STOCK_OPEN)
+        self.uri = None
         self.displays = self.displays.copy()
         self.set_shadow_type(gtk.SHADOW_IN)
-        self.label = gtk.Label()
         self.set_label_widget(self.label)
+        self.box.set_shadow_type(gtk.SHADOW_NONE)
+        buttonhbox.pack_end(self.openbutton, False, False, 5)
+        buttonhbox.set_border_width(5)
+        vbox.pack_start(self.box, True, True)
+        vbox.pack_end(buttonhbox, False, False)
+        self.add(vbox)
+        self.set_label_align(0.5, 0.5)
+
+        def _launch_uri(w):
+            gfile = GioFile.create(self.uri)
+            if gfile: gfile.launch()
+        self.openbutton.connect("clicked", _launch_uri)
 
     def set_displaytype(self, uri):
         media_type = get_media_type(uri)
         display_widget = self.displays[media_type]
         if isinstance(display_widget, type):
             display_widget = self.displays[media_type] = display_widget()
-        if display_widget.parent != self:
-            child = self.get_child()
-            if child: self.remove(child)
-            self.add(display_widget)
+        if display_widget.parent != self.box:
+            child = self.box.get_child()
+            if child: self.box.remove(child)
+            self.box.add(display_widget)
         display_widget.set_uri(uri)
         self.show_all()
-        print display_widget
 
     def set_uri(self, uri):
         """
         :param uri:
         """
+        self.uri = uri
         self.set_displaytype(uri)
         filename = os.path.basename(uri).replace("&", "&amp;").replace("%20", " ")
         if not filename:
@@ -142,7 +158,6 @@ class RelatedPane(ImageView):
     """
     def __init__(self):
         super(RelatedPane, self).__init__()
-        self.set_size_request(int(self.child_height*1.9), self.child_width)
         self.set_orientation(gtk.ORIENTATION_HORIZONTAL)
 
 
@@ -160,18 +175,22 @@ class InformationWindow(gtk.Window):
     """
     def __init__(self):
         super(InformationWindow, self).__init__()
+        box = gtk.HBox()
         vbox = gtk.VBox()
-        vbox.set_border_width(10)
+        relatedlabel = gtk.Label(_("Related Items"))
         self.infopane = InformationPane()
         self.relatedpane = RelatedPane()
-        vbox.pack_start(self.infopane, True, True, 10)
         scrolledwindow = gtk.ScrolledWindow()
+        box.set_border_width(10)
+        box.pack_start(self.infopane, True, True, 10)
         scrolledwindow.set_shadow_type(gtk.SHADOW_IN)
-        scrolledwindow.set_policy(gtk.POLICY_ALWAYS, gtk.POLICY_NEVER)
+        scrolledwindow.set_policy(gtk.POLICY_NEVER, gtk.POLICY_ALWAYS)
         scrolledwindow.add(self.relatedpane)
-        vbox.pack_end(scrolledwindow, False, False, 10)
-        self.add(vbox)
-        self.set_size_request(500, 600)
+        vbox.pack_start(relatedlabel, False, False)
+        vbox.pack_end(scrolledwindow, True, True)
+        box.pack_end(vbox, False, False, 10)
+        self.add(box)
+        self.set_size_request(600, 400)
         self.connect("delete-event", lambda w, e: w.hide() or True)
 
     def event_request_handler(self, uris):
