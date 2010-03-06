@@ -26,7 +26,7 @@ import os
 import urllib
 from zeitgeist.client import ZeitgeistClient
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
-    ResultType, TimeRange
+     ResultType, TimeRange
 
 CLIENT = ZeitgeistClient()
 
@@ -71,7 +71,7 @@ def get_dayevents(start, end, result_type, callback, force = False):
                         event.timestamp = str(start)
                         results[uri].append([event, tend - start])
         events = list(sorted(results.itervalues(), key=lambda r: \
-            r[0][0].timestamp))
+                             r[0][0].timestamp))
         EVENTS[start+end] = events
         callback(events)
 
@@ -96,7 +96,7 @@ def get_dayevents(start, end, result_type, callback, force = False):
         # FIXME: Move this into EventGroup
 
         CLIENT.install_monitor([start, end], event_templates,
-            notify_insert_handler_morning, notify_insert_handler_morning)
+                               notify_insert_handler_morning, notify_insert_handler_morning)
 
 
 
@@ -132,11 +132,11 @@ def get_file_events(start, end, callback, force = False):
         find_events()
 
     event_templates = (
-            Event.new_for_values(interpretation=Interpretation.VISIT_EVENT.uri),
-            Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri),
-            Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri),
-            Event.new_for_values(interpretation=Interpretation.OPEN_EVENT.uri),
-        )
+        Event.new_for_values(interpretation=Interpretation.VISIT_EVENT.uri),
+        Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri),
+        Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri),
+        Event.new_for_values(interpretation=Interpretation.OPEN_EVENT.uri),
+    )
 
     def find_events():
         CLIENT.find_events_for_templates(event_templates, handle_find_events,
@@ -150,7 +150,7 @@ def get_file_events(start, end, callback, force = False):
         # FIXME: Move this into EventGroup
 
         CLIENT.install_monitor([start, end], event_templates,
-            notify_insert_handler_morning, notify_insert_handler_morning)
+                               notify_insert_handler_morning, notify_insert_handler_morning)
 
 
 
@@ -166,7 +166,7 @@ def datelist(n, callback):
     if n == -1:
         n = int(time.time()/86400)
     today = int(time.mktime(time.strptime(time.strftime("%d %B %Y"),
-        "%d %B %Y")))
+                                          "%d %B %Y")))
     today = today - n*86400
 
     x = []
@@ -178,8 +178,8 @@ def datelist(n, callback):
 
     def get_ids(start, end):
         CLIENT.find_event_ids_for_templates(event_templates,
-            _handle_find_events, [start * 1000, end * 1000],
-            num_events=50000, result_type=0)
+                                            _handle_find_events, [start * 1000, end * 1000],
+                                            num_events=50000, result_type=0)
 
     for i in xrange(n+1):
         get_ids(today+i*86400, today+i*86400+86399)
@@ -199,19 +199,19 @@ def get_related_events_for_uri(uri, callback):
         end = time.time() * 1000
         start = end - (86400*30*1000)
         templates = []
-        
+
         if len(uris) > 0:
-	    for i, uri in enumerate(uris):
-		    if event_exists(uri):
-			templates += [
-				Event.new_for_values(interpretation=Interpretation.VISIT_EVENT.uri, subject_uri=uri),
-				Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri, subject_uri=uri),
-				Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri, subject_uri=uri),
-				Event.new_for_values(interpretation=Interpretation.OPEN_EVENT.uri, subject_uri=uri)
-			    ]
-	    CLIENT.find_events_for_templates(templates, callback,
-		                                 [start, end], num_events=50000,
-		                                 result_type=ResultType.MostRecentSubjects)
+            for i, uri in enumerate(uris):
+                if event_exists(uri):
+                    templates += [
+                        Event.new_for_values(interpretation=Interpretation.VISIT_EVENT.uri, subject_uri=uri),
+                        Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri, subject_uri=uri),
+                        Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri, subject_uri=uri),
+                        Event.new_for_values(interpretation=Interpretation.OPEN_EVENT.uri, subject_uri=uri)
+                    ]
+            CLIENT.find_events_for_templates(templates, callback,
+                                             [start, end], num_events=50000,
+                                             result_type=ResultType.MostRecentSubjects)
     CLIENT.find_related_uris_for_uris([uri], _event_request_handler)
 
 

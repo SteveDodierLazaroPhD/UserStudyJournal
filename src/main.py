@@ -239,7 +239,7 @@ class PortalWindow(gtk.Window):
             settings["window_width"] = event.width
             settings["window_height"] = event.height
         if not settings["amount_days"]:
-            self.activityview.set_num_days(4 if event.width >= 1300 else 3)
+            self.portal.activityview.set_num_days(4 if event.width >= 1300 else 3)
 
     def quit(self, widget):
         gtk.main_quit()

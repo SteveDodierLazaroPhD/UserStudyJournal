@@ -27,7 +27,7 @@ import pango
 
 from zeitgeist.client import ZeitgeistClient
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
-    ResultType, TimeRange
+     ResultType, TimeRange
 
 from common import *
 from eventgatherer import get_related_events_for_uri
@@ -40,7 +40,7 @@ GENERIC_DISPLAY_NAME = "other"
 MIMETYPEMAP = {
     GENERIC_DISPLAY_NAME : ("image", None),
     "multimedia" : ("video", "audio"),
-    }
+}
 
 def get_media_type(uri):
     mime, encoding = mimetypes.guess_type(uri)
@@ -198,8 +198,8 @@ class InformationWindow(gtk.Window):
         """
         :param uri: a uri which is set as the window's current focus
         """
-        def _callback(events): 
-        	self.relatedpane.set_model_from_list(events)
+        def _callback(events):
+            self.relatedpane.set_model_from_list(events)
         get_related_events_for_uri(uri, _callback)
         self.infopane.set_uri(uri)
         self.show_all()
