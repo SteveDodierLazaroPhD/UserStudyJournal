@@ -169,22 +169,26 @@ class InformationPane(gtk.Frame):
         buttonhbox = gtk.HBox()
         self.box = gtk.Frame()
         self.label = gtk.Label()
-        self.filenamelabel = gtk.Label()
+        self.pathlabel = gtk.Label()
+        labelvbox = gtk.VBox()
+        labelvbox.pack_start(self.label)
+        labelvbox.pack_end(self.pathlabel)
+
         self.openbutton = gtk.Button(stock=gtk.STOCK_OPEN)
         self.uri = None
         self.displays = self.displays.copy()
         self.set_shadow_type(gtk.SHADOW_NONE)
-        self.set_label_widget(self.label)
+        self.set_label_widget(labelvbox)
         self.box.set_shadow_type(gtk.SHADOW_NONE)
         buttonhbox.pack_end(self.openbutton, False, False, 5)
         buttonhbox.set_border_width(5)
         vbox.pack_start(self.box, True, True)
-        vbox.pack_start(self.filenamelabel, False, False)
         vbox.pack_end(buttonhbox, False, False)
         self.add(vbox)
         self.set_label_align(0.5, 0.5)
-        self.filenamelabel.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
-
+        self.label.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
+        self.pathlabel.set_size_request(300, -1)
+        self.pathlabel.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
         def _launch_uri(w):
             gfile = GioFile.create(self.uri)
             if gfile: gfile.launch()
@@ -212,9 +216,9 @@ class InformationPane(gtk.Frame):
         self.set_displaytype(uri)
         filename = os.path.basename(uri).replace("&", "&amp;").replace("%20", " ")
         if not filename:
-            filename = uri.replace("&", "&amp;")
-        self.label.set_markup("<span size='10336'>" + filename + "</span>")
-        self.filenamelabel.set_text(uri)
+            filename = uri.replace("&", "&amp;").replace("%20", " ")
+        self.label.set_markup("<span size='13336'>" + filename + "</span>")
+        self.pathlabel.set_markup("<span color='#979797'>" + uri + "</span>")
 
     def set_inactive(self):
         display = self.box.get_child()
