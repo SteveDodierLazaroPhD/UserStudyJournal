@@ -26,6 +26,7 @@ import os
 import pango
 import pangocairo
 import time
+import mimetypes
 
 from zeitgeist.client import ZeitgeistClient
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
@@ -38,17 +39,53 @@ from gio_file import GioFile
 
 CLIENT = ZeitgeistClient()
 
+GENERIC_DISPLAY_NAME = "other"
 
-class RelatedPane(ImageView):
+MIMETYPEMAP = {
+    GENERIC_DISPLAY_NAME : ("image", None),
+    "multimedia" : ("video", "audio"),
+    }
+
+def get_media_type(uri):
+    mime, encoding = mimetypes.guess_type(uri)
+    if not mime:
+        return GENERIC_DISPLAY_NAME
+    majortype = mime.split("/")[0]
+    print majortype
+    for key, mimes in MIMETYPEMAP.iteritems():
+        if majortype in mimes:
+            return key
+    return GENERIC_DISPLAY_NAME
+
+
+class ContentDisplay(object):
+    def set_uri(self, uri):
+        pass
+
+
+class ImageDisplay(gtk.Image, ContentDisplay):
+    def set_uri(self, uri):
+        gfile = GioFile.create(uri)
+        if gfile:
+            if gfile.has_preview():
+                pixbuf = gfile.get_thumbnail(size=SIZE_LARGE, border=3)
+            else:
+                pixbuf = gfile.get_icon(size=256)
+            self.set_from_pixbuf(pixbuf)
+
+
+class MultimediaDisplay(gtk.VBox, ContentDisplay):
     """
-    ...............
-    .             . <--- Related files
-    ...............
     """
     def __init__(self):
-        super(RelatedPane, self).__init__()
-        self.set_size_request(int(self.child_height*1.9), self.child_width)
-        self.set_orientation(gtk.ORIENTATION_HORIZONTAL)
+        super(MultimediaDisplay, self).__init__()
+        #Temporary
+        self.image = ImageDisplay()
+        self.add(self.image)
+
+    def set_uri(self, uri):
+        #Temporary
+        self.image.set_uri(uri)
 
 
 class InformationPane(gtk.Frame):
@@ -60,30 +97,53 @@ class InformationPane(gtk.Frame):
     .             .
     . . . . . . . .
     """
+    displays = {
+        GENERIC_DISPLAY_NAME : ImageDisplay,
+        "multimedia" : MultimediaDisplay,
+    }
+
     def __init__(self):
         """"""
         super(InformationPane, self).__init__()
-        self.image = gtk.Image()
-        self.add(self.image)
+        self.displays = self.displays.copy()
         self.set_shadow_type(gtk.SHADOW_IN)
         self.label = gtk.Label()
         self.set_label_widget(self.label)
+
+    def set_displaytype(self, uri):
+        media_type = get_media_type(uri)
+        display_widget = self.displays[media_type]
+        if isinstance(display_widget, type):
+            display_widget = self.displays[media_type] = display_widget()
+        if display_widget.parent != self:
+            child = self.get_child()
+            if child: self.remove(child)
+            self.add(display_widget)
+        display_widget.set_uri(uri)
+        self.show_all()
+        print display_widget
 
     def set_uri(self, uri):
         """
         :param uri:
         """
-        gfile = GioFile.create(uri)
-        if gfile:
-            if gfile.has_preview():
-                pixbuf = gfile.get_thumbnail(size=SIZE_LARGE, border=3)
-            else:
-                pixbuf = gfile.get_icon(size=256)
-            self.image.set_from_pixbuf(pixbuf)
-            filename = os.path.basename(uri).replace("&", "&amp;")
-            if not filename:
-                filename = uri.replace("&", "&amp;")
-            self.label.set_markup("<span size='18336'>" + filename + "</span>")
+        self.set_displaytype(uri)
+        filename = os.path.basename(uri).replace("&", "&amp;").replace("%20", " ")
+        if not filename:
+            filename = uri.replace("&", "&amp;")
+        self.label.set_markup("<span size='10336'>" + filename + "</span>")
+
+
+class RelatedPane(ImageView):
+    """
+    ...............
+    .             . <--- Related files
+    ...............
+    """
+    def __init__(self):
+        super(RelatedPane, self).__init__()
+        self.set_size_request(int(self.child_height*1.9), self.child_width)
+        self.set_orientation(gtk.ORIENTATION_HORIZONTAL)
 
 
 class InformationWindow(gtk.Window):
@@ -119,8 +179,6 @@ class InformationWindow(gtk.Window):
         :params uris: a list of uris which are related to the windows current uri
         Seif look here
         """
-        print "Request"
-        for uri in uris: print uri
         end = time.time() * 1000
         start = end - 60*60*14*1000
         templates = []
