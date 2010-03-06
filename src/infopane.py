@@ -24,6 +24,9 @@ import gtk
 import mimetypes
 import os
 import pango
+#try: import gst
+#except ImportError:
+gst = None
 
 from zeitgeist.client import ZeitgeistClient
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
@@ -33,6 +36,8 @@ from common import *
 from eventgatherer import get_related_events_for_uri
 from thumb import ImageView
 from gio_file import GioFile
+
+
 
 
 GENERIC_DISPLAY_NAME = "other"
@@ -57,8 +62,13 @@ class ContentDisplay(object):
     def set_uri(self, uri):
         pass
 
+    def set_inactive(self):
+        pass
+
 
 class ImageDisplay(gtk.Image, ContentDisplay):
+    """Displays an image or a icon representing the uri
+    """
     def set_uri(self, uri):
         gfile = GioFile.create(uri)
         if gfile:
@@ -70,17 +80,71 @@ class ImageDisplay(gtk.Image, ContentDisplay):
 
 
 class MultimediaDisplay(gtk.VBox, ContentDisplay):
-    """temporarily uses a ImageDisplay until I write the gstreamer code
+    """Displays a video or audio object using gstreamer
     """
     def __init__(self):
         super(MultimediaDisplay, self).__init__()
         #Temporary
-        self.image = ImageDisplay()
-        self.add(self.image)
+        self.mediascreen = gtk.DrawingArea()
+        self.player = gst.element_factory_make("playbin", "player")
+        bus = self.player.get_bus()
+        bus.add_signal_watch()
+        bus.enable_sync_message_emission()
+        bus.connect("message", self.on_message)
+        bus.connect("sync-message::element", self.on_sync_message)
+
+        buttonbox = gtk.HBox()
+        self.playbutton = gtk.Button()
+        buttonbox.pack_start(self.playbutton, True, False)
+        self.playbutton.gtkimage = gtk.Image()
+        self.playbutton.add(self.playbutton.gtkimage)
+        self.playbutton.gtkimage.set_from_stock(gtk.STOCK_MEDIA_PAUSE, 48)
+        self.pack_start(self.mediascreen, True, True, 10)
+        self.pack_end(buttonbox, False, False)
+        self.playbutton.connect("clicked", self.on_play_click)
+        self.playbutton.set_relief(gtk.RELIEF_NONE)
 
     def set_uri(self, uri):
-        #Temporary
-        self.image.set_uri(uri)
+        self.player.set_state(gst.STATE_NULL)
+        self.player.set_property("uri", uri)
+        self.player.set_state(gst.STATE_PLAYING)
+        self.playbutton.gtkimage.set_from_stock(gtk.STOCK_MEDIA_PAUSE, 48)
+
+    def set_inactive(self):
+        self.player.set_state(gst.STATE_NULL)
+
+    def on_play_click(self, widget):
+        state = self.player.get_state()
+        if gst.STATE_PLAYING in state:
+            self.player.set_state(gst.STATE_PAUSED)
+            self.playbutton.gtkimage.set_from_stock(gtk.STOCK_MEDIA_PAUSE, 48)
+        elif gst.STATE_PAUSED in state:
+            self.player.set_state(gst.STATE_PLAYING)
+            self.playbutton.gtkimage.set_from_stock(gtk.STOCK_MEDIA_PLAY, 48)
+
+    def on_sync_message(self, bus, message):
+        if message.structure is None:
+            return
+        message_name = message.structure.get_name()
+        if message_name == "prepare-xwindow-id":
+            imagesink = message.src
+            imagesink.set_property("force-aspect-ratio", True)
+            gtk.gdk.threads_enter()
+            try:
+                self.show_all()
+                imagesink.set_xwindow_id(self.mediascreen.window.xid)
+            finally:
+                gtk.gdk.threads_leave()
+
+    def on_message(self, bus, message):
+        t = message.type
+        if t == gst.MESSAGE_EOS:
+            self.player.set_state(gst.STATE_NULL)
+        elif t == gst.MESSAGE_ERROR:
+            self.player.set_state(gst.STATE_NULL)
+            err, debug = message.parse_error()
+            print "Error: %s" % err, debug
+
 
 
 class InformationPane(gtk.Frame):
@@ -94,7 +158,7 @@ class InformationPane(gtk.Frame):
     """
     displays = {
         GENERIC_DISPLAY_NAME : ImageDisplay,
-        "multimedia" : MultimediaDisplay,
+        "multimedia" : MultimediaDisplay if gst else ImageDisplay,
     }
 
     def __init__(self):
@@ -132,7 +196,9 @@ class InformationPane(gtk.Frame):
             display_widget = self.displays[media_type] = display_widget()
         if display_widget.parent != self.box:
             child = self.box.get_child()
-            if child: self.box.remove(child)
+            if child:
+                self.box.remove(child)
+                child.set_inactive()
             self.box.add(display_widget)
         display_widget.set_uri(uri)
         self.show_all()
@@ -148,6 +214,10 @@ class InformationPane(gtk.Frame):
             filename = uri.replace("&", "&amp;")
         self.label.set_markup("<span size='10336'>" + filename + "</span>")
         self.filenamelabel.set_text(uri)
+
+    def set_inactive(self):
+        display = self.box.get_child()
+        if display: display.set_inactive()
 
 
 class RelatedPane(ImageView):
@@ -192,7 +262,12 @@ class InformationWindow(gtk.Window):
         box.pack_end(vbox, False, False, 10)
         self.add(box)
         self.set_size_request(600, 400)
-        self.connect("delete-event", lambda w, e: w.hide() or True)
+        self.connect("delete-event", self._hide_on_delete)
+
+    def _hide_on_delete(self, widget, event):
+        widget.hide()
+        self.infopane.set_inactive()
+        return True
 
     def set_uri(self, uri):
         """
