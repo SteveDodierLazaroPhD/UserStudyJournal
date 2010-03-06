@@ -3,6 +3,7 @@
 # Filename
 #
 # Copyright © 2010 Randal Barlow
+# Copyright © 2010 Markus Korn <thekorn@gmx.de>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -172,7 +173,7 @@ class InformationPane(gtk.Frame):
         self.openbutton = gtk.Button(stock=gtk.STOCK_OPEN)
         self.uri = None
         self.displays = self.displays.copy()
-        self.set_shadow_type(gtk.SHADOW_IN)
+        self.set_shadow_type(gtk.SHADOW_NONE)
         self.set_label_widget(self.label)
         self.box.set_shadow_type(gtk.SHADOW_NONE)
         buttonhbox.pack_end(self.openbutton, False, False, 5)
