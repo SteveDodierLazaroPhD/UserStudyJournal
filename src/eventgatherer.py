@@ -40,20 +40,19 @@ event_templates = (
 
 EVENTS = {}
 
+def event_exists(uri):
+    # TODO: Move this into Zeitgeist's datamodel.py
+    if uri.startswith("trash://"):
+        return False
+    return not uri.startswith("file://") or os.path.exists(
+        urllib.unquote(str(uri[7:])))
+
 def get_dayevents(start, end, result_type, callback, force = False):
     """
     :param start: a int time from which to start gathering events in milliseconds
     :param end: a int time from which to stop gathering events in milliseconds
     :callback: a callable to be called when the query is done
     """
-
-    def event_exists(uri):
-        # TODO: Move this into Zeitgeist's datamodel.py
-        if uri.startswith("trash://"):
-            return False
-        return not uri.startswith("file://") or os.path.exists(
-            urllib.unquote(str(uri[7:])))
-
     def handle_find_events(events):
         results = {}
         for event in events:
@@ -184,3 +183,34 @@ def datelist(n, callback):
 
     for i in xrange(n+1):
         get_ids(today+i*86400, today+i*86400+86399)
+
+
+def get_related_events_for_uri(uri, callback):
+    """
+    :param uri: A uri for which to request related uris using zetigeist
+    :param callback: this callback is called once the events are retrieved for
+    the uris. It is called with a list of events.
+    """
+    def _event_request_handler(uris):
+        """
+        :param uris: a list of uris which are related to the windows current uri
+        Seif look here
+        """
+        end = time.time() * 1000
+        start = end - 60*60*14*1000
+        templates = []
+        for i, uri in enumerate(uris):
+            if not event_exists(uri): continue
+            templates += [
+                Event.new_for_values(interpretation=Interpretation.VISIT_EVENT.uri, subject_uri=uri),
+                Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri, subject_uri=uri),
+                Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri, subject_uri=uri),
+                Event.new_for_values(interpretation=Interpretation.OPEN_EVENT.uri, subject_uri=uri)
+            ]
+        CLIENT.find_events_for_templates(templates, callback,
+                                         [start, end], num_events=50000,
+                                         result_type=ResultType.MostRecentSubjects)
+    CLIENT.find_related_uris_for_uris([uri], _event_request_handler)
+
+
+

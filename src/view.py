@@ -26,7 +26,6 @@ from widgets import *
 from daywidgets import *
 from eventgatherer import datelist
 from config import settings
-from infopane import InformationWindow
 
 class ActivityView(gtk.VBox):
     __gsignals__ = {
@@ -52,7 +51,6 @@ class ActivityView(gtk.VBox):
         self._set_today_timestamp()
         self._set_view_type()
         self._set_timeline()
-        ContextMenu.informationwindow = InformationWindow
         self.set_views()
 
     def set_num_days(self, dayrange):

@@ -522,7 +522,7 @@ class PixbufCache(dict):
             cached = None
         if cached:
             return cached
-        gfile = GioFile(uri)
+        gfile = GioFile.create(uri)
         thumb = True
         if gfile:
             if gfile.has_preview():

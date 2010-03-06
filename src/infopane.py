@@ -19,25 +19,21 @@
 
 # Purpose:
 
-import cairo
 import gobject
 import gtk
+import mimetypes
 import os
 import pango
-import pangocairo
-import time
-import mimetypes
 
 from zeitgeist.client import ZeitgeistClient
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
     ResultType, TimeRange
 
 from common import *
-
+from eventgatherer import get_related_events_for_uri
 from thumb import ImageView
 from gio_file import GioFile
 
-CLIENT = ZeitgeistClient()
 
 GENERIC_DISPLAY_NAME = "other"
 
@@ -74,7 +70,7 @@ class ImageDisplay(gtk.Image, ContentDisplay):
 
 
 class MultimediaDisplay(gtk.VBox, ContentDisplay):
-    """
+    """temporarily uses a ImageDisplay until I write the gstreamer code
     """
     def __init__(self):
         super(MultimediaDisplay, self).__init__()
@@ -108,6 +104,7 @@ class InformationPane(gtk.Frame):
         buttonhbox = gtk.HBox()
         self.box = gtk.Frame()
         self.label = gtk.Label()
+        self.filenamelabel = gtk.Label()
         self.openbutton = gtk.Button(stock=gtk.STOCK_OPEN)
         self.uri = None
         self.displays = self.displays.copy()
@@ -117,9 +114,11 @@ class InformationPane(gtk.Frame):
         buttonhbox.pack_end(self.openbutton, False, False, 5)
         buttonhbox.set_border_width(5)
         vbox.pack_start(self.box, True, True)
+        vbox.pack_start(self.filenamelabel, False, False)
         vbox.pack_end(buttonhbox, False, False)
         self.add(vbox)
         self.set_label_align(0.5, 0.5)
+        self.filenamelabel.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
 
         def _launch_uri(w):
             gfile = GioFile.create(self.uri)
@@ -148,6 +147,7 @@ class InformationPane(gtk.Frame):
         if not filename:
             filename = uri.replace("&", "&amp;")
         self.label.set_markup("<span size='10336'>" + filename + "</span>")
+        self.filenamelabel.set_text(uri)
 
 
 class RelatedPane(ImageView):
@@ -184,6 +184,7 @@ class InformationWindow(gtk.Window):
         box.set_border_width(10)
         box.pack_start(self.infopane, True, True, 10)
         scrolledwindow.set_shadow_type(gtk.SHADOW_IN)
+        self.relatedpane.set_size_request(130, -1)
         scrolledwindow.set_policy(gtk.POLICY_NEVER, gtk.POLICY_ALWAYS)
         scrolledwindow.add(self.relatedpane)
         vbox.pack_start(relatedlabel, False, False)
@@ -193,33 +194,13 @@ class InformationWindow(gtk.Window):
         self.set_size_request(600, 400)
         self.connect("delete-event", lambda w, e: w.hide() or True)
 
-    def event_request_handler(self, uris):
-        """
-        :params uris: a list of uris which are related to the windows current uri
-        Seif look here
-        """
-        end = time.time() * 1000
-        start = end - 60*60*14*1000
-        templates = []
-        def _handle_events(events):
-            self.relatedpane.set_model_from_list(events)
-
-        for uri in uris:
-            templates += [
-                Event.new_for_values(interpretation=Interpretation.VISIT_EVENT.uri, subject_uri=uri),
-                Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri, subject_uri=uri),
-                Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri, subject_uri=uri),
-                Event.new_for_values(interpretation=Interpretation.OPEN_EVENT.uri, subject_uri=uri)
-            ]
-        CLIENT.find_events_for_templates(templates, _handle_events,
-                                         [start, end], num_events=50000,
-                                         result_type=ResultType.MostRecentSubjects)
     def set_uri(self, uri):
         """
         :param uri: a uri which is set as the window's current focus
         """
+        def _callback(events): self.relatedpane.set_model_from_list(events)
+        get_related_events_for_uri(uri, _callback)
         self.infopane.set_uri(uri)
-        CLIENT.find_related_uris_for_uris([uri], self.event_request_handler)
         self.show_all()
 
 

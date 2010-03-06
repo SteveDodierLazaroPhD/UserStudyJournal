@@ -31,6 +31,7 @@ from widgets import *
 from view import ActivityView
 from histogram import HistogramWidget, JournalHistogram, CairoHistogram
 from daywidgets import DayButton
+from infopane import InformationWindow
 
 
 class Portal(gtk.HBox):
@@ -173,12 +174,15 @@ class PortalWindow(gtk.Window):
         self.add(self.portal)
         self.set_focus(self.portal.activityview.searchbox.search)
         self.portal.activityview.connect("date-updated", self._title_handler)
-
+        ContextMenu.informationwindow = InformationWindow
+        InformationWindow.set_modal(True)
+        InformationWindow.set_transient_for(self)
         self._request_size()
         self.connect("configure-event", self._on_size_changed)
         start = datetime.date.fromtimestamp(self.portal.activityview.start).strftime("%A")
         self.set_title(_("%s to today") % start + " - " + _("Activity Journal"))
         self.show()
+
 
     def _title_handler(self, widget, starti, endi, singleday):
         endday = datetime.date.fromtimestamp(endi)

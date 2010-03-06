@@ -636,7 +636,7 @@ class AboutDialog(gtk.AboutDialog):
 
 class ContextMenu(gtk.Menu):
     subjects = []# A list of Zeitgeist event uris
-    infopane = None
+    informationwindow = None
     def __init__(self):
         super(ContextMenu, self).__init__()
         self.menuitems = {
