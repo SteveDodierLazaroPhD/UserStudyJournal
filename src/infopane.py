@@ -198,7 +198,8 @@ class InformationWindow(gtk.Window):
         """
         :param uri: a uri which is set as the window's current focus
         """
-        def _callback(events): self.relatedpane.set_model_from_list(events)
+        def _callback(events): 
+        	self.relatedpane.set_model_from_list(events)
         get_related_events_for_uri(uri, _callback)
         self.infopane.set_uri(uri)
         self.show_all()
