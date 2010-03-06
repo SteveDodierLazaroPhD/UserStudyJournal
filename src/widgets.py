@@ -636,7 +636,7 @@ class AboutDialog(gtk.AboutDialog):
 
 class ContextMenu(gtk.Menu):
     subjects = []# A list of Zeitgeist event uris
-
+    infopane = None
     def __init__(self):
         super(ContextMenu, self).__init__()
         self.menuitems = {
@@ -644,16 +644,16 @@ class ContextMenu(gtk.Menu):
             "unpin" : gtk.MenuItem(_("Remove Pin")),
             "pin" : gtk.MenuItem(_("Pin to Today")),
             "delete" : gtk.MenuItem(_("Delete item from Journal")),
-            "related" : gtk.MenuItem(_("Most used with...")),
+            "info" : gtk.MenuItem(_("More Information")),
             }
         callbacks = {
             "open" : self.do_open,
             "unpin" : self.do_unbookmark,
             "pin" : self.do_bookmark,
             "delete" : self.do_delete,
-            "related" : self.do_get_related,
+            "info" : self.do_show_info,
             }
-        names = ["open", "unpin", "pin", "delete", "related"]
+        names = ["open", "unpin", "pin", "delete", "info"]
         if is_command_available("nautilus-sendto"):
             self.menuitems["sendto"] = gtk.MenuItem(_("Send To..."))
             callbacks["sendto"] = self.do_send_to
@@ -688,19 +688,9 @@ class ContextMenu(gtk.Menu):
             gfile = GioFile(uri)
             gfile.launch()
 
-    def do_get_related(self, menuitem):
-        def handler(uris):
-            print "........"
-            print "***", uri, "***"
-            print "--- related to ---"
-            for uri_ in uris:
-                print uri_
-            print "........"
-
-        for uri in self.subjects:
-            end = time.time() * 1000
-            start = end - 60*60*14*1000
-            CLIENT.find_related_uris_for_uris([uri], handler)
+    def do_show_info(self, menuitem):
+        if self.subjects and self.informationwindow:
+            self.informationwindow.set_uri(self.subjects[0])
 
     def do_bookmark(self, menuitem):
         for uri in self.subjects:
@@ -721,7 +711,7 @@ class ContextMenu(gtk.Menu):
             CLIENT.find_event_ids_for_template(
                 Event.new_for_values(subject_uri=uri),
                 lambda ids: CLIENT.delete_events(map(int, ids)))
-    
+
     def do_send_to(self, menuitem):
         launch_command("nautilus-sendto", self.subjects)
 

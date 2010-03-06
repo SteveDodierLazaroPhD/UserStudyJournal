@@ -269,7 +269,9 @@ class ImageView(gtk.IconView):
     def on_leave_notify(self, widget, event):
         model = self.get_model()
         if model:
-            model[self.last_active][2] = False
+            try:
+                model[self.last_active][2] = False
+            except IndexError:pass
             self.last_active = -1
 
     def on_motion_notify(self, widget, event):

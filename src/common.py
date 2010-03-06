@@ -71,7 +71,7 @@ TANGOCOLORS = [
     (136/255.0, 138/255.0, 133/255.0),#21
     ( 85/255.0,  87/255.0,  83/255.0),
     ( 46/255.0,  52/255.0,  54/255.0),
-    ]
+]
 
 FILETYPES = {
     Interpretation.VIDEO.uri : 0,
@@ -80,7 +80,7 @@ FILETYPES = {
     Interpretation.IMAGE.uri : 15,
     Interpretation.SOURCECODE.uri : 12,
     Interpretation.UNKNOWN.uri : 21,
-    }
+}
 
 FILETYPESNAMES = {
     Interpretation.VIDEO.uri : _("Video"),
@@ -89,12 +89,12 @@ FILETYPESNAMES = {
     Interpretation.IMAGE.uri : _("Image"),
     Interpretation.SOURCECODE.uri : _("Source Code"),
     Interpretation.UNKNOWN.uri : _("Unknown"),
-    }
+}
 
 MEDIAINTERPRETATIONS = [
     Interpretation.VIDEO.uri,
     Interpretation.IMAGE.uri,
-    ]
+]
 
 TIMELABELS = [_("Morning"), _("Afternoon"), _("Evening")]
 ICON_THEME = gtk.icon_theme_get_default()
@@ -548,25 +548,25 @@ PIXBUFCACHE = PixbufCache()
 ##
 
 def is_command_available(command):
-	"""
-	Checks whether the given command is available, by looking for it in
-	the PATH.
-	
-	This is useful for ensuring that optional dependencies on external
-	applications are fulfilled.
-	"""
-	assert len(" a".split()) == 1, "No arguments are accepted in command"
-	for directory in os.environ["PATH"].split(os.pathsep):
-		if os.path.exists(os.path.join(directory, command)):
-			return True
-	return False
+    """
+    Checks whether the given command is available, by looking for it in
+    the PATH.
+
+    This is useful for ensuring that optional dependencies on external
+    applications are fulfilled.
+    """
+    assert len(" a".split()) == 1, "No arguments are accepted in command"
+    for directory in os.environ["PATH"].split(os.pathsep):
+        if os.path.exists(os.path.join(directory, command)):
+            return True
+    return False
 
 def launch_command(command, arguments=None):
-	"""
-	Launches a program as an independent process.
-	"""
-	if not arguments:
-		arguments = []
-	null = os.open(os.devnull, os.O_RDWR)
-	subprocess.Popen([command] + arguments, stdout=null, stderr=null,
-		close_fds=True)
+    """
+    Launches a program as an independent process.
+    """
+    if not arguments:
+        arguments = []
+    null = os.open(os.devnull, os.O_RDWR)
+    subprocess.Popen([command] + arguments, stdout=null, stderr=null,
+                     close_fds=True)
