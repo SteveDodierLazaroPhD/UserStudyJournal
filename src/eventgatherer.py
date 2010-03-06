@@ -197,7 +197,7 @@ def get_related_events_for_uri(uri, callback):
         Seif look here
         """
         end = time.time() * 1000
-        start = end - 60*60*14*1000
+        start = end - (86400*30*1000)
         templates = []
         for i, uri in enumerate(uris):
             if not event_exists(uri): continue
