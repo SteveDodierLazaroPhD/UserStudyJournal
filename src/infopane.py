@@ -64,10 +64,19 @@ def get_media_type(uri):
 
 
 class ContentDisplay(object):
+    """
+    The abstract base class for content displays
+    """
     def set_uri(self, uri):
+        """
+        :param uri: a uri string which the Content Display displays
+        """
         pass
 
     def set_inactive(self):
+        """
+        This method performs clean when the displays are swapped
+        """
         pass
 
 
@@ -78,7 +87,6 @@ class ScrolledDisplay(gtk.ScrolledWindow):
     """
     child_type = gtk.Widget
     def __init__(self):
-        """"""
         super(ScrolledDisplay, self).__init__()
         self._child_obj = self.child_type()
         self.add(self._child_obj)
@@ -119,7 +127,8 @@ class TextDisplay(gtksourceview.SourceView if gtksourceview
 
 
 class ImageDisplay(gtk.Image, ContentDisplay):
-    """Displays an image or a icon representing the uri
+    """
+    A display based on GtkImage to display a uri's thumb or icon using GioFile
     """
     def set_uri(self, uri):
         gfile = GioFile.create(uri)
@@ -132,7 +141,8 @@ class ImageDisplay(gtk.Image, ContentDisplay):
 
 
 class MultimediaDisplay(gtk.VBox, ContentDisplay):
-    """Displays a video or audio object using gstreamer
+    """
+    a display which words for video and audio using gstreamer
     """
     def __init__(self):
         super(MultimediaDisplay, self).__init__()
@@ -160,11 +170,17 @@ class MultimediaDisplay(gtk.VBox, ContentDisplay):
         self.player.set_state(gst.STATE_NULL)
 
     def set_playing(self):
+        """
+        Set MultimediaDisplay.player's state to playing
+        """
         self.player.set_state(gst.STATE_PLAYING)
         self.playbutton.gtkimage.set_from_stock(gtk.STOCK_MEDIA_PAUSE, 2)
         self.playing = True
 
     def set_paused(self):
+        """
+        Set MultimediaDisplay.player's state to paused
+        """
         self.player.set_state(gst.STATE_PAUSED)
         self.playbutton.gtkimage.set_from_stock(gtk.STOCK_MEDIA_PLAY, 2)
         self.playing = False
@@ -215,6 +231,8 @@ class InformationPane(gtk.Frame):
     .             .
     .             .
     . . . . . . . .
+
+    Holds widgets which display information about a uri
     """
     displays = {
         GENERIC_DISPLAY_NAME : ImageDisplay,
@@ -224,7 +242,6 @@ class InformationPane(gtk.Frame):
     }
     uri = None
     def __init__(self):
-        """"""
         super(InformationPane, self).__init__()
         vbox = gtk.VBox()
         buttonhbox = gtk.HBox()
@@ -254,6 +271,9 @@ class InformationPane(gtk.Frame):
         self.openbutton.connect("clicked", _launch_uri)
 
     def set_displaytype(self, uri):
+        """
+        Determines the ContentDisplay to use for a given uri
+        """
         media_type = get_media_type(uri)
         display_widget = self.displays[media_type]
         if isinstance(display_widget, type):
@@ -269,7 +289,7 @@ class InformationPane(gtk.Frame):
 
     def set_uri(self, uri):
         """
-        :param uri:
+        :param uri: Sets the information pane's uri
         """
         self.uri = uri
         self.set_displaytype(uri)
@@ -286,9 +306,14 @@ class InformationPane(gtk.Frame):
 
 class RelatedPane(ImageView):
     """
-    ...............
-    .             . <--- Related files
-    ...............
+                     . . .
+                     .   .
+                     .   . <--- Related files
+                     .   .
+                     .   .
+                     . . .
+
+    Displays related events using a widget based on our thumbnail ImageView
     """
     def __init__(self):
         super(RelatedPane, self).__init__()
@@ -297,15 +322,14 @@ class RelatedPane(ImageView):
 
 class InformationWindow(gtk.Window):
     """
-    . . . . . . . .
-    .             .
-    .    Info     .
-    .             .
-    .             .
-    . . . . . . . .
-    ...............
-    .             . <--- Related files
-    ...............
+    . . . . . . . .  . . .
+    .             .  .   .
+    .    Info     .  .   . <--- Related files
+    .             .  .   .
+    .             .  .   .
+    . . . . . . . .  . . .
+
+    A window which holds the information pane and related pane
     """
     def __init__(self):
         super(InformationWindow, self).__init__()

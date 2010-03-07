@@ -119,7 +119,6 @@ class ThumbnailDayWidget(GenericViewWidget):
         get_file_events(start*1000, (start + 12*hour -1) * 1000, self.set_morning_events)
         get_file_events((start + 12*hour)*1000, (start + 18*hour - 1)*1000, self.set_afternoon_events)
         get_file_events((start + 18*hour)*1000, end*1000, self.set_evening_events)
-        #self.view.show()
 
     def set_morning_events(self, events):
         if len(events) > 0:
@@ -163,13 +162,6 @@ class SingleDayWidget(GenericViewWidget):
     def __init__(self):
         GenericViewWidget.__init__(self)
         self.ruler = TimelineHeader()
-        #self.ruler_box = gtk.EventBox()
-        #ruler = gtk.HBox()
-        #self.ruler_box.add(ruler)
-        #for time_str in ("4:00", "8:00", "12:00", "16:00", "20:00"):
-        #    label = gtk.Label()
-        #    label.set_markup("<tt>%s</tt>" % time_str)
-        #    ruler.pack_start(label, True, True)
         self.scrolledwindow = gtk.ScrolledWindow()
         self.scrolledwindow.set_shadow_type(gtk.SHADOW_NONE)
         self.scrolledwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)

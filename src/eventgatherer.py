@@ -26,7 +26,7 @@ import os
 import urllib
 from zeitgeist.client import ZeitgeistClient
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
-     ResultType, TimeRange
+     ResultType, TimeRange, StorageState
 
 CLIENT = ZeitgeistClient()
 
@@ -111,9 +111,6 @@ def get_file_events(start, end, callback, force = False):
     :param end: a int time from which to stop gathering events in milliseconds
     :callback: a callable to be called when the query is done
     """
-    def event_exists(uri):
-        return not uri.startswith("file://") or os.path.exists(
-            urllib.unquote(str(uri[7:])))
 
     def handle_find_events(events):
         results = {}
@@ -163,6 +160,18 @@ def datelist(n, callback):
     :param n: number of days to query
     :callback: a callable to be called when the query is done
     """
+    event_templates = (
+        Event.new_for_values(interpretation=Interpretation.VISIT_EVENT.uri,
+                             storage_state=StorageState.Available),
+        Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri,
+                             storage_state=StorageState.Available),
+        Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri,
+                             storage_state=StorageState.Available),
+        Event.new_for_values(interpretation=Interpretation.OPEN_EVENT.uri,
+                             storage_state=StorageState.Available),
+        Event.new_for_values(interpretation=Interpretation.CLOSE_EVENT.uri,
+                             storage_state=StorageState.Available),
+    )
     if n == -1:
         n = int(time.time()/86400)
     today = int(time.mktime(time.strptime(time.strftime("%d %B %Y"),
@@ -179,7 +188,8 @@ def datelist(n, callback):
     def get_ids(start, end):
         CLIENT.find_event_ids_for_templates(event_templates,
                                             _handle_find_events, [start * 1000, end * 1000],
-                                            num_events=50000, result_type=0)
+                                            num_events=50000,
+                                            result_type=0,)
 
     for i in xrange(n+1):
         get_ids(today+i*86400, today+i*86400+86399)

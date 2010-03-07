@@ -40,7 +40,7 @@ from common import *
 
 class PreviewRenderer(gtk.GenericCellRenderer):
     """
-    A IconView renderer to be added to a celllayout. It displays a pixbuf and
+    A IconView renderer to be added to a cellayout. It displays a pixbuf and
     data based on the event property
     """
 

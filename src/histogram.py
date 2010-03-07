@@ -306,8 +306,10 @@ class CairoHistogram(gtk.DrawingArea):
             nitems = 2
         elif nitems > self.max_column_height:
             nitems = self.max_column_height
-        maxheight = maxheight - self.bottom_padding
+        maxheight = maxheight - self.bottom_padding - 2
+        #height = int((maxheight-self.top_padding-2) * (self.largest*math.log(nitems)/math.log(self.largest))/100)
         height = int(((float(nitems)/self.largest)*(maxheight-2))) - self.top_padding
+        #height = min(int((maxheight*self.largest/100) * (1 - math.e**(-0.025*nitems))), maxheight)
         if height < self.min_column_height:
             height = self.min_column_height
         y = maxheight - height
