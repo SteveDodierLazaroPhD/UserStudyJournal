@@ -453,7 +453,7 @@ class DayLabel(gtk.DrawingArea):
         self.date_text(widget, event, context, (y)/2 + 5)
 
     def date_text(self, widget, event, context, lastfontheight):
-        gc = self.style.text_gc[gtk.STATE_SELECTED if self.leading else gtk.STATE_INSENSITIVE]
+        gc = self.style.fg_gc[gtk.STATE_SELECTED if self.leading else gtk.STATE_INSENSITIVE]
         layout = widget.create_pango_layout(self.date)
         layout.set_font_description(pango.FontDescription(self.font_name + " 10"))
         w, h = layout.get_pixel_size()
@@ -461,7 +461,7 @@ class DayLabel(gtk.DrawingArea):
 
     def draw(self, widget, event, context):
         if self.leading:
-            bg = self.style.bg[3]
+            bg = self.style.bg[gtk.STATE_SELECTED]
             red, green, blue = bg.red/65535.0, bg.green/65535.0, bg.blue/65535.0
         else:
             bg = self.style.bg[gtk.STATE_NORMAL]
