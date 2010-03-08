@@ -86,7 +86,7 @@ class CairoHistogram(gtk.DrawingArea):
         "column_selected" : (1, 1, 1, 1),
         "column_alternative" : (1, 1, 1, 1),
         "column_selected_alternative" : (1, 1, 1, 1),
-        "font_color" : (0, 0, 0, 0),
+        "font_color" : "#ffffff",
         "stroke" : (1, 1, 1, 0),
         "shadow" : (1, 1, 1, 0),
         }
@@ -141,6 +141,10 @@ class CairoHistogram(gtk.DrawingArea):
         self.colors["base"] = get_gtk_rgba(self.style, "base", 0)
         self.colors["column_normal"] =  get_gtk_rgba(self.style, "text", 4, 1.17)
         self.colors["column_selected"] = get_gtk_rgba(self.style, "bg", 3)
+        color = self.style.bg[gtk.STATE_NORMAL]
+        fcolor = self.style.fg[gtk.STATE_NORMAL]
+        self.colors["font_color"] = combine_gdk_color(color, fcolor).to_string()
+
         pal = get_gtk_rgba(self.style, "bg", 3, 1.2)
         self.colors["column_alternative"] = (pal[2], pal[1], pal[0], 1)
         self.colors["column_selected_alternative"] = get_gtk_rgba(self.style, "bg", 3, 0.6)
@@ -336,8 +340,9 @@ class CairoHistogram(gtk.DrawingArea):
         context.stroke()
         date = datetime.date.fromtimestamp(date)
         month = calendar.month_name[date.month]
-        date = "%s %d" % (month, date.year)
+        date = "<span color='%s'>%s %d</span>" % (self.colors["font_color"], month, date.year)
         layout = self.create_pango_layout(date)
+        layout.set_markup(date)
         layout.set_font_description(self.pangofont)
         w, h = layout.get_pixel_size()
         if edge:
