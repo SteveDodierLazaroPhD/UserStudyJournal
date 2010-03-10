@@ -1,4 +1,4 @@
-# German translation for gnome-activity-journal
+# Chinese (Simplified) translation for gnome-activity-journal
 # Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
 # This file is distributed under the same license as the gnome-activity-journal package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
@@ -8,238 +8,228 @@ msgstr ""
 "Project-Id-Version: gnome-activity-journal\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-02-28 19:33+0100\n"
-"PO-Revision-Date: 2010-03-09 11:49+0000\n"
-"Last-Translator: MixCool <lars.thoms@mixcool.de>\n"
-"Language-Team: German <de@li.org>\n"
+"PO-Revision-Date: 2010-03-09 08:44+0000\n"
+"Last-Translator: Xhacker Liu <liu.dongyuan@gmail.com>\n"
+"Language-Team: Chinese (Simplified) <zh_CN@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "X-Launchpad-Export-Date: 2010-03-10 05:22+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../gnome-activity-journal:76
 msgid "print additional debugging information"
-msgstr "zusätzliche Informationen zur Fehlerbehebung anzeigen"
+msgstr "输出附加调试信息"
 
 #: ../gnome-activity-journal:83
 msgid "ERROR"
-msgstr "FEHLER"
+msgstr "错误"
 
 #: ../gnome-activity-journal:83
 msgid "Unable to connect to Zeitgeist:"
-msgstr "Keine Verbindung zu Zeitgeist möglich"
+msgstr "无法连接到 Zeitgeist："
 
 #: ../src/histogram.py:468 ../src/main.py:187 ../src/daywidgets.py:61
 #: ../src/daywidgets.py:250 ../src/daywidgets.py:412
 msgid "Today"
-msgstr "Heute"
+msgstr "今天"
 
 #: ../src/histogram.py:522
 msgid "item"
 msgid_plural "items"
-msgstr[0] "Element"
-msgstr[1] "Elemente"
+msgstr[0] "项"
 
 #: ../src/histogram.py:524
 msgid "Click today to return to today"
-msgstr "Den heutigen Tag anklicken, um zu diesem zurück zu kehren"
+msgstr "点击今天回到今天"
 
 #: ../src/main.py:86
 msgid "Powered by Zeitgeist"
-msgstr ""
+msgstr "Zeitgeist 强力驱动"
 
 #: ../src/main.py:158 ../src/main.py:180 ../src/main.py:201
 #: ../extra/gnome-activity-journal.desktop.in.h:1
 msgid "Activity Journal"
-msgstr "Tagebuch über Aktivitäten"
+msgstr "活动足迹"
 
 #: ../src/main.py:180
 #, python-format
 msgid "%s to today"
-msgstr "%s bis heute"
+msgstr ""
 
 #: ../src/main.py:190 ../src/daywidgets.py:63 ../src/daywidgets.py:252
 msgid "Yesterday"
-msgstr "Gestern"
+msgstr "昨天"
 
 #: ../src/main.py:201
 #, python-format
 msgid "%s to %s"
-msgstr "%s bis %s"
+msgstr "%s 到 %s"
 
 #. TODO: Move this into Zeitgeist's library, implemented properly
 #: ../src/sources.py:40
 msgid "Worked with a Video"
-msgstr "Mit einem Video gearbeitet"
+msgstr ""
 
 #: ../src/sources.py:40
 msgid "Worked with Videos"
-msgstr "Mit Videos gearbeitet"
+msgstr ""
 
 #: ../src/sources.py:41
 msgid "Worked with Audio"
-msgstr "Mit einer Audiodatei gearbeitet"
+msgstr ""
 
 #: ../src/sources.py:42
 msgid "Worked with an Image"
-msgstr "Mit einem Bild gearbeitet"
+msgstr ""
 
 #: ../src/sources.py:42
 msgid "Worked with Images"
-msgstr "Mit Bildern gearbeitet"
+msgstr ""
 
 #: ../src/sources.py:43
 msgid "Edited or Read Document"
-msgstr "Ein Dokument gelesen oder bearbeitet"
+msgstr "编辑或阅读文档"
 
 #: ../src/sources.py:43
 msgid "Edited or Read Documents"
-msgstr "Dokumente gelesen oder bearbeitet"
+msgstr "编辑或阅读文档"
 
 #: ../src/sources.py:44
 msgid "Edited or Read Code"
-msgstr "Quellcode gelesen oder bearbeitet"
+msgstr "编辑或阅读代码"
 
 #: ../src/sources.py:45
 msgid "Other Activity"
-msgstr "Weitere Aktivität"
+msgstr "其他活动"
 
 #: ../src/sources.py:45
 msgid "Other Activities"
-msgstr "Weitere Aktivitäten"
+msgstr "其他活动"
 
 #: ../src/daywidgets.py:111 ../src/daywidgets.py:199
 msgid "Click to return multiday view"
-msgstr ""
+msgstr "点击回到多日视图"
 
 #: ../src/daywidgets.py:229 ../src/common.py:97
 msgid "Morning"
-msgstr "Morgens"
+msgstr "上午"
 
 #: ../src/daywidgets.py:230 ../src/common.py:97
 msgid "Afternoon"
-msgstr "Nachmittags"
+msgstr "下午"
 
 #: ../src/daywidgets.py:231 ../src/common.py:97
 msgid "Evening"
-msgstr "Abends"
+msgstr "晚上"
 
 #: ../src/daywidgets.py:312
 msgid "Left click for a detailed timeline view"
-msgstr ""
+msgstr "单击转到详细时间线视图"
 
 #: ../src/daywidgets.py:314
 msgid "Right click for a thumbnail view"
-msgstr ""
+msgstr "右击转到缩略图视图"
 
 #. Initialize the widget
 #: ../src/daywidgets.py:768
 msgid "Pinned items"
-msgstr "Markierte Elemente"
+msgstr "固定的项目"
 
 #: ../src/common.py:84
 msgid "Video"
-msgstr "Video"
+msgstr "视频"
 
 #: ../src/common.py:85
 msgid "Music"
-msgstr "Musik"
+msgstr "音乐"
 
 #: ../src/common.py:86
 msgid "Document"
-msgstr "Dokument"
+msgstr "文档"
 
 #: ../src/common.py:87
 msgid "Image"
-msgstr "Bild"
+msgstr "图片"
 
 #: ../src/common.py:88
 msgid "Source Code"
-msgstr "Quelltext"
+msgstr "源码"
 
 #: ../src/common.py:89
 msgid "Unknown"
-msgstr "Unbekannt"
+msgstr "未知"
 
 #: ../src/widgets.py:168
 msgid "Type here to search..."
-msgstr "Suchbegriff hier eingeben..."
+msgstr "输入以搜索..."
 
 #: ../src/widgets.py:468 ../src/widgets.py:643
 msgid "Remove Pin"
-msgstr "Markierung entfernen"
+msgstr "取消固定"
 
 #: ../src/widgets.py:644
 msgid "Pin to Today"
-msgstr "An den heutigen Tag anhängen"
+msgstr "固定到今天"
 
 #: ../src/widgets.py:645
 msgid "Delete item from Journal"
-msgstr "Element aus dem Journal löschen"
+msgstr "从活动志中删除"
 
 #: ../src/widgets.py:646
 msgid "Most used with..."
-msgstr "Am meisten verwendet mit..."
+msgstr ""
 
 #: ../extra/gnome-activity-journal.desktop.in.h:2
 msgid ""
 "Browse a chronological log of your activities and easily find files, "
 "contacts, etc."
 msgstr ""
-"Durchsuche eine chronologische Auflistung deiner Aktivitäten und finde so "
-"einfach Dateien, Kontakte und Sonstiges"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:1
 msgid "Accessibility"
-msgstr "Eingabehilfen"
+msgstr ""
 
 #: ../extra/gnome-activity-journal.schemas.in.h:2
 msgid "Allow thumbnails as icons"
-msgstr "Vorschaubilder als Symbole zulassen"
+msgstr ""
 
 #: ../extra/gnome-activity-journal.schemas.in.h:3
 msgid "Amount of visible days"
-msgstr "Anzahl der sichtbaren Tage"
+msgstr ""
 
 #: ../extra/gnome-activity-journal.schemas.in.h:4
 msgid ""
 "Customized height for the main window, in pixels (requires restart). Can't "
 "be bigger than the desktop's size."
 msgstr ""
-"Angepasste Höhe für das Hauptfenster in Pixel (benötigt Neustart). Kann "
-"nicht mehr als die Desktopgröße betragen."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:5
 msgid ""
 "Customized width for the main window, in pixels (requires restart). Can't be "
 "bigger than the desktop's size."
 msgstr ""
-"Angepasste Breite für das Hauptfenster in Pixel (benötigt Neustart). Kann "
-"nicht mehr als die Desktopgröße betragen."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:6
 msgid "The amount of days to show at once."
-msgstr "Anzahl der Tage, die gleichzeitig angezeigt werden."
+msgstr ""
 
 #: ../extra/gnome-activity-journal.schemas.in.h:7
 msgid ""
 "Whether special accessibility options should be enabled (requires restart)."
-msgstr "Optionen für Barrierefreiheit aktivieren (benötigt Neustart)."
+msgstr ""
 
 #: ../extra/gnome-activity-journal.schemas.in.h:8
 msgid ""
 "Whether to allow showing little thumbnails next to each activity (requires "
 "restart). If False, only generic mime-type icons will be used."
 msgstr ""
-"Option um kleine Vorschaubilder neben jeder Aktivität anzuzeigen (benötigt "
-"Neustart). Wenn diese Option deaktiviert ist werden nur die Icons der "
-"Dateitypen genutzt."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:9
 msgid "Window height"
-msgstr "Fensterhöhe"
+msgstr "窗口高度"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:10
 msgid "Window width"
-msgstr "Fensterbreite"
+msgstr "窗口宽度"
