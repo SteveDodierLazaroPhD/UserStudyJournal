@@ -1,0 +1,246 @@
+# Brazilian Portuguese translation for gnome-activity-journal
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gnome-activity-journal package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-activity-journal\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-02-28 19:33+0100\n"
+"PO-Revision-Date: 2010-03-17 18:13+0000\n"
+"Last-Translator: andbelo <Unknown>\n"
+"Language-Team: Brazilian Portuguese <pt_BR@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Launchpad-Export-Date: 2010-03-18 04:50+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: ../gnome-activity-journal:76
+msgid "print additional debugging information"
+msgstr "mostrar informações adicionais de depuração"
+
+#: ../gnome-activity-journal:83
+msgid "ERROR"
+msgstr "ERRO"
+
+#: ../gnome-activity-journal:83
+msgid "Unable to connect to Zeitgeist:"
+msgstr "Incapaz de se conectar ao Zeitgeist:"
+
+#: ../src/histogram.py:468 ../src/main.py:187 ../src/daywidgets.py:61
+#: ../src/daywidgets.py:250 ../src/daywidgets.py:412
+msgid "Today"
+msgstr "Hoje"
+
+#: ../src/histogram.py:522
+msgid "item"
+msgid_plural "items"
+msgstr[0] "item"
+msgstr[1] "itens"
+
+#: ../src/histogram.py:524
+msgid "Click today to return to today"
+msgstr "Clique em hoje para voltar para hoje"
+
+#: ../src/main.py:86
+msgid "Powered by Zeitgeist"
+msgstr "Provido por Zeitgeist"
+
+#: ../src/main.py:158 ../src/main.py:180 ../src/main.py:201
+#: ../extra/gnome-activity-journal.desktop.in.h:1
+msgid "Activity Journal"
+msgstr "Jornal de atividades"
+
+#: ../src/main.py:180
+#, python-format
+msgid "%s to today"
+msgstr "%s até hoje"
+
+#: ../src/main.py:190 ../src/daywidgets.py:63 ../src/daywidgets.py:252
+msgid "Yesterday"
+msgstr "Ontem"
+
+#: ../src/main.py:201
+#, python-format
+msgid "%s to %s"
+msgstr "%s até %s"
+
+#. TODO: Move this into Zeitgeist's library, implemented properly
+#: ../src/sources.py:40
+msgid "Worked with a Video"
+msgstr "Trabalhou com um vídeo"
+
+#: ../src/sources.py:40
+msgid "Worked with Videos"
+msgstr "Trabalhou com vídeos"
+
+#: ../src/sources.py:41
+msgid "Worked with Audio"
+msgstr "Trabalhou com áudio"
+
+#: ../src/sources.py:42
+msgid "Worked with an Image"
+msgstr "Trabalhou com uma imagem"
+
+#: ../src/sources.py:42
+msgid "Worked with Images"
+msgstr "Trabalhou com imagens"
+
+#: ../src/sources.py:43
+msgid "Edited or Read Document"
+msgstr "Editou ou leu um documento"
+
+#: ../src/sources.py:43
+msgid "Edited or Read Documents"
+msgstr "Editou ou leu documentos"
+
+#: ../src/sources.py:44
+msgid "Edited or Read Code"
+msgstr "Editou ou leu código"
+
+#: ../src/sources.py:45
+msgid "Other Activity"
+msgstr "Outra atividade"
+
+#: ../src/sources.py:45
+msgid "Other Activities"
+msgstr "Outras atividades"
+
+#: ../src/daywidgets.py:111 ../src/daywidgets.py:199
+msgid "Click to return multiday view"
+msgstr "Clique para voltar à visão de múltiplos dias"
+
+#: ../src/daywidgets.py:229 ../src/common.py:97
+msgid "Morning"
+msgstr "Manhã"
+
+#: ../src/daywidgets.py:230 ../src/common.py:97
+msgid "Afternoon"
+msgstr "Tarde"
+
+#: ../src/daywidgets.py:231 ../src/common.py:97
+msgid "Evening"
+msgstr "Noite"
+
+#: ../src/daywidgets.py:312
+msgid "Left click for a detailed timeline view"
+msgstr "Clique com botão esquerdo para uma visão detalhada da linha-do-tempo"
+
+#: ../src/daywidgets.py:314
+msgid "Right click for a thumbnail view"
+msgstr "Clique com botão direito para uma visão de miniaturas"
+
+#. Initialize the widget
+#: ../src/daywidgets.py:768
+msgid "Pinned items"
+msgstr "Itens pregados"
+
+#: ../src/common.py:84
+msgid "Video"
+msgstr "Vídeo"
+
+#: ../src/common.py:85
+msgid "Music"
+msgstr "Música"
+
+#: ../src/common.py:86
+msgid "Document"
+msgstr "Documento"
+
+#: ../src/common.py:87
+msgid "Image"
+msgstr "Imagem"
+
+#: ../src/common.py:88
+msgid "Source Code"
+msgstr "Código-fonte"
+
+#: ../src/common.py:89
+msgid "Unknown"
+msgstr "Desconhecido"
+
+#: ../src/widgets.py:168
+msgid "Type here to search..."
+msgstr "Escreva aqui para pesquisar..."
+
+#: ../src/widgets.py:468 ../src/widgets.py:643
+msgid "Remove Pin"
+msgstr "Despregar"
+
+#: ../src/widgets.py:644
+msgid "Pin to Today"
+msgstr "Pregar em hoje"
+
+#: ../src/widgets.py:645
+msgid "Delete item from Journal"
+msgstr "Apagar item do jornal"
+
+#: ../src/widgets.py:646
+msgid "Most used with..."
+msgstr "Mais usado com..."
+
+#: ../extra/gnome-activity-journal.desktop.in.h:2
+msgid ""
+"Browse a chronological log of your activities and easily find files, "
+"contacts, etc."
+msgstr ""
+"Navegar um registo cronológico de suas atividades e encontrar facilmente "
+"arquivos, contatos, etc."
+
+#: ../extra/gnome-activity-journal.schemas.in.h:1
+msgid "Accessibility"
+msgstr "Acessibilidade"
+
+#: ../extra/gnome-activity-journal.schemas.in.h:2
+msgid "Allow thumbnails as icons"
+msgstr "Permitir miniaturas como ícones"
+
+#: ../extra/gnome-activity-journal.schemas.in.h:3
+msgid "Amount of visible days"
+msgstr "Quantidade de dias visíveis"
+
+#: ../extra/gnome-activity-journal.schemas.in.h:4
+msgid ""
+"Customized height for the main window, in pixels (requires restart). Can't "
+"be bigger than the desktop's size."
+msgstr ""
+"Altura personalizada para a janela principal em pixels (requer "
+"reinicialização). Não pode ser maior que o tamanho da área de trabalho."
+
+#: ../extra/gnome-activity-journal.schemas.in.h:5
+msgid ""
+"Customized width for the main window, in pixels (requires restart). Can't be "
+"bigger than the desktop's size."
+msgstr ""
+"Largura personalizada para a janela principal em pixels (requer "
+"reinicialização). Não pode ser maior que o tamanho da área de trabalho."
+
+#: ../extra/gnome-activity-journal.schemas.in.h:6
+msgid "The amount of days to show at once."
+msgstr "A quantidade de dias para mostrar de cada vez."
+
+#: ../extra/gnome-activity-journal.schemas.in.h:7
+msgid ""
+"Whether special accessibility options should be enabled (requires restart)."
+msgstr ""
+"Se as opções especiais de acessibilidade devem ser habilitadas (requer "
+"reinicialização)."
+
+#: ../extra/gnome-activity-journal.schemas.in.h:8
+msgid ""
+"Whether to allow showing little thumbnails next to each activity (requires "
+"restart). If False, only generic mime-type icons will be used."
+msgstr ""
+"Se miniaturas devem ser mostradas ao lado de cada atividade (requer "
+"reinicialização). Se não, apenas ícones genéricos de tipos-mime serão usados."
+
+#: ../extra/gnome-activity-journal.schemas.in.h:9
+msgid "Window height"
+msgstr "Altura da janela"
+
+#: ../extra/gnome-activity-journal.schemas.in.h:10
+msgid "Window width"
+msgstr "Largura da janela"
