@@ -7,213 +7,243 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-activity-journal\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-02-21 00:28+0100\n"
-"PO-Revision-Date: 2010-01-11 21:13+0000\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-02-28 19:33+0100\n"
+"PO-Revision-Date: 2010-03-18 22:21+0000\n"
+"Last-Translator: Alex Eftimie <alexeftimie@gmail.com>\n"
 "Language-Team: Romanian <ro@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n == 1 ? 0: (((n % 100 > 19) || ((n % 100 "
 "== 0) && (n != 0))) ? 2: 1));\n"
-"X-Launchpad-Export-Date: 2010-02-23 05:16+0000\n"
+"X-Launchpad-Export-Date: 2010-03-19 08:01+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../gnome-activity-journal:76
 msgid "print additional debugging information"
-msgstr ""
+msgstr "afișează informații adiționale pentru depanare"
 
 #: ../gnome-activity-journal:83
 msgid "ERROR"
-msgstr ""
+msgstr "EROARE"
 
 #: ../gnome-activity-journal:83
 msgid "Unable to connect to Zeitgeist:"
-msgstr ""
+msgstr "Nu s-a putut conecta la Zeigeist:"
 
-#: ../src/logwidget.py:81
-msgid "Video"
-msgstr ""
-
-#: ../src/logwidget.py:82
-msgid "Music"
-msgstr ""
-
-#: ../src/logwidget.py:83
-msgid "Document"
-msgstr ""
-
-#: ../src/logwidget.py:84
-msgid "Image"
-msgstr ""
-
-#: ../src/logwidget.py:85
-msgid "Source Code"
-msgstr ""
-
-#: ../src/logwidget.py:86
-msgid "Unknown"
-msgstr ""
-
-#: ../src/thumbview.py:38 ../src/daywidgets.py:253
-msgid "Morning"
-msgstr ""
-
-#: ../src/thumbview.py:38 ../src/daywidgets.py:254
-msgid "Afternoon"
-msgstr ""
-
-#: ../src/thumbview.py:38 ../src/daywidgets.py:255
-msgid "Evening"
-msgstr ""
-
-#: ../src/histogram.py:510 ../src/main.py:147 ../src/daywidgets.py:79
-#: ../src/daywidgets.py:194 ../src/daywidgets.py:274 ../src/daywidgets.py:447
+#: ../src/histogram.py:468 ../src/main.py:187 ../src/daywidgets.py:61
+#: ../src/daywidgets.py:250 ../src/daywidgets.py:412
 msgid "Today"
-msgstr ""
+msgstr "Astăzi"
 
-#: ../src/histogram.py:545
+#: ../src/histogram.py:522
 msgid "item"
 msgid_plural "items"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "element"
+msgstr[1] "elemente"
+msgstr[2] "de elemente"
 
-#: ../src/histogram.py:547
+#: ../src/histogram.py:524
 msgid "Click today to return to today"
-msgstr ""
+msgstr "Clic pe astăzi pentru a te întoarce la astăzi"
 
-#: ../src/main.py:44 ../extra/gnome-activity-journal.desktop.in.h:1
-msgid "Activity Journal"
-msgstr ""
-
-#: ../src/main.py:105
+#: ../src/main.py:86
 msgid "Powered by Zeitgeist"
 msgstr ""
 
-#: ../src/main.py:134 ../src/main.py:161
-msgid "to"
-msgstr ""
+#: ../src/main.py:158 ../src/main.py:180 ../src/main.py:201
+#: ../extra/gnome-activity-journal.desktop.in.h:1
+msgid "Activity Journal"
+msgstr "Jurnal de activitate"
 
-#: ../src/main.py:134
-msgid " Today"
-msgstr ""
+#: ../src/main.py:180
+#, python-format
+msgid "%s to today"
+msgstr "%s până astăzi"
 
-#: ../src/main.py:150 ../src/daywidgets.py:81 ../src/daywidgets.py:196
-#: ../src/daywidgets.py:276
+#: ../src/main.py:190 ../src/daywidgets.py:63 ../src/daywidgets.py:252
 msgid "Yesterday"
-msgstr ""
+msgstr "Ieri"
+
+#: ../src/main.py:201
+#, python-format
+msgid "%s to %s"
+msgstr "%s până %s"
 
 #. TODO: Move this into Zeitgeist's library, implemented properly
 #: ../src/sources.py:40
 msgid "Worked with a Video"
-msgstr ""
+msgstr "Lucrat cu un clip video"
 
 #: ../src/sources.py:40
 msgid "Worked with Videos"
-msgstr ""
+msgstr "Lucrat cu clipuri video"
 
 #: ../src/sources.py:41
 msgid "Worked with Audio"
-msgstr ""
+msgstr "Lucrat cu un fișier de sunet"
 
 #: ../src/sources.py:42
 msgid "Worked with an Image"
-msgstr ""
+msgstr "Lucrat cu o imagine"
 
 #: ../src/sources.py:42
 msgid "Worked with Images"
-msgstr ""
+msgstr "Lucrat cu imagini"
 
 #: ../src/sources.py:43
 msgid "Edited or Read Document"
-msgstr ""
+msgstr "Citit sau modificat document"
 
 #: ../src/sources.py:43
 msgid "Edited or Read Documents"
-msgstr ""
+msgstr "Citit sau modificat documente"
 
 #: ../src/sources.py:44
 msgid "Edited or Read Code"
-msgstr ""
+msgstr "Citit sau modificat cod sursă"
 
 #: ../src/sources.py:45
 msgid "Other Activity"
-msgstr ""
+msgstr "Altă activitate"
 
 #: ../src/sources.py:45
 msgid "Other Activities"
-msgstr ""
+msgstr "Alte activităţi"
+
+#: ../src/daywidgets.py:111 ../src/daywidgets.py:199
+msgid "Click to return multiday view"
+msgstr "Clic pentru a reveni la vizualizarea pe zile"
+
+#: ../src/daywidgets.py:229 ../src/common.py:97
+msgid "Morning"
+msgstr "Dimineață"
+
+#: ../src/daywidgets.py:230 ../src/common.py:97
+msgid "Afternoon"
+msgstr "După-amiază"
+
+#: ../src/daywidgets.py:231 ../src/common.py:97
+msgid "Evening"
+msgstr "Seară"
+
+#: ../src/daywidgets.py:312
+msgid "Left click for a detailed timeline view"
+msgstr "Clic stânga pentru afișare detaliată pe timp"
+
+#: ../src/daywidgets.py:314
+msgid "Right click for a thumbnail view"
+msgstr "Clic dreapta pentru afișarea cu miniaturi"
 
 #. Initialize the widget
-#: ../src/daywidgets.py:805
+#: ../src/daywidgets.py:768
 msgid "Pinned items"
-msgstr ""
+msgstr "Elemente fixate"
 
-#: ../src/widgets.py:183
+#: ../src/common.py:84
+msgid "Video"
+msgstr "Filme"
+
+#: ../src/common.py:85
+msgid "Music"
+msgstr "Muzică"
+
+#: ../src/common.py:86
+msgid "Document"
+msgstr "Document"
+
+#: ../src/common.py:87
+msgid "Image"
+msgstr "Imagine"
+
+#: ../src/common.py:88
+msgid "Source Code"
+msgstr "Cod sursă"
+
+#: ../src/common.py:89
+msgid "Unknown"
+msgstr "Necunoscut"
+
+#: ../src/widgets.py:168
 msgid "Type here to search..."
-msgstr ""
+msgstr "Scrie aici pentru a căuta..."
 
-#: ../src/widgets.py:485 ../src/widgets.py:583
+#: ../src/widgets.py:468 ../src/widgets.py:643
 msgid "Remove Pin"
-msgstr ""
+msgstr "Elimină fixarea"
 
-#: ../src/widgets.py:583
+#: ../src/widgets.py:644
 msgid "Pin to Today"
-msgstr ""
+msgstr "Fixează astăzi"
 
-#: ../src/widgets.py:587
+#: ../src/widgets.py:645
 msgid "Delete item from Journal"
-msgstr ""
+msgstr "Șterge element din jurnal"
+
+#: ../src/widgets.py:646
+msgid "Most used with..."
+msgstr "Cel mai utilizat cu..."
 
 #: ../extra/gnome-activity-journal.desktop.in.h:2
 msgid ""
 "Browse a chronological log of your activities and easily find files, "
 "contacts, etc."
 msgstr ""
+"Navighează jurnalul cronologic al activităților tale și găsește ușor "
+"fișierele, contactele, etc."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:1
 msgid "Accessibility"
-msgstr ""
+msgstr "Accesibilitate"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:2
 msgid "Allow thumbnails as icons"
-msgstr ""
+msgstr "Folosește miniaturile pe post de iconuri"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:3
 msgid "Amount of visible days"
-msgstr ""
+msgstr "Numărul de zile vizibile"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:4
 msgid ""
 "Customized height for the main window, in pixels (requires restart). Can't "
 "be bigger than the desktop's size."
 msgstr ""
+"Înălțimea personalizată pentru fereastra principală, în pixeli (necesită "
+"repornire). Nu poate fi mai mare de mărimea spațiului de lucru."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:5
 msgid ""
 "Customized width for the main window, in pixels (requires restart). Can't be "
 "bigger than the desktop's size."
 msgstr ""
+"Lățimea personalizată pentru fereastra principală, în pixeli (necesită "
+"repornire). Nu poate fi mai mare de mărimea spațiului de lucru."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:6
 msgid "The amount of days to show at once."
-msgstr ""
+msgstr "Numărul de zile vizibile în acelaşi timp."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:7
 msgid ""
 "Whether special accessibility options should be enabled (requires restart)."
 msgstr ""
+"Dacă opțiunile de accesibilitate speciale ar trebui să fie activate "
+"(necesită repornire)."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:8
 msgid ""
 "Whether to allow showing little thumbnails next to each activity (requires "
 "restart). If False, only generic mime-type icons will be used."
 msgstr ""
+"Dacă permite afișarea miniaturilor lângă fiecare activitate (necesită "
+"repornire). Dacă este setat pe valoarea „False”, doar iconițele generice "
+"mime-type vor fi folosite."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:9
 msgid "Window height"
-msgstr ""
+msgstr "Înălțimea ferestrei"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:10
 msgid "Window width"
-msgstr ""
+msgstr "Lățimea ferestrei"
