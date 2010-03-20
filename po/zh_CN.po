@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: gnome-activity-journal\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-02-28 19:33+0100\n"
-"PO-Revision-Date: 2010-03-10 05:46+0000\n"
+"PO-Revision-Date: 2010-03-20 04:27+0000\n"
 "Last-Translator: Xhacker Liu <liu.dongyuan@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <zh_CN@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Launchpad-Export-Date: 2010-03-11 05:14+0000\n"
+"X-Launchpad-Export-Date: 2010-03-20 04:59+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../gnome-activity-journal:76
@@ -51,12 +51,12 @@ msgstr "Zeitgeist 强力驱动"
 #: ../src/main.py:158 ../src/main.py:180 ../src/main.py:201
 #: ../extra/gnome-activity-journal.desktop.in.h:1
 msgid "Activity Journal"
-msgstr "活动足迹"
+msgstr "活动志"
 
 #: ../src/main.py:180
 #, python-format
 msgid "%s to today"
-msgstr ""
+msgstr "%s 到 今天"
 
 #: ../src/main.py:190 ../src/daywidgets.py:63 ../src/daywidgets.py:252
 msgid "Yesterday"
@@ -179,52 +179,52 @@ msgstr "从活动志中删除"
 
 #: ../src/widgets.py:646
 msgid "Most used with..."
-msgstr ""
+msgstr "最常用的..."
 
 #: ../extra/gnome-activity-journal.desktop.in.h:2
 msgid ""
 "Browse a chronological log of your activities and easily find files, "
 "contacts, etc."
-msgstr ""
+msgstr "浏览按时间顺序排列的活动志，轻松找到文件。"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:1
 msgid "Accessibility"
-msgstr ""
+msgstr "辅助功能"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:2
 msgid "Allow thumbnails as icons"
-msgstr ""
+msgstr "允许缩略图作为图标"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:3
 msgid "Amount of visible days"
-msgstr ""
+msgstr "可见的天数"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:4
 msgid ""
 "Customized height for the main window, in pixels (requires restart). Can't "
 "be bigger than the desktop's size."
-msgstr ""
+msgstr "自定义主窗口的高度，以像素计（需要重起程序）。不能大于桌面的尺寸。"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:5
 msgid ""
 "Customized width for the main window, in pixels (requires restart). Can't be "
 "bigger than the desktop's size."
-msgstr ""
+msgstr "自定义主窗口的宽度，以像素计（需要重起程序）。不能大于桌面的尺寸。"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:6
 msgid "The amount of days to show at once."
-msgstr ""
+msgstr "一次显示的天数"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:7
 msgid ""
 "Whether special accessibility options should be enabled (requires restart)."
-msgstr ""
+msgstr "是否启用特殊的无障碍设置（需要重起程序）。"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:8
 msgid ""
 "Whether to allow showing little thumbnails next to each activity (requires "
 "restart). If False, only generic mime-type icons will be used."
-msgstr ""
+msgstr "是否在每个活动后面显示小缩略图。如果不，只会使用基本的类型图标。"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:9
 msgid "Window height"
