@@ -204,6 +204,7 @@ class CairoHistogram(gtk.DrawingArea):
         """
         The major drawing method that the expose event calls directly
         """
+        widget.style.set_background(widget.window, gtk.STATE_NORMAL)
         context = widget.window.cairo_create()
         self.expose(widget, event, context)
         if len(self._today_text):
@@ -223,11 +224,11 @@ class CairoHistogram(gtk.DrawingArea):
             self.gc = get_gc_from_colormap(widget, 0.6)
         context.set_source_rgba(*self.colors["base"])
         context.set_operator(cairo.OPERATOR_SOURCE)
-        context.paint()
+        #context.paint()
         context.rectangle(event.area.x, event.area.y, event.area.width, event.area.height)
         context.clip()
-        context.set_source_rgba(*self.colors["bg"])
-        context.rectangle(event.area.x, event.area.height - self.bottom_padding, event.area.width, event.area.height)
+        #context.set_source_rgba(*self.colors["bg"])
+        context.rectangle(event.area.x, event.area.y, event.area.width, event.area.height - self.bottom_padding)
         context.fill()
         self.draw_columns_from_datastore(context, event, self.get_selected())
         context.set_line_width(1)

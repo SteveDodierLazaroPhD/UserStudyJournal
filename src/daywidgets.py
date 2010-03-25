@@ -427,10 +427,12 @@ class DayLabel(gtk.DrawingArea):
         red, green, blue = bg.red/65535.0, bg.green/65535.0, bg.blue/65535.0
         self.font_name = self.style.font_desc.get_family()
 
-        context.set_source_rgba(red, green, blue, 1)
+        widget.style.set_background(widget.window, gtk.STATE_NORMAL)
 
-        context.set_operator(cairo.OPERATOR_SOURCE)
-        context.paint()
+        #context.set_source_rgba(red, green, blue, 1)
+
+        #context.set_operator(cairo.OPERATOR_SOURCE)
+        #context.paint()
         # set a clip region for the expose event
         context.rectangle(event.area.x, event.area.y, event.area.width, event.area.height)
         context.clip()
