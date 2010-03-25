@@ -291,6 +291,7 @@ class TimelineView(gtk.TreeView):
                 pixbuf = pixbuf.scale_simple(32, 24, gtk.gdk.INTERP_TILES)
             else:
                 pixbuf = get_event_icon(event, 24)
+                if not pixbuf: continue
             if PIXBUFCACHE.has_key(uri) and usethumb and pixbuf != PIXBUFCACHE[uri][0]:
                 pixbuf, thumb = PIXBUFCACHE[uri]
                 pixbuf = pixbuf.scale_simple(32, 24, gtk.gdk.INTERP_TILES)

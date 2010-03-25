@@ -181,7 +181,7 @@ def get_event_icon(event, size):
 
     :returns: a :class:`Pixbuf <gtk.gdk.Pixbuf>`
     """
-    gfile = GioFile(get_event_uri(event))
+    gfile = GioFile.create(get_event_uri(event))
     if gfile:
         pb = gfile.get_icon(size=size)
         if pb:
