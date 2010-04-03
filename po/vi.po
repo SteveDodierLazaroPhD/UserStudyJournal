@@ -7,172 +7,191 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-activity-journal\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-02-21 00:28+0100\n"
-"PO-Revision-Date: 2010-01-28 13:28+0000\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-02-28 19:33+0100\n"
+"PO-Revision-Date: 2010-04-02 07:46+0000\n"
+"Last-Translator: Bruce Doan <Unknown>\n"
 "Language-Team: Vietnamese <vi@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Launchpad-Export-Date: 2010-02-23 05:16+0000\n"
+"X-Launchpad-Export-Date: 2010-04-03 04:05+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../gnome-activity-journal:76
 msgid "print additional debugging information"
-msgstr ""
+msgstr "hiển thị thêm thông tin gỡ lỗi"
 
 #: ../gnome-activity-journal:83
 msgid "ERROR"
-msgstr ""
+msgstr "CÓ LỖI"
 
 #: ../gnome-activity-journal:83
 msgid "Unable to connect to Zeitgeist:"
-msgstr ""
+msgstr "Không thể kết nối tới Zeitgeist"
 
-#: ../src/logwidget.py:81
-msgid "Video"
-msgstr ""
-
-#: ../src/logwidget.py:82
-msgid "Music"
-msgstr ""
-
-#: ../src/logwidget.py:83
-msgid "Document"
-msgstr ""
-
-#: ../src/logwidget.py:84
-msgid "Image"
-msgstr ""
-
-#: ../src/logwidget.py:85
-msgid "Source Code"
-msgstr ""
-
-#: ../src/logwidget.py:86
-msgid "Unknown"
-msgstr ""
-
-#: ../src/thumbview.py:38 ../src/daywidgets.py:253
-msgid "Morning"
-msgstr ""
-
-#: ../src/thumbview.py:38 ../src/daywidgets.py:254
-msgid "Afternoon"
-msgstr ""
-
-#: ../src/thumbview.py:38 ../src/daywidgets.py:255
-msgid "Evening"
-msgstr ""
-
-#: ../src/histogram.py:510 ../src/main.py:147 ../src/daywidgets.py:79
-#: ../src/daywidgets.py:194 ../src/daywidgets.py:274 ../src/daywidgets.py:447
+#: ../src/histogram.py:468 ../src/main.py:187 ../src/daywidgets.py:61
+#: ../src/daywidgets.py:250 ../src/daywidgets.py:412
 msgid "Today"
-msgstr ""
+msgstr "Hôm nay"
 
-#: ../src/histogram.py:545
+#: ../src/histogram.py:522
 msgid "item"
 msgid_plural "items"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "mục"
 
-#: ../src/histogram.py:547
+#: ../src/histogram.py:524
 msgid "Click today to return to today"
-msgstr ""
+msgstr "Click vào \"hôm nay\" để trở lại ngày hôm nay"
 
-#: ../src/main.py:44 ../extra/gnome-activity-journal.desktop.in.h:1
-msgid "Activity Journal"
-msgstr ""
-
-#: ../src/main.py:105
+#: ../src/main.py:86
 msgid "Powered by Zeitgeist"
 msgstr ""
 
-#: ../src/main.py:134 ../src/main.py:161
-msgid "to"
-msgstr ""
+#: ../src/main.py:158 ../src/main.py:180 ../src/main.py:201
+#: ../extra/gnome-activity-journal.desktop.in.h:1
+msgid "Activity Journal"
+msgstr "Nhật Ký Hoạt Động"
 
-#: ../src/main.py:134
-msgid " Today"
-msgstr ""
+#: ../src/main.py:180
+#, python-format
+msgid "%s to today"
+msgstr "%s đến hôm nay"
 
-#: ../src/main.py:150 ../src/daywidgets.py:81 ../src/daywidgets.py:196
-#: ../src/daywidgets.py:276
+#: ../src/main.py:190 ../src/daywidgets.py:63 ../src/daywidgets.py:252
 msgid "Yesterday"
-msgstr ""
+msgstr "Hôm qua"
+
+#: ../src/main.py:201
+#, python-format
+msgid "%s to %s"
+msgstr "%s đến %s"
 
 #. TODO: Move this into Zeitgeist's library, implemented properly
 #: ../src/sources.py:40
 msgid "Worked with a Video"
-msgstr ""
+msgstr "Đã làm việc với một Phim"
 
 #: ../src/sources.py:40
 msgid "Worked with Videos"
-msgstr ""
+msgstr "Đã làm việc với các Phim"
 
 #: ../src/sources.py:41
 msgid "Worked with Audio"
-msgstr ""
+msgstr "Đã làm việc với tập tin Âm thanh"
 
 #: ../src/sources.py:42
 msgid "Worked with an Image"
-msgstr ""
+msgstr "Đã làm việc với một Hình ảnh"
 
 #: ../src/sources.py:42
 msgid "Worked with Images"
-msgstr ""
+msgstr "Đã làm việc với các Hình ảnh"
 
 #: ../src/sources.py:43
 msgid "Edited or Read Document"
-msgstr ""
+msgstr "Tài liệu đã chỉnh sửa hoặc đọc"
 
 #: ../src/sources.py:43
 msgid "Edited or Read Documents"
-msgstr ""
+msgstr "Các tài liệu đã chỉnh sửa hoặc đã đọc"
 
 #: ../src/sources.py:44
 msgid "Edited or Read Code"
-msgstr ""
+msgstr "Đoạn mã đã chỉnh sửa hoặc đã đọc"
 
 #: ../src/sources.py:45
 msgid "Other Activity"
-msgstr ""
+msgstr "Hoạt động khác"
 
 #: ../src/sources.py:45
 msgid "Other Activities"
+msgstr "Các hoạt động khác"
+
+#: ../src/daywidgets.py:111 ../src/daywidgets.py:199
+msgid "Click to return multiday view"
+msgstr "Bấm để xem nhiều ngày"
+
+#: ../src/daywidgets.py:229 ../src/common.py:97
+msgid "Morning"
+msgstr "Sáng"
+
+#: ../src/daywidgets.py:230 ../src/common.py:97
+msgid "Afternoon"
+msgstr "Chiều"
+
+#: ../src/daywidgets.py:231 ../src/common.py:97
+msgid "Evening"
+msgstr "Chiều/tối"
+
+#: ../src/daywidgets.py:312
+msgid "Left click for a detailed timeline view"
+msgstr "Bấm chuột trái để xem chi tiết thời gian"
+
+#: ../src/daywidgets.py:314
+msgid "Right click for a thumbnail view"
 msgstr ""
 
 #. Initialize the widget
-#: ../src/daywidgets.py:805
+#: ../src/daywidgets.py:768
 msgid "Pinned items"
-msgstr ""
+msgstr "Các mục chú ý"
 
-#: ../src/widgets.py:183
+#: ../src/common.py:84
+msgid "Video"
+msgstr "Phim"
+
+#: ../src/common.py:85
+msgid "Music"
+msgstr "Nhạc"
+
+#: ../src/common.py:86
+msgid "Document"
+msgstr "Tài liệu"
+
+#: ../src/common.py:87
+msgid "Image"
+msgstr "Hình ảnh"
+
+#: ../src/common.py:88
+msgid "Source Code"
+msgstr "Mã Nguồn"
+
+#: ../src/common.py:89
+msgid "Unknown"
+msgstr "Chưa xác định."
+
+#: ../src/widgets.py:168
 msgid "Type here to search..."
-msgstr ""
+msgstr "Nhập vào đây để tìm kiếm..."
 
-#: ../src/widgets.py:485 ../src/widgets.py:583
+#: ../src/widgets.py:468 ../src/widgets.py:643
 msgid "Remove Pin"
-msgstr ""
+msgstr "Bỏ chú ý"
 
-#: ../src/widgets.py:583
+#: ../src/widgets.py:644
 msgid "Pin to Today"
-msgstr ""
+msgstr "Chú ý cho Hôm nay"
 
-#: ../src/widgets.py:587
+#: ../src/widgets.py:645
 msgid "Delete item from Journal"
-msgstr ""
+msgstr "Xoá mục này khỏi Nhật ký"
+
+#: ../src/widgets.py:646
+msgid "Most used with..."
+msgstr "Thường dùng với..."
 
 #: ../extra/gnome-activity-journal.desktop.in.h:2
 msgid ""
 "Browse a chronological log of your activities and easily find files, "
 "contacts, etc."
 msgstr ""
+"Duyệt nhật kí hoạt động của bạn theo thứ tự thời gian giúp dễ dàng tim kiếm "
+"tập tin và liên hệ..."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:1
 msgid "Accessibility"
-msgstr ""
+msgstr "Khả năng truy cập"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:2
 msgid "Allow thumbnails as icons"
@@ -196,7 +215,7 @@ msgstr ""
 
 #: ../extra/gnome-activity-journal.schemas.in.h:6
 msgid "The amount of days to show at once."
-msgstr ""
+msgstr "Số lương ngày trong một lần hiển thị"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:7
 msgid ""
@@ -211,8 +230,8 @@ msgstr ""
 
 #: ../extra/gnome-activity-journal.schemas.in.h:9
 msgid "Window height"
-msgstr ""
+msgstr "Độ cao cửa sổ"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:10
 msgid "Window width"
-msgstr ""
+msgstr "Độ rộng cửa sổ"
