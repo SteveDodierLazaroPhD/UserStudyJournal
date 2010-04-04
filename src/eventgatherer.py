@@ -206,10 +206,8 @@ def get_related_events_for_uri(uri, callback):
         :param uris: a list of uris which are related to the windows current uri
         Seif look here
         """
-        end = time.time() * 1000
-        start = end - (86400*30*1000)
         templates = []
-
+        print uris
         if len(uris) > 0:
             for i, uri in enumerate(uris):
                 if event_exists(uri):
@@ -220,8 +218,11 @@ def get_related_events_for_uri(uri, callback):
                         Event.new_for_values(interpretation=Interpretation.OPEN_EVENT.uri, subject_uri=uri)
                     ]
             CLIENT.find_events_for_templates(templates, callback,
-                                             [start, end], num_events=50000,
+                                             [0, time.time()*1000], num_events=50000,
                                              result_type=ResultType.MostRecentSubjects)
+    
+    end = time.time() * 1000
+    start = end - (86400*30*1000)
     CLIENT.find_related_uris_for_uris([uri], _event_request_handler)
 
 
