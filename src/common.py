@@ -327,10 +327,11 @@ def render_emblems(window, x, y, w, h, emblems):
     for i in xrange(len(emblems)):
         i = i % len(emblems)
         pixbuf = emblems[i]
-        pbw, pbh = pixbuf.get_width()/2, pixbuf.get_height()/2
-        context.set_source_pixbuf(pixbuf, corners[i][0]-pbw, corners[i][1]-pbh)
-        context.rectangle(corners[i][0]-pbw, corners[i][1]-pbh, pbw*2, pbh*2)
-        context.fill()
+        if pixbuf:
+            pbw, pbh = pixbuf.get_width()/2, pixbuf.get_height()/2
+            context.set_source_pixbuf(pixbuf, corners[i][0]-pbw, corners[i][1]-pbh)
+            context.rectangle(corners[i][0]-pbw, corners[i][1]-pbh, pbw*2, pbh*2)
+            context.fill()
 
 ##
 ## Color functions

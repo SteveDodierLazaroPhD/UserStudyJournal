@@ -32,6 +32,7 @@ from gio_file import GioFile, THUMBS, ICONS, SIZE_LARGE, SIZE_NORMAL
 import common
 
 
+
 SIZE_THUMBVIEW = (92, 72)
 SIZE_TIMELINEVIEW = (32, 24)
 DESKTOP_FILES = {}
@@ -171,6 +172,7 @@ class ContentObject(object):
         return self._actor_pixbuf
 
     def get_icon_for_name(self, name, size):
+        size = int(size)
         ICONS[(size, size)]
         if ICONS[(size, size)].has_key(name):
             return ICONS[(size, size)][name]
@@ -238,11 +240,9 @@ class GenericContentObject(ContentObject):
     def refresh(self):
         pass
 
-
     def get_icon(self, size=24, can_thumb=False, border=0):
         if hasattr(self, "__icon"):
             return self.__icon
-        iconinfo = common.ICON_THEME.lookup_icon(self.mime_type, size, gtk.ICON_LOOKUP_USE_BUILTIN)
         icon = self.get_actor_pixbuf(size)
         self.__icon = icon
         return self.__icon
@@ -259,13 +259,6 @@ class GenericContentObject(ContentObject):
 
     def thumb_icon_allowed(self):
         return False
-
-    @property
-    def emblems(self):
-        emblem_collection = []
-        if not self.has_preview:
-            emblem_collection.append(self.icon)
-        return emblem_collection
 
     # Used for timeline
     phases = None
@@ -347,8 +340,113 @@ class FileContentObject(GioFile, ContentObject):
         self.__timeline_isthumb = usethumb&thumb
         return pixbuf, usethumb & thumb
 
+    @property
+    def emblems(self):
+        emblem_collection = []
+        emblem_collection.append(self.get_icon(16))
+        return emblem_collection
 
 
+class WebContentObject(ContentObject):
 
 
+    def __init__(self, event):
+        super(ContentObject, self).__init__(event)
 
+    @classmethod
+    def create(cls, event):
+        """
+        Can return None
+        """
+
+        return cls(event)
+
+    @property
+    def event(self):
+        return self._event
+
+    @event.setter
+    def event(self, value):
+        self._event = value
+
+    @property
+    def uri(self):
+        return self.event.subjects[0].uri
+
+    @property
+    def mime_type(self):
+        return self.event.subjects[0].mimetype
+
+    def get_content(self):
+        return None
+
+    def get_thumbnail(self, size=SIZE_NORMAL, border=0):
+        if size == SIZE_THUMBVIEW:
+            return self.__get_thumbview_icon()
+        elif size == SIZE_TIMELINEVIEW:
+            return self.__get_timelineview_icon()
+        thumb = None
+        return thumb
+
+    def __get_thumbview_icon(self):
+        return None
+
+    def __get_timelineview_icon(self):
+        return None
+
+    @property
+    def thumbnail(self):
+        return self.get_thumbnail()
+
+    def get_monitor(self):
+        raise NotImplementedError
+
+    def refresh(self):
+        pass
+
+    def get_icon(self, size=24, can_thumb=False, border=0):
+        if hasattr(self, "__icon"):
+            return self.__icon
+        iconinfo = common.ICON_THEME.lookup_icon(self.mime_type, size, gtk.ICON_LOOKUP_USE_BUILTIN)
+        icon = self.get_actor_pixbuf(size)
+        self.__icon = icon
+        return self.__icon
+
+    @property
+    def icon(self):
+        return self.get_icon()
+
+    def launch(self):
+        pass
+
+    def has_preview(self):
+        return False
+
+    def thumb_icon_allowed(self):
+        return False
+
+    @property
+    def emblems(self):
+        emblem_collection = []
+        if not self.has_preview:
+            emblem_collection.append(self.icon)
+        return emblem_collection
+
+    # Used for timeline
+    phases = None
+
+    @property
+    def color(self):
+        return common.get_file_color(self.event.subjects[0].interpretation, self.event.subjects[0].mimetype)
+
+    def get_pango_subject_text(self):
+        if hasattr(self, "__pretty_subject_text"): return self.__pretty_subject_text
+        t1 = self.event.subjects[0].uri
+        t2 = self.event.subjects[0].text
+        t1 = t1.replace("%", "%%")
+        t2 = t2.replace("%", "%%")
+        interpretation = common.get_event_interpretation(self.event)
+        t1 = "<span color='!color!'><b>" + t2 + "</b></span>"
+        t2 = "<span color='!color!'>" + t1 + "</span> "
+        self.__pretty_subject_text = (str(t1) + "\n" + str(t2) + "").replace("&", "&amp;").replace("!color!", "%s")
+        return self.__pretty_subject_text
