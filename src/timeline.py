@@ -35,6 +35,9 @@ from gio_file import GioFile
 from widgets import StaticPreviewTooltip, VideoPreviewTooltip, ContextMenu
 from common import *
 from thumb import PreviewRenderer
+import content_objects
+from eventgatherer import event_exists
+
 
 def make_area_from_event(timestamp, duration):
     """
@@ -48,22 +51,6 @@ def make_area_from_event(timestamp, duration):
     x = ((int(timestamp)/1000.0 - time.timezone)%86400)/3600/24.0
     return [x, w]
 
-def text_handler(obj):
-    """
-    A default text handler that returns the text to be drawn by the
-    draw_event_widget
-
-    :param obj: a :class:`Events <zeitgeist.datamodel.Event>`
-    """
-    text = get_event_text(obj)
-    interpretation = get_event_interpretation(obj)
-    t = (FILETYPESNAMES[interpretation] if
-          interpretation in FILETYPESNAMES.keys() else "Unknown")
-    text = text.replace("%", "%%")
-    t1 = "<span color='!color!'><b>" + t + "</b></span>"
-    t2 = "<span color='!color!'>" + text + "</span> "
-    return (str(t1) + "\n" + str(t2) + "").replace("&", "&amp;").replace("!color!", "%s")
-
 
 class TimelineRenderer(gtk.GenericCellRenderer):
     """
@@ -72,43 +59,12 @@ class TimelineRenderer(gtk.GenericCellRenderer):
 
     __gtype_name__ = "TimelineRenderer"
     __gproperties__ = {
-        "phases" :
-        (gobject.TYPE_PYOBJECT,
-         "The time phases to be drawn",
-         "A list of time phases",
-         gobject.PARAM_READWRITE,
-         ),
-        "event" :
+        "content_obj" :
         (gobject.TYPE_PYOBJECT,
          "event to be displayed",
          "event to be displayed",
          gobject.PARAM_READWRITE,
          ),
-        "color" :
-        (gobject.TYPE_PYOBJECT,
-         "color to be displayed",
-         "color to be displayed",
-         gobject.PARAM_READWRITE,
-         ),
-        "text":
-        (gobject.TYPE_STRING,
-         "text to be displayed",
-         "text",
-         "",
-         gobject.PARAM_READWRITE,
-         ),
-        "pixbuf" :
-        (gobject.TYPE_PYOBJECT,
-         "A pixbuf representation",
-         "A gtk.gdk.Pixbuf",
-         gobject.PARAM_READWRITE,
-         ),
-        "isthumb" :
-        (gobject.TYPE_BOOLEAN,
-         "Should the renderer use a thumb",
-         "True if pixbuf should be a thumb",
-         False,
-         gobject.PARAM_READWRITE),
     }
 
     width = 32
@@ -120,25 +76,32 @@ class TimelineRenderer(gtk.GenericCellRenderer):
                  gtk.STATE_SELECTED : ("#ff", "#ff")}
 
     @property
+    def content_obj(self):
+        return self.get_property("content_obj")
+
+    @property
     def phases(self):
-        return self.get_property("phases")
+        return self.content_obj.phases
+
     @property
     def event(self):
-        return self.get_property("event")
+        return self.content_obj.event
+
     @property
     def color(self):
-        return self.get_property("color")
+        return self.content_obj.color
+
     @property
     def text(self):
-        return self.get_property("text")
+        return self.content_obj.get_pango_subject_text()
 
     @property
     def pixbuf(self):
-        return self.get_property("pixbuf")
+        return self.content_obj.get_thumbnail(content_objects.SIZE_TIMELINEVIEW)[0]
 
     @property
     def isthumb(self):
-        return self.get_property("isthumb")
+        return self.content_obj.get_thumbnail(content_objects.SIZE_TIMELINEVIEW)[1]
 
     def __init__(self):
         super(TimelineRenderer, self).__init__()
@@ -251,14 +214,9 @@ class TimelineView(gtk.TreeView):
         self.render = render = TimelineRenderer()
         pcolumn.pack_start(render)
         self.append_column(pcolumn)
-        pcolumn.add_attribute(render, "phases", 0)
-        pcolumn.add_attribute(render, "event", 1)
-        pcolumn.add_attribute(render, "color", 2)
-        pcolumn.add_attribute(render, "text", 3)
-        pcolumn.add_attribute(render, "pixbuf", 4)
-        pcolumn.add_attribute(render, "isthumb", 5)
+        pcolumn.add_attribute(render, "content_obj", 0)
         self.set_headers_visible(False)
-        self.connect("query-tooltip", self.query_tooltip)
+        # self.connect("query-tooltip", self.query_tooltip)
         self.set_property("has-tooltip", True)
         self.set_tooltip_window(StaticPreviewTooltip)
 
@@ -272,30 +230,14 @@ class TimelineView(gtk.TreeView):
         if not events:
             self.set_model(None)
             return
-        liststore = gtk.ListStore(gobject.TYPE_PYOBJECT, gobject.TYPE_PYOBJECT,
-                                  gobject.TYPE_PYOBJECT, gobject.TYPE_STRING,
-                                  gobject.TYPE_PYOBJECT, gobject.TYPE_BOOLEAN)
+        liststore = gtk.ListStore(gobject.TYPE_PYOBJECT)
         for row in events:
             event = row[0][0]
-            interpretation = get_event_interpretation(event)
-            mimetype = get_event_mimetype(event)
-            color = get_file_color(interpretation, mimetype)
-            bars = [make_area_from_event(event.timestamp, stop) for (event, stop) in row]
-            text = text_handler(event)
-            usethumb = (True if get_event_interpretation(event)
-                        in MEDIAINTERPRETATIONS else False)
             uri = get_event_uri(event)
-            thumb = False
-            if PIXBUFCACHE.has_key(uri) and usethumb:
-                pixbuf, thumb = PIXBUFCACHE[uri]
-                pixbuf = pixbuf.scale_simple(32, 24, gtk.gdk.INTERP_TILES)
-            else:
-                pixbuf = get_event_icon(event, 24)
-                if not pixbuf: continue
-            if PIXBUFCACHE.has_key(uri) and usethumb and pixbuf != PIXBUFCACHE[uri][0]:
-                pixbuf, thumb = PIXBUFCACHE[uri]
-                pixbuf = pixbuf.scale_simple(32, 24, gtk.gdk.INTERP_TILES)
-            liststore.append((bars, event, color, text, pixbuf, usethumb&thumb))
+            if not event_exists(uri): continue
+            obj = content_objects.choose_content_object(event)
+            obj.phases = [make_area_from_event(event.timestamp, stop) for (event, stop) in row]
+            liststore.append((obj,))
         self.set_model(liststore)
 
     def on_button_press(self, widget, event):
@@ -303,7 +245,7 @@ class TimelineView(gtk.TreeView):
             path = self.get_dest_row_at_pos(int(event.x), int(event.y))
             if path:
                 model = self.get_model()
-                uri = get_event_uri(model[path[0]][1])
+                uri = model[path[0]][0].uri
                 self.popupmenu.do_popup(event.time, [uri])
                 return True
         return False

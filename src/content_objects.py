@@ -19,6 +19,8 @@
 
 # Purpose:
 
+import gtk
+
 from urlparse import urlparse
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation
 
@@ -27,6 +29,8 @@ import common
 
 
 SIZE_THUMBVIEW = (92, 72)
+SIZE_TIMELINEVIEW = (32, 24)
+
 
 def choose_content_object(event):
     return FileContentObject(event)
@@ -59,11 +63,16 @@ class GenericContentObject(object):
 
     def get_thumbnail(self, size=SIZE_NORMAL, border=0):
         if size == SIZE_THUMBVIEW:
-            return __get_thumbview_icon
+            return self.__get_thumbview_icon()
+        elif size == SIZE_TIMELINEVIEW:
+            return self.__get_timelineview_icon()
         thumb = None
         return thumb
 
     def __get_thumbview_icon(self):
+        return None
+
+    def __get_timelineview_icon(self):
         return None
 
     @property
@@ -100,9 +109,28 @@ class GenericContentObject(object):
             emblem_collection.append(self.icon)
         return emblem_collection
 
+    phases = None
+    #@property
+    #def phases(self):
+    #    return __
+
     @property
-    def phases(self):
-        return []
+    def color(self):
+        return common.get_file_color(self.event.subjects[0].interpretation, self.event.subjects[0].mimetype)
+
+
+    def get_pango_subject_text(self):
+        if hasattr(self, "__pretty_subject_text"): return self.__pretty_subject_text
+        text = common.get_event_text(self.event)
+        interpretation = common.get_event_interpretation(self.event)
+        t = (common.FILETYPESNAMES[interpretation] if
+             interpretation in common.FILETYPESNAMES.keys() else "Unknown")
+        text = text.replace("%", "%%")
+        t1 = "<span color='!color!'><b>" + t + "</b></span>"
+        t2 = "<span color='!color!'>" + text + "</span> "
+        self.__pretty_subject_text = (str(t1) + "\n" + str(t2) + "").replace("&", "&amp;").replace("!color!", "%s")
+        return self.__pretty_subject_text
+
 
 
 class FileContentObject(GioFile, GenericContentObject):
@@ -113,20 +141,45 @@ class FileContentObject(GioFile, GenericContentObject):
         return GioFile.__init__(self, uri)
 
 
-    @property
-    def phases(self):
-        return []
+    #@property
+    #def phases(self):
+    #    return []
 
     def get_thumbnail(self, size=SIZE_NORMAL, border=0):
         if size == SIZE_THUMBVIEW:
             return self.__get_thumbview_icon()
+        elif size == SIZE_TIMELINEVIEW:
+            return self.__get_timelineview_icon()
         return GioFile.get_thumbnail(self, size, border)
 
     def __get_thumbview_icon(self):
-        if hasattr(self, "__pb"):
-            return self.__pb, self.__isthumb
-        self.__pb, self.__isthumb = common.PIXBUFCACHE.get_pixbuf_from_uri(self.uri, SIZE_LARGE, iconscale=0.1875, w=SIZE_THUMBVIEW[0], h=SIZE_THUMBVIEW[1])
-        return self.__pb, self.__isthumb
+        if hasattr(self, "__thumbpb"):
+            return self.__thumbpb, self.__isthumb
+        self.__thumbpb, self.__isthumb = common.PIXBUFCACHE.get_pixbuf_from_uri(self.uri, SIZE_LARGE, iconscale=0.1875, w=SIZE_THUMBVIEW[0], h=SIZE_THUMBVIEW[1])
+        return self.__thumbpb, self.__isthumb
+
+    def __get_timelineview_icon(self):
+        #uri = self.uri
+        if hasattr(self, "__timelinepb"):
+            return self.__timelinepb, self.__timeline_isthumb
+
+        usethumb = (True if common.get_event_interpretation(self.event)
+                    in common.MEDIAINTERPRETATIONS else False)
+        thumb = False
+        if common.PIXBUFCACHE.has_key(self.uri) and usethumb:
+            pixbuf, thumb = common.PIXBUFCACHE[self.uri]
+            pixbuf = pixbuf.scale_simple(32, 24, gtk.gdk.INTERP_TILES)
+        else:
+            pixbuf = common.get_event_icon(self.event, 24)
+        if common.PIXBUFCACHE.has_key(self.uri) and usethumb and pixbuf != common.PIXBUFCACHE[self.uri][0]:
+            pixbuf, thumb = common.PIXBUFCACHE[self.uri]
+            pixbuf = pixbuf.scale_simple(32, 24, gtk.gdk.INTERP_TILES)
+        self.__timelinepb = pixbuf
+        self.__timeline_isthumb = usethumb&thumb
+        return pixbuf, usethumb & thumb
+
+
+
 
 
 
