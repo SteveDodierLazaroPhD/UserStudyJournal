@@ -33,7 +33,10 @@ SIZE_TIMELINEVIEW = (32, 24)
 
 
 def choose_content_object(event):
+    #print event.payload
+    # This is where the selection will be done
     return FileContentObject(event)
+
 
 class GenericContentObject(object):
     """
@@ -45,6 +48,13 @@ class GenericContentObject(object):
         self._uri = event.subjects[0].uri
         self._event = event
 
+    @classmethod
+    def create(cls, event):
+        """
+        Can return None
+        """
+
+        return None
 
     @property
     def event(self):
@@ -109,10 +119,8 @@ class GenericContentObject(object):
             emblem_collection.append(self.icon)
         return emblem_collection
 
+    # Used for timeline
     phases = None
-    #@property
-    #def phases(self):
-    #    return __
 
     @property
     def color(self):
@@ -132,7 +140,6 @@ class GenericContentObject(object):
         return self.__pretty_subject_text
 
 
-
 class FileContentObject(GioFile, GenericContentObject):
 
     def __init__(self, event):
@@ -140,6 +147,12 @@ class FileContentObject(GioFile, GenericContentObject):
         uri = event.subjects[0].uri
         return GioFile.__init__(self, uri)
 
+    @classmethod
+    def create(cls, event):
+        try:
+            return cls(event)
+        except gio.Error:
+            return None
 
     #@property
     #def phases(self):
