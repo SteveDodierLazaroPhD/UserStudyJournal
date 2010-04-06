@@ -36,7 +36,7 @@ from eventgatherer import event_exists
 from widgets import StaticPreviewTooltip, VideoPreviewTooltip, ContextMenu
 from gio_file import GioFile, SIZE_LARGE, SIZE_NORMAL
 from common import *
-
+import content_objects
 
 class PreviewRenderer(gtk.GenericCellRenderer):
     """
@@ -46,18 +46,13 @@ class PreviewRenderer(gtk.GenericCellRenderer):
 
     __gtype_name__ = "PreviewRenderer"
     __gproperties__ = {
-        "pixbuf" :
-        (gtk.gdk.Pixbuf,
-         "pixbuf to be displayed",
-         "pixbuf to be displayed",
-         gobject.PARAM_READWRITE,
-         ),
-        "emblems" :
+        "content_obj" :
         (gobject.TYPE_PYOBJECT,
-         "emblems to be displayed",
-         "emblems to be displayed",
+         "event to be displayed",
+         "event to be displayed",
          gobject.PARAM_READWRITE,
          ),
+
         "active":
         (gobject.TYPE_BOOLEAN,
          "If the item is active",
@@ -65,39 +60,31 @@ class PreviewRenderer(gtk.GenericCellRenderer):
          False,
          gobject.PARAM_READWRITE,
          ),
-        "event" :
-        (gobject.TYPE_PYOBJECT,
-         "event to be displayed",
-         "event to be displayed",
-         gobject.PARAM_READWRITE,
-         ),
-        "isthumb" :
-        (gobject.TYPE_BOOLEAN,
-         "Is the pixbuf a thumb",
-         "True if pixbuf is thumb",
-         False,
-         gobject.PARAM_READWRITE),
     }
 
     width = 96
-    height = int(96*3/4.0)
+    height = 72
     properties = {}
 
     @property
+    def content_obj(self):
+        return self.get_property("content_obj")
+
+    @property
     def emblems(self):
-        return self.get_property("emblems")
+        return self.content_obj.emblems
     @property
     def pixbuf(self):
-        return self.get_property("pixbuf")
+        return self.content_obj.get_thumbnail(content_objects.SIZE_THUMBVIEW)[0]
     @property
     def active(self):
         return self.get_property("active")
     @property
     def event(self):
-        return self.get_property("event")
+        return self.content_obj.event
     @property
     def isthumb(self):
-        return self.get_property("isthumb")
+        return self.content_obj.get_thumbnail(content_objects.SIZE_THUMBVIEW)[1]
 
     def __init__(self):
         super(PreviewRenderer, self).__init__()
@@ -213,11 +200,8 @@ class ImageView(gtk.IconView):
         pcolumn = gtk.TreeViewColumn("Preview")
         render = PreviewRenderer()
         self.pack_end(render)
-        self.add_attribute(render, "pixbuf", 0)
-        self.add_attribute(render, "emblems", 1)
-        self.add_attribute(render, "active", 2)
-        self.add_attribute(render, "event", 3)
-        self.add_attribute(render, "isthumb", 4)
+        self.add_attribute(render, "content_obj", 0)
+        self.add_attribute(render, "active", 1)
         self.set_margin(10)
 
     def _set_model_in_thread(self, events):
@@ -226,22 +210,17 @@ class ImageView(gtk.IconView):
         It takes those properties and appends them to the view's model
         """
         lock = threading.Lock()
-        liststore = gtk.ListStore(gtk.gdk.Pixbuf, gobject.TYPE_PYOBJECT, gobject.TYPE_BOOLEAN, gobject.TYPE_PYOBJECT, gobject.TYPE_BOOLEAN)
+        liststore = gtk.ListStore(gobject.TYPE_PYOBJECT, gobject.TYPE_BOOLEAN)
         gtk.gdk.threads_enter()
         self.set_model(liststore)
         gtk.gdk.threads_leave()
         for event in events:
             uri = get_event_uri(event)
             if not event_exists(uri): continue
-            pb, isthumb = PIXBUFCACHE.get_pixbuf_from_uri(uri, SIZE_LARGE, iconscale=0.1875, w=self.child_width, h=self.child_height)
-            emblems = tuple()
-            if isthumb and get_event_interpretation(event) != Interpretation.IMAGE.uri:
-                emblem = get_event_icon(event, 16)
-                if emblem:
-                    emblems = (emblem,)
+            obj = content_objects.choose_content_object(event)
             gtk.gdk.threads_enter()
             lock.acquire()
-            liststore.append((pb, emblems, False, event, isthumb))
+            liststore.append((obj, False))
             lock.release()
             gtk.gdk.threads_leave()
 
@@ -282,8 +261,8 @@ class ImageView(gtk.IconView):
             path, cell = val
             if path[0] != self.last_active:
                 model = self.get_model()
-                model[self.last_active][2] = False
-                model[path[0]][2] = True
+                model[self.last_active][1] = False
+                model[path[0]][1] = True
                 self.last_active = path[0]
         return True
 
