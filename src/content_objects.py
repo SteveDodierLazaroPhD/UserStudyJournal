@@ -19,11 +19,13 @@
 
 # Purpose:
 
+import gio
 import gtk
 
 from urlparse import urlparse
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation
 
+from config import get_icon_path, get_data_path
 from gio_file import GioFile, THUMBS, ICONS, SIZE_LARGE, SIZE_NORMAL
 import common
 
@@ -33,19 +35,19 @@ SIZE_TIMELINEVIEW = (32, 24)
 
 
 def choose_content_object(event):
-    #print event.payload
-    # This is where the selection will be done
-    return FileContentObject(event)
+    #Payload selection here
+    if event.subjects[0].uri.startswith("file://"):
+        return FileContentObject.create(event)
+    else:
+        return GenericContentObject.create(event)
 
-
-class GenericContentObject(object):
+class ContentObject(object):
     """
     Defines the required interface of a Content wrapper that displays all the methods
     a wrapper implements
     """
 
     def __init__(self, event=None):
-        self._uri = event.subjects[0].uri
         self._event = event
 
     @classmethod
@@ -66,7 +68,11 @@ class GenericContentObject(object):
 
     @property
     def uri(self):
-        return self._uri
+        return self.event.subjects[0].uri
+
+    @property
+    def mime_type(self):
+        return self.event.subject[0].mimetype
 
     def get_content(self):
         return None
@@ -140,10 +146,126 @@ class GenericContentObject(object):
         return self.__pretty_subject_text
 
 
-class FileContentObject(GioFile, GenericContentObject):
+class GenericContentObject(ContentObject):
+    """
+    Defines the required interface of a Content wrapper that displays all the methods
+    a wrapper implements
+    """
+    empty_thumbview_pb = gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path(
+            "hicolor/scalable/apps/gnome-activity-journal.svg"), SIZE_LARGE[0]*0.1875, SIZE_LARGE[1]*0.1875)
+    empty_timelineview_pb = gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path(
+            "hicolor/scalable/apps/gnome-activity-journal.svg"), SIZE_TIMELINEVIEW[0], SIZE_TIMELINEVIEW[1])
+    empty_large_pb = gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path(
+            "hicolor/scalable/apps/gnome-activity-journal.svg"), SIZE_LARGE[0], SIZE_LARGE[1])
+
+    @classmethod
+    def create(cls, event):
+        """
+        Can return None
+        """
+        return cls(event)
+
+    @property
+    def event(self):
+        return self._event
+
+    @event.setter
+    def event(self, value):
+        self._event = value
+
+    def get_content(self):
+        return None
+
+    def get_thumbnail(self, size=SIZE_NORMAL, border=0):
+        if size == SIZE_THUMBVIEW:
+            return self.__get_thumbview_icon()
+        elif size == SIZE_TIMELINEVIEW:
+            return self.__get_timelineview_icon()
+        thumb = None
+        return thumb
+
+    def __get_thumbview_icon(self):
+        return None
+
+    def __get_timelineview_icon(self):
+        return None
+
+    @property
+    def thumbnail(self):
+        return self.get_thumbnail()
+
+    def get_monitor(self):
+        raise NotImplementedError
+
+    def refresh(self):
+        pass
+
+    def get_app_icon(size):
+        app = gio.app_info_get_default_for_type(self.mime_type, False)
+        if not app: return
+        icon_info = app.get_icon()
+        try:
+            if icon_info:
+                if isinstance(icon_info, gio.FileIcon):
+                    return gtk.gdk.pixbuf_new_from_file_at_size(icon_info.get_file().get_path(), size, size)
+                elif isinstance(gicon, gio.ThemedIcon):
+                    iconinfo = common.ICON_THEME.choose_icon(gicon.get_names(), size, gtk.ICON_LOOKUP_USE_BUILTIN)
+        except: pass
+        return gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path(
+            "hicolor/scalable/apps/gnome-activity-journal.svg"), size, size)
+
+    def get_icon(self, size=24, can_thumb=False, border=0):
+        if hasattr(self, "__icon"):
+            return self.__icon
+        iconinfo = common.ICON_THEME.lookup_icon(self.mime_type, size, gtk.ICON_LOOKUP_USE_BUILTIN)
+        if iconinfo:
+            location = info.get_filename()
+            icon = gtk.gdk.pixbuf_new_from_file_at_size(location, size, size)
+        else:
+            icon = self.get_app_icon()
+        self.__icon = icon
+        return self.__icon
+
+    @property
+    def icon(self):
+        return self.get_icon()
+
+    def launch(self):
+        pass
+
+    def has_preview(self):
+        return False
+
+    def thumb_icon_allowed(self):
+        return False
+
+    @property
+    def emblems(self):
+        emblem_collection = []
+        if not self.has_preview:
+            emblem_collection.append(self.icon)
+        return emblem_collection
+
+    # Used for timeline
+    phases = None
+
+    @property
+    def color(self):
+        return common.get_file_color(self.event.subjects[0].interpretation, self.event.subjects[0].mimetype)
+
+    def __get_thumbview_icon(self):
+        if hasattr(self, "__thumbpb"):
+            return self.__thumbpb, self.__isthumb
+        return self.empty_thumbview_pb, False
+
+    def __get_timelineview_icon(self):
+        return self.empty_timelineview_pb, False
+
+
+class FileContentObject(GioFile, ContentObject):
 
     def __init__(self, event):
-        GenericContentObject.__init__(self, event)
+        ContentObject.__init__(self, event)
         uri = event.subjects[0].uri
         return GioFile.__init__(self, uri)
 

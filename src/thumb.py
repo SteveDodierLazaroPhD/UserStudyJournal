@@ -112,8 +112,10 @@ class PreviewRenderer(gtk.GenericCellRenderer):
         render_emblems(window, x, y, w, h, self.emblems)
         path = widget.get_path_at_pos(cell_area.x, cell_area.y)
         if path != None:
-            if widget.active_list[path[0]]:
-                gobject.timeout_add(2, self.render_info_box, window, widget, cell_area, expose_area, self.event)
+            try:
+                if widget.active_list[path[0]]:
+                    gobject.timeout_add(2, self.render_info_box, window, widget, cell_area, expose_area, self.event)
+            except:pass
         return True
 
     def file_render_pixbuf(self, window, widget, x, y, w, h):
@@ -210,8 +212,6 @@ class ImageView(gtk.IconView):
         self.set_model(liststore)
         gtk.gdk.threads_leave()
         for event in events:
-            uri = get_event_uri(event)
-            if not event_exists(uri): continue
             obj = content_objects.choose_content_object(event)
             if not obj: continue
             gtk.gdk.threads_enter()

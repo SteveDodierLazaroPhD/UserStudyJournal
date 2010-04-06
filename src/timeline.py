@@ -232,8 +232,8 @@ class TimelineView(gtk.TreeView):
         liststore = gtk.ListStore(gobject.TYPE_PYOBJECT)
         for row in events:
             event = row[0][0]
-            uri = get_event_uri(event)
-            if not event_exists(uri): continue
+            #uri = get_event_uri(event)
+            #if not event_exists(uri): continue
             obj = content_objects.choose_content_object(event)
             if not obj: continue
             obj.phases = [make_area_from_event(event.timestamp, stop) for (event, stop) in row]
