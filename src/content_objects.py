@@ -80,6 +80,7 @@ class ContentObject(object):
         return self.event.subjects[0].mimetype
 
     def get_thumbnail(self, size=SIZE_NORMAL, border=0):
+        """Returns a pixbuf representing the content"""
         if size == SIZE_THUMBVIEW:
             return self.__get_thumbview_icon()
         elif size == SIZE_TIMELINEVIEW:
@@ -88,10 +89,12 @@ class ContentObject(object):
         return thumb
 
     def __get_thumbview_icon(self):
-        return None
+        """Special method which returns a pixbuf for the thumbview and a ispreview bool describing if it is a preview"""
+        return None, False
 
     def __get_timelineview_icon(self):
-        return None
+        """Special method which returns a sized pixbuf for the timeline and a ispreview bool describing if it is a preview"""
+        return None, False
 
     @property
     def thumbnail(self):
@@ -101,6 +104,9 @@ class ContentObject(object):
         raise NotImplementedError
 
     def get_icon(self, size=24, can_thumb=False, border=0):
+        """
+        Returns a icon representing this event
+        """
         icon = None
         return icon
 
@@ -109,16 +115,26 @@ class ContentObject(object):
         return self.get_icon()
 
     def launch(self):
+        """
+        Launches a event
+        """
         pass
 
     def has_preview(self):
+        """
+        Returns true if this content type can show a preview thumbnail instead of a infomation representation
+        """
         return False
 
     def thumb_icon_allowed(self):
+        """True if the content type can use a preview instead of a icon"""
         return False
 
     @property
     def emblems(self):
+        """
+        Returns emblem pixbufs for the content
+        """
         emblem_collection = []
         if not self.has_preview:
             emblem_collection.append(self.icon)
@@ -129,12 +145,18 @@ class ContentObject(object):
 
     @property
     def type_color_representation(self):
+        """
+        Uses the tango color pallet to find a color representing the content type
+        """
         if hasattr(self, "_type_color_representation"): return self._type_color_representation
         self._type_color_representation = common.get_file_color(self.event.subjects[0].interpretation, self.event.subjects[0].mimetype)
         return self._type_color_representation
 
 
     def get_pango_subject_text(self):
+        """
+        Returns the text markup used in timeline widget and elsewhere
+        """
         if hasattr(self, "__pretty_subject_text"): return self.__pretty_subject_text
         text = common.get_event_text(self.event)
         interpretation = common.get_event_interpretation(self.event)
@@ -148,6 +170,9 @@ class ContentObject(object):
 
 
     def _get_desktop_file(self):
+        """
+        Finds a desktop file for a actor
+        """
         if hasattr(self, "_desktop_file"): return self._desktop_file
         if self.event.actor in DESKTOP_FILES:
             self._desktop_file = DESKTOP_FILES[self.event.actor]
@@ -160,27 +185,17 @@ class ContentObject(object):
         return self._desktop_file
 
     def get_actor_pixbuf(self, size):
+        """
+        Finds a icon for a actor
+        """
         if hasattr(self, "_actor_pixbuf"): return self._actor_pixbuf
         desktop = self._get_desktop_file()
         if not desktop:
             self._actor_pixbuf = None
         else:
             name = desktop.getIcon()
-            self._actor_pixbuf = self.get_icon_for_name(name, size)
+            self._actor_pixbuf = common.get_icon_for_name(name, size)
         return self._actor_pixbuf
-
-    def get_icon_for_name(self, name, size):
-        size = int(size)
-        ICONS[(size, size)]
-        if ICONS[(size, size)].has_key(name):
-            return ICONS[(size, size)][name]
-        info = common.ICON_THEME.lookup_icon(name, size, gtk.ICON_LOOKUP_USE_BUILTIN)
-        if not info:
-            return None
-        location = info.get_filename()
-        pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(location, size, size)
-        ICONS[(size, size)][name] = pixbuf
-        return pixbuf
 
 
 class GenericContentObject(ContentObject):
@@ -213,6 +228,7 @@ class GenericContentObject(ContentObject):
         pass
 
     def __get_thumbview_icon(self):
+        """Special method which returns a pixbuf for the thumbview and a ispreview bool describing if it is a preview"""
         if hasattr(self, "__thumbpb"):
             return self.__thumbpb, self.__isthumb
         icon = self.get_icon(SIZE_LARGE[0]*0.1875)
@@ -223,6 +239,7 @@ class GenericContentObject(ContentObject):
         return self.empty_thumbview_pb, False
 
     def __get_timelineview_icon(self):
+        """Special method which returns a sized pixbuf for the timeline and a ispreview bool describing if it is a preview"""
         if hasattr(self, "__timelinepb"):
             return self.__timelinepb, self.__timeline_isthumb
         icon = self.get_icon(SIZE_TIMELINEVIEW[0])
@@ -259,12 +276,14 @@ class FileContentObject(GioFile, ContentObject):
         return GioFile.get_thumbnail(self, size, border)
 
     def __get_thumbview_icon(self):
+        """Special method which returns a pixbuf for the thumbview and a ispreview bool describing if it is a preview"""
         if hasattr(self, "__thumbpb"):
             return self.__thumbpb, self.__isthumb
         self.__thumbpb, self.__isthumb = common.PIXBUFCACHE.get_pixbuf_from_uri(self.uri, SIZE_LARGE, iconscale=0.1875, w=SIZE_THUMBVIEW[0], h=SIZE_THUMBVIEW[1])
         return self.__thumbpb, self.__isthumb
 
     def __get_timelineview_icon(self):
+        """Special method which returns a sized pixbuf for the timeline and a ispreview bool describing if it is a preview"""
         #uri = self.uri
         if hasattr(self, "__timelinepb"):
             return self.__timelinepb, self.__timeline_isthumb

@@ -34,7 +34,7 @@ import math
 import operator
 import subprocess
 
-from gio_file import GioFile, SIZE_LARGE, SIZE_NORMAL
+from gio_file import GioFile, SIZE_LARGE, SIZE_NORMAL, ICONS
 
 from zeitgeist.datamodel import Interpretation, Event
 
@@ -547,6 +547,22 @@ class PixbufCache(dict):
         return pb, thumb
 
 PIXBUFCACHE = PixbufCache()
+
+def get_icon_for_name(name, size):
+    """
+    return a icon for a name
+    """
+    size = int(size)
+    ICONS[(size, size)]
+    if ICONS[(size, size)].has_key(name):
+        return ICONS[(size, size)][name]
+    info = ICON_THEME.lookup_icon(name, size, gtk.ICON_LOOKUP_USE_BUILTIN)
+    if not info:
+        return None
+    location = info.get_filename()
+    pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(location, size, size)
+    ICONS[(size, size)][name] = pixbuf
+    return pixbuf
 
 
 ##
