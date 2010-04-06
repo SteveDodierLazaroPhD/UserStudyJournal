@@ -40,8 +40,8 @@ DESKTOP_FILES = {}
 
 def choose_content_object(event):
     #Payload selection here
-    if event.payload:
-        print event.payload
+    #if event.payload:
+    #    print event.payload
     if event.subjects[0].uri.startswith("file://"):
         return FileContentObject.create(event)
     elif event.subjects[0].uri.startswith("http://"):
@@ -200,6 +200,12 @@ class ContentObject(object):
             self._actor_pixbuf = common.get_icon_for_name(name, size)
         return self._actor_pixbuf
 
+    @property
+    def thumbview_text(self):
+        if not hasattr(self, "_thumbview_text"):
+            self._thumbview_text = self.event.subjects[0].text.replace("&", "&amp;")
+        return self._thumbview_text
+
 
 class GenericContentObject(ContentObject):
     """
@@ -251,6 +257,13 @@ class GenericContentObject(ContentObject):
             self.__timeline_isthumb = False
             return self.__timelinepb, self.__timeline_isthumb
         return self.empty_timelineview_pb, False
+
+    @property
+    def thumbview_text(self):
+        if not hasattr(self, "_thumbview_text"):
+            self._thumbview_text = common.get_event_typename(self.event) + "\n" + self.event.subjects[0].text.replace("&", "&amp;")
+        return self._thumbview_text
+
 
 
 class FileContentObject(GioFile, ContentObject):
@@ -306,6 +319,9 @@ class FileContentObject(GioFile, ContentObject):
     def emblems(self):
         emblem_collection = []
         emblem_collection.append(self.get_icon(16))
+        emblem_collection.append(None)
+        emblem_collection.append(None)
+        emblem_collection.append(self.get_actor_pixbuf(12))
         return emblem_collection
 
 
@@ -351,15 +367,15 @@ class WebContentObject(ContentObject):
         pass
 
     def get_pango_subject_text(self):
-        if hasattr(self, "__pretty_subject_text"): return self.__pretty_subject_text
-        t1 = self.event.subjects[0].uri
-        t2 = self.event.subjects[0].text
-        t1 = t1.replace("%", "%%")
-        t2 = t2.replace("%", "%%")
-        interpretation = common.get_event_interpretation(self.event)
-        t1 = "<span color='!color!'><b>" + t1 + "</b></span>"
-        t2 = "<span color='!color!'>" + t2 + "</span> "
-        self.__pretty_subject_text = (str(t1) + "\n" + str(t2) + "").replace("&", "&amp;").replace("!color!", "%s")
+        if not hasattr(self, "__pretty_subject_text"):
+            t1 = self.event.subjects[0].uri
+            t2 = self.event.subjects[0].text
+            t1 = t1.replace("%", "%%")
+            t2 = t2.replace("%", "%%")
+            interpretation = common.get_event_interpretation(self.event)
+            t1 = "<span color='!color!'><b>" + t1 + "</b></span>"
+            t2 = "<span color='!color!'>" + t2 + "</span> "
+            self.__pretty_subject_text = (str(t1) + "\n" + str(t2) + "").replace("&", "&amp;").replace("!color!", "%s")
         return self.__pretty_subject_text
 
 
