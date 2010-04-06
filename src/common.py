@@ -80,6 +80,8 @@ FILETYPES = {
     Interpretation.IMAGE.uri : 15,
     Interpretation.SOURCECODE.uri : 12,
     Interpretation.UNKNOWN.uri : 21,
+    Interpretation.IM_MESSAGE.uri : 21,
+    Interpretation.EMAIL.uri : 21
 }
 
 FILETYPESNAMES = {
@@ -89,6 +91,9 @@ FILETYPESNAMES = {
     Interpretation.IMAGE.uri : _("Image"),
     Interpretation.SOURCECODE.uri : _("Source Code"),
     Interpretation.UNKNOWN.uri : _("Unknown"),
+    Interpretation.IM_MESSAGE.uri : _("IM Message"),
+    Interpretation.EMAIL.uri :_("Email"),
+
 }
 
 MEDIAINTERPRETATIONS = [

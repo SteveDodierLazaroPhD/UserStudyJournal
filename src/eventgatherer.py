@@ -57,19 +57,18 @@ def get_dayevents(start, end, result_type, callback, force = False):
         results = {}
         for event in events:
             uri = event.subjects[0].uri
-            if event_exists(uri):
-                if not event.subjects[0].uri in results:
-                    results[uri] = []
-                if not event.interpretation == Interpretation.CLOSE_EVENT.uri:
-                    results[uri].append([event, 0])
+            if not event.subjects[0].uri in results:
+                results[uri] = []
+            if not event.interpretation == Interpretation.CLOSE_EVENT.uri:
+                results[uri].append([event, 0])
+            else:
+                if not len(results[uri]) == 0:
+                    #print "***", results[uri]
+                    results[uri][len(results[uri])-1][1] = (int(event.timestamp)) -  int(results[uri][-1][0].timestamp)
                 else:
-                    if not len(results[uri]) == 0:
-                        #print "***", results[uri]
-                        results[uri][len(results[uri])-1][1] = (int(event.timestamp)) -  int(results[uri][-1][0].timestamp)
-                    else:
-                        tend = int(event.timestamp)
-                        event.timestamp = str(start)
-                        results[uri].append([event, tend - start])
+                    tend = int(event.timestamp)
+                    event.timestamp = str(start)
+                    results[uri].append([event, tend - start])
         events = list(sorted(results.itervalues(), key=lambda r: \
                              r[0][0].timestamp))
         EVENTS[start+end] = events
@@ -116,8 +115,6 @@ def get_file_events(start, end, callback, force = False):
         results = {}
         for event in events:
             uri = event.subjects[0].uri
-            if not event_exists(uri):
-                continue
             if not event.subjects[0].uri in results:
                 results[uri] = []
             results[uri].append(event)
@@ -129,11 +126,11 @@ def get_file_events(start, end, callback, force = False):
         find_events()
 
     event_templates = (
-        Event.new_for_values(interpretation=Interpretation.VISIT_EVENT.uri),
-        Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri),
-        Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri),
-        Event.new_for_values(interpretation=Interpretation.OPEN_EVENT.uri),
-    )
+            Event.new_for_values(interpretation=Interpretation.VISIT_EVENT.uri),
+            Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri),
+            Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri),
+            Event.new_for_values(interpretation=Interpretation.OPEN_EVENT.uri),
+        )
 
     def find_events():
         CLIENT.find_events_for_templates(event_templates, handle_find_events,
@@ -220,7 +217,7 @@ def get_related_events_for_uri(uri, callback):
             CLIENT.find_events_for_templates(templates, callback,
                                              [0, time.time()*1000], num_events=50000,
                                              result_type=ResultType.MostRecentSubjects)
-    
+
     end = time.time() * 1000
     start = end - (86400*30*1000)
     CLIENT.find_related_uris_for_uris([uri], _event_request_handler)

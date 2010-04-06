@@ -167,7 +167,7 @@ class PreviewRenderer(gtk.GenericCellRenderer):
         pass
 
     def on_activate(self, event, widget, path, background_area, cell_area, flags):
-        launch_event(self.event)
+        self.content_obj.launch()
         return True
 
 # Registed the type to avoid errors using it as a renderer
@@ -240,7 +240,7 @@ class ImageView(gtk.IconView):
             if val:
                 path, cell = val
                 model = self.get_model()
-                uri = get_event_uri(model[path[0]][3])
+                uri = model[path[0]][0].event.subjects[0].uri
                 self.popupmenu.do_popup(event.time, [uri])
         return False
 

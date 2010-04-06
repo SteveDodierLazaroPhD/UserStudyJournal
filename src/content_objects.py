@@ -41,6 +41,8 @@ def choose_content_object(event):
     #Payload selection here
     if event.subjects[0].uri.startswith("file://"):
         return FileContentObject.create(event)
+    elif event.subjects[0].uri.startswith("http://"):
+        return WebContentObject.create(event)
     else:
         return GenericContentObject.create(event)
 
@@ -49,8 +51,9 @@ class ContentObject(object):
     Defines the required interface of a Content wrapper that displays all the methods
     a wrapper implements
     """
+    desktop_file_path = "/usr/share/applications/"
 
-    def __init__(self, event=None):
+    def __init__(self, event):
         self._event = event
 
     @classmethod
@@ -196,7 +199,6 @@ class GenericContentObject(ContentObject):
             "hicolor/scalable/apps/gnome-activity-journal.svg"), SIZE_TIMELINEVIEW[0], SIZE_TIMELINEVIEW[1])
     empty_large_pb = gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path(
             "hicolor/scalable/apps/gnome-activity-journal.svg"), SIZE_LARGE[0], SIZE_LARGE[1])
-    desktop_file_path = "/usr/share/applications/"
 
     @classmethod
     def create(cls, event):
@@ -221,8 +223,7 @@ class GenericContentObject(ContentObject):
             return self.__get_thumbview_icon()
         elif size == SIZE_TIMELINEVIEW:
             return self.__get_timelineview_icon()
-        thumb = None
-        return thumb
+        return self.get_icon(size[0])
 
     def __get_thumbview_icon(self):
         return None
@@ -241,11 +242,8 @@ class GenericContentObject(ContentObject):
         pass
 
     def get_icon(self, size=24, can_thumb=False, border=0):
-        if hasattr(self, "__icon"):
-            return self.__icon
         icon = self.get_actor_pixbuf(size)
-        self.__icon = icon
-        return self.__icon
+        return icon
 
     @property
     def icon(self):
@@ -351,14 +349,13 @@ class WebContentObject(ContentObject):
 
 
     def __init__(self, event):
-        super(ContentObject, self).__init__(event)
+        super(WebContentObject, self).__init__(event)
 
     @classmethod
     def create(cls, event):
         """
         Can return None
         """
-
         return cls(event)
 
     @property
@@ -385,13 +382,13 @@ class WebContentObject(ContentObject):
             return self.__get_thumbview_icon()
         elif size == SIZE_TIMELINEVIEW:
             return self.__get_timelineview_icon()
-        thumb = None
-        return thumb
+        return self.get_icon(size[0])
 
     def __get_thumbview_icon(self):
-        return None
+        return self.get_icon(SIZE_THUMBVIEW[0])
 
     def __get_timelineview_icon(self):
+        return self.get_icon(SIZE_LARGE[0]*0.1875), False
         return None
 
     @property
@@ -405,12 +402,9 @@ class WebContentObject(ContentObject):
         pass
 
     def get_icon(self, size=24, can_thumb=False, border=0):
-        if hasattr(self, "__icon"):
-            return self.__icon
-        iconinfo = common.ICON_THEME.lookup_icon(self.mime_type, size, gtk.ICON_LOOKUP_USE_BUILTIN)
+        size = int(size)
         icon = self.get_actor_pixbuf(size)
-        self.__icon = icon
-        return self.__icon
+        return icon
 
     @property
     def icon(self):
@@ -428,8 +422,6 @@ class WebContentObject(ContentObject):
     @property
     def emblems(self):
         emblem_collection = []
-        if not self.has_preview:
-            emblem_collection.append(self.icon)
         return emblem_collection
 
     # Used for timeline
@@ -437,7 +429,9 @@ class WebContentObject(ContentObject):
 
     @property
     def color(self):
-        return common.get_file_color(self.event.subjects[0].interpretation, self.event.subjects[0].mimetype)
+        if hasattr(self, "_color"): return self._color
+        self._color = common.get_file_color(self.event.subjects[0].interpretation, self.event.subjects[0].mimetype)
+        return self._color
 
     def get_pango_subject_text(self):
         if hasattr(self, "__pretty_subject_text"): return self.__pretty_subject_text
@@ -446,7 +440,7 @@ class WebContentObject(ContentObject):
         t1 = t1.replace("%", "%%")
         t2 = t2.replace("%", "%%")
         interpretation = common.get_event_interpretation(self.event)
-        t1 = "<span color='!color!'><b>" + t2 + "</b></span>"
-        t2 = "<span color='!color!'>" + t1 + "</span> "
+        t1 = "<span color='!color!'><b>" + t1 + "</b></span>"
+        t2 = "<span color='!color!'>" + t2 + "</span> "
         self.__pretty_subject_text = (str(t1) + "\n" + str(t2) + "").replace("&", "&amp;").replace("!color!", "%s")
         return self.__pretty_subject_text

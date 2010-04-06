@@ -258,7 +258,7 @@ class TimelineView(gtk.TreeView):
 
     def on_activate(self, widget, path, column):
         model = self.get_model()
-        launch_event(model[path][1])
+        model[path][0].launch()
 
     def change_style(self, widget, old_style):
         """
