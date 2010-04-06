@@ -309,6 +309,7 @@ class FileContentObject(GioFile, ContentObject):
         if common.PIXBUFCACHE.has_key(self.uri) and usethumb and pixbuf != common.PIXBUFCACHE[self.uri][0]:
             pixbuf, thumb = common.PIXBUFCACHE[self.uri]
             pixbuf = pixbuf.scale_simple(32, 24, gtk.gdk.INTERP_TILES)
+        if not pixbuf: pixbuf = GenericContentObject.empty_timelineview_pb
         self.__timelinepb = pixbuf
         self.__timeline_isthumb = usethumb&thumb
         return pixbuf, usethumb & thumb
