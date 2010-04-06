@@ -61,8 +61,7 @@ class ContentObject(object):
         """
         Can return None
         """
-
-        return None
+        return cls(event)
 
     @property
     def event(self):
@@ -79,9 +78,6 @@ class ContentObject(object):
     @property
     def mime_type(self):
         return self.event.subjects[0].mimetype
-
-    def get_content(self):
-        return None
 
     def get_thumbnail(self, size=SIZE_NORMAL, border=0):
         if size == SIZE_THUMBVIEW:
@@ -103,9 +99,6 @@ class ContentObject(object):
 
     def get_monitor(self):
         raise NotImplementedError
-
-    def refresh(self):
-        pass
 
     def get_icon(self, size=24, can_thumb=False, border=0):
         icon = None
@@ -135,8 +128,10 @@ class ContentObject(object):
     phases = None
 
     @property
-    def color(self):
-        return common.get_file_color(self.event.subjects[0].interpretation, self.event.subjects[0].mimetype)
+    def type_color_representation(self):
+        if hasattr(self, "_type_color_representation"): return self._type_color_representation
+        self._type_color_representation = common.get_file_color(self.event.subjects[0].interpretation, self.event.subjects[0].mimetype)
+        return self._type_color_representation
 
 
     def get_pango_subject_text(self):
@@ -200,24 +195,6 @@ class GenericContentObject(ContentObject):
     empty_large_pb = gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path(
             "hicolor/scalable/apps/gnome-activity-journal.svg"), SIZE_LARGE[0], SIZE_LARGE[1])
 
-    @classmethod
-    def create(cls, event):
-        """
-        Can return None
-        """
-        return cls(event)
-
-    @property
-    def event(self):
-        return self._event
-
-    @event.setter
-    def event(self, value):
-        self._event = value
-
-    def get_content(self):
-        return None
-
     def get_thumbnail(self, size=SIZE_NORMAL, border=0):
         if size == SIZE_THUMBVIEW:
             return self.__get_thumbview_icon()
@@ -225,45 +202,15 @@ class GenericContentObject(ContentObject):
             return self.__get_timelineview_icon()
         return self.get_icon(size[0])
 
-    def __get_thumbview_icon(self):
-        return None
-
-    def __get_timelineview_icon(self):
-        return None
-
-    @property
-    def thumbnail(self):
-        return self.get_thumbnail()
-
     def get_monitor(self):
         raise NotImplementedError
-
-    def refresh(self):
-        pass
 
     def get_icon(self, size=24, can_thumb=False, border=0):
         icon = self.get_actor_pixbuf(size)
         return icon
 
-    @property
-    def icon(self):
-        return self.get_icon()
-
     def launch(self):
         pass
-
-    def has_preview(self):
-        return False
-
-    def thumb_icon_allowed(self):
-        return False
-
-    # Used for timeline
-    phases = None
-
-    @property
-    def color(self):
-        return common.get_file_color(self.event.subjects[0].interpretation, self.event.subjects[0].mimetype)
 
     def __get_thumbview_icon(self):
         if hasattr(self, "__thumbpb"):
@@ -359,23 +306,8 @@ class WebContentObject(ContentObject):
         return cls(event)
 
     @property
-    def event(self):
-        return self._event
-
-    @event.setter
-    def event(self, value):
-        self._event = value
-
-    @property
-    def uri(self):
-        return self.event.subjects[0].uri
-
-    @property
     def mime_type(self):
         return self.event.subjects[0].mimetype
-
-    def get_content(self):
-        return None
 
     def get_thumbnail(self, size=SIZE_NORMAL, border=0):
         if size == SIZE_THUMBVIEW:
@@ -391,47 +323,16 @@ class WebContentObject(ContentObject):
         return self.get_icon(SIZE_LARGE[0]*0.1875), False
         return None
 
-    @property
-    def thumbnail(self):
-        return self.get_thumbnail()
-
     def get_monitor(self):
         raise NotImplementedError
-
-    def refresh(self):
-        pass
 
     def get_icon(self, size=24, can_thumb=False, border=0):
         size = int(size)
         icon = self.get_actor_pixbuf(size)
         return icon
 
-    @property
-    def icon(self):
-        return self.get_icon()
-
     def launch(self):
         pass
-
-    def has_preview(self):
-        return False
-
-    def thumb_icon_allowed(self):
-        return False
-
-    @property
-    def emblems(self):
-        emblem_collection = []
-        return emblem_collection
-
-    # Used for timeline
-    phases = None
-
-    @property
-    def color(self):
-        if hasattr(self, "_color"): return self._color
-        self._color = common.get_file_color(self.event.subjects[0].interpretation, self.event.subjects[0].mimetype)
-        return self._color
 
     def get_pango_subject_text(self):
         if hasattr(self, "__pretty_subject_text"): return self.__pretty_subject_text

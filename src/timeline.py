@@ -36,7 +36,6 @@ from widgets import StaticPreviewTooltip, VideoPreviewTooltip, ContextMenu
 from common import *
 from thumb import PreviewRenderer
 import content_objects
-from eventgatherer import event_exists
 
 
 def make_area_from_event(timestamp, duration):
@@ -89,7 +88,7 @@ class TimelineRenderer(gtk.GenericCellRenderer):
 
     @property
     def color(self):
-        return self.content_obj.color
+        return self.content_obj.type_color_representation
 
     @property
     def text(self):
@@ -232,8 +231,6 @@ class TimelineView(gtk.TreeView):
         liststore = gtk.ListStore(gobject.TYPE_PYOBJECT)
         for row in events:
             event = row[0][0]
-            #uri = get_event_uri(event)
-            #if not event_exists(uri): continue
             obj = content_objects.choose_content_object(event)
             if not obj: continue
             obj.phases = [make_area_from_event(event.timestamp, stop) for (event, stop) in row]

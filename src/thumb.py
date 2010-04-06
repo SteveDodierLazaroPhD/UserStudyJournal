@@ -32,7 +32,6 @@ import threading
 
 from zeitgeist.datamodel import Interpretation
 
-from eventgatherer import event_exists
 from widgets import StaticPreviewTooltip, VideoPreviewTooltip, ContextMenu
 from gio_file import GioFile, SIZE_LARGE, SIZE_NORMAL
 from common import *

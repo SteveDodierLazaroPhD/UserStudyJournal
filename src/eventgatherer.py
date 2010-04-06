@@ -207,8 +207,7 @@ def get_related_events_for_uri(uri, callback):
         print uris
         if len(uris) > 0:
             for i, uri in enumerate(uris):
-                if event_exists(uri):
-                    templates += [
+                templates += [
                         Event.new_for_values(interpretation=Interpretation.VISIT_EVENT.uri, subject_uri=uri),
                         Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri, subject_uri=uri),
                         Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri, subject_uri=uri),
