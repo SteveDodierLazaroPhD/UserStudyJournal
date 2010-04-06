@@ -143,6 +143,10 @@ def get_event_typename(event):
 
     :returns: a plain text version of a interpretation
     """
+    try:
+        return Interpretation[event.subjects[0].interpretation].display_name
+    except KeyError:
+        pass
     return FILETYPESNAMES[event.subjects[0].interpretation]
 
 def get_event_mimetype(event):

@@ -126,10 +126,10 @@ def get_file_events(start, end, callback, force = False):
         find_events()
 
     event_templates = (
-            Event.new_for_values(interpretation=Interpretation.VISIT_EVENT.uri),
-            Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri),
-            Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri),
-            Event.new_for_values(interpretation=Interpretation.OPEN_EVENT.uri),
+            #Event.new_for_values(interpretation=Interpretation.VISIT_EVENT.uri),
+            #Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri),
+            #Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri),
+            #Event.new_for_values(interpretation=Interpretation.OPEN_EVENT.uri),
         )
 
     def find_events():

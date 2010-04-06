@@ -23,6 +23,7 @@ import gio
 import gtk
 import os
 from xdg import DesktopEntry
+import xml.dom.minidom as dom
 
 from urlparse import urlparse
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation
@@ -39,6 +40,8 @@ DESKTOP_FILES = {}
 
 def choose_content_object(event):
     #Payload selection here
+    if event.payload:
+        print event.payload
     if event.subjects[0].uri.startswith("file://"):
         return FileContentObject.create(event)
     elif event.subjects[0].uri.startswith("http://"):
@@ -264,10 +267,6 @@ class FileContentObject(GioFile, ContentObject):
         except gio.Error:
             return None
 
-    #@property
-    #def phases(self):
-    #    return []
-
     def get_thumbnail(self, size=SIZE_NORMAL, border=0):
         if size == SIZE_THUMBVIEW:
             return self.__get_thumbview_icon()
@@ -284,7 +283,6 @@ class FileContentObject(GioFile, ContentObject):
 
     def __get_timelineview_icon(self):
         """Special method which returns a sized pixbuf for the timeline and a ispreview bool describing if it is a preview"""
-        #uri = self.uri
         if hasattr(self, "__timelinepb"):
             return self.__timelinepb, self.__timeline_isthumb
 
@@ -336,11 +334,10 @@ class WebContentObject(ContentObject):
         return self.get_icon(size[0])
 
     def __get_thumbview_icon(self):
-        return self.get_icon(SIZE_THUMBVIEW[0])
+        return self.get_icon(SIZE_THUMBVIEW[0]), False
 
     def __get_timelineview_icon(self):
         return self.get_icon(SIZE_LARGE[0]*0.1875), False
-        return None
 
     def get_monitor(self):
         raise NotImplementedError
@@ -364,3 +361,71 @@ class WebContentObject(ContentObject):
         t2 = "<span color='!color!'>" + t2 + "</span> "
         self.__pretty_subject_text = (str(t1) + "\n" + str(t2) + "").replace("&", "&amp;").replace("!color!", "%s")
         return self.__pretty_subject_text
+
+
+class EventGeneratedContentType(ContentObject):
+
+    def __init__(self, event):
+        super(self, EventGeneratedContentType).__init__()
+        SAMPLE1 = """<Content name="Telepathy" class="Text">
+        <header>johnsmith@foo.bar</header>
+        <body>
+        John: Here is a talking point
+        You: Ok that looks fine
+        </body>
+        <launcher command="{application} johnsmith@foo.bar"/>
+        </Content>"""
+
+        SAMPLE2 = """<Content name="Web history" class="Thumbnail">
+        <thumbnail uri="file:///home/tehk/.cache/somethumb.png"/>
+        <!-- ${application} and ${subject_uri} are replaced by gaj with values from the event -->
+        <launcher command="${application} ${subject_uri}"/>
+        </Content>"""
+
+
+    def __process_thumb(self, node):
+        pass
+
+    def __process_header(self, node):
+        pass
+
+    def __process_body(self, node):
+        pass
+
+    def __process_icon(self, node):
+        pass
+
+    def __process_node(node):
+        node_func_map = {"thumbnail" : self.__process_thumb,
+                         "header" : self.__process_header,
+                         "body" : self.__process_body,
+                         "icon" : self.__process_icon,
+                         }
+        if not node.localName:
+            if node_func_map.has_key(node.localName):
+                node_func_map[node.localName](node)
+
+    def __process_payload(self, payload):
+        payload_string = payload
+
+        document = dom.parseString(payload_string)
+        content = document.childNodes[0]
+        for node in content.childNodes:
+            self.__process_node(node)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
