@@ -21,6 +21,8 @@
 
 import gio
 import gtk
+import os
+from xdg import DesktopEntry
 
 from urlparse import urlparse
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation
@@ -32,7 +34,7 @@ import common
 
 SIZE_THUMBVIEW = (92, 72)
 SIZE_TIMELINEVIEW = (32, 24)
-
+DESKTOP_FILES = {}
 
 def choose_content_object(event):
     #Payload selection here
@@ -72,7 +74,7 @@ class ContentObject(object):
 
     @property
     def mime_type(self):
-        return self.event.subject[0].mimetype
+        return self.event.subjects[0].mimetype
 
     def get_content(self):
         return None
@@ -146,6 +148,41 @@ class ContentObject(object):
         return self.__pretty_subject_text
 
 
+    def _get_desktop_file(self):
+        if hasattr(self, "_desktop_file"): return self._desktop_file
+        if self.event.actor in DESKTOP_FILES:
+            self._desktop_file = DESKTOP_FILES[self.event.actor]
+            return self._desktop_file
+        path = self.event.actor.replace("application://", self.desktop_file_path)
+        if not os.path.exists(path):
+            return None
+        self._desktop_file = DesktopEntry.DesktopEntry(path)
+        DESKTOP_FILES[self.event.actor] = self._desktop_file
+        return self._desktop_file
+
+    def get_actor_pixbuf(self, size):
+        if hasattr(self, "_actor_pixbuf"): return self._actor_pixbuf
+        desktop = self._get_desktop_file()
+        if not desktop:
+            self._actor_pixbuf = None
+        else:
+            name = desktop.getIcon()
+            self._actor_pixbuf = self.get_icon_for_name(name, size)
+        return self._actor_pixbuf
+
+    def get_icon_for_name(self, name, size):
+        ICONS[(size, size)]
+        if ICONS[(size, size)].has_key(name):
+            return ICONS[(size, size)][name]
+        info = common.ICON_THEME.lookup_icon(name, size, gtk.ICON_LOOKUP_USE_BUILTIN)
+        if not info:
+            return None
+        location = info.get_filename()
+        pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(location, size, size)
+        ICONS[(size, size)][name] = pixbuf
+        return pixbuf
+
+
 class GenericContentObject(ContentObject):
     """
     Defines the required interface of a Content wrapper that displays all the methods
@@ -157,6 +194,7 @@ class GenericContentObject(ContentObject):
             "hicolor/scalable/apps/gnome-activity-journal.svg"), SIZE_TIMELINEVIEW[0], SIZE_TIMELINEVIEW[1])
     empty_large_pb = gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path(
             "hicolor/scalable/apps/gnome-activity-journal.svg"), SIZE_LARGE[0], SIZE_LARGE[1])
+    desktop_file_path = "/usr/share/applications/"
 
     @classmethod
     def create(cls, event):
@@ -200,29 +238,12 @@ class GenericContentObject(ContentObject):
     def refresh(self):
         pass
 
-    def get_app_icon(size):
-        app = gio.app_info_get_default_for_type(self.mime_type, False)
-        if not app: return
-        icon_info = app.get_icon()
-        try:
-            if icon_info:
-                if isinstance(icon_info, gio.FileIcon):
-                    return gtk.gdk.pixbuf_new_from_file_at_size(icon_info.get_file().get_path(), size, size)
-                elif isinstance(gicon, gio.ThemedIcon):
-                    iconinfo = common.ICON_THEME.choose_icon(gicon.get_names(), size, gtk.ICON_LOOKUP_USE_BUILTIN)
-        except: pass
-        return gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path(
-            "hicolor/scalable/apps/gnome-activity-journal.svg"), size, size)
 
     def get_icon(self, size=24, can_thumb=False, border=0):
         if hasattr(self, "__icon"):
             return self.__icon
         iconinfo = common.ICON_THEME.lookup_icon(self.mime_type, size, gtk.ICON_LOOKUP_USE_BUILTIN)
-        if iconinfo:
-            location = info.get_filename()
-            icon = gtk.gdk.pixbuf_new_from_file_at_size(location, size, size)
-        else:
-            icon = self.get_app_icon()
+        icon = self.get_actor_pixbuf(size)
         self.__icon = icon
         return self.__icon
 
@@ -256,9 +277,21 @@ class GenericContentObject(ContentObject):
     def __get_thumbview_icon(self):
         if hasattr(self, "__thumbpb"):
             return self.__thumbpb, self.__isthumb
+        icon = self.get_icon(SIZE_LARGE[0]*0.1875)
+        if icon:
+            self.__thumbpb = icon
+            self.__isthumb = False
+            return icon, False
         return self.empty_thumbview_pb, False
 
     def __get_timelineview_icon(self):
+        if hasattr(self, "__timelinepb"):
+            return self.__timelinepb, self.__timeline_isthumb
+        icon = self.get_icon(SIZE_TIMELINEVIEW[0])
+        if icon:
+            self.__timelinepb = icon
+            self.__timeline_isthumb = False
+            return self.__timelinepb, self.__timeline_isthumb
         return self.empty_timelineview_pb, False
 
 
