@@ -38,6 +38,7 @@ from gio_file import GioFile, SIZE_LARGE, SIZE_NORMAL
 from common import *
 import content_objects
 
+
 class PreviewRenderer(gtk.GenericCellRenderer):
     """
     A IconView renderer to be added to a cellayout. It displays a pixbuf and
@@ -50,14 +51,6 @@ class PreviewRenderer(gtk.GenericCellRenderer):
         (gobject.TYPE_PYOBJECT,
          "event to be displayed",
          "event to be displayed",
-         gobject.PARAM_READWRITE,
-         ),
-
-        "active":
-        (gobject.TYPE_BOOLEAN,
-         "If the item is active",
-         "True if active",
-         False,
          gobject.PARAM_READWRITE,
          ),
     }
@@ -73,15 +66,15 @@ class PreviewRenderer(gtk.GenericCellRenderer):
     @property
     def emblems(self):
         return self.content_obj.emblems
+
     @property
     def pixbuf(self):
         return self.content_obj.get_thumbnail(content_objects.SIZE_THUMBVIEW)[0]
-    @property
-    def active(self):
-        return self.get_property("active")
+
     @property
     def event(self):
         return self.content_obj.event
+
     @property
     def isthumb(self):
         return self.content_obj.get_thumbnail(content_objects.SIZE_THUMBVIEW)[1]
@@ -117,8 +110,10 @@ class PreviewRenderer(gtk.GenericCellRenderer):
             render_pixbuf(window, x, y, self.pixbuf)
         else: self.file_render_pixbuf(window, widget, x, y, w, h)
         render_emblems(window, x, y, w, h, self.emblems)
-        if self.active:
-            gobject.timeout_add(2, self.render_info_box, window, widget, cell_area, expose_area, self.event)
+        path = widget.get_path_at_pos(cell_area.x, cell_area.y)
+        if path != None:
+            if widget.active_list[path[0]]:
+                gobject.timeout_add(2, self.render_info_box, window, widget, cell_area, expose_area, self.event)
         return True
 
     def file_render_pixbuf(self, window, widget, x, y, w, h):
@@ -201,7 +196,6 @@ class ImageView(gtk.IconView):
         render = PreviewRenderer()
         self.pack_end(render)
         self.add_attribute(render, "content_obj", 0)
-        self.add_attribute(render, "active", 1)
         self.set_margin(10)
 
     def _set_model_in_thread(self, events):
@@ -210,7 +204,8 @@ class ImageView(gtk.IconView):
         It takes those properties and appends them to the view's model
         """
         lock = threading.Lock()
-        liststore = gtk.ListStore(gobject.TYPE_PYOBJECT, gobject.TYPE_BOOLEAN)
+        self.active_list = []
+        liststore = gtk.ListStore(gobject.TYPE_PYOBJECT)
         gtk.gdk.threads_enter()
         self.set_model(liststore)
         gtk.gdk.threads_leave()
@@ -218,9 +213,11 @@ class ImageView(gtk.IconView):
             uri = get_event_uri(event)
             if not event_exists(uri): continue
             obj = content_objects.choose_content_object(event)
+            if not obj: continue
             gtk.gdk.threads_enter()
             lock.acquire()
-            liststore.append((obj, False))
+            self.active_list.append(False)
+            liststore.append((obj,))
             lock.release()
             gtk.gdk.threads_leave()
 
@@ -248,22 +245,21 @@ class ImageView(gtk.IconView):
         return False
 
     def on_leave_notify(self, widget, event):
-        model = self.get_model()
-        if model:
-            try:
-                model[self.last_active][2] = False
-            except IndexError:pass
-            self.last_active = -1
+        try:
+            self.active_list[self.last_active] = False
+        except IndexError:pass
+        self.last_active = -1
+        self.queue_draw()
 
     def on_motion_notify(self, widget, event):
         val = self.get_item_at_pos(int(event.x), int(event.y))
         if val:
             path, cell = val
             if path[0] != self.last_active:
-                model = self.get_model()
-                model[self.last_active][1] = False
-                model[path[0]][1] = True
+                self.active_list[self.last_active] = False
+                self.active_list[path[0]] = True
                 self.last_active = path[0]
+                self.queue_draw()
         return True
 
     def query_tooltip(self, widget, x, y, keyboard_mode, tooltip):

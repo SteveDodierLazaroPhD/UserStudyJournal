@@ -216,7 +216,6 @@ class TimelineView(gtk.TreeView):
         self.append_column(pcolumn)
         pcolumn.add_attribute(render, "content_obj", 0)
         self.set_headers_visible(False)
-        # self.connect("query-tooltip", self.query_tooltip)
         self.set_property("has-tooltip", True)
         self.set_tooltip_window(StaticPreviewTooltip)
 
@@ -236,6 +235,7 @@ class TimelineView(gtk.TreeView):
             uri = get_event_uri(event)
             if not event_exists(uri): continue
             obj = content_objects.choose_content_object(event)
+            if not obj: continue
             obj.phases = [make_area_from_event(event.timestamp, stop) for (event, stop) in row]
             liststore.append((obj,))
         self.set_model(liststore)
@@ -259,26 +259,6 @@ class TimelineView(gtk.TreeView):
     def on_activate(self, widget, path, column):
         model = self.get_model()
         launch_event(model[path][1])
-
-    def query_tooltip(self, widget, x, y, keyboard_mode, tooltip):
-        """
-        Displays a tooltip based on x, y
-        """
-        model, paths = self.get_selection().get_selected_rows()
-        path = self.get_dest_row_at_pos(int(x), int(y))
-        if path and path[0] in paths:
-            model = self.get_model()
-            event = model[path[0]][1]
-            uri = get_event_uri(event)
-            interpretation = get_event_interpretation(event)
-            tooltip_window = widget.get_tooltip_window()
-            if interpretation == Interpretation.VIDEO.uri:
-                self.set_tooltip_window(VideoPreviewTooltip)
-            else:
-                self.set_tooltip_window(StaticPreviewTooltip)
-            gio_file = GioFile.create(uri)
-            return tooltip_window.preview(gio_file)
-        return False
 
     def change_style(self, widget, old_style):
         """
