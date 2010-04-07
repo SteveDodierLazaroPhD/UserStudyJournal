@@ -134,12 +134,12 @@ class ImageDisplay(gtk.Image, ContentDisplay):
     A display based on GtkImage to display a uri's thumb or icon using GioFile
     """
     def set_uri(self, uri):
-        gfile = GioFile.create(uri)
-        if gfile:
-            if gfile.has_preview():
-                pixbuf = gfile.get_thumbnail(size=SIZE_LARGE, border=3)
+        obj = content_objects.choose_content_object(Event.new_for_values(subject_uri=uri))
+        if obj:
+            if obj.has_preview():
+                pixbuf = obj.get_thumbnail(size=SIZE_LARGE, border=3)
             else:
-                pixbuf = gfile.get_icon(size=256)
+                pixbuf = obj.get_icon(size=256)
             self.set_from_pixbuf(pixbuf)
 
 
