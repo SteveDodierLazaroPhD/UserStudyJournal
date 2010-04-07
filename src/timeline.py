@@ -92,7 +92,7 @@ class TimelineRenderer(gtk.GenericCellRenderer):
 
     @property
     def text(self):
-        return self.content_obj.get_pango_subject_text()
+        return self.content_obj.timelineview_text
 
     @property
     def pixbuf(self):

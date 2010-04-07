@@ -167,7 +167,8 @@ class ContentObject(object):
             self._type_color_representation = common.get_file_color(self.event.subjects[0].interpretation, self.event.subjects[0].mimetype)
         return self._type_color_representation
 
-    def get_pango_subject_text(self):
+    @property
+    def timelineview_text(self):
         """
         Returns the text markup used in timeline widget and elsewhere
         """
@@ -390,7 +391,8 @@ class WebContentObject(ContentObject):
     def launch(self):
         pass
 
-    def get_pango_subject_text(self):
+    @property
+    def timelineview_text(self):
         if not hasattr(self, "__pretty_subject_text"):
             t1 = self.event.subjects[0].uri
             t2 = self.event.subjects[0].text
@@ -482,7 +484,8 @@ class EventGeneratedContentType(ContentObject):
         for node in content.childNodes:
             self.__process_node(node)
 
-    def get_pango_subject_text(self):
+    @property
+    def timelineview_text(self):
         if not hasattr(self, "__pretty_subject_text"):
             t1 = self._header
             t2 = self._body
