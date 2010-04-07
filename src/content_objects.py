@@ -1,6 +1,6 @@
 # -.- coding: utf-8 -.-
 #
-# Filename
+# content_objects.py
 #
 # Copyright © 2010 Randal Barlow
 #
@@ -18,6 +18,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Purpose:
+#  Holds content objects which are something like the trackinfo objects used in
+#  banshee
+#
+
 
 import gio
 import gtk
@@ -31,7 +35,6 @@ from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation
 from config import get_icon_path, get_data_path
 from gio_file import GioFile, THUMBS, ICONS, SIZE_LARGE, SIZE_NORMAL
 import common
-
 
 
 SIZE_THUMBVIEW = (92, 72)
@@ -49,10 +52,11 @@ def choose_content_object(event):
     else:
         return GenericContentObject.create(event)
 
+
 class ContentObject(object):
     """
     Defines the required interface of a Content wrapper that displays all the methods
-    a wrapper implements
+    a wrapper implements. This class is abstract. Do not use.
     """
     desktop_file_path = "/usr/share/applications/"
 
@@ -62,7 +66,9 @@ class ContentObject(object):
     @classmethod
     def create(cls, event):
         """
-        Can return None
+        Can return None which means it will be ignored by most widgets
+
+        :param event: a zeitgeist event
         """
         return cls(event)
 
@@ -82,6 +88,7 @@ class ContentObject(object):
     def mime_type(self):
         return self.event.subjects[0].mimetype
 
+    # Thumbnail methods
     def get_thumbnail(self, size=SIZE_NORMAL, border=0):
         """Returns a pixbuf representing the content"""
         if size == SIZE_THUMBVIEW:
@@ -103,9 +110,17 @@ class ContentObject(object):
     def thumbnail(self):
         return self.get_thumbnail()
 
-    def get_monitor(self):
-        raise NotImplementedError
+    def has_preview(self):
+        """
+        Returns true if this content type can show a preview thumbnail instead of a infomation representation
+        """
+        return False
 
+    def thumb_icon_allowed(self):
+        """True if the content type can use a preview instead of a icon"""
+        return False
+
+    # Icon methods
     def get_icon(self, size=24, can_thumb=False, border=0):
         """
         Returns a icon representing this event
@@ -117,22 +132,6 @@ class ContentObject(object):
     def icon(self):
         return self.get_icon()
 
-    def launch(self):
-        """
-        Launches a event
-        """
-        pass
-
-    def has_preview(self):
-        """
-        Returns true if this content type can show a preview thumbnail instead of a infomation representation
-        """
-        return False
-
-    def thumb_icon_allowed(self):
-        """True if the content type can use a preview instead of a icon"""
-        return False
-
     @property
     def emblems(self):
         """
@@ -143,9 +142,20 @@ class ContentObject(object):
             emblem_collection.append(self.icon)
         return emblem_collection
 
+    # utility
+    def launch(self):
+        """
+        Launches a event
+        """
+        pass
+
+    def get_monitor(self):
+        raise NotImplementedError
+
     # Used for timeline
     phases = None
 
+    # Thumbview and Timelineview methods
     @property
     def type_color_representation(self):
         """
@@ -209,9 +219,9 @@ class ContentObject(object):
 
 class GenericContentObject(ContentObject):
     """
-    Defines the required interface of a Content wrapper that displays all the methods
-    a wrapper implements
+    Used to display Generic content which does not have a better suited content object
     """
+
     empty_thumbview_pb = gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path(
             "hicolor/scalable/apps/gnome-activity-journal.svg"), SIZE_LARGE[0]*0.1875, SIZE_LARGE[1]*0.1875)
     empty_timelineview_pb = gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path(
@@ -231,9 +241,6 @@ class GenericContentObject(ContentObject):
         elif size == SIZE_TIMELINEVIEW:
             return self.__get_timelineview_icon()
         return self.get_icon(size[0])
-
-    def get_monitor(self):
-        raise NotImplementedError
 
     def get_icon(self, size=24, can_thumb=False, border=0):
         if size == 24: return self.empty_24_pb
@@ -285,7 +292,11 @@ class GenericContentObject(ContentObject):
         emblem_collection.append(self.get_actor_pixbuf(16))
         return emblem_collection
 
+
 class FileContentObject(GioFile, ContentObject):
+    """
+    Content object used to display events with subjects which are files
+    """
 
     def __init__(self, event):
         ContentObject.__init__(self, event)
@@ -342,21 +353,12 @@ class FileContentObject(GioFile, ContentObject):
 
 
 class WebContentObject(ContentObject):
-
+    """
+    Displays page visits
+    """
 
     def __init__(self, event):
         super(WebContentObject, self).__init__(event)
-
-    @classmethod
-    def create(cls, event):
-        """
-        Can return None
-        """
-        return cls(event)
-
-    @property
-    def mime_type(self):
-        return self.event.subjects[0].mimetype
 
     def get_thumbnail(self, size=SIZE_NORMAL, border=0):
         if size == SIZE_THUMBVIEW:
@@ -370,9 +372,6 @@ class WebContentObject(ContentObject):
 
     def __get_timelineview_icon(self):
         return self.get_icon(SIZE_LARGE[0]*0.1875), False
-
-    def get_monitor(self):
-        raise NotImplementedError()
 
     def get_icon(self, size=24, can_thumb=False, border=0):
         size = int(size)
@@ -482,9 +481,6 @@ class EventGeneratedContentType(ContentObject):
 
     def __get_timelineview_icon(self):
         return self.get_icon(SIZE_LARGE[0]*0.1875), False
-
-    def get_monitor(self):
-        raise NotImplementedError
 
     def get_icon(self, size=24, can_thumb=False, border=0):
         if ICONS[(size, size)].has_key(self.uri):
