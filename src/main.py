@@ -86,9 +86,8 @@ class Portal(gtk.HBox):
         self.throbber = AnimatedImage(get_data_path("zlogo/zg%d.png"), 150)
         self.throbber.set_tooltip_text(_("Powered by Zeitgeist"))
         self.throbber.set_alignment(0.9, 0.98)
-        aboutbox = gtk.EventBox()
+        self.aboutbox = aboutbox = gtk.EventBox()
         aboutbox.add(self.throbber)
-        aboutbox.connect("button-press-event", self.show_about_window)
         align = gtk.Alignment()
         align.add(self.cal)
         align.set(0, 0, 1, 1)
@@ -98,21 +97,13 @@ class Portal(gtk.HBox):
         calhbox.pack_start(aboutbox, False, False)
         self.vbox.pack_end(calhbox, False, False)
 
-
         # FIXME: We give focus to the text entry so that it doesn't go to the
         # "go back" button. Ideally it would be on the first event of the
         # current day.
-
         self.show_all()
         self.activityview.searchbox.hide()
         self.connect("key-press-event", self._global_keypress_handler)
         self.cal.histogram.connect("column_clicked", self.handle_fwd_sensitivity)
-
-    def show_about_window(self, widget, event):
-        aboutwindow = AboutDialog()
-        aboutwindow.set_transient_for(self)
-        aboutwindow.run()
-        aboutwindow.destroy()
 
     def _global_keypress_handler(self, widget, event):
         if event.state & gtk.gdk.CONTROL_MASK:
@@ -182,7 +173,14 @@ class PortalWindow(gtk.Window):
         start = datetime.date.fromtimestamp(self.portal.activityview.start).strftime("%A")
         self.set_title(_("%s to today") % start + " - " + _("Activity Journal"))
         self.show()
+        self.portal.aboutbox.connect("button-press-event", self.show_about_window)
 
+
+    def show_about_window(self, widget, event):
+        aboutwindow = AboutDialog()
+        aboutwindow.set_transient_for(self)
+        aboutwindow.run()
+        aboutwindow.destroy()
 
     def _title_handler(self, widget, starti, endi, singleday):
         endday = datetime.date.fromtimestamp(endi)
