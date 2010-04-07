@@ -58,7 +58,7 @@ class ContentObject(object):
     Defines the required interface of a Content wrapper that displays all the methods
     a wrapper implements. This class is abstract. Do not use.
     """
-    desktop_file_path = "/usr/share/applications/"
+    desktop_file_paths = ["/usr/share/applications/", "/usr/local/share/applications/"]
 
     def __init__(self, event):
         self._event = event
@@ -190,8 +190,13 @@ class ContentObject(object):
         if self.event.actor in DESKTOP_FILES:
             self._desktop_file = DESKTOP_FILES[self.event.actor]
             return self._desktop_file
-        path = self.event.actor.replace("application://", self.desktop_file_path)
-        if not os.path.exists(path):
+
+        path = None
+        for desktop_path in self.desktop_file_paths:
+            if os.path.exists(self.event.actor.replace("application://", desktop_path)):
+                path = self.event.actor.replace("application://", desktop_path)
+                break
+        if not path:
             return None
         self._desktop_file = DesktopEntry.DesktopEntry(path)
         DESKTOP_FILES[self.event.actor] = self._desktop_file

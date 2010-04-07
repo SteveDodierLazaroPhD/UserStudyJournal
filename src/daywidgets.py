@@ -108,7 +108,7 @@ class ThumbnailDayWidget(GenericViewWidget):
             self.daylabel = DayLabel(self.week_day_string, self.date_string+", "+ self.year_string)
         self.daylabel.set_size_request(100, 60)
         self.daylabel.connect("button-press-event", self.click)
-        self.daylabel.set_tooltip_text(_("Click to return multiday view"))
+        self.daylabel.set_tooltip_text(_("Click to return to multiday view"))
         self.pack_start(self.daylabel, False, False)
         self.show_all()
         self.view.hide_all()

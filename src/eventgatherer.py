@@ -204,7 +204,6 @@ def get_related_events_for_uri(uri, callback):
         Seif look here
         """
         templates = []
-        print uris
         if len(uris) > 0:
             for i, uri in enumerate(uris):
                 templates += [
