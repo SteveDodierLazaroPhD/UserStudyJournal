@@ -151,8 +151,8 @@ class ContentObject(object):
         """
         Uses the tango color pallet to find a color representing the content type
         """
-        if hasattr(self, "_type_color_representation"): return self._type_color_representation
-        self._type_color_representation = common.get_file_color(self.event.subjects[0].interpretation, self.event.subjects[0].mimetype)
+        if not hasattr(self, "_type_color_representation"):
+            self._type_color_representation = common.get_file_color(self.event.subjects[0].interpretation, self.event.subjects[0].mimetype)
         return self._type_color_representation
 
 
@@ -160,15 +160,15 @@ class ContentObject(object):
         """
         Returns the text markup used in timeline widget and elsewhere
         """
-        if hasattr(self, "__pretty_subject_text"): return self.__pretty_subject_text
-        text = common.get_event_text(self.event)
-        interpretation = common.get_event_interpretation(self.event)
-        t = (common.FILETYPESNAMES[interpretation] if
-             interpretation in common.FILETYPESNAMES.keys() else "Unknown")
-        text = text.replace("%", "%%")
-        t1 = "<span color='!color!'><b>" + t + "</b></span>"
-        t2 = "<span color='!color!'>" + text + "</span> "
-        self.__pretty_subject_text = (str(t1) + "\n" + str(t2) + "").replace("&", "&amp;").replace("!color!", "%s")
+        if not hasattr(self, "__pretty_subject_text"):
+            text = common.get_event_text(self.event)
+            interpretation = common.get_event_interpretation(self.event)
+            t = (common.FILETYPESNAMES[interpretation] if
+                 interpretation in common.FILETYPESNAMES.keys() else "Unknown")
+            text = text.replace("%", "%%")
+            t1 = "<span color='!color!'><b>" + t + "</b></span>"
+            t2 = "<span color='!color!'>" + text + "</span> "
+            self.__pretty_subject_text = (str(t1) + "\n" + str(t2) + "").replace("&", "&amp;").replace("!color!", "%s")
         return self.__pretty_subject_text
 
 
@@ -191,13 +191,13 @@ class ContentObject(object):
         """
         Finds a icon for a actor
         """
-        if hasattr(self, "_actor_pixbuf"): return self._actor_pixbuf
-        desktop = self._get_desktop_file()
-        if not desktop:
-            self._actor_pixbuf = None
-        else:
-            name = desktop.getIcon()
-            self._actor_pixbuf = common.get_icon_for_name(name, size)
+        if not hasattr(self, "_actor_pixbuf"):
+            desktop = self._get_desktop_file()
+            if not desktop:
+                self._actor_pixbuf = None
+            else:
+                name = desktop.getIcon()
+                self._actor_pixbuf = common.get_icon_for_name(name, size)
         return self._actor_pixbuf
 
     @property
@@ -308,31 +308,28 @@ class FileContentObject(GioFile, ContentObject):
 
     def __get_thumbview_icon(self):
         """Special method which returns a pixbuf for the thumbview and a ispreview bool describing if it is a preview"""
-        if hasattr(self, "__thumbpb"):
-            return self.__thumbpb, self.__isthumb
-        self.__thumbpb, self.__isthumb = common.PIXBUFCACHE.get_pixbuf_from_uri(self.uri, SIZE_LARGE, iconscale=0.1875, w=SIZE_THUMBVIEW[0], h=SIZE_THUMBVIEW[1])
+        if not hasattr(self, "__thumbpb"):
+            self.__thumbpb, self.__isthumb = common.PIXBUFCACHE.get_pixbuf_from_uri(self.uri, SIZE_LARGE, iconscale=0.1875, w=SIZE_THUMBVIEW[0], h=SIZE_THUMBVIEW[1])
         return self.__thumbpb, self.__isthumb
 
     def __get_timelineview_icon(self):
         """Special method which returns a sized pixbuf for the timeline and a ispreview bool describing if it is a preview"""
-        if hasattr(self, "__timelinepb"):
-            return self.__timelinepb, self.__timeline_isthumb
-
-        usethumb = (True if common.get_event_interpretation(self.event)
-                    in common.MEDIAINTERPRETATIONS else False)
-        thumb = False
-        if common.PIXBUFCACHE.has_key(self.uri) and usethumb:
-            pixbuf, thumb = common.PIXBUFCACHE[self.uri]
-            pixbuf = pixbuf.scale_simple(32, 24, gtk.gdk.INTERP_TILES)
-        else:
-            pixbuf = common.get_event_icon(self.event, 24)
-        if common.PIXBUFCACHE.has_key(self.uri) and usethumb and pixbuf != common.PIXBUFCACHE[self.uri][0]:
-            pixbuf, thumb = common.PIXBUFCACHE[self.uri]
-            pixbuf = pixbuf.scale_simple(32, 24, gtk.gdk.INTERP_TILES)
-        if not pixbuf: pixbuf = GenericContentObject.empty_timelineview_pb
-        self.__timelinepb = pixbuf
-        self.__timeline_isthumb = usethumb&thumb
-        return pixbuf, usethumb & thumb
+        if not hasattr(self, "__timelinepb"):
+            usethumb = (True if common.get_event_interpretation(self.event)
+                        in common.MEDIAINTERPRETATIONS else False)
+            thumb = False
+            if common.PIXBUFCACHE.has_key(self.uri) and usethumb:
+                pixbuf, thumb = common.PIXBUFCACHE[self.uri]
+                pixbuf = pixbuf.scale_simple(32, 24, gtk.gdk.INTERP_TILES)
+            else:
+                pixbuf = common.get_event_icon(self.event, 24)
+            if common.PIXBUFCACHE.has_key(self.uri) and usethumb and pixbuf != common.PIXBUFCACHE[self.uri][0]:
+                pixbuf, thumb = common.PIXBUFCACHE[self.uri]
+                pixbuf = pixbuf.scale_simple(32, 24, gtk.gdk.INTERP_TILES)
+            if not pixbuf: pixbuf = GenericContentObject.empty_timelineview_pb
+            self.__timelinepb = pixbuf
+            self.__timeline_isthumb = usethumb&thumb
+        return self.__timelinepb, self.__timeline_isthumb
 
     @property
     def emblems(self):
@@ -462,15 +459,15 @@ class EventGeneratedContentType(ContentObject):
 
 
     def get_pango_subject_text(self):
-        if hasattr(self, "__pretty_subject_text"): return self.__pretty_subject_text
-        t1 = self._header
-        t2 = self._body
-        t1 = t1.replace("%", "%%")
-        t2 = t2.replace("%", "%%")
-        interpretation = common.get_event_interpretation(self.event)
-        t1 = "<span color='!color!'><b>" + t1 + "</b></span>"
-        t2 = "<span color='!color!'>" + t2 + "</span> "
-        self.__pretty_subject_text = (str(t1) + "\n" + str(t2) + "").replace("&", "&amp;").replace("!color!", "%s")
+        if not hasattr(self, "__pretty_subject_text"):
+            t1 = self._header
+            t2 = self._body
+            t1 = t1.replace("%", "%%")
+            t2 = t2.replace("%", "%%")
+            interpretation = common.get_event_interpretation(self.event)
+            t1 = "<span color='!color!'><b>" + t1 + "</b></span>"
+            t2 = "<span color='!color!'>" + t2 + "</span> "
+            self.__pretty_subject_text = (str(t1) + "\n" + str(t2) + "").replace("&", "&amp;").replace("!color!", "%s")
         return self.__pretty_subject_text
 
     def get_thumbnail(self, size=SIZE_NORMAL, border=0):
@@ -494,10 +491,8 @@ class EventGeneratedContentType(ContentObject):
             return ICONS[(size, size)][self.uri]
         size = int(size)
         #icon = ICONS[(size, size)][self.uri] = gtk.gdk.pixbuf_new_from_file_at_size
-        #icon = self.get_actor_pixbuf(size)
-        #return icon
-
-
+        icon = self.get_actor_pixbuf(size)
+        return icon
 
 
 
