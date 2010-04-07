@@ -19,7 +19,8 @@
 
 # Purpose:
 #  Holds content objects which are something like the trackinfo objects used in
-#  banshee
+#  banshee. All of the display widgets should use these content objects instead
+#  of events or uris.
 #
 
 
@@ -247,6 +248,9 @@ class GenericContentObject(ContentObject):
         return self.get_icon(size[0])
 
     def get_icon(self, size=24, can_thumb=False, border=0):
+        icon = common.get_icon_for_name(self.mime_type.replace("/", "-"), size)
+        if icon:
+            return icon
         if size == 24: return self.empty_24_pb
         if size == 16: return self.empty_16_pb
         icon = self.get_actor_pixbuf(size)
@@ -364,14 +368,15 @@ class WebContentObject(ContentObject):
         return self.get_icon(size[0])
 
     def __get_thumbview_icon(self):
-        return self.get_icon(SIZE_THUMBVIEW[0]), False
+        #return self.get_icon(SIZE_LARGE[0]*0.1875), False
+        return None, False
 
     def __get_timelineview_icon(self):
-        return self.get_icon(SIZE_LARGE[0]*0.1875), False
+        return self.get_icon(SIZE_TIMELINEVIEW[0]), False
 
     def get_icon(self, size=24, can_thumb=False, border=0):
         size = int(size)
-        icon = common.get_icon_for_name(self.mime_type, size)
+        icon = common.get_icon_for_name("text-html", size)
         if not icon:
             icon = self.get_actor_pixbuf(size)
         return icon
@@ -390,6 +395,25 @@ class WebContentObject(ContentObject):
             t2 = "<span color='!color!'>" + t2 + "</span> "
             self.__pretty_subject_text = (str(t1) + "\n" + str(t2) + "").replace("&", "&amp;").replace("!color!", "%s")
         return self.__pretty_subject_text
+
+    @property
+    def thumbview_text(self):
+        if not hasattr(self, "_thumbview_text"):
+            interpretation = common.get_event_interpretation(self.event)
+            t = (common.FILETYPESNAMES[interpretation] if
+                 interpretation in common.FILETYPESNAMES.keys() else "Unknown")
+            self._thumbview_text = t + "\n" + self.event.subjects[0].text.replace("&", "&amp;") + \
+                "\n<small><small>" + self.event.subjects[0].uri.replace("&", "&amp;") + "</small></small>"
+        return self._thumbview_text
+
+    @property
+    def emblems(self):
+        emblem_collection = []
+        emblem_collection.append(self.get_icon(16))
+        emblem_collection.append(None)
+        emblem_collection.append(None)
+        emblem_collection.append(self.get_actor_pixbuf(16))
+        return emblem_collection
 
 
 class EventGeneratedContentType(ContentObject):
@@ -472,10 +496,10 @@ class EventGeneratedContentType(ContentObject):
         return self.get_icon(size[0])
 
     def __get_thumbview_icon(self):
-        return self.get_icon(SIZE_THUMBVIEW[0]), False
+        return self.get_icon(SIZE_LARGE[0]*0.1875), False
 
     def __get_timelineview_icon(self):
-        return self.get_icon(SIZE_LARGE[0]*0.1875), False
+        return self.get_icon(SIZE_TIMELINEVIEW[0]), False
 
     def get_icon(self, size=24, can_thumb=False, border=0):
         if ICONS[(size, size)].has_key(self.uri):
