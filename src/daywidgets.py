@@ -366,31 +366,29 @@ class CategoryBox(gtk.HBox):
                 text = SUPPORTED_SOURCES[category].group_label(len(events))
             else:
                 text = "Unknown"
-                
-            print text
-                       
+
             label = gtk.Label()
             label.set_markup("<span>%s</span>" % text)
             #label.set_ellipsize(pango.ELLIPSIZE_END)
-            
+
             hbox.pack_start(label, True, True, 0)
-            
+
             label = gtk.Label()
             label.set_markup("<span>(%d)</span>" % len(events))
             label.set_alignment(1.0,0.5)
             label.set_alignment(1.0,0.5)
             hbox.pack_end(label, False, False, 2)
-            
+
             hbox.set_border_width(3)
-            
+
             self.expander = gtk.Expander()
             self.expander.set_label_widget(hbox)
-            
+
             self.vbox.pack_start(self.expander, False, False)
             self.expander.add(self.box)#
-            
+
             self.pack_start(self.vbox, True, True, 24)
-            
+
             self.expander.show_all()
             self.show()
             hbox.show_all()
@@ -402,9 +400,9 @@ class CategoryBox(gtk.HBox):
             self.vbox.pack_end(self.box)
             self.box.show()
             self.show()
-            
+
             self.pack_start(self.vbox, True, True, 16)
-            
+
         self.show_all()
 
 
