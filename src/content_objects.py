@@ -41,6 +41,7 @@ SIZE_THUMBVIEW = (92, 72)
 SIZE_TIMELINEVIEW = (32, 24)
 DESKTOP_FILES = {}
 
+
 def choose_content_object(event):
     #Payload selection here
     #if event.payload:
@@ -165,7 +166,6 @@ class ContentObject(object):
             self._type_color_representation = common.get_file_color(self.event.subjects[0].interpretation, self.event.subjects[0].mimetype)
         return self._type_color_representation
 
-
     def get_pango_subject_text(self):
         """
         Returns the text markup used in timeline widget and elsewhere
@@ -180,7 +180,6 @@ class ContentObject(object):
             t2 = "<span color='!color!'>" + text + "</span> "
             self.__pretty_subject_text = (str(t1) + "\n" + str(t2) + "").replace("&", "&amp;").replace("!color!", "%s")
         return self.__pretty_subject_text
-
 
     def _get_desktop_file(self):
         """
@@ -227,12 +226,12 @@ class GenericContentObject(ContentObject):
     Used to display Generic content which does not have a better suited content object
     """
 
-    empty_thumbview_pb = gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path(
-            "hicolor/scalable/apps/gnome-activity-journal.svg"), SIZE_LARGE[0]*0.1875, SIZE_LARGE[1]*0.1875)
+    #empty_thumbview_pb = gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path(
+    #        "hicolor/scalable/apps/gnome-activity-journal.svg"), SIZE_LARGE[0]*0.1875, SIZE_LARGE[1]*0.1875)
     empty_timelineview_pb = gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path(
             "hicolor/scalable/apps/gnome-activity-journal.svg"), SIZE_TIMELINEVIEW[0], SIZE_TIMELINEVIEW[1])
-    empty_large_pb = gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path(
-            "hicolor/scalable/apps/gnome-activity-journal.svg"), SIZE_LARGE[0], SIZE_LARGE[1])
+    #empty_large_pb = gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path(
+    #        "hicolor/scalable/apps/gnome-activity-journal.svg"), SIZE_LARGE[0], SIZE_LARGE[1])
 
     empty_24_pb = gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path(
             "hicolor/scalable/apps/gnome-activity-journal.svg"), 24, 24)
@@ -258,14 +257,6 @@ class GenericContentObject(ContentObject):
 
     def __get_thumbview_icon(self):
         """Special method which returns a pixbuf for the thumbview and a ispreview bool describing if it is a preview"""
-        #if hasattr(self, "__thumbpb"):
-        #    return self.__thumbpb, self.__isthumb
-        #icon = self.get_icon(SIZE_LARGE[0]*0.1875)
-        #if icon:
-        #    self.__thumbpb = icon
-        #    self.__isthumb = False
-        #    return icon, False
-        #return self.empty_thumbview_pb, False
         return None, False
 
     def __get_timelineview_icon(self):
@@ -460,7 +451,6 @@ class EventGeneratedContentType(ContentObject):
         content = document.childNodes[0]
         for node in content.childNodes:
             self.__process_node(node)
-
 
     def get_pango_subject_text(self):
         if not hasattr(self, "__pretty_subject_text"):
