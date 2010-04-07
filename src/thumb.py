@@ -121,16 +121,18 @@ class PreviewRenderer(gtk.GenericCellRenderer):
         """
         Renders a icon and file name for non-thumb objects
         """
-        pixbuf = self.pixbuf
-        imgw, imgh = pixbuf.get_width(), pixbuf.get_height()
         context = window.cairo_create()
-        ix = x + (self.width - imgw)
-        iy = y + self.height - imgh
+        pixbuf = self.pixbuf
+        if pixbuf:
+            imgw, imgh = pixbuf.get_width(), pixbuf.get_height()
+            ix = x + (self.width - imgw)
+            iy = y + self.height - imgh
         context.rectangle(x, y, w, h)
         context.set_source_rgb(1, 1, 1)
         context.fill_preserve()
-        context.set_source_pixbuf(pixbuf, ix, iy)
-        context.fill()
+        if pixbuf:
+            context.set_source_pixbuf(pixbuf, ix, iy)
+            context.fill()
         draw_frame(context, x, y, w, h)
         context = window.cairo_create()
         text = self.content_obj.thumbview_text

@@ -219,6 +219,12 @@ class GenericContentObject(ContentObject):
     empty_large_pb = gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path(
             "hicolor/scalable/apps/gnome-activity-journal.svg"), SIZE_LARGE[0], SIZE_LARGE[1])
 
+    empty_24_pb = gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path(
+            "hicolor/scalable/apps/gnome-activity-journal.svg"), 24, 24)
+
+    empty_16_pb = gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path(
+            "hicolor/scalable/apps/gnome-activity-journal.svg"), 16, 16)
+
     def get_thumbnail(self, size=SIZE_NORMAL, border=0):
         if size == SIZE_THUMBVIEW:
             return self.__get_thumbview_icon()
@@ -230,6 +236,8 @@ class GenericContentObject(ContentObject):
         raise NotImplementedError
 
     def get_icon(self, size=24, can_thumb=False, border=0):
+        if size == 24: return self.empty_24_pb
+        if size == 16: return self.empty_16_pb
         icon = self.get_actor_pixbuf(size)
         return icon
 
@@ -238,14 +246,15 @@ class GenericContentObject(ContentObject):
 
     def __get_thumbview_icon(self):
         """Special method which returns a pixbuf for the thumbview and a ispreview bool describing if it is a preview"""
-        if hasattr(self, "__thumbpb"):
-            return self.__thumbpb, self.__isthumb
-        icon = self.get_icon(SIZE_LARGE[0]*0.1875)
-        if icon:
-            self.__thumbpb = icon
-            self.__isthumb = False
-            return icon, False
-        return self.empty_thumbview_pb, False
+        #if hasattr(self, "__thumbpb"):
+        #    return self.__thumbpb, self.__isthumb
+        #icon = self.get_icon(SIZE_LARGE[0]*0.1875)
+        #if icon:
+        #    self.__thumbpb = icon
+        #    self.__isthumb = False
+        #    return icon, False
+        #return self.empty_thumbview_pb, False
+        return None, False
 
     def __get_timelineview_icon(self):
         """Special method which returns a sized pixbuf for the timeline and a ispreview bool describing if it is a preview"""
@@ -261,10 +270,20 @@ class GenericContentObject(ContentObject):
     @property
     def thumbview_text(self):
         if not hasattr(self, "_thumbview_text"):
-            self._thumbview_text = common.get_event_typename(self.event) + "\n" + self.event.subjects[0].text.replace("&", "&amp;")
+            interpretation = common.get_event_interpretation(self.event)
+            t = (common.FILETYPESNAMES[interpretation] if
+                 interpretation in common.FILETYPESNAMES.keys() else "Unknown")
+            self._thumbview_text = t + "\n" + self.event.subjects[0].text.replace("&", "&amp;")
         return self._thumbview_text
 
-
+    @property
+    def emblems(self):
+        emblem_collection = []
+        emblem_collection.append(self.get_icon(16))
+        emblem_collection.append(None)
+        emblem_collection.append(None)
+        emblem_collection.append(self.get_actor_pixbuf(16))
+        return emblem_collection
 
 class FileContentObject(GioFile, ContentObject):
 
@@ -321,7 +340,7 @@ class FileContentObject(GioFile, ContentObject):
         emblem_collection.append(self.get_icon(16))
         emblem_collection.append(None)
         emblem_collection.append(None)
-        emblem_collection.append(self.get_actor_pixbuf(12))
+        emblem_collection.append(self.get_actor_pixbuf(16))
         return emblem_collection
 
 
@@ -356,11 +375,13 @@ class WebContentObject(ContentObject):
         return self.get_icon(SIZE_LARGE[0]*0.1875), False
 
     def get_monitor(self):
-        raise NotImplementedError
+        raise NotImplementedError()
 
     def get_icon(self, size=24, can_thumb=False, border=0):
         size = int(size)
-        icon = self.get_actor_pixbuf(size)
+        icon = common.get_icon_for_name(self.mime_type, size)
+        if not icon:
+            icon = self.get_actor_pixbuf(size)
         return icon
 
     def launch(self):

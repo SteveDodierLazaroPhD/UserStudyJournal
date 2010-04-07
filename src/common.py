@@ -331,7 +331,7 @@ def render_emblems(window, x, y, w, h, emblems):
     corners = [[x, y],
                [x+w, y],
                [x, y+h],
-               [x+w, y+h]]
+               [x+w-4, y+h-4]]
     context = window.cairo_create()
     for i in xrange(len(emblems)):
         i = i % len(emblems)
