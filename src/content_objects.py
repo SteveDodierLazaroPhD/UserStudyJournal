@@ -221,6 +221,9 @@ class ContentObject(object):
             self._thumbview_text = self.event.subjects[0].text.replace("&", "&amp;")
         return self._thumbview_text
 
+    def get_content(self):
+        return ""
+
 
 class GenericContentObject(ContentObject):
     """
@@ -249,6 +252,9 @@ class GenericContentObject(ContentObject):
 
     def get_icon(self, size=24, can_thumb=False, border=0):
         icon = common.get_icon_for_name(self.mime_type.replace("/", "-"), size)
+        if icon:
+            return icon
+        icon = self.get_actor_pixbuf(size)
         if icon:
             return icon
         if size == 24: return self.empty_24_pb

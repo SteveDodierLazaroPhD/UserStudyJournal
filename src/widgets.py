@@ -50,6 +50,9 @@ try:
 except DBusException:
     print "Tracker disabled."
 
+import content_objects
+
+
 CLIENT = ZeitgeistClient()
 ITEMS = []
 
@@ -416,14 +419,13 @@ class Item(gtk.HBox):
         self.in_search = False
         self.event = event
         self.subject = event.subjects[0]
-        self.gio_file = GioFile.create(self.subject.uri)
+        self.content_obj = content_objects.choose_content_object(self.event)
+        # self.content_obj = GioFile.create(self.subject.uri)
         self.time = float(event.timestamp) / 1000
         self.time =  time.strftime("%H:%M", time.localtime(self.time))
 
-
-
-        if self.gio_file is not None:
-            self.icon = self.gio_file.get_icon(
+        if self.content_obj is not None:
+            self.icon = self.content_obj.get_icon(
                 can_thumb=settings.get('small_thumbnails', False), border=0)
         else:
             self.icon = None
@@ -514,8 +516,8 @@ class Item(gtk.HBox):
 
         TODO: make loading of multimedia thumbs async
         """
-        if self.gio_file is not None and self.gio_file.has_preview():
-            icon_names = self.gio_file.icon_names
+        if self.content_obj is not None and self.content_obj.has_preview():
+            icon_names = self.content_obj.icon_names
             self.set_property("has-tooltip", True)
             self.connect("query-tooltip", self._handle_tooltip)
             if "video-x-generic" in icon_names and gst is not None:
@@ -527,7 +529,7 @@ class Item(gtk.HBox):
         # nothing to do here, we always show the multimedia tooltip
         # if we like video/sound preview later on we can start them here
         tooltip_window = self.get_tooltip_window()
-        return tooltip_window.preview(self.gio_file)
+        return tooltip_window.preview(self.content_obj)
 
     def _show_item_popup(self, widget, ev):
         if ev.button == 3:
@@ -543,8 +545,8 @@ class Item(gtk.HBox):
 
 
     def launch(self, *discard):
-        if self.gio_file is not None:
-            self.gio_file.launch()
+        if self.content_obj is not None:
+            self.content_obj.launch()
 
 
 class AnimatedImage(gtk.Image):

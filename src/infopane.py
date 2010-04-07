@@ -35,6 +35,7 @@ from zeitgeist.client import ZeitgeistClient
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
      ResultType, TimeRange
 
+import content_objects
 from common import *
 from eventgatherer import get_related_events_for_uri
 from thumb import ImageView
@@ -51,6 +52,8 @@ MIMETYPEMAP = {
 
 
 def get_media_type(uri):
+    if not uri.startswith("file://"):
+        return GENERIC_DISPLAY_NAME
     gfile = GioFile.create(uri)
     if not gfile:
         return GENERIC_DISPLAY_NAME
