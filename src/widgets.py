@@ -533,7 +533,7 @@ class Item(gtk.HBox):
 
     def _show_item_popup(self, widget, ev):
         if ev.button == 3:
-            items = [self.subject.uri]
+            items = [self.content_obj]
             ContextMenu.do_popup(ev.time, items)
 
     def set_bookmarked(self, bool_):
@@ -686,36 +686,39 @@ class ContextMenu(gtk.Menu):
         self.popup(None, None, None, 3, time)
 
     def do_open(self, menuitem):
-        for uri in self.subjects:
-            gfile = GioFile(uri)
-            gfile.launch()
+        for obj in self.subjects:
+            obj.launch()
 
     def do_show_info(self, menuitem):
         if self.subjects and self.informationwindow:
-            self.informationwindow.set_uri(self.subjects[0])
+            self.informationwindow.set_content_object(self.subjects[0])
 
     def do_bookmark(self, menuitem):
-        for uri in self.subjects:
+        for obj in self.subjects:
+            uri = obj.uri
             uri = unicode(uri)
             isbookmarked = bookmarker.is_bookmarked(uri)
             if not isbookmarked:
                 bookmarker.bookmark(uri)
 
     def do_unbookmark(self, menuitem):
-        for uri in self.subjects:
+        for obj in self.subjects:
+            uri = obj.uri
             uri = unicode(uri)
             isbookmarked = bookmarker.is_bookmarked(uri)
             if isbookmarked:
                 bookmarker.unbookmark(uri)
 
     def do_delete(self, menuitem):
-        for uri in self.subjects:
-            CLIENT.find_event_ids_for_template(
-                Event.new_for_values(subject_uri=uri),
-                lambda ids: CLIENT.delete_events(map(int, ids)))
+        for obj in self.subjects:
+            CLIENT.delete_events([obj.event.id])
+            #uri = obj.uri
+            #CLIENT.find_event_ids_for_template(
+            #    Event.new_for_values(subject_uri=uri),
+            #    lambda ids: CLIENT.delete_events(map(int, ids)))
 
     def do_send_to(self, menuitem):
-        launch_command("nautilus-sendto", self.subjects)
+        launch_command("nautilus-sendto", map(lambda obj: obj.uri, self.subjects))
 
 
 searchbox = SearchBox()

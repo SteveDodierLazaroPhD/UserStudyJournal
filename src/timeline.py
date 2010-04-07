@@ -242,8 +242,8 @@ class TimelineView(gtk.TreeView):
             path = self.get_dest_row_at_pos(int(event.x), int(event.y))
             if path:
                 model = self.get_model()
-                uri = model[path[0]][0].uri
-                self.popupmenu.do_popup(event.time, [uri])
+                obj = model[path[0]][0]
+                self.popupmenu.do_popup(event.time, [obj])
                 return True
         return False
 

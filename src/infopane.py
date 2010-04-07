@@ -51,18 +51,17 @@ MIMETYPEMAP = {
 }
 
 
-def get_media_type(uri):
-    if not uri.startswith("file://"):
-        return GENERIC_DISPLAY_NAME
-    gfile = GioFile.create(uri)
-    if not gfile:
+def get_media_type(gfile):
+    uri = gfile.uri
+    if not uri.startswith("file://") or not gfile:
         return GENERIC_DISPLAY_NAME
     majortype = gfile.mime_type.split("/")[0]
     for key, mimes in MIMETYPEMAP.iteritems():
         if majortype in mimes:
             return key
-    if "text-x-generic" in gfile.icon_names or "text-x-script" in gfile.icon_names:
-        return "text"
+    if isinstance(gfile, GioFile):
+        if "text-x-generic" in gfile.icon_names or "text-x-script" in gfile.icon_names:
+            return "text"
     return GENERIC_DISPLAY_NAME
 
 
@@ -70,9 +69,9 @@ class ContentDisplay(object):
     """
     The abstract base class for content displays
     """
-    def set_uri(self, uri):
+    def set_content_object(self, obj):
         """
-        :param uri: a uri string which the Content Display displays
+        :param obj a content object which the Content Display displays
         """
         pass
 
@@ -95,7 +94,7 @@ class ScrolledDisplay(gtk.ScrolledWindow):
         self.add(self._child_obj)
         self.set_shadow_type(gtk.SHADOW_IN)
 
-    def set_uri(self, uri): self._child_obj.set_uri(uri)
+    def set_content_object(self, obj): self._child_obj.set_content_object(obj)
     def set_inactive(self): self._child_obj.set_inactive()
 
 
@@ -119,13 +118,12 @@ class TextDisplay(gtksourceview.SourceView if gtksourceview
             self.manager = gtksourceview.SourceLanguagesManager()
             self.textbuffer.set_highlight(True)
 
-    def set_uri(self, uri):
-        gfile = GioFile.create(uri)
-        if gfile:
-            content = gfile.get_content()
+    def set_content_object(self, obj):
+        if obj:
+            content = obj.get_content()
             self.textbuffer.set_text(content)
             if gtksourceview:
-                lang = self.manager.get_language_from_mime_type(gfile.mime_type)
+                lang = self.manager.get_language_from_mime_type(obj.mime_type)
                 self.textbuffer.set_language(lang)
 
 
@@ -133,8 +131,7 @@ class ImageDisplay(gtk.Image, ContentDisplay):
     """
     A display based on GtkImage to display a uri's thumb or icon using GioFile
     """
-    def set_uri(self, uri):
-        obj = content_objects.choose_content_object(Event.new_for_values(subject_uri=uri))
+    def set_content_object(self, obj):
         if obj:
             if obj.has_preview():
                 pixbuf = obj.get_thumbnail(size=SIZE_LARGE, border=3)
@@ -188,10 +185,12 @@ class MultimediaDisplay(gtk.VBox, ContentDisplay):
         self.playbutton.gtkimage.set_from_stock(gtk.STOCK_MEDIA_PLAY, 2)
         self.playing = False
 
-    def set_uri(self, uri):
-        self.player.set_state(gst.STATE_NULL)
-        self.player.set_property("uri", uri)
-        self.set_playing()
+
+    def set_content_object(self, obj):
+        if isinstance(obj, GioFile):
+            self.player.set_state(gst.STATE_NULL)
+            self.player.set_property("uri", obj.uri)
+            self.set_playing()
 
     def set_inactive(self):
         self.player.set_state(gst.STATE_NULL)
@@ -243,7 +242,9 @@ class InformationPane(gtk.Frame):
         "text" : type("TextScrolledWindow", (ScrolledDisplay,),
                       {"child_type" : TextDisplay}),
     }
-    uri = None
+
+    obj = None
+
     def __init__(self):
         super(InformationPane, self).__init__()
         vbox = gtk.VBox()
@@ -268,16 +269,15 @@ class InformationPane(gtk.Frame):
         self.label.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
         self.pathlabel.set_size_request(300, -1)
         self.pathlabel.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
-        def _launch_uri(w):
-            gfile = GioFile.create(self.uri)
-            if gfile: gfile.launch()
-        self.openbutton.connect("clicked", _launch_uri)
+        def _launch(w):
+            self.obj.launch()
+        self.openbutton.connect("clicked", _launch)
 
-    def set_displaytype(self, uri):
+    def set_displaytype(self, obj):
         """
         Determines the ContentDisplay to use for a given uri
         """
-        media_type = get_media_type(uri)
+        media_type = get_media_type(obj)
         display_widget = self.displays[media_type]
         if isinstance(display_widget, type):
             display_widget = self.displays[media_type] = display_widget()
@@ -287,20 +287,14 @@ class InformationPane(gtk.Frame):
                 self.box.remove(child)
                 child.set_inactive()
             self.box.add(display_widget)
-        display_widget.set_uri(uri)
+        display_widget.set_content_object(obj)
         self.show_all()
 
-    def set_uri(self, uri):
-        """
-        :param uri: Sets the information pane's uri
-        """
-        self.uri = uri
-        self.set_displaytype(uri)
-        filename = os.path.basename(uri).replace("&", "&amp;").replace("%20", " ")
-        if not filename:
-            filename = uri.replace("&", "&amp;").replace("%20", " ")
-        self.label.set_markup("<span size='13336'>" + filename + "</span>")
-        self.pathlabel.set_markup("<span color='#979797'>" + uri + "</span>")
+    def set_content_object(self, obj):
+        self.obj = obj
+        self.set_displaytype(obj)
+        self.label.set_markup("<span size='13336'>" + obj.thumbview_text + "</span>")
+        self.pathlabel.set_markup("<span color='#979797'>" + obj.uri + "</span>")
 
     def set_inactive(self):
         display = self.box.get_child()
@@ -360,14 +354,11 @@ class InformationWindow(gtk.Window):
         self.infopane.set_inactive()
         return True
 
-    def set_uri(self, uri):
-        """
-        :param uri: a uri which is set as the window's current focus
-        """
+    def set_content_object(self, obj):
         def _callback(events):
             self.relatedpane.set_model_from_list(events)
-        get_related_events_for_uri(uri, _callback)
-        self.infopane.set_uri(uri)
+        get_related_events_for_uri(obj.uri, _callback)
+        self.infopane.set_content_object(obj)
         self.show_all()
 
 

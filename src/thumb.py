@@ -241,8 +241,8 @@ class ImageView(gtk.IconView):
             if val:
                 path, cell = val
                 model = self.get_model()
-                uri = model[path[0]][0].event.subjects[0].uri
-                self.popupmenu.do_popup(event.time, [uri])
+                obj = model[path[0]][0]
+                self.popupmenu.do_popup(event.time, [obj])
         return False
 
     def on_leave_notify(self, widget, event):

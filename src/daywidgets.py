@@ -337,51 +337,77 @@ class DayWidget(gtk.VBox):
             part = DayPartWidget(period[0], period[1], period[2])
             self.view.pack_start(part, False, False)
 
-class CategoryBox(gtk.VBox):
+class CategoryBox(gtk.HBox):
 
     def __init__(self, category, events, pinnable = False):
         super(CategoryBox, self).__init__()
-
         self.view = gtk.VBox(True)
+        self.vbox = gtk.VBox()
         for event in events:
             item = Item(event, pinnable)
             hbox = gtk.HBox ()
-            label = gtk.Label("")
-            hbox.pack_start(label, False, False, 7)
+            #label = gtk.Label("")
+            #hbox.pack_start(label, False, False, 7)
             hbox.pack_start(item, True, True, 0)
             self.view.pack_start(hbox, False, False, 0)
             hbox.show()
-            label.show()
+            #label.show()
 
         # If this isn't a set of ungrouped events, give it a label
         if category:
             # Place the items into a box and simulate left padding
             self.box = gtk.HBox()
-            label = gtk.Label("")
-            self.box.pack_start(label, False, False, 7)
+            #label = gtk.Label("")
             self.box.pack_start(self.view)
-            self.pack_end(self.box)
 
+            hbox = gtk.HBox()
             # Add the title button
-            self.btn = CategoryButton(category, len(events))
-            self.btn.connect("toggle", self.on_toggle)
-            hbox = gtk.HBox ()
-            lbl = gtk.Label("")
-            hbox.pack_start(lbl, False, False, 8)
-            hbox.pack_start(self.btn, True, True, 0)
-            self.pack_start(hbox, False, False)
-
+            if category in SUPPORTED_SOURCES:
+                text = SUPPORTED_SOURCES[category].group_label(len(events))
+            else:
+                text = "Unknown"
+                
+            print text
+                       
+            label = gtk.Label()
+            label.set_markup("<span>%s</span>" % text)
+            #label.set_ellipsize(pango.ELLIPSIZE_END)
+            
+            hbox.pack_start(label, True, True, 0)
+            
+            label = gtk.Label()
+            label.set_markup("<span>(%d)</span>" % len(events))
+            label.set_alignment(1.0,0.5)
+            label.set_alignment(1.0,0.5)
+            hbox.pack_end(label, False, False, 2)
+            
+            hbox.set_border_width(3)
+            
+            self.expander = gtk.Expander()
+            self.expander.set_label_widget(hbox)
+            
+            self.vbox.pack_start(self.expander, False, False)
+            self.expander.add(self.box)#
+            
+            self.pack_start(self.vbox, True, True, 24)
+            
+            self.expander.show_all()
             self.show()
             hbox.show_all()
             label.show_all()
-            self.btn.show()
             self.view.show()
 
         else:
             self.box = self.view
-            self.pack_end(self.box)
+            self.vbox.pack_end(self.box)
             self.box.show()
             self.show()
+            
+            self.pack_start(self.vbox, True, True, 16)
+            
+        self.show_all()
+
+
 
 
     def on_toggle(self, view, bool):
