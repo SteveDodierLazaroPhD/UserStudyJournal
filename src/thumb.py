@@ -68,15 +68,15 @@ class PreviewRenderer(gtk.GenericCellRenderer):
 
     @property
     def pixbuf(self):
-        return self.content_obj.get_thumbnail(content_objects.SIZE_THUMBVIEW)[0]
+        return self.content_obj.thumbview_icon[0]
+
+    @property
+    def isthumb(self):
+        return self.content_obj.thumbview_icon[1]
 
     @property
     def event(self):
         return self.content_obj.event
-
-    @property
-    def isthumb(self):
-        return self.content_obj.get_thumbnail(content_objects.SIZE_THUMBVIEW)[1]
 
     def __init__(self):
         super(PreviewRenderer, self).__init__()

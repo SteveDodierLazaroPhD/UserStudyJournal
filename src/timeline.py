@@ -96,11 +96,11 @@ class TimelineRenderer(gtk.GenericCellRenderer):
 
     @property
     def pixbuf(self):
-        return self.content_obj.get_thumbnail(content_objects.SIZE_TIMELINEVIEW)[0]
+        return self.content_obj.timelineview_icon[0]
 
     @property
     def isthumb(self):
-        return self.content_obj.get_thumbnail(content_objects.SIZE_TIMELINEVIEW)[1]
+        return self.content_obj.timelineview_icon[1]
 
     def __init__(self):
         super(TimelineRenderer, self).__init__()

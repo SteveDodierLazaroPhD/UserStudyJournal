@@ -37,13 +37,22 @@ from config import get_icon_path, get_data_path
 from gio_file import GioFile, THUMBS, ICONS, SIZE_LARGE, SIZE_NORMAL
 import common
 
-
+# Defines some additional icon sizes
 SIZE_THUMBVIEW = (92, 72)
 SIZE_TIMELINEVIEW = (32, 24)
+
+# Caches desktop files
 DESKTOP_FILES = {}
 
 
 def choose_content_object(event):
+    """
+    :param event: a zeitgeist.datamodel.Event
+
+    :returns a instance of the best possible ContentObject subclass or None if
+    no correct Content Object was found or if that the correct Content object
+    rejected the given event
+    """
     #Payload selection here
     #if event.payload:
     #    print event.payload
@@ -57,9 +66,9 @@ def choose_content_object(event):
 
 class ContentObject(object):
     """
-    Defines the required interface of a Content wrapper that displays all the methods
-    a wrapper implements. This class is abstract. Do not use.
+    Defines the required interface of a Content object. This is a abstract class.
     """
+    # Paths where .desktop files are stored.
     desktop_file_paths = ["/usr/share/applications/", "/usr/local/share/applications/"]
 
     def __init__(self, event):
@@ -68,9 +77,8 @@ class ContentObject(object):
     @classmethod
     def create(cls, event):
         """
-        Can return None which means it will be ignored by most widgets
-
         :param event: a zeitgeist event
+        :returns: a ContentObject instance or None
         """
         return cls(event)
 
@@ -92,20 +100,18 @@ class ContentObject(object):
 
     # Thumbnail methods
     def get_thumbnail(self, size=SIZE_NORMAL, border=0):
-        """Returns a pixbuf representing the content"""
-        if size == SIZE_THUMBVIEW:
-            return self.__get_thumbview_icon()
-        elif size == SIZE_TIMELINEVIEW:
-            return self.__get_timelineview_icon()
+        """:returns: a pixbuf representing the content"""
         thumb = None
         return thumb
 
-    def __get_thumbview_icon(self):
-        """Special method which returns a pixbuf for the thumbview and a ispreview bool describing if it is a preview"""
+    @property
+    def thumbview_icon(self):
+        """:returns: tuple with containing a pixbuf for the thumbview and a ispreview bool describing if it is a preview"""
         return None, False
 
-    def __get_timelineview_icon(self):
-        """Special method which returns a sized pixbuf for the timeline and a ispreview bool describing if it is a preview"""
+    @property
+    def timelineview_icon(self):
+        """:returns: tuple with containing a sized pixbuf for the timeline and a ispreview bool describing if it is a preview"""
         return None, False
 
     @property
@@ -114,18 +120,18 @@ class ContentObject(object):
 
     def has_preview(self):
         """
-        Returns true if this content type can show a preview thumbnail instead of a infomation representation
+        :returns: True if this content type can show a preview thumbnail instead of a infomation representation else False
         """
         return False
 
     def thumb_icon_allowed(self):
-        """True if the content type can use a preview instead of a icon"""
+        """:returns: True if the content type can use a preview instead of a icon else False"""
         return False
 
     # Icon methods
     def get_icon(self, size=24, can_thumb=False, border=0):
         """
-        Returns a icon representing this event
+        :Returns: a pixbuf representing this event's icon
         """
         icon = None
         return icon
@@ -137,7 +143,7 @@ class ContentObject(object):
     @property
     def emblems(self):
         """
-        Returns emblem pixbufs for the content
+        :returns: a pixbuf array where each element is a emblem with some meaning to this object
         """
         emblem_collection = []
         if not self.has_preview:
@@ -152,7 +158,7 @@ class ContentObject(object):
         pass
 
     def get_monitor(self):
-        raise NotImplementedError
+        raise NotImplementedError()
 
     # Used for timeline
     phases = None
@@ -162,6 +168,8 @@ class ContentObject(object):
     def type_color_representation(self):
         """
         Uses the tango color pallet to find a color representing the content type
+
+        :returns: a rgb tuple
         """
         if not hasattr(self, "_type_color_representation"):
             self._type_color_representation = common.get_file_color(self.event.subjects[0].interpretation, self.event.subjects[0].mimetype)
@@ -170,7 +178,7 @@ class ContentObject(object):
     @property
     def timelineview_text(self):
         """
-        Returns the text markup used in timeline widget and elsewhere
+        :returns: a string of text markup used in timeline widget and elsewhere
         """
         if not hasattr(self, "__pretty_subject_text"):
             text = common.get_event_text(self.event)
@@ -182,6 +190,15 @@ class ContentObject(object):
             t2 = "<span color='!color!'>" + text + "</span> "
             self.__pretty_subject_text = (str(t1) + "\n" + str(t2) + "").replace("&", "&amp;").replace("!color!", "%s")
         return self.__pretty_subject_text
+
+    @property
+    def thumbview_text(self):
+        """
+        :returns: a string of text used in thumb widget and elsewhere
+        """
+        if not hasattr(self, "_thumbview_text"):
+            self._thumbview_text = self.event.subjects[0].text.replace("&", "&amp;")
+        return self._thumbview_text
 
     def _get_desktop_file(self):
         """
@@ -206,6 +223,8 @@ class ContentObject(object):
     def get_actor_pixbuf(self, size):
         """
         Finds a icon for a actor
+
+        :returns: a pixbuf
         """
         if not hasattr(self, "_actor_pixbuf"):
             desktop = self._get_desktop_file()
@@ -216,13 +235,10 @@ class ContentObject(object):
                 self._actor_pixbuf = common.get_icon_for_name(name, size)
         return self._actor_pixbuf
 
-    @property
-    def thumbview_text(self):
-        if not hasattr(self, "_thumbview_text"):
-            self._thumbview_text = self.event.subjects[0].text.replace("&", "&amp;")
-        return self._thumbview_text
-
     def get_content(self):
+        """
+        :returns: a string representing this content objects content
+        """
         return ""
 
 
@@ -231,13 +247,8 @@ class GenericContentObject(ContentObject):
     Used to display Generic content which does not have a better suited content object
     """
 
-    #empty_thumbview_pb = gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path(
-    #        "hicolor/scalable/apps/gnome-activity-journal.svg"), SIZE_LARGE[0]*0.1875, SIZE_LARGE[1]*0.1875)
     empty_timelineview_pb = gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path(
             "hicolor/scalable/apps/gnome-activity-journal.svg"), SIZE_TIMELINEVIEW[0], SIZE_TIMELINEVIEW[1])
-    #empty_large_pb = gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path(
-    #        "hicolor/scalable/apps/gnome-activity-journal.svg"), SIZE_LARGE[0], SIZE_LARGE[1])
-
     empty_24_pb = gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path(
             "hicolor/scalable/apps/gnome-activity-journal.svg"), 24, 24)
 
@@ -245,10 +256,6 @@ class GenericContentObject(ContentObject):
             "hicolor/scalable/apps/gnome-activity-journal.svg"), 16, 16)
 
     def get_thumbnail(self, size=SIZE_NORMAL, border=0):
-        if size == SIZE_THUMBVIEW:
-            return self.__get_thumbview_icon()
-        elif size == SIZE_TIMELINEVIEW:
-            return self.__get_timelineview_icon()
         return self.get_icon(size[0])
 
     def get_icon(self, size=24, can_thumb=False, border=0):
@@ -263,14 +270,13 @@ class GenericContentObject(ContentObject):
         icon = self.get_actor_pixbuf(size)
         return icon
 
-    def launch(self):
-        pass
-
-    def __get_thumbview_icon(self):
+    @property
+    def thumbview_icon(self):
         """Special method which returns a pixbuf for the thumbview and a ispreview bool describing if it is a preview"""
         return None, False
 
-    def __get_timelineview_icon(self):
+    @property
+    def timelineview_icon(self):
         """Special method which returns a sized pixbuf for the timeline and a ispreview bool describing if it is a preview"""
         if hasattr(self, "__timelinepb"):
             return self.__timelinepb, self.__timeline_isthumb
@@ -299,6 +305,10 @@ class GenericContentObject(ContentObject):
         emblem_collection.append(self.get_actor_pixbuf(16))
         return emblem_collection
 
+    def launch(self):
+        pass
+
+
 
 class FileContentObject(GioFile, ContentObject):
     """
@@ -318,19 +328,17 @@ class FileContentObject(GioFile, ContentObject):
             return None
 
     def get_thumbnail(self, size=SIZE_NORMAL, border=0):
-        if size == SIZE_THUMBVIEW:
-            return self.__get_thumbview_icon()
-        elif size == SIZE_TIMELINEVIEW:
-            return self.__get_timelineview_icon()
         return GioFile.get_thumbnail(self, size, border)
 
-    def __get_thumbview_icon(self):
+    @property
+    def thumbview_icon(self):
         """Special method which returns a pixbuf for the thumbview and a ispreview bool describing if it is a preview"""
         if not hasattr(self, "__thumbpb"):
             self.__thumbpb, self.__isthumb = common.PIXBUFCACHE.get_pixbuf_from_uri(self.uri, SIZE_LARGE, iconscale=0.1875, w=SIZE_THUMBVIEW[0], h=SIZE_THUMBVIEW[1])
         return self.__thumbpb, self.__isthumb
 
-    def __get_timelineview_icon(self):
+    @property
+    def timelineview_icon(self):
         """Special method which returns a sized pixbuf for the timeline and a ispreview bool describing if it is a preview"""
         if not hasattr(self, "__timelinepb"):
             usethumb = (True if common.get_event_interpretation(self.event)
@@ -368,17 +376,15 @@ class WebContentObject(ContentObject):
         super(WebContentObject, self).__init__(event)
 
     def get_thumbnail(self, size=SIZE_NORMAL, border=0):
-        if size == SIZE_THUMBVIEW:
-            return self.__get_thumbview_icon()
-        elif size == SIZE_TIMELINEVIEW:
-            return self.__get_timelineview_icon()
         return self.get_icon(size[0])
 
-    def __get_thumbview_icon(self):
+    @property
+    def thumbview_icon(self):
         #return self.get_icon(SIZE_LARGE[0]*0.1875), False
         return None, False
 
-    def __get_timelineview_icon(self):
+    @property
+    def timelineview_icon(self):
         return self.get_icon(SIZE_TIMELINEVIEW[0]), False
 
     def get_icon(self, size=24, can_thumb=False, border=0):
@@ -428,10 +434,21 @@ class EventGeneratedContentType(ContentObject):
     """
     Takes markup in a events payload and builds a event around it
 
+    Examples:
+
     <Content name="Web history">
     <thumbnail uri="file:///home/tehk/.cache/somethumb.png"/>
     <!-- ${application} and ${subject_uri} are replaced by gaj with values from the event -->
     <launcher command="${application} ${subject_uri}"/>
+    </Content>
+
+    <Content name="Telepathy">
+     <header>johnsmith@foo.bar</header>
+     <body>
+      John: Here is a talking point
+      You: Ok that looks fine
+     </body>
+     <launcher command="{application} johnsmith@foo.bar"/>
     </Content>
 
     Disabled until we write a specification for the payload markup
@@ -498,23 +515,20 @@ class EventGeneratedContentType(ContentObject):
         return self.__pretty_subject_text
 
     def get_thumbnail(self, size=SIZE_NORMAL, border=0):
-        if size == SIZE_THUMBVIEW:
-            return self.__get_thumbview_icon()
-        elif size == SIZE_TIMELINEVIEW:
-            return self.__get_timelineview_icon()
         return self.get_icon(size[0])
 
-    def __get_thumbview_icon(self):
+    @property
+    def thumbview_icon(self):
         return self.get_icon(SIZE_LARGE[0]*0.1875), False
 
-    def __get_timelineview_icon(self):
+    @property
+    def timelineview_icon(self):
         return self.get_icon(SIZE_TIMELINEVIEW[0]), False
 
     def get_icon(self, size=24, can_thumb=False, border=0):
         if ICONS[(size, size)].has_key(self.uri):
             return ICONS[(size, size)][self.uri]
         size = int(size)
-        #icon = ICONS[(size, size)][self.uri] = gtk.gdk.pixbuf_new_from_file_at_size
         icon = self.get_actor_pixbuf(size)
         return icon
 
