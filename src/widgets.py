@@ -443,18 +443,18 @@ class Item(gtk.HBox):
             self.search_results = searchbox.results
             rc_style = self.style
             if self.subject.uri in searchbox.results:
-                self.label.set_markup("<span><b>"+self.subject.text+"</b></span>")
+                self.label.set_markup("<span><b>"+self.content_obj.text+"</b></span>")
                 self.in_search = True
                 color = rc_style.base[gtk.STATE_SELECTED]
                 self.label.modify_fg(gtk.STATE_NORMAL, color)
             else:
-                self.label.set_markup("<span>"+self.subject.text+"</span>")
+                self.label.set_markup("<span>"+self.content_obj.text+"</span>")
                 self.in_search = False
                 color = rc_style.text[gtk.STATE_NORMAL]
                 self.label.modify_fg(gtk.STATE_NORMAL, color)
 
     def __init_widget(self):
-        self.label = gtk.Label(self.subject.text)
+        self.label = gtk.Label(self.content_obj.text)
         self.label.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
         self.label.set_alignment(0.0, 0.5)
 

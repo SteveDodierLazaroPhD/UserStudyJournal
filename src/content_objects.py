@@ -176,11 +176,17 @@ class ContentObject(object):
         return self._type_color_representation
 
     @property
+    def text(self):
+        if not hasattr(self, "__text"):
+            self.__text = self.event.subjects[0].text
+        return self.__text
+
+    @property
     def timelineview_text(self):
         """
         :returns: a string of text markup used in timeline widget and elsewhere
         """
-        if not hasattr(self, "__pretty_subject_text"):
+        if not hasattr(self, "__timelineview_text"):
             text = common.get_event_text(self.event)
             interpretation = common.get_event_interpretation(self.event)
             t = (common.FILETYPESNAMES[interpretation] if
@@ -188,8 +194,8 @@ class ContentObject(object):
             text = text.replace("%", "%%")
             t1 = "<span color='!color!'><b>" + t + "</b></span>"
             t2 = "<span color='!color!'>" + text + "</span> "
-            self.__pretty_subject_text = (str(t1) + "\n" + str(t2) + "").replace("&", "&amp;").replace("!color!", "%s")
-        return self.__pretty_subject_text
+            self.__timelineview_text = (str(t1) + "\n" + str(t2) + "").replace("&", "&amp;").replace("!color!", "%s")
+        return self.__timelineview_text
 
     @property
     def thumbview_text(self):
@@ -430,107 +436,37 @@ class WebContentObject(ContentObject):
         return emblem_collection
 
 
-class EventGeneratedContentType(ContentObject):
+class IconContentType(ContentObject):
     """
-    Takes markup in a events payload and builds a event around it
-
-    Examples:
-
-    <Content name="Web history">
-    <thumbnail uri="file:///home/tehk/.cache/somethumb.png"/>
-    <!-- ${application} and ${subject_uri} are replaced by gaj with values from the event -->
-    <launcher command="${application} ${subject_uri}"/>
-    </Content>
-
-    <Content name="Telepathy">
-     <header>johnsmith@foo.bar</header>
-     <body>
-      John: Here is a talking point
-      You: Ok that looks fine
-     </body>
-     <launcher command="{application} johnsmith@foo.bar"/>
-    </Content>
-
-    Disabled until we write a specification for the payload markup
     """
+
+    class Icon(object):
+        uri = ""
+        is_thumbnail = False
+
+    class Text(object):
+        header = ""
+        body = ""
+
+
     def __init__(self, event):
-        super(self, EventGeneratedContentType).__init__(event)
+        super(self, IconContentType).__init__(event)
+        self.Text = self.Text()
+        self.Icon = self.Icon()
 
-        self._header = common.get_event_interpretation(self.event)
-        self._body = self.event.subjects[0].text
-        self._thumb_uri = ""
-        self._icon_uri = ""
-        self._command = ""
 
-    def __process_launcher(self, node):
-        self._command = node.getAttribute("command")
 
-    def __process_thumb(self, node):
-        node = dom.Element()
-        self._thumb_uri = node.getAttribute("uri")
-        if not self._icon_uri:
-            self._icon_uri = node.getAttribute("uri")
 
-    def __process_header(self, node):
-        text_node = node.childNodes[0]
-        self._header = text_node.nodeValue()
 
-    def __process_body(self, node):
-        text_node = node.childNodes[0]
-        self._body = text_node.nodeValue()
 
-    def __process_icon(self, node):
-        self._icon_uri = node.getAttribute("uri")
 
-    def __process_node(node):
-        node_func_map = {"thumbnail" : self.__process_thumb,
-                         "header" : self.__process_header,
-                         "body" : self.__process_body,
-                         "icon" : self.__process_icon,
-                         "launcher" : self.__process_launcher,
-                         }
-        if not node.localName:
-            if node_func_map.has_key(node.localName):
-                node_func_map[node.localName](node)
 
-    def __process_payload(self, payload):
-        payload_string = payload
 
-        document = dom.parseString(payload_string)
-        content = document.childNodes[0]
-        for node in content.childNodes:
-            self.__process_node(node)
 
-    @property
-    def timelineview_text(self):
-        if not hasattr(self, "__pretty_subject_text"):
-            t1 = self._header
-            t2 = self._body
-            t1 = t1.replace("%", "%%")
-            t2 = t2.replace("%", "%%")
-            interpretation = common.get_event_interpretation(self.event)
-            t1 = "<span color='!color!'><b>" + t1 + "</b></span>"
-            t2 = "<span color='!color!'>" + t2 + "</span> "
-            self.__pretty_subject_text = (str(t1) + "\n" + str(t2) + "").replace("&", "&amp;").replace("!color!", "%s")
-        return self.__pretty_subject_text
 
-    def get_thumbnail(self, size=SIZE_NORMAL, border=0):
-        return self.get_icon(size[0])
 
-    @property
-    def thumbview_icon(self):
-        return self.get_icon(SIZE_LARGE[0]*0.1875), False
 
-    @property
-    def timelineview_icon(self):
-        return self.get_icon(SIZE_TIMELINEVIEW[0]), False
 
-    def get_icon(self, size=24, can_thumb=False, border=0):
-        if ICONS[(size, size)].has_key(self.uri):
-            return ICONS[(size, size)][self.uri]
-        size = int(size)
-        icon = self.get_actor_pixbuf(size)
-        return icon
 
 
 
