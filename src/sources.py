@@ -42,7 +42,6 @@ SUPPORTED_SOURCES = {
     Interpretation.IMAGE.uri: Source(Interpretation.IMAGE, "image", _("Worked with an Image"), _("Worked with Images")),
     Interpretation.DOCUMENT.uri: Source(Interpretation.DOCUMENT, "stock_new-presentation", _("Edited or Read Document"), _("Edited or Read Documents")),
     Interpretation.SOURCECODE.uri: Source(Interpretation.SOURCECODE, "applications-development", _("Edited or Read Code"), _("Edited or Read Code")),
+    Interpretation.IM_MESSAGE.uri: Source(Interpretation.IM_MESSAGE, "applications-internet", _("Conversation"), _("Conversations")),
     Interpretation.UNKNOWN.uri: Source(Interpretation.UNKNOWN, "applications-other", _("Other Activity"), _("Other Activities")),
-    Interpretation.IM_MESSAGE.uri: Source(Interpretation.IM_MESSAGE, "applications-internet", _("Web Activity"), _("Web Activities")),
 }
-

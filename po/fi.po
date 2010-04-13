@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-activity-journal\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-02-21 00:28+0100\n"
-"PO-Revision-Date: 2010-01-28 04:26+0000\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-02-28 19:33+0100\n"
+"PO-Revision-Date: 2010-04-10 04:38+0000\n"
+"Last-Translator: GNOME Zeitgeist Team <gnome-zeitgeist@lists.launchpad.net>\n"
 "Language-Team: Finnish <fi@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2010-02-23 05:16+0000\n"
+"X-Launchpad-Export-Date: 2010-04-11 04:20+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../gnome-activity-journal:76
@@ -24,82 +24,48 @@ msgstr ""
 
 #: ../gnome-activity-journal:83
 msgid "ERROR"
-msgstr ""
+msgstr "VIRHE"
 
 #: ../gnome-activity-journal:83
 msgid "Unable to connect to Zeitgeist:"
-msgstr ""
+msgstr "Yhteyttä Zeitgeistiin ei voitu luoda:"
 
-#: ../src/logwidget.py:81
-msgid "Video"
-msgstr ""
-
-#: ../src/logwidget.py:82
-msgid "Music"
-msgstr ""
-
-#: ../src/logwidget.py:83
-msgid "Document"
-msgstr ""
-
-#: ../src/logwidget.py:84
-msgid "Image"
-msgstr ""
-
-#: ../src/logwidget.py:85
-msgid "Source Code"
-msgstr ""
-
-#: ../src/logwidget.py:86
-msgid "Unknown"
-msgstr ""
-
-#: ../src/thumbview.py:38 ../src/daywidgets.py:253
-msgid "Morning"
-msgstr ""
-
-#: ../src/thumbview.py:38 ../src/daywidgets.py:254
-msgid "Afternoon"
-msgstr ""
-
-#: ../src/thumbview.py:38 ../src/daywidgets.py:255
-msgid "Evening"
-msgstr ""
-
-#: ../src/histogram.py:510 ../src/main.py:147 ../src/daywidgets.py:79
-#: ../src/daywidgets.py:194 ../src/daywidgets.py:274 ../src/daywidgets.py:447
+#: ../src/histogram.py:468 ../src/main.py:187 ../src/daywidgets.py:61
+#: ../src/daywidgets.py:250 ../src/daywidgets.py:412
 msgid "Today"
-msgstr ""
+msgstr "Tänään"
 
-#: ../src/histogram.py:545
+#: ../src/histogram.py:522
 msgid "item"
 msgid_plural "items"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/histogram.py:547
+#: ../src/histogram.py:524
 msgid "Click today to return to today"
 msgstr ""
 
-#: ../src/main.py:44 ../extra/gnome-activity-journal.desktop.in.h:1
-msgid "Activity Journal"
-msgstr ""
-
-#: ../src/main.py:105
+#: ../src/main.py:86
 msgid "Powered by Zeitgeist"
 msgstr ""
 
-#: ../src/main.py:134 ../src/main.py:161
-msgid "to"
+#: ../src/main.py:158 ../src/main.py:180 ../src/main.py:201
+#: ../extra/gnome-activity-journal.desktop.in.h:1
+msgid "Activity Journal"
 msgstr ""
 
-#: ../src/main.py:134
-msgid " Today"
+#: ../src/main.py:180
+#, python-format
+msgid "%s to today"
 msgstr ""
 
-#: ../src/main.py:150 ../src/daywidgets.py:81 ../src/daywidgets.py:196
-#: ../src/daywidgets.py:276
+#: ../src/main.py:190 ../src/daywidgets.py:63 ../src/daywidgets.py:252
 msgid "Yesterday"
+msgstr "Eilen"
+
+#: ../src/main.py:201
+#, python-format
+msgid "%s to %s"
 msgstr ""
 
 #. TODO: Move this into Zeitgeist's library, implemented properly
@@ -137,31 +103,83 @@ msgstr ""
 
 #: ../src/sources.py:45
 msgid "Other Activity"
-msgstr ""
+msgstr "Muu toiminta"
 
 #: ../src/sources.py:45
 msgid "Other Activities"
 msgstr ""
 
+#: ../src/daywidgets.py:111 ../src/daywidgets.py:199
+msgid "Click to return multiday view"
+msgstr ""
+
+#: ../src/daywidgets.py:229 ../src/common.py:97
+msgid "Morning"
+msgstr "Aamupäivä"
+
+#: ../src/daywidgets.py:230 ../src/common.py:97
+msgid "Afternoon"
+msgstr "Iltapäivä"
+
+#: ../src/daywidgets.py:231 ../src/common.py:97
+msgid "Evening"
+msgstr "Ilta"
+
+#: ../src/daywidgets.py:312
+msgid "Left click for a detailed timeline view"
+msgstr ""
+
+#: ../src/daywidgets.py:314
+msgid "Right click for a thumbnail view"
+msgstr ""
+
 #. Initialize the widget
-#: ../src/daywidgets.py:805
+#: ../src/daywidgets.py:768
 msgid "Pinned items"
 msgstr ""
 
-#: ../src/widgets.py:183
+#: ../src/common.py:84
+msgid "Video"
+msgstr "Video"
+
+#: ../src/common.py:85
+msgid "Music"
+msgstr "Musiikki"
+
+#: ../src/common.py:86
+msgid "Document"
+msgstr "Asiakirja"
+
+#: ../src/common.py:87
+msgid "Image"
+msgstr "Kuva"
+
+#: ../src/common.py:88
+msgid "Source Code"
+msgstr "Lähdekoodi"
+
+#: ../src/common.py:89
+msgid "Unknown"
+msgstr "Tuntematon"
+
+#: ../src/widgets.py:168
 msgid "Type here to search..."
 msgstr ""
 
-#: ../src/widgets.py:485 ../src/widgets.py:583
+#: ../src/widgets.py:468 ../src/widgets.py:643
 msgid "Remove Pin"
 msgstr ""
 
-#: ../src/widgets.py:583
+#: ../src/widgets.py:644
 msgid "Pin to Today"
 msgstr ""
 
-#: ../src/widgets.py:587
+#: ../src/widgets.py:645
 msgid "Delete item from Journal"
+msgstr ""
+
+#: ../src/widgets.py:646
+msgid "Most used with..."
 msgstr ""
 
 #: ../extra/gnome-activity-journal.desktop.in.h:2
@@ -172,7 +190,7 @@ msgstr ""
 
 #: ../extra/gnome-activity-journal.schemas.in.h:1
 msgid "Accessibility"
-msgstr ""
+msgstr "Esteettömyys"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:2
 msgid "Allow thumbnails as icons"
@@ -180,7 +198,7 @@ msgstr ""
 
 #: ../extra/gnome-activity-journal.schemas.in.h:3
 msgid "Amount of visible days"
-msgstr ""
+msgstr "Näytettävien päivien määrä"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:4
 msgid ""
@@ -196,7 +214,7 @@ msgstr ""
 
 #: ../extra/gnome-activity-journal.schemas.in.h:6
 msgid "The amount of days to show at once."
-msgstr ""
+msgstr "Kerralla näytettävien päivien määrä"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:7
 msgid ""
@@ -211,8 +229,8 @@ msgstr ""
 
 #: ../extra/gnome-activity-journal.schemas.in.h:9
 msgid "Window height"
-msgstr ""
+msgstr "Ikkunan korkeus"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:10
 msgid "Window width"
-msgstr ""
+msgstr "Ikkunan leveys"
