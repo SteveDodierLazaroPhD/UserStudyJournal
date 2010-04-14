@@ -94,9 +94,9 @@ class ContentObject(object):
     def event(self):
         return self._event
 
-    @event.setter
-    def event(self, value):
-        self._event = value
+    #@event.setter
+    #def event(self, value):
+    #    self._event = value
 
     @property
     def uri(self):
