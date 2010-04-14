@@ -36,6 +36,7 @@ from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation
 from config import get_icon_path, get_data_path
 from gio_file import GioFile, THUMBS, ICONS, SIZE_LARGE, SIZE_NORMAL
 import common
+import sources
 
 # Defines some additional icon sizes
 SIZE_THUMBVIEW = (92, 72)
@@ -387,79 +388,21 @@ class FileContentObject(GioFile, ContentObject):
         return emblem_collection
 
 
-class WebContentObject(ContentObject):
-    """
-    Displays page visits
-    """
-    @classmethod
-    def use_class(cls, event):
-        """ Used by the content object chooser to check if the content object will work for the event"""
-        if event.subjects[0].uri.startswith("http://"):
-            return cls.create(event)
-        return False
-
-    def __init__(self, event):
-        super(WebContentObject, self).__init__(event)
-
-    def get_thumbnail(self, size=SIZE_NORMAL, border=0):
-        return self.get_icon(size[0])
-
-    @property
-    def thumbview_icon(self):
-        #return self.get_icon(SIZE_LARGE[0]*0.1875), False
-        return None, False
-
-    @property
-    def timelineview_icon(self):
-        return self.get_icon(SIZE_TIMELINEVIEW[0]), False
-
-    def get_icon(self, size=24, can_thumb=False, border=0):
-        size = int(size)
-        icon = common.get_icon_for_name("text-html", size)
-        if not icon:
-            icon = self.get_actor_pixbuf(size)
-        return icon
-
-    def launch(self):
-        pass
-
-    @property
-    def timelineview_text(self):
-        if not hasattr(self, "__timelineview_text"):
-            t1 = self.event.subjects[0].uri
-            t2 = self.event.subjects[0].text
-            self.__timelineview_text = (t1 + "\n" + t2).replace("%", "%%")
-        return self.__timelineview_text
-
-    @property
-    def thumbview_text(self):
-        if not hasattr(self, "_thumbview_text"):
-            interpretation = common.get_event_interpretation(self.event)
-            t = (common.FILETYPESNAMES[interpretation] if
-                 interpretation in common.FILETYPESNAMES.keys() else "Unknown")
-            self._thumbview_text = t + "\n" + self.event.subjects[0].text.replace("&", "&amp;") + \
-                "\n<small><small>" + self.event.subjects[0].uri.replace("&", "&amp;") + "</small></small>"
-        return self._thumbview_text
-
-    @property
-    def emblems(self):
-        emblem_collection = []
-        emblem_collection.append(self.get_icon(16))
-        emblem_collection.append(None)
-        emblem_collection.append(None)
-        emblem_collection.append(self.get_actor_pixbuf(16))
-        return emblem_collection
-
-
 class BaseContentType(ContentObject):
     """
-    Formatting is done where
+
+    A Base content type which has 6 fields which define the automated content
+    type creation. The string fields are ran into string format where formatting
+    is done. The keywords are as follows:
 
     event is the event
     content_obj is self
     interpretation is the event interpretation
     subject_interpretation is the first subjects interpretation
+    source = the sources.SUPPORTED_SOURCES source for the interpretation
     """
+
+    # fields which subclasses can modify
     icon_name = ""
     icon_uri = ""
     icon_is_thumbnail = False
@@ -473,14 +416,24 @@ class BaseContentType(ContentObject):
         # String formatting
         for name in ("text", "timelineview_text", "thumbview_text"):
             val = getattr(self, name)
-            setattr(self, name, val.format(event=self.event, content_obj=self, interpretation=Interpretation[self.event.interpretation],
-                                           subject_interpretation=Interpretation[self.event.subjects[0].interpretation]))
+            setattr(self, name, val.format(
+                event = self.event,
+                content_obj = self, interpretation=Interpretation[self.event.interpretation],
+                subject_interpretation = Interpretation[self.event.subjects[0].interpretation],
+                source = sources.SUPPORTED_SOURCES[self.event.subjects[0].interpretation]))
 
     def get_icon(self, size = 24, can_thumb = False, border = 0):
-        if self.icon_uri:
-            return common.get_icon_for_uri(self.icon_uri, size)
-        if self.icon_name:
-            return common.get_icon_for_name(self.icon_name, size)
+        try:
+            if self.icon_uri:
+                return common.get_icon_for_uri(self.icon_uri, size)
+            if self.icon_name:
+                return common.get_icon_for_name(self.icon_name, size)
+        except:
+            if size == 24:
+                return GenericContentObject.empty_24_pb
+            if size == 16:
+                return GenericContentObject.empty_16_pb
+            return None
 
     @property
     def thumbview_icon(self):
@@ -490,7 +443,7 @@ class BaseContentType(ContentObject):
                 self.__thumbpb, self.__isthumb = common.PIXBUFCACHE.get_pixbuf_from_uri(
                     self.icon_uri, SIZE_LARGE, iconscale=0.1875, w=SIZE_THUMBVIEW[0], h=SIZE_THUMBVIEW[1])
             else:
-                self.__thumbpb = self.get_icon(SIZE_THUMBVIEW[0]*0.1875)
+                self.__thumbpb = None
                 self.__isthumb = False
         return self.__thumbpb, self.icon_is_thumbnail
 
@@ -507,7 +460,8 @@ class BaseContentType(ContentObject):
     @property
     def emblems(self):
         emblem_collection = []
-        #emblem_collection.append(self.get_icon(16))
+        if not self.icon_is_thumbnail:
+            emblem_collection.append(self.get_icon(16))
         emblem_collection.append(None)
         emblem_collection.append(None)
         emblem_collection.append(self.get_actor_pixbuf(16))
@@ -533,20 +487,38 @@ class BzrContentObject(BaseContentType):
     thumbview_text = "BZR\n{event.subjects[0].text}"
 
 
-class TelepathyContentObject(BaseContentType):
+class IMContentObject(BaseContentType):
     @classmethod
     def use_class(cls, event):
         """ Used by the content object chooser to check if the content object will work for the event"""
-        if event.actor == "application://telepathy.desktop":
-            print "Found"
+        if event.subjects[0].interpretation == Interpretation.IM_MESSAGE.uri:
             return cls.create(event)
         return False
 
     icon_is_thumbnail = False
 
-    text = "{event.subjects[0].text}"
+    icon_name = "empathy"
+
+    text = "{source._desc_sing} " + _("with") + " {event.subjects[0].text}"
+    timelineview_text = "{source._desc_sing} " + _("with") + " {event.subjects[0].text}\n{event.subjects[0].uri}"
+    thumbview_text = "{source._desc_sing} " + _("with") + " {event.subjects[0].text}"
+
+
+class WebContentObject(BaseContentType):
+    """
+    Displays page visits
+    """
+    @classmethod
+    def use_class(cls, event):
+        """ Used by the content object chooser to check if the content object will work for the event"""
+        if event.subjects[0].uri.startswith("http://"):
+            return cls.create(event)
+        return False
+
+    text = "{subject_interpretation.display_name} {event.subjects[0].text}"
     timelineview_text = "{subject_interpretation.display_name}\n{event.subjects[0].text}"
     thumbview_text = "{subject_interpretation.display_name}\n{event.subjects[0].text}"
 
+
 # Content object list used by the section function
-CONTENT_OBJECTS = (BzrContentObject, WebContentObject)
+CONTENT_OBJECTS = (BzrContentObject, WebContentObject, IMContentObject)
