@@ -400,6 +400,8 @@ class BaseContentType(ContentObject):
     interpretation is the event interpretation
     subject_interpretation is the first subjects interpretation
     source = the sources.SUPPORTED_SOURCES source for the interpretation
+
+    if icon_name is equal to $ACTOR then the actor icon is used
     """
 
     # fields which subclasses can modify
@@ -432,6 +434,9 @@ class BaseContentType(ContentObject):
 
     def get_icon(self, size = 24, can_thumb = False, border = 0):
         try:
+            if self.icon_name == "$ACTOR":
+                print self.icon_name, self.event.actor
+                return self.get_actor_pixbuf(size)
             if self.icon_uri:
                 return common.get_icon_for_uri(self.icon_uri, size)
             if self.icon_name:
@@ -467,13 +472,16 @@ class BaseContentType(ContentObject):
 
     @property
     def emblems(self):
-        emblem_collection = []
-        if not self.icon_is_thumbnail:
-            emblem_collection.append(self.get_icon(16))
-        emblem_collection.append(None)
-        emblem_collection.append(None)
-        emblem_collection.append(self.get_actor_pixbuf(16))
-        return emblem_collection
+        if not hasattr(self, "__emblem_collection"):
+            self.__emblem_collection = []
+            if (not self.icon_is_thumbnail) and self.icon_name != "$ACTOR":
+                self.__emblem_collection.append(self.get_icon(16))
+            else:
+                self.__emblem_collection.append(None)
+            self.__emblem_collection.append(None)
+            self.__emblem_collection.append(None)
+            self.__emblem_collection.append(self.get_actor_pixbuf(16))
+        return self.__emblem_collection
 
     def launch(self):
         pass
@@ -503,10 +511,8 @@ class IMContentObject(BaseContentType):
             return cls.create(event)
         return False
 
-    icon_is_thumbnail = False
-
     icon_name = "empathy"
-
+    icon_is_thumbnail = False
     text = "{source._desc_sing} " + _("with") + " {event.subjects[0].text}"
     timelineview_text = "{source._desc_sing} " + _("with") + " {event.subjects[0].text}\n{event.subjects[0].uri}"
     thumbview_text = "{source._desc_sing} " + _("with") + " {event.subjects[0].text}"
@@ -523,6 +529,7 @@ class WebContentObject(BaseContentType):
             return cls.create(event)
         return False
 
+    icon_name = "$ACTOR"
     text = "{subject_interpretation.display_name} {event.subjects[0].text}"
     timelineview_text = "{subject_interpretation.display_name}\n{event.subjects[0].text}"
     thumbview_text = "{subject_interpretation.display_name}\n{event.subjects[0].text}"
