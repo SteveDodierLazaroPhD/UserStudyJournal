@@ -309,8 +309,10 @@ class DayWidget(gtk.VBox):
         evbox.add(self.daylabel)
         evbox.set_size_request(100, 60)
         self.vbox.pack_start(evbox, False, False)
-        self.connect("motion-notify-event", lambda x, y:
-            evbox.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2)))
+        def cursor_func(x, y):
+            if evbox.window:
+                evbox.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2))
+        self.connect("motion-notify-event", cursor_func)
 
         def change_style(widget, style):
             rc_style = self.style

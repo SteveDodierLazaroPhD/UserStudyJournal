@@ -485,7 +485,7 @@ class WebContentObject(BaseContentType):
             return cls.create(event)
         return False
 
-    icon_name = "$ACTOR"
+    icon_name = "$MIME $ACTOR"
     text = "{interpretation.display_name} {event.subjects[0].text}"
     timelineview_text = "{interpretation.display_name}\n{event.subjects[0].uri}"
     thumbview_text = "{interpretation.display_name}\n{event.subjects[0].text}"
