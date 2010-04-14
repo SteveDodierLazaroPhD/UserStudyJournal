@@ -146,7 +146,7 @@ class ContentObject(object):
         return False
 
     # Icon methods
-    def get_icon(self, size=24, can_thumb=False, border=0):
+    def get_icon(self, size=24, *args, **kwargs):
         """
         :Returns: a pixbuf representing this event's icon
         """
@@ -159,13 +159,13 @@ class ContentObject(object):
 
     @property
     def emblems(self):
-        """
-        :returns: a pixbuf array where each element is a emblem with some meaning to this object
-        """
-        emblem_collection = []
-        if not self.has_preview:
-            emblem_collection.append(self.icon)
-        return emblem_collection
+        if not hasattr(self, "__emblem_collection"):
+            self.__emblem_collection = []
+            self.__emblem_collection.append(self.get_icon(16))
+            self.__emblem_collection.append(None)
+            self.__emblem_collection.append(None)
+            self.__emblem_collection.append(self.get_actor_pixbuf(16))
+        return self.__emblem_collection
 
     # utility
     def launch(self):
@@ -316,15 +316,6 @@ class FileContentObject(GioFile, ContentObject):
             self.__timeline_isthumb = usethumb&thumb
         return self.__timelinepb, self.__timeline_isthumb
 
-    @property
-    def emblems(self):
-        emblem_collection = []
-        emblem_collection.append(self.get_icon(16))
-        emblem_collection.append(None)
-        emblem_collection.append(None)
-        emblem_collection.append(self.get_actor_pixbuf(16))
-        return emblem_collection
-
 
 class BaseContentType(ContentObject):
     """
@@ -371,7 +362,7 @@ class BaseContentType(ContentObject):
             val = getattr(self, name)
             setattr(self, name, val.format(**wrds))
 
-    def get_icon(self, size = 24, can_thumb = False, border = 0):
+    def get_icon(self, size=24, *args, **kwargs):
         icon = False
         try:
             while not icon:
@@ -439,7 +430,7 @@ class GenericContentObject(BaseContentType):
     timelineview_text = "{subject_interpretation.display_name}\n{event.subjects[0].uri}"
     thumbview_text = "{subject_interpretation.display_name}\n{event.subjects[0].text}"
 
-    def get_icon(self, size=24, can_thumb=False, border=0):
+    def get_icon(self, size=24, *args, **kwargs):
         icon = common.get_icon_for_name(self.mime_type.replace("/", "-"), size)
         if icon:
             return icon
