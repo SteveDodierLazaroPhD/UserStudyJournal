@@ -225,73 +225,6 @@ class SearchEntry(gtk.Entry):
         self.search_timeout = 0
         return False
 
-class CategoryButton(gtk.HBox):
-
-    __gsignals__ = {
-        "toggle" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_BOOLEAN,)),
-    }
-
-    def __init__(self, category, count):
-        gtk.HBox.__init__(self)
-        self.label = gtk.Label()
-        self.label.set_alignment(0.0, 0.5)
-        hbox = gtk.HBox()
-
-        self.btn = gtk.Button()
-        self.btn.set_relief(gtk.RELIEF_NONE)
-
-        self.btn.set_focus_on_click(False)
-        self.btn.add(hbox)
-        self.img = gtk.Label()
-        self.img.set_markup("<span><b>+</b></span>")
-        self.img.set_size_request(8, 8)
-        btn = gtk.Button()
-        #btn.set_sensitive(False)
-        btn.add(self.img)
-        hbox.pack_start(gtk.Label(""), False, False, 1)
-        hbox.pack_start(btn, False, False, 0)
-        hbox.pack_start(gtk.Label(""), False, False, 3)
-        self.active = False
-
-        self.pack_start(self.btn)
-        #self.pack_start(self.img, False, False)
-        if category:
-            if category in SUPPORTED_SOURCES:
-                label = SUPPORTED_SOURCES[category].group_label(count)
-            else:
-                label = "Unknown (%s)" % category
-            self.label.set_markup("<span>%s</span>" % label)
-        self.label.set_ellipsize(pango.ELLIPSIZE_END)
-        hbox.pack_start(self.label, True, True, 0)
-
-        label = gtk.Label()
-        label.set_markup("<span>(%d)</span>" % count)
-        label.set_alignment(1.0,0.5)
-        hbox.pack_end(label, False, False, 2)
-        self.show_all()
-
-        self.btn.connect("clicked", self.toggle)
-
-        def change_style(widget, style):
-            rc_style = self.style
-
-            color = rc_style.bg[gtk.STATE_NORMAL]
-            fcolor = rc_style.fg[gtk.STATE_NORMAL]
-            color = combine_gdk_color(color, fcolor)
-            label.modify_fg(gtk.STATE_NORMAL, color)
-            self.img.modify_fg(gtk.STATE_NORMAL, color)
-
-        self.connect("style-set", change_style)
-
-
-    def toggle(self, widget):
-        self.active = not self.active
-        if self.active:
-            self.img.set_markup("<span><b>-</b></span>")
-        else:
-            self.img.set_markup("<span><b>+</b></span>")
-        self.emit("toggle", self.active)
-
 
 class PreviewTooltip(gtk.Window):
 
@@ -635,6 +568,7 @@ class AboutDialog(gtk.AboutDialog):
         #self.set_logo_icon_name("gnome-activity-journal")
         self.set_logo(gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path(
             "hicolor/scalable/apps/gnome-activity-journal.svg"), 48, 48))
+
 
 class ContextMenu(gtk.Menu):
     subjects = []# A list of Zeitgeist event uris

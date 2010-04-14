@@ -405,15 +405,13 @@ class CategoryBox(gtk.HBox):
 
         self.show_all()
 
-
-
-
     def on_toggle(self, view, bool):
         if bool:
             self.box.show()
         else:
             self.box.hide()
         pinbox.show_all()
+
 
 class DayLabel(gtk.DrawingArea):
 

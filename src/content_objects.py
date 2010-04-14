@@ -42,6 +42,12 @@ import sources
 SIZE_THUMBVIEW = (92, 72)
 SIZE_TIMELINEVIEW = (32, 24)
 
+PLACEHOLDER_PIXBUFFS = {
+    24 : gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path("hicolor/scalable/apps/gnome-activity-journal.svg"), 24, 24),
+    16 : gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path("hicolor/scalable/apps/gnome-activity-journal.svg"), 16, 16)
+    }
+
+
 # Caches desktop files
 DESKTOP_FILES = {}
 
@@ -74,7 +80,11 @@ class ContentObject(object):
 
     @classmethod
     def use_class(cls, event):
-        """ Used by the content object chooser to check if the content object will work for the event"""
+        """ Used by the content object chooser to check if the content object will work for the event
+
+        :param event: The event to test
+        :returns: a object instance or False if this Content Object is not correct for this item
+        """
         if False:
             return cls.create(event)
         return False
@@ -262,14 +272,6 @@ class GenericContentObject(ContentObject):
     def use_class(cls, event):
         return False
 
-    empty_timelineview_pb = gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path(
-            "hicolor/scalable/apps/gnome-activity-journal.svg"), SIZE_TIMELINEVIEW[0], SIZE_TIMELINEVIEW[1])
-    empty_24_pb = gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path(
-            "hicolor/scalable/apps/gnome-activity-journal.svg"), 24, 24)
-
-    empty_16_pb = gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path(
-            "hicolor/scalable/apps/gnome-activity-journal.svg"), 16, 16)
-
     def get_thumbnail(self, size=SIZE_NORMAL, border=0):
         return self.get_icon(size[0])
 
@@ -280,8 +282,7 @@ class GenericContentObject(ContentObject):
         icon = self.get_actor_pixbuf(size)
         if icon:
             return icon
-        if size == 24: return self.empty_24_pb
-        if size == 16: return self.empty_16_pb
+        if PLACEHOLDER_PIXBUFFS.has_key(size): return PLACEHOLDER_PIXBUFFS[size]
         icon = self.get_actor_pixbuf(size)
         return icon
 
@@ -300,7 +301,7 @@ class GenericContentObject(ContentObject):
             self.__timelinepb = icon
             self.__timeline_isthumb = False
             return self.__timelinepb, self.__timeline_isthumb
-        return self.empty_timelineview_pb, False
+        return PLACEHOLDER_PIXBUFFS[24], False
 
     @property
     def thumbview_text(self):
@@ -373,7 +374,7 @@ class FileContentObject(GioFile, ContentObject):
             if common.PIXBUFCACHE.has_key(self.uri) and usethumb and pixbuf != common.PIXBUFCACHE[self.uri][0]:
                 pixbuf, thumb = common.PIXBUFCACHE[self.uri]
                 pixbuf = pixbuf.scale_simple(32, 24, gtk.gdk.INTERP_TILES)
-            if not pixbuf: pixbuf = GenericContentObject.empty_timelineview_pb
+            if not pixbuf: pixbuf = PLACEHOLDER_PIXBUFFS[24]
             self.__timelinepb = pixbuf
             self.__timeline_isthumb = usethumb&thumb
         return self.__timelinepb, self.__timeline_isthumb
@@ -441,11 +442,8 @@ class BaseContentType(ContentObject):
             if self.icon_name:
                 return common.get_icon_for_name(self.icon_name, size)
         except:
-            if size == 24:
-                return GenericContentObject.empty_24_pb
-            if size == 16:
-                return GenericContentObject.empty_16_pb
-            return None
+            if PLACEHOLDER_PIXBUFFS.has_key(size): return PLACEHOLDER_PIXBUFFS[size]
+        return None
 
     @property
     def thumbview_icon(self):
@@ -465,7 +463,7 @@ class BaseContentType(ContentObject):
         if not hasattr(self, "__timelinepb"):
             icon = self.get_icon(SIZE_TIMELINEVIEW[1])
             if not icon:
-                icon = GenericContentObject.empty_timelineview_pb
+                icon = PLACEHOLDER_PIXBUFFS[24]
             self.__timelinepb = icon
         return self.__timelinepb, False
 
