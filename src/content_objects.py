@@ -25,6 +25,7 @@
 
 
 import gio
+import glib
 import gtk
 import os
 from xdg import DesktopEntry
@@ -67,8 +68,6 @@ def choose_content_object(event):
     if event.subjects[0].uri.startswith("file://"):
         return FileContentObject.create(event)
     return GenericContentObject.create(event)
-
-
 
 
 class ContentObject(object):
@@ -264,68 +263,6 @@ class ContentObject(object):
         return ""
 
 
-class GenericContentObject(ContentObject):
-    """
-    Used to display Generic content which does not have a better suited content object
-    """
-    @classmethod
-    def use_class(cls, event):
-        return False
-
-    def get_thumbnail(self, size=SIZE_NORMAL, border=0):
-        return self.get_icon(size[0])
-
-    def get_icon(self, size=24, can_thumb=False, border=0):
-        icon = common.get_icon_for_name(self.mime_type.replace("/", "-"), size)
-        if icon:
-            return icon
-        icon = self.get_actor_pixbuf(size)
-        if icon:
-            return icon
-        if PLACEHOLDER_PIXBUFFS.has_key(size): return PLACEHOLDER_PIXBUFFS[size]
-        icon = self.get_actor_pixbuf(size)
-        return icon
-
-    @property
-    def thumbview_icon(self):
-        """Special method which returns a pixbuf for the thumbview and a ispreview bool describing if it is a preview"""
-        return None, False
-
-    @property
-    def timelineview_icon(self):
-        """Special method which returns a sized pixbuf for the timeline and a ispreview bool describing if it is a preview"""
-        if hasattr(self, "__timelinepb"):
-            return self.__timelinepb, self.__timeline_isthumb
-        icon = self.get_icon(SIZE_TIMELINEVIEW[0])
-        if icon:
-            self.__timelinepb = icon
-            self.__timeline_isthumb = False
-            return self.__timelinepb, self.__timeline_isthumb
-        return PLACEHOLDER_PIXBUFFS[24], False
-
-    @property
-    def thumbview_text(self):
-        if not hasattr(self, "_thumbview_text"):
-            interpretation = common.get_event_interpretation(self.event)
-            t = (common.FILETYPESNAMES[interpretation] if
-                 interpretation in common.FILETYPESNAMES.keys() else "Unknown")
-            self._thumbview_text = t + "\n" + self.event.subjects[0].text.replace("&", "&amp;")
-        return self._thumbview_text
-
-    @property
-    def emblems(self):
-        emblem_collection = []
-        emblem_collection.append(self.get_icon(16))
-        emblem_collection.append(None)
-        emblem_collection.append(None)
-        emblem_collection.append(self.get_actor_pixbuf(16))
-        return emblem_collection
-
-    def launch(self):
-        pass
-
-
-
 class FileContentObject(GioFile, ContentObject):
     """
     Content object used to display events with subjects which are files
@@ -403,6 +340,7 @@ class BaseContentType(ContentObject):
     source = the sources.SUPPORTED_SOURCES source for the interpretation
 
     if icon_name is equal to $ACTOR then the actor icon is used
+    if icon_name is equal to $MIME then the MIME icon is used
     """
 
     # fields which subclasses can modify
@@ -434,16 +372,22 @@ class BaseContentType(ContentObject):
             setattr(self, name, val.format(**wrds))
 
     def get_icon(self, size = 24, can_thumb = False, border = 0):
+        icon = False
         try:
-            if self.icon_name == "$ACTOR":
-                return self.get_actor_pixbuf(size)
-            if self.icon_uri:
-                return common.get_icon_for_uri(self.icon_uri, size)
-            if self.icon_name:
-                return common.get_icon_for_name(self.icon_name, size)
-        except:
+            while not icon:
+                if "$MIME" in self.icon_name:
+                    icon = common.get_icon_for_name(self.mime_type.replace("/", "-"), size)
+                    if icon != None: return icon
+                if "$ACTOR" in self.icon_name:
+                    icon = self.get_actor_pixbuf(size)
+                if self.icon_uri:
+                    icon = common.get_icon_for_uri(self.icon_uri, size)
+                elif self.icon_name and self.icon_name not in ("$MIME", "$ACTOR"):
+                    icon = common.get_icon_for_name(self.icon_name, size)
+                break
+        except glib.GError:
             if PLACEHOLDER_PIXBUFFS.has_key(size): return PLACEHOLDER_PIXBUFFS[size]
-        return None
+        return icon
 
     @property
     def thumbview_icon(self):
@@ -482,6 +426,29 @@ class BaseContentType(ContentObject):
 
     def launch(self):
         pass
+
+
+class GenericContentObject(BaseContentType):
+    """
+    Used when no other content type would fit
+    """
+
+    icon_is_thumbnail = False
+    icon_name = "$MIME $ACTOR"
+    text = "{event.subjects[0].text}"
+    timelineview_text = "{subject_interpretation.display_name}\n{event.subjects[0].uri}"
+    thumbview_text = "{subject_interpretation.display_name}\n{event.subjects[0].text}"
+
+    def get_icon(self, size=24, can_thumb=False, border=0):
+        icon = common.get_icon_for_name(self.mime_type.replace("/", "-"), size)
+        if icon:
+            return icon
+        icon = self.get_actor_pixbuf(size)
+        if icon:
+            return icon
+        if PLACEHOLDER_PIXBUFFS.has_key(size): return PLACEHOLDER_PIXBUFFS[size]
+        icon = self.get_actor_pixbuf(size)
+        return icon
 
 
 class BzrContentObject(BaseContentType):
