@@ -435,7 +435,6 @@ class BaseContentType(ContentObject):
     def get_icon(self, size = 24, can_thumb = False, border = 0):
         try:
             if self.icon_name == "$ACTOR":
-                print self.icon_name, self.event.actor
                 return self.get_actor_pixbuf(size)
             if self.icon_uri:
                 return common.get_icon_for_uri(self.icon_uri, size)
@@ -464,7 +463,7 @@ class BaseContentType(ContentObject):
     def timelineview_icon(self):
         """Special method which returns a sized pixbuf for the timeline and a ispreview bool describing if it is a preview"""
         if not hasattr(self, "__timelinepb"):
-            icon = self.get_icon(SIZE_TIMELINEVIEW[0])
+            icon = self.get_icon(SIZE_TIMELINEVIEW[1])
             if not icon:
                 icon = GenericContentObject.empty_timelineview_pb
             self.__timelinepb = icon
@@ -513,9 +512,9 @@ class IMContentObject(BaseContentType):
 
     icon_name = "empathy"
     icon_is_thumbnail = False
-    text = "{source._desc_sing} " + _("with") + " {event.subjects[0].text}"
-    timelineview_text = "{source._desc_sing} " + _("with") + " {event.subjects[0].text}\n{event.subjects[0].uri}"
-    thumbview_text = "{source._desc_sing} " + _("with") + " {event.subjects[0].text}"
+    text = _("{source._desc_sing} with {event.subjects[0].text}")
+    timelineview_text = _("{source._desc_sing} with {event.subjects[0].text}\n{event.subjects[0].uri}")
+    thumbview_text = _("{source._desc_sing} with {event.subjects[0].text}")
 
 
 class WebContentObject(BaseContentType):
@@ -530,9 +529,9 @@ class WebContentObject(BaseContentType):
         return False
 
     icon_name = "$ACTOR"
-    text = "{subject_interpretation.display_name} {event.subjects[0].text}"
-    timelineview_text = "{subject_interpretation.display_name}\n{event.subjects[0].text}"
-    thumbview_text = "{subject_interpretation.display_name}\n{event.subjects[0].text}"
+    text = "{interpretation.display_name} {event.subjects[0].text}"
+    timelineview_text = "{interpretation.display_name}\n{event.subjects[0].uri}"
+    thumbview_text = "{interpretation.display_name}\n{event.subjects[0].text}"
 
 
 # Content object list used by the section function
