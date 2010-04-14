@@ -169,10 +169,10 @@ class TimelineRenderer(gtk.GenericCellRenderer):
         x += 5
         state = gtk.STATE_SELECTED if gtk.CELL_RENDERER_SELECTED & flags else gtk.STATE_NORMAL
         color1, color2 = self.textcolor[state]
-        text = self.text % (color1.to_string(), color2.to_string())
+        text = self._make_timelineview_text(self.text)
+        text = text.format(color1.to_string(), color2.to_string())
         layout = widget.create_pango_layout("")
         layout.set_markup(text)
-
         textw, texth = layout.get_pixel_size()
         if textw + x > w:
             layout.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
@@ -186,6 +186,22 @@ class TimelineRenderer(gtk.GenericCellRenderer):
         pcontext.move_to(x, y + self.barsize)
         pcontext.show_layout(layout)
         return x, y
+
+    @staticmethod
+    def _make_timelineview_text(text):
+        """
+        :returns: a string of text markup used in timeline widget and elsewhere
+        """
+        text = text.split("\n")
+        if len(text) > 1:
+            p1 = text[0]
+            p2 = text[1]
+        else:
+            p1 = text[0]
+            p2 = " "
+        t1 = "<span color='{0}'><b>" + p1 + "</b></span>"
+        t2 = "<span color='{1}'>" + p2 + "</span> "
+        return (str(t1) + "\n" + str(t2) + "").replace("&", "&amp;")
 
     def on_start_editing(self, event, widget, path, background_area, cell_area, flags):
         pass

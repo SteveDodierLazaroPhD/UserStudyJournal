@@ -53,15 +53,15 @@ def choose_content_object(event):
     no correct Content Object was found or if that the correct Content object
     rejected the given event
     """
-    #Payload selection here
-    #if event.payload:
-    #    print event.payload
+    for obj in CONTENT_OBJECTS:
+        instance = obj.use_class(event)
+        if instance: return instance
+
     if event.subjects[0].uri.startswith("file://"):
         return FileContentObject.create(event)
-    elif event.subjects[0].uri.startswith("http://"):
-        return WebContentObject.create(event)
-    else:
-        return GenericContentObject.create(event)
+    return GenericContentObject.create(event)
+
+
 
 
 class ContentObject(object):
@@ -70,6 +70,13 @@ class ContentObject(object):
     """
     # Paths where .desktop files are stored.
     desktop_file_paths = ["/usr/share/applications/", "/usr/local/share/applications/"]
+
+    @classmethod
+    def use_class(cls, event):
+        """ Used by the content object chooser to check if the content object will work for the event"""
+        if False:
+            return cls.create(event)
+        return False
 
     def __init__(self, event):
         self._event = event
@@ -178,7 +185,7 @@ class ContentObject(object):
     @property
     def text(self):
         if not hasattr(self, "__text"):
-            self.__text = self.event.subjects[0].text
+            self.__text = str(self.event.subjects[0].text)
         return self.__text
 
     @property
@@ -191,11 +198,9 @@ class ContentObject(object):
             interpretation = common.get_event_interpretation(self.event)
             t = (common.FILETYPESNAMES[interpretation] if
                  interpretation in common.FILETYPESNAMES.keys() else "Unknown")
-            text = text.replace("%", "%%")
-            t1 = "<span color='!color!'><b>" + t + "</b></span>"
-            t2 = "<span color='!color!'>" + text + "</span> "
-            self.__timelineview_text = (str(t1) + "\n" + str(t2) + "").replace("&", "&amp;").replace("!color!", "%s")
+            self.__timelineview_text = (t + "\n" + text).replace("%", "%%")
         return self.__timelineview_text
+
 
     @property
     def thumbview_text(self):
@@ -252,6 +257,9 @@ class GenericContentObject(ContentObject):
     """
     Used to display Generic content which does not have a better suited content object
     """
+    @classmethod
+    def use_class(cls, event):
+        return False
 
     empty_timelineview_pb = gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path(
             "hicolor/scalable/apps/gnome-activity-journal.svg"), SIZE_TIMELINEVIEW[0], SIZE_TIMELINEVIEW[1])
@@ -320,6 +328,12 @@ class FileContentObject(GioFile, ContentObject):
     """
     Content object used to display events with subjects which are files
     """
+    @classmethod
+    def use_class(cls, event):
+        """ Used by the content object chooser to check if the content object will work for the event"""
+        if event.subjects[0].uri.startswith("file://"):
+            return cls.create(event)
+        return False
 
     def __init__(self, event):
         ContentObject.__init__(self, event)
@@ -377,6 +391,12 @@ class WebContentObject(ContentObject):
     """
     Displays page visits
     """
+    @classmethod
+    def use_class(cls, event):
+        """ Used by the content object chooser to check if the content object will work for the event"""
+        if event.subjects[0].uri.startswith("http://"):
+            return cls.create(event)
+        return False
 
     def __init__(self, event):
         super(WebContentObject, self).__init__(event)
@@ -405,16 +425,11 @@ class WebContentObject(ContentObject):
 
     @property
     def timelineview_text(self):
-        if not hasattr(self, "__pretty_subject_text"):
+        if not hasattr(self, "__timelineview_text"):
             t1 = self.event.subjects[0].uri
             t2 = self.event.subjects[0].text
-            t1 = t1.replace("%", "%%")
-            t2 = t2.replace("%", "%%")
-            interpretation = common.get_event_interpretation(self.event)
-            t1 = "<span color='!color!'><b>" + t1 + "</b></span>"
-            t2 = "<span color='!color!'>" + t2 + "</span> "
-            self.__pretty_subject_text = (str(t1) + "\n" + str(t2) + "").replace("&", "&amp;").replace("!color!", "%s")
-        return self.__pretty_subject_text
+            self.__timelineview_text = (t1 + "\n" + t2).replace("%", "%%")
+        return self.__timelineview_text
 
     @property
     def thumbview_text(self):
@@ -436,38 +451,102 @@ class WebContentObject(ContentObject):
         return emblem_collection
 
 
-class IconContentType(ContentObject):
+class BaseContentType(ContentObject):
     """
+    Formatting is done where
+
+    event is the event
+    content_obj is self
+    interpretation is the event interpretation
+    subject_interpretation is the first subjects interpretation
     """
+    icon_name = ""
+    icon_uri = ""
+    icon_is_thumbnail = False
 
-    class Icon(object):
-        uri = ""
-        is_thumbnail = False
-
-    class Text(object):
-        header = ""
-        body = ""
-
+    text = ""
+    timelineview_text = ""
+    thumbview_text = ""
 
     def __init__(self, event):
-        super(self, IconContentType).__init__(event)
-        self.Text = self.Text()
-        self.Icon = self.Icon()
+        super(BaseContentType, self).__init__(event)
+        # String formatting
+        for name in ("text", "timelineview_text", "thumbview_text"):
+            val = getattr(self, name)
+            setattr(self, name, val.format(event=self.event, content_obj=self, interpretation=Interpretation[self.event.interpretation],
+                                           subject_interpretation=Interpretation[self.event.subjects[0].interpretation]))
+
+    def get_icon(self, size = 24, can_thumb = False, border = 0):
+        if self.icon_uri:
+            return common.get_icon_for_uri(self.icon_uri, size)
+        if self.icon_name:
+            return common.get_icon_for_name(self.icon_name, size)
+
+    @property
+    def thumbview_icon(self):
+        """Special method which returns a pixbuf for the thumbview and a ispreview bool describing if it is a preview"""
+        if not hasattr(self, "__thumbpb"):
+            if self.icon_is_thumbnail and self.icon_uri:
+                self.__thumbpb, self.__isthumb = common.PIXBUFCACHE.get_pixbuf_from_uri(
+                    self.icon_uri, SIZE_LARGE, iconscale=0.1875, w=SIZE_THUMBVIEW[0], h=SIZE_THUMBVIEW[1])
+            else:
+                self.__thumbpb = self.get_icon(SIZE_THUMBVIEW[0]*0.1875)
+                self.__isthumb = False
+        return self.__thumbpb, self.icon_is_thumbnail
+
+    @property
+    def timelineview_icon(self):
+        """Special method which returns a sized pixbuf for the timeline and a ispreview bool describing if it is a preview"""
+        if not hasattr(self, "__timelinepb"):
+            icon = self.get_icon(SIZE_TIMELINEVIEW[0])
+            if not icon:
+                icon = GenericContentObject.empty_timelineview_pb
+            self.__timelinepb = icon
+        return self.__timelinepb, False
+
+    @property
+    def emblems(self):
+        emblem_collection = []
+        #emblem_collection.append(self.get_icon(16))
+        emblem_collection.append(None)
+        emblem_collection.append(None)
+        emblem_collection.append(self.get_actor_pixbuf(16))
+        return emblem_collection
+
+    def launch(self):
+        pass
 
 
+class BzrContentObject(BaseContentType):
+    @classmethod
+    def use_class(cls, event):
+        """ Used by the content object chooser to check if the content object will work for the event"""
+        if event.actor == "application://bzr.desktop":
+            return cls.create(event)
+        return False
+
+    icon_uri = "/usr/share/pixmaps/bzr-icon-64.png"
+    icon_is_thumbnail = False
+
+    text = "{event.subjects[0].text}"
+    timelineview_text = "BZR\n{event.subjects[0].text}"
+    thumbview_text = "BZR\n{event.subjects[0].text}"
 
 
+class TelepathyContentObject(BaseContentType):
+    @classmethod
+    def use_class(cls, event):
+        """ Used by the content object chooser to check if the content object will work for the event"""
+        if event.actor == "application://telepathy.desktop":
+            print "Found"
+            return cls.create(event)
+        return False
 
+    icon_is_thumbnail = False
 
+    text = "{event.subjects[0].text}"
+    timelineview_text = "{subject_interpretation.display_name}\n{event.subjects[0].text}"
+    thumbview_text = "{subject_interpretation.display_name}\n{event.subjects[0].text}"
 
-
-
-
-
-
-
-
-
-
-
-
+# Content object list used by the section function
+CONTENT_OBJECTS = (BzrContentObject, WebContentObject)

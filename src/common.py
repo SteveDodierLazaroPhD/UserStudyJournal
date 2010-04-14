@@ -564,8 +564,11 @@ def get_icon_for_name(name, size):
     if not info:
         return None
     location = info.get_filename()
-    pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(location, size, size)
-    ICONS[(size, size)][name] = pixbuf
+    return get_icon_for_uri(location, size)
+
+def get_icon_for_uri(uri, size):
+    pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(uri, size, size)
+    ICONS[(size, size)][uri] = pixbuf
     return pixbuf
 
 
