@@ -138,7 +138,10 @@ class ActivityView(gtk.VBox):
         self.start = self.start + offset
 
         if time.time() > self.start:
-            diff = self.start - self.cal.histogram.get_datastore()[0][0]
+            model = self.cal.histogram.get_datastore()
+            if len(model) < 1:
+                return
+            diff = self.start - model[0][0]
             self.cal.histogram.set_selected(diff / 86400)
             self.set_dayrange(self.start, self.end+offset)
 
