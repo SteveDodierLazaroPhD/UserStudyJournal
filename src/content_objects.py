@@ -494,7 +494,8 @@ class BzrContentObject(BaseContentType):
             return cls.create(event)
         return False
 
-    icon_uri = "/usr/share/pixmaps/bzr-icon-64.png"
+    #icon_uri = "/usr/share/pixmaps/bzr-icon-64.png"
+    icon_name = "bzr-icon-64"
     icon_is_thumbnail = False
 
     text = "{event.subjects[0].text}"
