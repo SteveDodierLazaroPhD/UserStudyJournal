@@ -414,13 +414,21 @@ class BaseContentType(ContentObject):
     def __init__(self, event):
         super(BaseContentType, self).__init__(event)
         # String formatting
+        wrds = {
+            "content_obj" : self,
+            "event" : event
+        }
+        try: wrds["interpretation"] = Interpretation[event.interpretation]
+        except KeyError: wrds["interpretation"] = Interpretation.OPEN_EVENT
+        try: wrds["subject_interpretation"] = Interpretation[event.subjects[0].interpretation]
+        except KeyError: wrds["subject_interpretation"] = Interpretation.UNKNOWN
+        try:
+            wrds["source"] = sources.SUPPORTED_SOURCES[self.event.subjects[0].interpretation]
+        except:
+            wrds["source"] = sources.SUPPORTED_SOURCES[Interpretation.UNKNOWN.uri]
         for name in ("text", "timelineview_text", "thumbview_text"):
             val = getattr(self, name)
-            setattr(self, name, val.format(
-                event = self.event,
-                content_obj = self, interpretation=Interpretation[self.event.interpretation],
-                subject_interpretation = Interpretation[self.event.subjects[0].interpretation],
-                source = sources.SUPPORTED_SOURCES[self.event.subjects[0].interpretation]))
+            setattr(self, name, val.format(**wrds))
 
     def get_icon(self, size = 24, can_thumb = False, border = 0):
         try:
