@@ -52,6 +52,16 @@ PLACEHOLDER_PIXBUFFS = {
 # Caches desktop files
 DESKTOP_FILES = {}
 
+class replaceableProperty(object):
+    """Like a property but replaceable without a AttributeError"""
+    def __init__(self, fget):
+        self._fget = fget
+
+    def __get__(self, instance, cls):
+        if instance is None:
+            return self
+        return self._fget(instance)
+
 
 def choose_content_object(event):
     """
@@ -157,15 +167,14 @@ class ContentObject(object):
     def icon(self):
         return self.get_icon()
 
-    @property
+    @replaceableProperty
     def emblems(self):
-        if not hasattr(self, "__emblem_collection"):
-            self.__emblem_collection = []
-            self.__emblem_collection.append(self.get_icon(16))
-            self.__emblem_collection.append(None)
-            self.__emblem_collection.append(None)
-            self.__emblem_collection.append(self.get_actor_pixbuf(16))
-        return self.__emblem_collection
+        self.emblems = []
+        self.emblems.append(self.get_icon(16))
+        self.emblems.append(None)
+        self.emblems.append(None)
+        self.emblems.append(self.get_actor_pixbuf(16))
+        return self.emblems
 
     # utility
     def launch(self):
@@ -181,45 +190,41 @@ class ContentObject(object):
     phases = None
 
     # Thumbview and Timelineview methods
-    @property
+    @replaceableProperty
     def type_color_representation(self):
         """
         Uses the tango color pallet to find a color representing the content type
 
         :returns: a rgb tuple
         """
-        if not hasattr(self, "_type_color_representation"):
-            self._type_color_representation = common.get_file_color(self.event.subjects[0].interpretation, self.event.subjects[0].mimetype)
-        return self._type_color_representation
+        self.type_color_representation = common.get_file_color(self.event.subjects[0].interpretation, self.event.subjects[0].mimetype)
+        return self.type_color_representation
 
-    @property
+    @replaceableProperty
     def text(self):
-        if not hasattr(self, "__text"):
-            self.__text = str(self.event.subjects[0].text)
-        return self.__text
+        self.text = str(self.event.subjects[0].text)
+        return self.text
 
-    @property
+    @replaceableProperty
     def timelineview_text(self):
         """
         :returns: a string of text markup used in timeline widget and elsewhere
         """
-        if not hasattr(self, "__timelineview_text"):
-            text = common.get_event_text(self.event)
-            interpretation = common.get_event_interpretation(self.event)
-            t = (common.FILETYPESNAMES[interpretation] if
-                 interpretation in common.FILETYPESNAMES.keys() else "Unknown")
-            self.__timelineview_text = (t + "\n" + text).replace("%", "%%")
-        return self.__timelineview_text
+        text = common.get_event_text(self.event)
+        interpretation = common.get_event_interpretation(self.event)
+        t = (common.FILETYPESNAMES[interpretation] if
+             interpretation in common.FILETYPESNAMES.keys() else "Unknown")
+        self.timelineview_text = (t + "\n" + text).replace("%", "%%")
+        return self.timelineview_text
 
 
-    @property
+    @replaceableProperty
     def thumbview_text(self):
         """
         :returns: a string of text used in thumb widget and elsewhere
         """
-        if not hasattr(self, "_thumbview_text"):
-            self._thumbview_text = self.event.subjects[0].text.replace("&", "&amp;")
-        return self._thumbview_text
+        self.thumbview_text = self.event.subjects[0].text.replace("&", "&amp;")
+        return self.thumbview_text
 
     def _get_desktop_file(self):
         """
@@ -247,14 +252,13 @@ class ContentObject(object):
 
         :returns: a pixbuf
         """
-        if not hasattr(self, "_actor_pixbuf"):
-            desktop = self._get_desktop_file()
-            if not desktop:
-                self._actor_pixbuf = None
-            else:
-                name = desktop.getIcon()
-                self._actor_pixbuf = common.get_icon_for_name(name, size)
-        return self._actor_pixbuf
+        desktop = self._get_desktop_file()
+        if not desktop:
+            pixbuf = None
+        else:
+            name = desktop.getIcon()
+            pixbuf = common.get_icon_for_name(name, size)
+        return pixbuf
 
     def get_content(self):
         """
@@ -289,32 +293,30 @@ class FileContentObject(GioFile, ContentObject):
     def get_thumbnail(self, size=SIZE_NORMAL, border=0):
         return GioFile.get_thumbnail(self, size, border)
 
-    @property
+    @replaceableProperty
     def thumbview_icon(self):
         """Special method which returns a pixbuf for the thumbview and a ispreview bool describing if it is a preview"""
-        if not hasattr(self, "__thumbpb"):
-            self.__thumbpb, self.__isthumb = common.PIXBUFCACHE.get_pixbuf_from_uri(self.uri, SIZE_LARGE, iconscale=0.1875, w=SIZE_THUMBVIEW[0], h=SIZE_THUMBVIEW[1])
-        return self.__thumbpb, self.__isthumb
+        self.thumbview_icon = common.PIXBUFCACHE.get_pixbuf_from_uri(self.uri, SIZE_LARGE, iconscale=0.1875, w=SIZE_THUMBVIEW[0], h=SIZE_THUMBVIEW[1])
+        return self.thumbview_icon
 
-    @property
+    @replaceableProperty
     def timelineview_icon(self):
         """Special method which returns a sized pixbuf for the timeline and a ispreview bool describing if it is a preview"""
-        if not hasattr(self, "__timelinepb"):
-            usethumb = (True if common.get_event_interpretation(self.event)
-                        in common.MEDIAINTERPRETATIONS else False)
-            thumb = False
-            if common.PIXBUFCACHE.has_key(self.uri) and usethumb:
-                pixbuf, thumb = common.PIXBUFCACHE[self.uri]
-                pixbuf = pixbuf.scale_simple(32, 24, gtk.gdk.INTERP_TILES)
-            else:
-                pixbuf = common.get_event_icon(self.event, 24)
-            if common.PIXBUFCACHE.has_key(self.uri) and usethumb and pixbuf != common.PIXBUFCACHE[self.uri][0]:
-                pixbuf, thumb = common.PIXBUFCACHE[self.uri]
-                pixbuf = pixbuf.scale_simple(32, 24, gtk.gdk.INTERP_TILES)
-            if not pixbuf: pixbuf = PLACEHOLDER_PIXBUFFS[24]
-            self.__timelinepb = pixbuf
-            self.__timeline_isthumb = usethumb&thumb
-        return self.__timelinepb, self.__timeline_isthumb
+        usethumb = (True if common.get_event_interpretation(self.event)
+                    in common.MEDIAINTERPRETATIONS else False)
+        thumb = False
+        if common.PIXBUFCACHE.has_key(self.uri) and usethumb:
+            pixbuf, thumb = common.PIXBUFCACHE[self.uri]
+            pixbuf = pixbuf.scale_simple(32, 24, gtk.gdk.INTERP_TILES)
+        else:
+            pixbuf = common.get_event_icon(self.event, 24)
+        if common.PIXBUFCACHE.has_key(self.uri) and usethumb and pixbuf != common.PIXBUFCACHE[self.uri][0]:
+            pixbuf, thumb = common.PIXBUFCACHE[self.uri]
+            pixbuf = pixbuf.scale_simple(32, 24, gtk.gdk.INTERP_TILES)
+        if not pixbuf: pixbuf = PLACEHOLDER_PIXBUFFS[24]
+        is_thumbnail = usethumb&thumb
+        self.timelineview_icon = [pixbuf, is_thumbnail]
+        return self.timelineview_icon
 
 
 class BaseContentType(ContentObject):
@@ -380,40 +382,37 @@ class BaseContentType(ContentObject):
             if PLACEHOLDER_PIXBUFFS.has_key(size): return PLACEHOLDER_PIXBUFFS[size]
         return icon
 
-    @property
+
+    @replaceableProperty
     def thumbview_icon(self):
         """Special method which returns a pixbuf for the thumbview and a ispreview bool describing if it is a preview"""
-        if not hasattr(self, "__thumbpb"):
-            if self.icon_is_thumbnail and self.icon_uri:
-                self.__thumbpb, self.__isthumb = common.PIXBUFCACHE.get_pixbuf_from_uri(
-                    self.icon_uri, SIZE_LARGE, iconscale=0.1875, w=SIZE_THUMBVIEW[0], h=SIZE_THUMBVIEW[1])
-            else:
-                self.__thumbpb = None
-                self.__isthumb = False
-        return self.__thumbpb, self.icon_is_thumbnail
+        if self.icon_is_thumbnail and self.icon_uri:
+            self.thumbview_icon = common.PIXBUFCACHE.get_pixbuf_from_uri(
+                self.icon_uri, SIZE_LARGE, iconscale=0.1875, w=SIZE_THUMBVIEW[0], h=SIZE_THUMBVIEW[1])
+        else:
+            self.thumbview_icon = (None, False)
+        return self.thumbview_icon
 
-    @property
+    @replaceableProperty
     def timelineview_icon(self):
         """Special method which returns a sized pixbuf for the timeline and a ispreview bool describing if it is a preview"""
-        if not hasattr(self, "__timelinepb"):
-            icon = self.get_icon(SIZE_TIMELINEVIEW[1])
-            if not icon:
-                icon = PLACEHOLDER_PIXBUFFS[24]
-            self.__timelinepb = icon
-        return self.__timelinepb, False
+        icon = self.get_icon(SIZE_TIMELINEVIEW[1])
+        if not icon:
+            icon = PLACEHOLDER_PIXBUFFS[24]
+        self.timelineview_icon = (icon, False)
+        return self.timelineview_icon
 
-    @property
+    @replaceableProperty
     def emblems(self):
-        if not hasattr(self, "__emblem_collection"):
-            self.__emblem_collection = []
-            if (not self.icon_is_thumbnail) and self.icon_name != "$ACTOR":
-                self.__emblem_collection.append(self.get_icon(16))
-            else:
-                self.__emblem_collection.append(None)
-            self.__emblem_collection.append(None)
-            self.__emblem_collection.append(None)
-            self.__emblem_collection.append(self.get_actor_pixbuf(16))
-        return self.__emblem_collection
+        self.emblems = []
+        if (not self.icon_is_thumbnail) and self.icon_name != "$ACTOR":
+            self.emblems.append(self.get_icon(16))
+        else:
+            self.emblems.append(None)
+        self.emblems.append(None)
+        self.emblems.append(None)
+        self.emblems.append(self.get_actor_pixbuf(16))
+        return self.emblems
 
     def launch(self):
         pass
