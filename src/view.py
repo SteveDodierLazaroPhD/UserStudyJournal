@@ -27,6 +27,11 @@ from daywidgets import *
 from eventgatherer import datelist
 from config import settings
 
+
+def get_seconds_remaining_in_day():
+    return 86400 - ((time.time()-time.timezone-time.daylight*(60*60)) % 86400) + 4
+
+
 class ActivityView(gtk.VBox):
     __gsignals__ = {
         # Sent when date is updated. Sends a start time in seconds, end time in seconds
@@ -95,8 +100,13 @@ class ActivityView(gtk.VBox):
                 end = selection_date  + 86399
                 start = selection_date - (self.dayrange - 1) * 86400
                 self.set_dayrange(start, end)
-
-        datelist(90, self.cal.histogram.set_datastore)
+        #datelist(90, self.cal.histogram.set_datastore)
+        def new_day_updater():
+            datelist(90, self.cal.histogram.set_datastore)
+            seconds = get_seconds_remaining_in_day()
+            gobject.timeout_add_seconds(seconds, new_day_updater)
+            return False
+        new_day_updater()
         self.cal.histogram.connect("column_clicked", selection_callback)
 
     def _set_view_type(self, refresh=False):
