@@ -451,8 +451,8 @@ class BzrContentObject(BaseContentType):
     icon_is_thumbnail = False
 
     text = "{event.subjects[0].text}"
-    timelineview_text = "BZR\n{event.subjects[0].text}"
-    thumbview_text = "BZR\n{event.subjects[0].text}"
+    timelineview_text = "Bazaar\n{event.subjects[0].text}"
+    thumbview_text = "Bazaar\n{event.subjects[0].text}"
 
 
 class IMContentObject(BaseContentType):
