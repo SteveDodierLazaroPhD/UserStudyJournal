@@ -226,25 +226,22 @@ class ContentObject(object):
         self.thumbview_text = self.event.subjects[0].text.replace("&", "&amp;")
         return self.thumbview_text
 
-    def _get_desktop_file(self):
+    def get_actor_desktop_file(self):
         """
         Finds a desktop file for a actor
         """
-        if hasattr(self, "_desktop_file"): return self._desktop_file
+        desktop_file = None
         if self.event.actor in DESKTOP_FILES:
-            self._desktop_file = DESKTOP_FILES[self.event.actor]
-            return self._desktop_file
-
+            return DESKTOP_FILES[self.event.actor]
         path = None
         for desktop_path in self.desktop_file_paths:
             if os.path.exists(self.event.actor.replace("application://", desktop_path)):
                 path = self.event.actor.replace("application://", desktop_path)
                 break
-        if not path:
-            return None
-        self._desktop_file = DesktopEntry.DesktopEntry(path)
-        DESKTOP_FILES[self.event.actor] = self._desktop_file
-        return self._desktop_file
+        if path:
+            desktop_file = DesktopEntry.DesktopEntry(path)
+        DESKTOP_FILES[self.event.actor] = desktop_file
+        return desktop_file
 
     def get_actor_pixbuf(self, size):
         """
@@ -252,7 +249,7 @@ class ContentObject(object):
 
         :returns: a pixbuf
         """
-        desktop = self._get_desktop_file()
+        desktop = self.get_actor_desktop_file()
         if not desktop:
             pixbuf = None
         else:
