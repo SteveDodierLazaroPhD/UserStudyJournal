@@ -350,9 +350,8 @@ class Item(gtk.HBox):
         self.btn = gtk.Button()
         self.search_results = []
         self.in_search = False
-        self.event = event
         self.subject = event.subjects[0]
-        self.content_obj = content_objects.choose_content_object(self.event)
+        self.content_obj = content_objects.choose_content_object(event)
         # self.content_obj = GioFile.create(self.subject.uri)
         self.time = float(event.timestamp) / 1000
         self.time =  time.strftime("%H:%M", time.localtime(self.time))
@@ -371,7 +370,6 @@ class Item(gtk.HBox):
         ITEMS.append(self)
 
     def highlight(self):
-        #print len(searchbox.results)
         if self.search_results != searchbox.results:
             self.search_results = searchbox.results
             rc_style = self.style
@@ -646,10 +644,6 @@ class ContextMenu(gtk.Menu):
     def do_delete(self, menuitem):
         for obj in self.subjects:
             CLIENT.delete_events([obj.event.id])
-            #uri = obj.uri
-            #CLIENT.find_event_ids_for_template(
-            #    Event.new_for_values(subject_uri=uri),
-            #    lambda ids: CLIENT.delete_events(map(int, ids)))
 
     def do_send_to(self, menuitem):
         launch_command("nautilus-sendto", map(lambda obj: obj.uri, self.subjects))

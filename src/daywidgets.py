@@ -339,6 +339,7 @@ class DayWidget(gtk.VBox):
             part = DayPartWidget(period[0], period[1], period[2])
             self.view.pack_start(part, False, False)
 
+
 class CategoryBox(gtk.HBox):
 
     def __init__(self, category, events, pinnable = False):
@@ -453,10 +454,6 @@ class DayLabel(gtk.DrawingArea):
 
         widget.style.set_background(widget.window, gtk.STATE_NORMAL)
 
-        #context.set_source_rgba(red, green, blue, 1)
-
-        #context.set_operator(cairo.OPERATOR_SOURCE)
-        #context.paint()
         # set a clip region for the expose event
         context.rectangle(event.area.x, event.area.y, event.area.width, event.area.height)
         context.clip()

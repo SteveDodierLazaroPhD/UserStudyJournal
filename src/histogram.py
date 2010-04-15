@@ -497,6 +497,7 @@ def _in_area(coord_x, coord_y, area):
     return (area_x <= coord_x <= area_x + area_width) and \
         (area_y <= coord_y <= area_y + area_height)
 
+
 class TooltipEventBox(gtk.EventBox):
     """
     A event box housing the tool tip logic that can be used for a CairoHistogram.
