@@ -487,5 +487,20 @@ class WebContentObject(BaseContentType):
     thumbview_text = "{interpretation.display_name}\n{event.subjects[0].text}"
 
 
+class TomboyContentObject(BaseContentType):
+    @classmethod
+    def use_class(cls, event):
+        """ Used by the content object chooser to check if the content object will work for the event"""
+        if event.actor == "application://tomboy.desktop":
+            return cls.create(event)
+        return False
+
+    icon_name = "$ACTOR"
+    icon_is_thumbnail = False
+    text = _("{source._desc_sing} {event.subjects[0].text}")
+    timelineview_text = _("Tomboy\n{source._desc_sing} {event.subjects[0].text}")
+    thumbview_text = _("Tomboy\n{source._desc_sing} {event.subjects[0].text}")
+
+
 # Content object list used by the section function
-CONTENT_OBJECTS = (BzrContentObject, WebContentObject, IMContentObject)
+CONTENT_OBJECTS = (BzrContentObject, WebContentObject, IMContentObject, TomboyContentObject)
