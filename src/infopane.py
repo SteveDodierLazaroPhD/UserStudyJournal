@@ -225,6 +225,64 @@ class MultimediaDisplay(gtk.VBox, ContentDisplay):
             print "Error: %s" % err, debug
 
 
+class EventDataPane(gtk.Table):
+    x = 2
+    y = 8
+
+    column_names = (
+        _("Actor"), # 0
+        _("Time"), # 1
+        _(""), # 2
+        _("Interpretation"), # 3
+        _("Subject Interpretation"), # 4
+        _("Manifestation"),
+    )
+
+
+    def __init__(self):
+        super(EventDataPane, self).__init__(self.x, self.y)
+        self.set_col_spacings(4)
+        self.set_row_spacings(4)
+        self.labels = []
+        for i, name in enumerate(self.column_names):
+            #for i in xrange(len(self.column_names)):
+            namelabel = gtk.Label()
+            if name:
+                namelabel.set_markup("<b>" + name + ":</b>")
+            namelabel.set_alignment(0, 0)
+            self.attach(namelabel, 0, 1, i, i+1)
+            label = gtk.Label()
+            label.set_alignment(0, 0)
+            self.attach(label, 1, 2, i, i+1)
+            self.labels.append(label)
+
+    def set_content_object(self, obj):
+        event = obj.event
+        # Actor
+        desktop_file = obj.get_actor_desktop_file()
+        if desktop_file:
+            actor = desktop_file.getName()
+        else: actor = event.actor
+        self.labels[0].set_text(actor)
+        # Time
+        local_t = time.localtime(int(event.timestamp)/1000)
+        time_str = time.strftime("%b %d %Y %H:%M:%S", local_t)
+        self.labels[1].set_text(time_str)
+        #self.labels[2].set_text(event.subjects[0].uri)
+        # Interpetation
+        try: interpretation_name = Interpretation[event.interpretation].display_name
+        except KeyError: interpretation_name = ""
+        self.labels[3].set_text(interpretation_name)
+        # Subject Interpetation
+        try: subject_interpretation_name = Interpretation[event.subjects[0].interpretation].display_name
+        except KeyError: subject_interpretation_name = ""
+        self.labels[4].set_text(subject_interpretation_name)
+        # Manifestation
+        try: manifestation_name = Manifestation[event.manifestation].display_name
+        except KeyError: manifestation_name = ""
+        self.labels[5].set_text(manifestation_name)
+
+
 class InformationPane(gtk.Frame):
     """
     . . . . . . . .
@@ -264,7 +322,6 @@ class InformationPane(gtk.Frame):
         buttonhbox.set_border_width(5)
         vbox.pack_start(self.box, True, True)
         vbox.pack_end(buttonhbox, False, False)
-        self.add(vbox)
         self.set_label_align(0.5, 0.5)
         self.label.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
         self.pathlabel.set_size_request(300, -1)
@@ -272,6 +329,11 @@ class InformationPane(gtk.Frame):
         def _launch(w):
             self.obj.launch()
         self.openbutton.connect("clicked", _launch)
+
+        self.datapane = EventDataPane()
+        vbox.pack_end(self.datapane, False, False)
+        self.add(vbox)
+        self.show_all()
 
     def set_displaytype(self, obj):
         """
@@ -293,8 +355,9 @@ class InformationPane(gtk.Frame):
     def set_content_object(self, obj):
         self.obj = obj
         self.set_displaytype(obj)
-        self.label.set_markup("<span size='13336'>" + obj.thumbview_text + "</span>")
+        self.label.set_markup("<span size='13336'>" + obj.text + "</span>")
         self.pathlabel.set_markup("<span color='#979797'>" + obj.uri + "</span>")
+        self.datapane.set_content_object(obj)
 
     def set_inactive(self):
         display = self.box.get_child()
@@ -346,7 +409,7 @@ class InformationWindow(gtk.Window):
         vbox.pack_end(scrolledwindow, True, True)
         box.pack_end(vbox, False, False, 10)
         self.add(box)
-        self.set_size_request(600, 400)
+        self.set_size_request(600, 600)
         self.connect("delete-event", self._hide_on_delete)
 
     def _hide_on_delete(self, widget, event):
