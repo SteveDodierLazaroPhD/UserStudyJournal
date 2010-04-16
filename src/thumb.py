@@ -68,11 +68,7 @@ class PreviewRenderer(gtk.GenericCellRenderer):
 
     @property
     def pixbuf(self):
-        return self.content_obj.thumbview_icon[0]
-
-    @property
-    def isthumb(self):
-        return self.content_obj.thumbview_icon[1]
+        return self.content_obj.thumbview_pixbuf
 
     @property
     def event(self):
@@ -105,9 +101,12 @@ class PreviewRenderer(gtk.GenericCellRenderer):
         y = cell_area.y
         w = cell_area.width
         h = cell_area.height
-        if self.isthumb:
+        pixbuf_w = self.pixbuf.get_width() if self.pixbuf else 0
+        pixbuf_h = self.pixbuf.get_height() if self.pixbuf else 0
+        if (pixbuf_w, pixbuf_h) == content_objects.SIZE_THUMBVIEW:
             render_pixbuf(window, x, y, self.pixbuf)
-        else: self.file_render_pixbuf(window, widget, x, y, w, h)
+        else:
+            self.file_render_pixbuf(window, widget, x, y, w, h)
         render_emblems(window, x, y, w, h, self.emblems)
         path = widget.get_path_at_pos(cell_area.x, cell_area.y)
         if path != None:

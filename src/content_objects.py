@@ -113,10 +113,6 @@ class ContentObject(object):
     def event(self):
         return self._event
 
-    #@event.setter
-    #def event(self, value):
-    #    self._event = value
-
     @property
     def uri(self):
         return self.event.subjects[0].uri
@@ -125,43 +121,23 @@ class ContentObject(object):
     def mime_type(self):
         return self.event.subjects[0].mimetype
 
-    # Thumbnail methods
-    def get_thumbnail(self, size=SIZE_NORMAL, border=0):
-        """:returns: a pixbuf representing the content"""
-        thumb = None
-        return thumb
-
+    # View methods
     @property
-    def thumbview_icon(self):
+    def thumbview_pixbuf(self):
         """:returns: tuple with containing a pixbuf for the thumbview and a ispreview bool describing if it is a preview"""
-        return None, False
+        return None
 
     @property
-    def timelineview_icon(self):
+    def timelineview_pixbuf(self):
         """:returns: tuple with containing a sized pixbuf for the timeline and a ispreview bool describing if it is a preview"""
-        return None, False
-
-    @property
-    def thumbnail(self):
-        return self.get_thumbnail()
-
-    def has_preview(self):
-        """
-        :returns: True if this content type can show a preview thumbnail instead of a infomation representation else False
-        """
-        return False
-
-    def thumb_icon_allowed(self):
-        """:returns: True if the content type can use a preview instead of a icon else False"""
-        return False
+        return None
 
     # Icon methods
     def get_icon(self, size=24, *args, **kwargs):
         """
         :Returns: a pixbuf representing this event's icon
         """
-        icon = None
-        return icon
+        return None
 
     @property
     def icon(self):
@@ -182,9 +158,6 @@ class ContentObject(object):
         Launches a event
         """
         pass
-
-    def get_monitor(self):
-        raise NotImplementedError()
 
     # Used for timeline
     phases = None
@@ -287,17 +260,14 @@ class FileContentObject(GioFile, ContentObject):
         except gio.Error:
             return None
 
-    def get_thumbnail(self, size=SIZE_NORMAL, border=0):
-        return GioFile.get_thumbnail(self, size, border)
-
     @replaceableProperty
-    def thumbview_icon(self):
+    def thumbview_pixbuf(self):
         """Special method which returns a pixbuf for the thumbview and a ispreview bool describing if it is a preview"""
-        self.thumbview_icon = common.PIXBUFCACHE.get_pixbuf_from_uri(self.uri, SIZE_LARGE, iconscale=0.1875, w=SIZE_THUMBVIEW[0], h=SIZE_THUMBVIEW[1])
-        return self.thumbview_icon
+        self.thumbview_pixbuf, isthumb = common.PIXBUFCACHE.get_pixbuf_from_uri(self.uri, SIZE_LARGE, iconscale=0.1875, w=SIZE_THUMBVIEW[0], h=SIZE_THUMBVIEW[1])
+        return self.thumbview_pixbuf
 
     @replaceableProperty
-    def timelineview_icon(self):
+    def timelineview_pixbuf(self):
         """Special method which returns a sized pixbuf for the timeline and a ispreview bool describing if it is a preview"""
         usethumb = (True if self.event.subjects[0].interpretation
                     in common.MEDIAINTERPRETATIONS else False)
@@ -312,8 +282,8 @@ class FileContentObject(GioFile, ContentObject):
             pixbuf = pixbuf.scale_simple(32, 24, gtk.gdk.INTERP_TILES)
         if not pixbuf: pixbuf = PLACEHOLDER_PIXBUFFS[24]
         is_thumbnail = usethumb&thumb
-        self.timelineview_icon = [pixbuf, is_thumbnail]
-        return self.timelineview_icon
+        self.timelineview_pixbuf = pixbuf
+        return self.timelineview_pixbuf
 
 
 class BaseContentType(ContentObject):
@@ -335,7 +305,7 @@ class BaseContentType(ContentObject):
     # default fields which subclasses can modify
     icon_name = ""
     icon_uri = ""
-    icon_is_thumbnail = False
+    thumbnail_uri = ""
 
     text = ""
     timelineview_text = ""
@@ -382,30 +352,29 @@ class BaseContentType(ContentObject):
             if PLACEHOLDER_PIXBUFFS.has_key(size): return PLACEHOLDER_PIXBUFFS[size]
         return icon
 
-
     @replaceableProperty
-    def thumbview_icon(self):
+    def thumbview_pixbuf(self):
         """Special method which returns a pixbuf for the thumbview and a ispreview bool describing if it is a preview"""
-        if self.icon_is_thumbnail and self.icon_uri:
-            self.thumbview_icon = common.PIXBUFCACHE.get_pixbuf_from_uri(
-                self.icon_uri, SIZE_LARGE, iconscale=0.1875, w=SIZE_THUMBVIEW[0], h=SIZE_THUMBVIEW[1])
+        if self.thumbnail_uri:
+            self.thumbview_pixbuf, isthumb = common.PIXBUFCACHE.get_pixbuf_from_uri(
+                self.thumbnail_uri, SIZE_LARGE, iconscale=0.1875, w=SIZE_THUMBVIEW[0], h=SIZE_THUMBVIEW[1])
         else:
-            self.thumbview_icon = (None, False)
-        return self.thumbview_icon
+            self.thumbview_pixbuf = None
+        return self.thumbview_pixbuf
 
     @replaceableProperty
-    def timelineview_icon(self):
+    def timelineview_pixbuf(self):
         """Special method which returns a sized pixbuf for the timeline and a ispreview bool describing if it is a preview"""
         icon = self.get_icon(SIZE_TIMELINEVIEW[1])
         if not icon:
             icon = PLACEHOLDER_PIXBUFFS[24]
-        self.timelineview_icon = (icon, False)
-        return self.timelineview_icon
+        self.timelineview_pixbuf = icon
+        return self.timelineview_pixbuf
 
     @replaceableProperty
     def emblems(self):
         self.emblems = []
-        if (not self.icon_is_thumbnail) and self.icon_name != "$ACTOR":
+        if (not self.thumbnail_uri) and self.icon_name != "$ACTOR":
             self.emblems.append(self.get_icon(16))
         else:
             self.emblems.append(None)
@@ -430,7 +399,6 @@ class GenericContentObject(BaseContentType):
     Used when no other content type would fit
     """
 
-    icon_is_thumbnail = False
     icon_name = "$MIME $ACTOR"
     text = "{event.subjects[0].text}"
     timelineview_text = "{subject_interpretation.display_name}\n{event.subjects[0].uri}"
@@ -458,7 +426,6 @@ class BzrContentObject(BaseContentType):
 
     #icon_uri = "/usr/share/pixmaps/bzr-icon-64.png"
     icon_name = "bzr-icon-64"
-    icon_is_thumbnail = False
 
     text = "{event.subjects[0].text}"
     timelineview_text = "Bazaar\n{event.subjects[0].text}"
@@ -479,7 +446,6 @@ class IMContentObject(BaseContentType):
         return False
 
     icon_name = "empathy"
-    icon_is_thumbnail = False
     text = _("{source._desc_sing} with {event.subjects[0].text}")
     timelineview_text = _("{source._desc_sing} with {event.subjects[0].text}\n{event.subjects[0].uri}")
     thumbview_text = _("{source._desc_sing} with {event.subjects[0].text}")
@@ -515,7 +481,6 @@ class TomboyContentObject(BaseContentType):
         return False
 
     icon_name = "$ACTOR"
-    icon_is_thumbnail = False
     text = _("{source._desc_sing} {event.subjects[0].text}")
     timelineview_text = _("Tomboy\n{source._desc_sing} {event.subjects[0].text}")
     thumbview_text = _("Tomboy\n{source._desc_sing} {event.subjects[0].text}")
@@ -537,7 +502,6 @@ class MusicPlayerContentObject(BaseContentType):
         return False
 
     icon_name = "$MIME $ACTOR"
-    icon_is_thumbnail = False
     text = "{event.subjects[0].text}"
     timelineview_text = "{event.subjects[0].text}"
     thumbview_text = "{event.subjects[0].text}"

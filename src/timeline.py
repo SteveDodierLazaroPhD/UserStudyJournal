@@ -96,11 +96,7 @@ class TimelineRenderer(gtk.GenericCellRenderer):
 
     @property
     def pixbuf(self):
-        return self.content_obj.timelineview_icon[0]
-
-    @property
-    def isthumb(self):
-        return self.content_obj.timelineview_icon[1]
+        return self.content_obj.timelineview_pixbuf
 
     def __init__(self):
         super(TimelineRenderer, self).__init__()
@@ -151,16 +147,21 @@ class TimelineRenderer(gtk.GenericCellRenderer):
             context.stroke()
         x = int(phases[0][0]*w)
         # Pixbuf related junk which is really dirty
-        self.render_text_with_pixbuf(window, widget, x, y, w, h, flags, drawframe = self.isthumb)
+        self.render_text_with_pixbuf(window, widget, x, y, w, h, flags)
         return True
 
-    def render_text_with_pixbuf(self, window, widget, x, y, w, h, flags, drawframe = True):
+    def render_text_with_pixbuf(self, window, widget, x, y, w, h, flags):
         uri = self.content_obj.uri
         imgw, imgh = self.pixbuf.get_width(), self.pixbuf.get_height()
         x = max(x + imgw/2 + 4, 0 + imgw + 4)
         x, y = self.render_text(window, widget, x, y, w, h, flags)
         x -= imgw + 4
         y += self.barsize + 3
+        pixbuf_w = self.pixbuf.get_width() if self.pixbuf else 0
+        pixbuf_h = self.pixbuf.get_height() if self.pixbuf else 0
+        if (pixbuf_w, pixbuf_h) == content_objects.SIZE_TIMELINEVIEW:
+            drawframe = True
+        else: drawframe = False
         render_pixbuf(window, x, y, self.pixbuf, drawframe=drawframe)
 
     def render_text(self, window, widget, x, y, w, h, flags):

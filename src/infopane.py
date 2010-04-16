@@ -140,7 +140,7 @@ class ImageDisplay(gtk.Image, ContentDisplay):
     """
     def set_content_object(self, obj):
         if obj:
-            if obj.has_preview():
+            if isinstance(obj, GioFile) and obj.has_preview():
                 pixbuf = obj.get_thumbnail(size=SIZE_LARGE, border=3)
             else:
                 pixbuf = obj.get_icon(size=256)

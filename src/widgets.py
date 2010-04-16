@@ -268,6 +268,7 @@ class StaticPreviewTooltip(PreviewTooltip):
             size = SIZE_LARGE
         else:
             size = self.TOOLTIP_SIZE
+        if not isinstance(gio_file, GioFile): return False
         pixbuf = gio_file.get_thumbnail(size=size, border=1)
         if pixbuf is None:
             self.__current = None
@@ -447,7 +448,7 @@ class Item(gtk.HBox):
 
         TODO: make loading of multimedia thumbs async
         """
-        if self.content_obj is not None and self.content_obj.has_preview():
+        if isinstance(self.content_obj, GioFile) and self.content_obj.has_preview():
             icon_names = self.content_obj.icon_names
             self.set_property("has-tooltip", True)
             self.connect("query-tooltip", self._handle_tooltip)
