@@ -533,7 +533,6 @@ class MusicPlayerContentObject(BaseContentType):
                 event_mime = "audio/x-mpeg"
             else: event_mime = "audio/x-mpeg"
         self.mime_type = event_mime
-        print self.mime_type
         return self.mime_type
 
 
