@@ -332,8 +332,7 @@ class BaseContentType(ContentObject):
     if icon_name is equal to $ACTOR then the actor icon is used
     if icon_name is equal to $MIME then the MIME icon is used
     """
-
-    # fields which subclasses can modify
+    # default fields which subclasses can modify
     icon_name = ""
     icon_uri = ""
     icon_is_thumbnail = False
@@ -341,6 +340,10 @@ class BaseContentType(ContentObject):
     text = ""
     timelineview_text = ""
     thumbview_text = ""
+
+    # Attributes of this class which will be ran into string format as described
+    # in this class's doctstring
+    fields_to_format = ("text", "timelineview_text", "thumbview_text")
 
     def __init__(self, event):
         super(BaseContentType, self).__init__(event)
@@ -357,7 +360,7 @@ class BaseContentType(ContentObject):
             wrds["source"] = sources.SUPPORTED_SOURCES[self.event.subjects[0].interpretation]
         except:
             wrds["source"] = sources.SUPPORTED_SOURCES[Interpretation.UNKNOWN.uri]
-        for name in ("text", "timelineview_text", "thumbview_text"):
+        for name in self.fields_to_format:
             val = getattr(self, name)
             setattr(self, name, val.format(**wrds))
 
@@ -518,7 +521,20 @@ class MusicPlayerContentObject(BaseContentType):
     text = "{event.subjects[0].text}"
     timelineview_text = "{event.subjects[0].text}"
     thumbview_text = "{event.subjects[0].text}"
-    mime_type = "audio/x-mpeg"
+
+    @replaceableProperty
+    def mime_type(self):
+        event_mime = self.event.subjects[0].mimetype or ""
+        if "audio" not in event_mime or "video" not in event_mime:
+            interpretation = self.event.subjects[0].interpretation
+            if Interpretation.VIDEO.uri == interpretation:
+                event_mime = "video/mpeg"
+            elif Interpretation.MUSIC.uri == interpretation:
+                event_mime = "audio/x-mpeg"
+            else: event_mime = "audio/x-mpeg"
+        self.mime_type = event_mime
+        print self.mime_type
+        return self.mime_type
 
 
 
