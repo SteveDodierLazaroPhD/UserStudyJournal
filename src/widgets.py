@@ -578,6 +578,7 @@ class ContextMenu(gtk.Menu):
             "unpin" : gtk.MenuItem(_("Remove Pin")),
             "pin" : gtk.MenuItem(_("Pin to Today")),
             "delete" : gtk.MenuItem(_("Delete item from Journal")),
+            "delete_uri" : gtk.MenuItem(_("Delete all events with this URI")),
             "info" : gtk.MenuItem(_("More Information")),
             }
         callbacks = {
@@ -585,9 +586,10 @@ class ContextMenu(gtk.Menu):
             "unpin" : self.do_unbookmark,
             "pin" : self.do_bookmark,
             "delete" : self.do_delete,
+            "delete_uri" : self.do_delete_events_with_shared_uri,
             "info" : self.do_show_info,
             }
-        names = ["open", "unpin", "pin", "delete", "info"]
+        names = ["open", "unpin", "pin", "delete", "delete_uri", "info"]
         if is_command_available("nautilus-sendto"):
             self.menuitems["sendto"] = gtk.MenuItem(_("Send To..."))
             callbacks["sendto"] = self.do_send_to
@@ -644,6 +646,13 @@ class ContextMenu(gtk.Menu):
     def do_delete(self, menuitem):
         for obj in self.subjects:
             CLIENT.delete_events([obj.event.id])
+
+    def do_delete_events_with_shared_uri(self, menuitem):
+        for uri in map(lambda obj: obj.uri, self.subjects):
+            CLIENT.find_event_ids_for_template(
+                Event.new_for_values(subject_uri=uri),
+                lambda ids: CLIENT.delete_events(map(int, ids)))
+
 
     def do_send_to(self, menuitem):
         launch_command("nautilus-sendto", map(lambda obj: obj.uri, self.subjects))

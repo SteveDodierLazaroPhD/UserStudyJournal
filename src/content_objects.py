@@ -522,7 +522,7 @@ class TomboyContentObject(BaseContentType):
 
     def launch(self):
         if common.is_command_available("tomboy"):
-            common.launch_command("tomboy", [self.uri])
+            common.launch_command("tomboy", ["--open-note", self.uri])
 
 
 class MusicPlayerContentObject(BaseContentType):
