@@ -28,8 +28,8 @@ import pango
 try: import gst
 except ImportError:
     gst = None
-try: import gtksourceview
-except ImportError: gtksourceview = None
+try: import gtksourceview2
+except ImportError: gtksourceview2 = None
 
 from zeitgeist.client import ZeitgeistClient
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
@@ -98,7 +98,7 @@ class ScrolledDisplay(gtk.ScrolledWindow):
     def set_inactive(self): self._child_obj.set_inactive()
 
 
-class TextDisplay(gtksourceview.SourceView if gtksourceview
+class TextDisplay(gtksourceview2.View if gtksourceview2
                   else gtk.TextView, ContentDisplay):
     """
     A text preview display which uses a sourceview or a textview if sourceview
@@ -107,23 +107,30 @@ class TextDisplay(gtksourceview.SourceView if gtksourceview
     def __init__(self):
         """"""
         super(TextDisplay, self).__init__()
-        self.textbuffer = (gtksourceview.SourceBuffer() if gtksourceview
+        self.textbuffer = (gtksourceview2.Buffer() if gtksourceview2
                            else gtk.TextBuffer())
         self.set_buffer(self.textbuffer)
         self.set_editable(False)
         font  = pango.FontDescription()
         font.set_family("Monospace")
         self.modify_font(font)
-        if gtksourceview:
-            self.manager = gtksourceview.SourceLanguagesManager()
-            self.textbuffer.set_highlight(True)
+        if gtksourceview2:
+            self.manager = gtksourceview2.LanguageManager()
+            self.textbuffer.set_highlight_syntax(True)
+
+    def get_language_from_mime_type(self, mime):
+        for id_ in self.manager.get_language_ids():
+            temp_language = self.manager.get_language(id_)
+            if mime in temp_language.get_mime_types():
+                return temp_language
+        return None
 
     def set_content_object(self, obj):
         if obj:
             content = obj.get_content()
             self.textbuffer.set_text(content)
-            if gtksourceview:
-                lang = self.manager.get_language_from_mime_type(obj.mime_type)
+            if gtksourceview2:
+                lang = self.get_language_from_mime_type(obj.mime_type)
                 self.textbuffer.set_language(lang)
 
 
