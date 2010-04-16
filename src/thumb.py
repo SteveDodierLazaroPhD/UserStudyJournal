@@ -150,7 +150,7 @@ class PreviewRenderer(gtk.GenericCellRenderer):
         h = cell_area.height
         context = window.cairo_create()
         t0 = get_event_typename(event)
-        t1 = get_event_text(event)
+        t1 = event.subjects[0].text
         text = ("<span size='10240'>%s</span>\n<span size='8192'>%s</span>" % (t0, t1)).replace("&", "&amp;")
         layout = widget.create_pango_layout(text)
         layout.set_markup(text)
@@ -270,8 +270,8 @@ class ImageView(gtk.IconView):
         path = self.get_path_at_pos(int(x), int(y))
         if path:
             model = self.get_model()
-            uri = get_event_uri(model[path[0]][3])
-            interpretation = get_event_interpretation(model[path[0]][3])
+            uri = model[path[0]][3].uri
+            interpretation = model[path[0]][3].subjects[0].interpretation
             tooltip_window = widget.get_tooltip_window()
             if interpretation == Interpretation.VIDEO.uri:
                 self.set_tooltip_window(VideoPreviewTooltip)

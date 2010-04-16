@@ -117,25 +117,7 @@ def get_file_color(ftype, fmime):
     return (136/255.0, 138/255.0, 133/255.0)
 
 ##
-## Zeitgeist event helper functions because Randal really hates doing
-## event.subject[0].uri, it makes him cry
-
-def launch_event(event):
-    """
-    Launches a uri from a event
-
-    :param event: a :class:`Event <zeitgeist.datamodel.Event>`
-    """
-    gfile = GioFile(get_event_uri(event))
-    gfile.launch()
-
-def get_event_interpretation(event):
-    """
-    :param event: a :class:`Event <zeitgeist.datamodel.Event>`
-
-    :returns: a interpretation uri from a event
-    """
-    return event.subjects[0].interpretation
+## Zeitgeist event helper functions
 
 def get_event_typename(event):
     """
@@ -149,38 +131,6 @@ def get_event_typename(event):
         pass
     return FILETYPESNAMES[event.subjects[0].interpretation]
 
-def get_event_mimetype(event):
-    """
-    :param event: a :class:`Event <zeitgeist.datamodel.Event>`
-
-    :returns: a plain text version of a mimetype
-    """
-    return event.subjects[0].mimetype
-
-def get_event_text(event):
-    """
-    :param event: a :class:`Event <zeitgeist.datamodel.Event>`
-
-    :returns: the file name text of a event
-    """
-    return event.subjects[0].text
-
-def get_event_uri(event):
-    """
-    :param event: a :class:`Event <zeitgeist.datamodel.Event>`
-
-    :returns: a uri from a event's first subject
-    """
-    return event.subjects[0].uri
-
-def get_timestamp(event):
-    """
-    :param event: a :class:`Event <zeitgeist.datamodel.Event>`
-
-    :returns: a float event timestamp in miliseconds
-    """
-    return float(event.timestamp)
-
 def get_event_icon(event, size):
     """
     Returns a icon from a event at size
@@ -190,7 +140,7 @@ def get_event_icon(event, size):
 
     :returns: a :class:`Pixbuf <gtk.gdk.Pixbuf>`
     """
-    gfile = GioFile.create(get_event_uri(event))
+    gfile = GioFile.create(event.subjects[0].uri)
     if gfile:
         pb = gfile.get_icon(size=size)
         if pb:

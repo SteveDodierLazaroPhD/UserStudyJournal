@@ -210,8 +210,8 @@ class ContentObject(object):
         """
         :returns: a string of text markup used in timeline widget and elsewhere
         """
-        text = common.get_event_text(self.event)
-        interpretation = common.get_event_interpretation(self.event)
+        text = self.event.subjects[0].text
+        interpretation = self.event.subjects[0].interpretation
         t = (common.FILETYPESNAMES[interpretation] if
              interpretation in common.FILETYPESNAMES.keys() else "Unknown")
         self.timelineview_text = (t + "\n" + text).replace("%", "%%")
@@ -299,7 +299,7 @@ class FileContentObject(GioFile, ContentObject):
     @replaceableProperty
     def timelineview_icon(self):
         """Special method which returns a sized pixbuf for the timeline and a ispreview bool describing if it is a preview"""
-        usethumb = (True if common.get_event_interpretation(self.event)
+        usethumb = (True if self.event.subjects[0].interpretation
                     in common.MEDIAINTERPRETATIONS else False)
         thumb = False
         if common.PIXBUFCACHE.has_key(self.uri) and usethumb:

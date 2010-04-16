@@ -155,7 +155,7 @@ class TimelineRenderer(gtk.GenericCellRenderer):
         return True
 
     def render_text_with_pixbuf(self, window, widget, x, y, w, h, flags, drawframe = True):
-        uri = get_event_uri(self.event)
+        uri = self.content_obj.uri
         imgw, imgh = self.pixbuf.get_width(), self.pixbuf.get_height()
         x = max(x + imgw/2 + 4, 0 + imgw + 4)
         x, y = self.render_text(window, widget, x, y, w, h, flags)
