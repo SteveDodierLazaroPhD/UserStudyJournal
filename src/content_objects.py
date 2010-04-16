@@ -415,7 +415,14 @@ class BaseContentType(ContentObject):
         return self.emblems
 
     def launch(self):
-        pass
+        desktop = self.get_actor_desktop_file()
+        if desktop:
+            command = desktop.getExec()
+            try:
+                command = command.replace("%U", self.uri)
+                common.launch_string_command(command)
+                print command
+            except OSError: return
 
 
 class GenericContentObject(BaseContentType):
@@ -457,6 +464,11 @@ class BzrContentObject(BaseContentType):
     timelineview_text = "Bazaar\n{event.subjects[0].text}"
     thumbview_text = "Bazaar\n{event.subjects[0].text}"
 
+    def launch(self):
+        if common.is_command_available("xdg-open"):
+            common.launch_command("xdg-open", [self.uri])
+
+
 
 class IMContentObject(BaseContentType):
     @classmethod
@@ -471,6 +483,10 @@ class IMContentObject(BaseContentType):
     text = _("{source._desc_sing} with {event.subjects[0].text}")
     timelineview_text = _("{source._desc_sing} with {event.subjects[0].text}\n{event.subjects[0].uri}")
     thumbview_text = _("{source._desc_sing} with {event.subjects[0].text}")
+
+    def launch(self):
+        if common.is_command_available("empathy"):
+            common.launch_command("empathy", [self.uri])
 
 
 class WebContentObject(BaseContentType):
@@ -503,6 +519,10 @@ class TomboyContentObject(BaseContentType):
     text = _("{source._desc_sing} {event.subjects[0].text}")
     timelineview_text = _("Tomboy\n{source._desc_sing} {event.subjects[0].text}")
     thumbview_text = _("Tomboy\n{source._desc_sing} {event.subjects[0].text}")
+
+    def launch(self):
+        if common.is_command_available("tomboy"):
+            common.launch_command("tomboy", [self.uri])
 
 
 class MusicPlayerContentObject(BaseContentType):

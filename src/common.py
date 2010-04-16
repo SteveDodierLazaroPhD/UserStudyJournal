@@ -549,3 +549,13 @@ def launch_command(command, arguments=None):
     null = os.open(os.devnull, os.O_RDWR)
     subprocess.Popen([command] + arguments, stdout=null, stderr=null,
                      close_fds=True)
+
+def launch_string_command(command):
+    """
+    Launches a program as an independent from a string
+    """
+    command = command.split(" ")
+    null = os.open(os.devnull, os.O_RDWR)
+    subprocess.Popen(command, stdout=null, stderr=null,
+                     close_fds=True)
+
