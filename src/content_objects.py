@@ -436,7 +436,6 @@ class BzrContentObject(BaseContentType):
             common.launch_command("xdg-open", [self.uri])
 
 
-
 class IMContentObject(BaseContentType):
     @classmethod
     def use_class(cls, event):
@@ -458,6 +457,9 @@ class IMContentObject(BaseContentType):
 class WebContentObject(BaseContentType):
     """
     Displays page visits
+
+    We can write dataproviders which generate pixbufs and the thumbnail_uri
+    property request will find it for the thumbview
     """
     @classmethod
     def use_class(cls, event):
@@ -467,6 +469,7 @@ class WebContentObject(BaseContentType):
         return False
 
     icon_name = "$MIME $ACTOR"
+    # thumbnail_uri = "/some/users/cache/hash(uri).png"
     text = "{interpretation.display_name} {event.subjects[0].text}"
     timelineview_text = "{interpretation.display_name}\n{event.subjects[0].uri}"
     thumbview_text = "{interpretation.display_name}\n{event.subjects[0].text}"
@@ -518,7 +521,6 @@ class MusicPlayerContentObject(BaseContentType):
             else: event_mime = "audio/x-mpeg"
         self.mime_type = event_mime
         return self.mime_type
-
 
 
 # Content object list used by the section function. Should use Subclasses but I like to have some order in which these should be used

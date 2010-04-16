@@ -390,9 +390,10 @@ class Item(gtk.HBox):
         self.label.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
         self.label.set_alignment(0.0, 0.5)
 
-        img = gtk.image_new_from_pixbuf(self.icon)
+        if self.icon: img = gtk.image_new_from_pixbuf(self.icon)
+        else: img = None
         hbox = gtk.HBox()
-        hbox.pack_start(img, False, False, 1)
+        if img: hbox.pack_start(img, False, False, 1)
         hbox.pack_start(self.label, True, True, 4)
 
         if self.allow_pin:
