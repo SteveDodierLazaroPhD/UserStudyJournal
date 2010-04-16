@@ -502,5 +502,25 @@ class TomboyContentObject(BaseContentType):
     thumbview_text = _("Tomboy\n{source._desc_sing} {event.subjects[0].text}")
 
 
-# Content object list used by the section function
-CONTENT_OBJECTS = (BzrContentObject, WebContentObject, IMContentObject, TomboyContentObject)
+class MusicPlayerContentObject(BaseContentType):
+    """Used by music players when the backing subject is not a file"""
+
+    @classmethod
+    def use_class(cls, event):
+        """ Used by the content object chooser to check if the content object will work for the event"""
+        if event.actor in ("application://banshee.desktop", "application://rhythmbox.desktop") \
+           and not event.subjects[0].uri.startswith("file://"):
+            return cls.create(event)
+        return False
+
+    icon_name = "$MIME $ACTOR"
+    icon_is_thumbnail = False
+    text = "{event.subjects[0].text}"
+    timelineview_text = "{event.subjects[0].text}"
+    thumbview_text = "{event.subjects[0].text}"
+    mime_type = "audio/x-mpeg"
+
+
+
+# Content object list used by the section function. Should use Subclasses but I like to have some order in which these should be used
+CONTENT_OBJECTS = (MusicPlayerContentObject, BzrContentObject, WebContentObject, IMContentObject, TomboyContentObject)
