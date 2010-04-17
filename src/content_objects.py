@@ -433,12 +433,12 @@ class IMContentObject(BaseContentType):
             return cls.create(event)
         return False
 
-    fields_to_format = ()#"text", "thumbview_text")
+    #fields_to_format = ()#"text", "thumbview_text")
 
     icon_name = "empathy"
-    #text = _("{source._desc_sing} with {event.subjects[0].text}")
-    #timelineview_text = _("{source._desc_sing} with {event.subjects[0].text}\n{event.subjects[0].uri}")
-    #thumbview_text = _("{source._desc_sing} with {event.subjects[0].text}")
+    text = _("{source._desc_sing} with {event.subjects[0].text}")
+    timelineview_text = _("{source._desc_sing} with {event.subjects[0].text}\n{event.subjects[0].uri}")
+    thumbview_text = _("{source._desc_sing} with {event.subjects[0].text}")
 
     status_symbols = {
         "active" : u" <span color='#4E9A06' weight='bold' rise='1000'>◉</span>",
@@ -456,17 +456,17 @@ class IMContentObject(BaseContentType):
         return self.status_symbols["offline"]
 
     @property
-    def text(self):
+    def _text(self):
         status = self.get_subject_status_string()
         return self.wrds["source"]._desc_sing + " " + _("with") + status + self.event.subjects[0].text
 
     @property
-    def timelineview_text(self):
+    def _timelineview_text(self):
         status = self.get_subject_status_string()
         return self.wrds["source"]._desc_sing + " " + _("with") + status + self.event.subjects[0].text + "\n" + self.uri
 
     @property
-    def thumbview_text(self):
+    def _thumbview_text(self):
         status = self.get_subject_status_string()
         return self.wrds["source"]._desc_sing + " " + _("with") + status + self.event.subjects[0].text
 
