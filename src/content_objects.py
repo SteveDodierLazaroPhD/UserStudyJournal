@@ -388,9 +388,11 @@ class BaseContentType(ContentObject):
         if desktop:
             command = desktop.getExec()
             try:
-                command = command.replace("%U", self.uri)
+                if "%u" in command:
+                    command = command.replace("%u", self.uri)
+                elif "%U" in command:
+                    command = command.replace("%U", self.uri)
                 common.launch_string_command(command)
-                print command
             except OSError: return
 
 

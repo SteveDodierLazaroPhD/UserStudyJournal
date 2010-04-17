@@ -56,7 +56,13 @@ class ActivityView(gtk.VBox):
         self._set_today_timestamp()
         self._set_view_type()
         self._set_timeline()
-        self.set_views()
+
+        def new_day_updater():
+            self.set_views()
+            seconds = get_seconds_remaining_in_day()
+            gobject.timeout_add_seconds(seconds, new_day_updater)
+            return False
+        new_day_updater()
 
     def set_num_days(self, dayrange):
         self.dayrange = dayrange
@@ -100,13 +106,7 @@ class ActivityView(gtk.VBox):
                 end = selection_date  + 86399
                 start = selection_date - (self.dayrange - 1) * 86400
                 self.set_dayrange(start, end)
-        #datelist(90, self.cal.histogram.set_datastore)
-        def new_day_updater():
-            datelist(90, self.cal.histogram.set_datastore)
-            seconds = get_seconds_remaining_in_day()
-            gobject.timeout_add_seconds(seconds, new_day_updater)
-            return False
-        new_day_updater()
+        datelist(90, self.cal.histogram.set_datastore)
         self.cal.histogram.connect("column_clicked", selection_callback)
 
     def _set_view_type(self, refresh=False):
