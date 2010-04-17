@@ -29,7 +29,7 @@ from config import settings
 
 
 def get_seconds_remaining_in_day():
-    return 86400 - ((time.time()-time.timezone-time.daylight*(60*60)) % 86400) + 4
+    return int(86400 - ((time.time()-time.timezone-time.daylight*(60*60)) % 86400) + 4)
 
 
 class ActivityView(gtk.VBox):
