@@ -721,22 +721,6 @@ class EventGroup(gtk.VBox):
         else:
             self.show()
 
-    def get_events_old(self, *discard):
-        """
-        Saving this code here, forwhat ever reason it results in empty days when
-        zooming out of single day views.
-
-        # Seif take a look at this
-        """
-
-        def __handle_find_events(ids):
-            CLIENT.get_events(ids, self.set_events)
-
-        if self.event_templates and len(self.event_templates) > 0:
-            CLIENT.find_event_ids_for_templates(self.event_templates,
-                __handle_find_events, self.event_timerange, num_events=50000,
-                result_type=ResultType.MostRecentSubjects)
-
     def get_events(self, *discard):
         if self.event_templates and len(self.event_templates) > 0:
             CLIENT.find_events_for_templates(self.event_templates,
@@ -744,6 +728,7 @@ class EventGroup(gtk.VBox):
                 result_type=ResultType.MostRecentSubjects)
         else:
             self.view.hide()
+
 
 class DayPartWidget(EventGroup):
 
