@@ -34,11 +34,31 @@ import math
 import operator
 import subprocess
 
-from gio_file import GioFile, SIZE_LARGE, SIZE_NORMAL, ICONS
+from gio_file import GioFile, SIZE_LARGE, SIZE_NORMAL, SIZE_THUMBVIEW, SIZE_TIMELINEVIEW, ICONS
+from config import get_data_path, get_icon_path
 
 from zeitgeist.datamodel import Interpretation, Event
 
 
+# Caches desktop files
+DESKTOP_FILES = {}
+DESKTOP_FILE_PATHS = []
+try:
+    desktop_file_paths = os.environ["XDG_DATA_DIRS"].split(":")
+    for path in desktop_file_paths:
+        if path.endswith("/"):
+            DESKTOP_FILE_PATHS.append(path + "applications/")
+        else:
+            DESKTOP_FILE_PATHS.append(path + "/applications/")
+except KeyError:pass
+
+# Placeholder pixbufs for common sizes
+PLACEHOLDER_PIXBUFFS = {
+    24 : gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path("hicolor/scalable/apps/gnome-activity-journal.svg"), 24, 24),
+    16 : gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path("hicolor/scalable/apps/gnome-activity-journal.svg"), 16, 16)
+    }
+
+# Color magic
 TANGOCOLORS = [
     (252/255.0, 234/255.0,  79/255.0),#0
     (237/255.0, 212/255.0,   0/255.0),
@@ -130,22 +150,6 @@ def get_event_typename(event):
     except KeyError:
         pass
     return FILETYPESNAMES[event.subjects[0].interpretation]
-
-def get_event_icon(event, size):
-    """
-    Returns a icon from a event at size
-
-    :param event: a :class:`Event <zeitgeist.datamodel.Event>`
-    :param size: a int representing the size in pixels of the icon
-
-    :returns: a :class:`Pixbuf <gtk.gdk.Pixbuf>`
-    """
-    gfile = GioFile.create(event.subjects[0].uri)
-    if gfile:
-        pb = gfile.get_icon(size=size)
-        if pb:
-            return pb
-    return False
 
 ##
 # Cairo drawing functions
@@ -520,6 +524,23 @@ def get_icon_for_uri(uri, size):
     pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(uri, size, size)
     ICONS[(size, size)][uri] = pixbuf
     return pixbuf
+
+def get_icon_from_object_at_uri(uri, size):
+    """
+    Returns a icon from a event at size
+
+    :param uri: a uri string
+    :param size: a int representing the size in pixels of the icon
+
+    :returns: a :class:`Pixbuf <gtk.gdk.Pixbuf>`
+    """
+    gfile = GioFile.create(uri)
+    if gfile:
+        pb = gfile.get_icon(size=size)
+        if pb:
+            return pb
+    return False
+
 
 
 ##

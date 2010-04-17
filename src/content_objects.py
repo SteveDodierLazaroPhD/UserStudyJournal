@@ -35,33 +35,10 @@ from urlparse import urlparse
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation
 
 from config import get_icon_path, get_data_path
-from gio_file import GioFile, THUMBS, ICONS, SIZE_LARGE, SIZE_NORMAL
+from gio_file import GioFile, THUMBS, ICONS, SIZE_LARGE, SIZE_NORMAL, SIZE_THUMBVIEW, SIZE_TIMELINEVIEW
 import common
 import sources
 
-# Defines some additional icon sizes
-SIZE_THUMBVIEW = (92, 72)
-SIZE_TIMELINEVIEW = (32, 24)
-
-DESKTOP_FILE_PATHS = []
-try:
-    desktop_file_paths = os.environ["XDG_DATA_DIRS"].split(":")
-    for path in desktop_file_paths:
-        if path.endswith("/"):
-            DESKTOP_FILE_PATHS.append(path + "applications/")
-        else:
-            DESKTOP_FILE_PATHS.append(path + "/applications/")
-except KeyError:pass
-print DESKTOP_FILE_PATHS
-
-PLACEHOLDER_PIXBUFFS = {
-    24 : gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path("hicolor/scalable/apps/gnome-activity-journal.svg"), 24, 24),
-    16 : gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path("hicolor/scalable/apps/gnome-activity-journal.svg"), 16, 16)
-    }
-
-
-# Caches desktop files
-DESKTOP_FILES = {}
 
 class replaceableProperty(object):
     """Like a property but replaceable without a AttributeError"""
@@ -214,16 +191,16 @@ class ContentObject(object):
         Finds a desktop file for a actor
         """
         desktop_file = None
-        if self.event.actor in DESKTOP_FILES:
-            return DESKTOP_FILES[self.event.actor]
+        if self.event.actor in common.DESKTOP_FILES:
+            return common.DESKTOP_FILES[self.event.actor]
         path = None
-        for desktop_path in DESKTOP_FILE_PATHS:
+        for desktop_path in common.DESKTOP_FILE_PATHS:
             if os.path.exists(self.event.actor.replace("application://", desktop_path)):
                 path = self.event.actor.replace("application://", desktop_path)
                 break
         if path:
             desktop_file = DesktopEntry.DesktopEntry(path)
-        DESKTOP_FILES[self.event.actor] = desktop_file
+        common.DESKTOP_FILES[self.event.actor] = desktop_file
         return desktop_file
 
     def get_actor_pixbuf(self, size):
@@ -286,11 +263,11 @@ class FileContentObject(GioFile, ContentObject):
             pixbuf, thumb = common.PIXBUFCACHE[self.uri]
             pixbuf = pixbuf.scale_simple(32, 24, gtk.gdk.INTERP_TILES)
         else:
-            pixbuf = common.get_event_icon(self.event, 24)
+            pixbuf = common.get_icon_from_object_at_uri(self.uri, 24)
         if common.PIXBUFCACHE.has_key(self.uri) and usethumb and pixbuf != common.PIXBUFCACHE[self.uri][0]:
             pixbuf, thumb = common.PIXBUFCACHE[self.uri]
             pixbuf = pixbuf.scale_simple(32, 24, gtk.gdk.INTERP_TILES)
-        if not pixbuf: pixbuf = PLACEHOLDER_PIXBUFFS[24]
+        if not pixbuf: pixbuf = common.PLACEHOLDER_PIXBUFFS[24]
         is_thumbnail = usethumb&thumb
         self.timelineview_pixbuf = pixbuf
         return self.timelineview_pixbuf
@@ -359,7 +336,7 @@ class BaseContentType(ContentObject):
                     icon = common.get_icon_for_name(self.icon_name, size)
                 break
         except glib.GError:
-            if PLACEHOLDER_PIXBUFFS.has_key(size): return PLACEHOLDER_PIXBUFFS[size]
+            if common.PLACEHOLDER_PIXBUFFS.has_key(size): return common.PLACEHOLDER_PIXBUFFS[size]
         return icon
 
     @replaceableProperty
@@ -377,7 +354,7 @@ class BaseContentType(ContentObject):
         """Special method which returns a sized pixbuf for the timeline and a ispreview bool describing if it is a preview"""
         icon = self.get_icon(SIZE_TIMELINEVIEW[1])
         if not icon:
-            icon = PLACEHOLDER_PIXBUFFS[24]
+            icon = common.PLACEHOLDER_PIXBUFFS[24]
         self.timelineview_pixbuf = icon
         return self.timelineview_pixbuf
 
@@ -423,7 +400,7 @@ class GenericContentObject(BaseContentType):
         icon = self.get_actor_pixbuf(size)
         if icon:
             return icon
-        if PLACEHOLDER_PIXBUFFS.has_key(size): return PLACEHOLDER_PIXBUFFS[size]
+        if common.PLACEHOLDER_PIXBUFFS.has_key(size): return common.PLACEHOLDER_PIXBUFFS[size]
         icon = self.get_actor_pixbuf(size)
         return icon
 

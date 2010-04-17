@@ -42,6 +42,11 @@ except ImportError:
 THUMBS = collections.defaultdict(dict)
 ICONS = collections.defaultdict(dict)
 ICON_SIZES = SIZE_NORMAL, SIZE_LARGE = ((128, 128), (256, 256))
+
+# Thumbview and Timelineview sizes
+SIZE_THUMBVIEW = (92, 72)
+SIZE_TIMELINEVIEW = (32, 24)
+
 THUMBNAIL_FACTORIES = {
     SIZE_NORMAL: gnome.ui.ThumbnailFactory("normal"),
     SIZE_LARGE: gnome.ui.ThumbnailFactory("large")
