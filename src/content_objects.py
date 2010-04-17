@@ -43,6 +43,17 @@ import sources
 SIZE_THUMBVIEW = (92, 72)
 SIZE_TIMELINEVIEW = (32, 24)
 
+DESKTOP_FILE_PATHS = []
+try:
+    desktop_file_paths = os.environ["XDG_DATA_DIRS"].split(":")
+    for path in desktop_file_paths:
+        if path.endswith("/"):
+            DESKTOP_FILE_PATHS.append(path + "applications/")
+        else:
+            DESKTOP_FILE_PATHS.append(path + "/applications/")
+except KeyError:pass
+print DESKTOP_FILE_PATHS
+
 PLACEHOLDER_PIXBUFFS = {
     24 : gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path("hicolor/scalable/apps/gnome-activity-journal.svg"), 24, 24),
     16 : gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path("hicolor/scalable/apps/gnome-activity-journal.svg"), 16, 16)
@@ -85,7 +96,6 @@ class ContentObject(object):
     Defines the required interface of a Content object. This is a abstract class.
     """
     # Paths where .desktop files are stored.
-    desktop_file_paths = ["/usr/share/applications/", "/usr/local/share/applications/"]
 
     @classmethod
     def use_class(cls, event):
@@ -207,7 +217,7 @@ class ContentObject(object):
         if self.event.actor in DESKTOP_FILES:
             return DESKTOP_FILES[self.event.actor]
         path = None
-        for desktop_path in self.desktop_file_paths:
+        for desktop_path in DESKTOP_FILE_PATHS:
             if os.path.exists(self.event.actor.replace("application://", desktop_path)):
                 path = self.event.actor.replace("application://", desktop_path)
                 break
