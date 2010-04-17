@@ -386,7 +386,8 @@ class Item(gtk.HBox):
                 self.label.modify_fg(gtk.STATE_NORMAL, color)
 
     def __init_widget(self):
-        self.label = gtk.Label(self.content_obj.text)
+        self.label = gtk.Label()
+        self.label.set_markup(self.content_obj.text)
         self.label.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
         self.label.set_alignment(0.0, 0.5)
 

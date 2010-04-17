@@ -318,7 +318,7 @@ class BaseContentType(ContentObject):
     def __init__(self, event):
         super(BaseContentType, self).__init__(event)
         # String formatting
-        wrds = {
+        self.wrds = wrds = {
             "content_obj" : self,
             "event" : event
         }
@@ -446,10 +446,42 @@ class IMContentObject(BaseContentType):
             return cls.create(event)
         return False
 
+    fields_to_format = ()#"text", "thumbview_text")
+
     icon_name = "empathy"
-    text = _("{source._desc_sing} with {event.subjects[0].text}")
-    timelineview_text = _("{source._desc_sing} with {event.subjects[0].text}\n{event.subjects[0].uri}")
-    thumbview_text = _("{source._desc_sing} with {event.subjects[0].text}")
+    #text = _("{source._desc_sing} with {event.subjects[0].text}")
+    #timelineview_text = _("{source._desc_sing} with {event.subjects[0].text}\n{event.subjects[0].uri}")
+    #thumbview_text = _("{source._desc_sing} with {event.subjects[0].text}")
+
+    status_symbols = {
+        "active" : u" <span color='#4E9A06' weight='bold' rise='1000'>◉</span>",
+        "offline" : u" <span color='#A40000' weight='bold' rise='1000'>▼</span>",
+        "away" : u" <span color='#C4A000' weight='bold' rise='1000'>◎</span>",
+    }
+
+    def get_subject_status_string(self):
+        """
+        :returns: the status string from status_symbols according to the subjects
+        status in telepathy
+
+        !!to be implemented!!
+        """
+        return self.status_symbols["offline"]
+
+    @property
+    def text(self):
+        status = self.get_subject_status_string()
+        return self.wrds["source"]._desc_sing + " " + _("with") + status + self.event.subjects[0].text
+
+    @property
+    def timelineview_text(self):
+        status = self.get_subject_status_string()
+        return self.wrds["source"]._desc_sing + " " + _("with") + status + self.event.subjects[0].text + "\n" + self.uri
+
+    @property
+    def thumbview_text(self):
+        status = self.get_subject_status_string()
+        return self.wrds["source"]._desc_sing + " " + _("with") + status + self.event.subjects[0].text
 
     def launch(self):
         if common.is_command_available("empathy"):
