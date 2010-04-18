@@ -163,7 +163,15 @@ class ContentObject(object):
 
         :returns: a rgb tuple
         """
-        return common.get_file_color(self.event.subjects[0].interpretation, self.event.subjects[0].mimetype)
+        color1 = common.get_file_color(self.event.subjects[0].interpretation,
+                                       self.event.subjects[0].mimetype)
+        try:
+            i = (common.TANGOCOLORS.index(color1)/3)*3
+            if i == common.TANGOCOLORS.index(color1): i += 1
+            color2 = common.TANGOCOLORS[i]
+        except ValueError:
+            color2 = common.TANGOCOLORS[-2]
+        return (color1, color2)
 
     @CachedAttribute
     def text(self):
@@ -421,7 +429,7 @@ class BzrContentObject(BaseContentType):
     timelineview_text = "Bazaar\n{event.subjects[0].text}"
     thumbview_text = "Bazaar\n{event.subjects[0].text}"
 
-    type_color_representation = common.TANGOCOLORS[2]
+    type_color_representation = common.TANGOCOLORS[1], common.TANGOCOLORS[2]
 
     def launch(self):
         if common.is_command_available("xdg-open"):
@@ -436,7 +444,7 @@ class IMContentObject(BaseContentType):
             return cls.create(event)
         return False
 
-    type_color_representation = common.TANGOCOLORS[13]
+    type_color_representation = common.TANGOCOLORS[13], common.TANGOCOLORS[14]
 
     #fields_to_format = ()#"text", "thumbview_text")
 
@@ -499,6 +507,7 @@ class WebContentObject(BaseContentType):
     text = "{interpretation.display_name} {event.subjects[0].text}"
     timelineview_text = "{interpretation.display_name}\n{event.subjects[0].uri}"
     thumbview_text = "{interpretation.display_name}\n{event.subjects[0].text}"
+    #type_color_representation = (207/255.0, 77/255.0, 16/255.0), (207/255.0, 77/255.0, 16/255.0)
 
 
 class TomboyContentObject(BaseContentType):
@@ -514,7 +523,7 @@ class TomboyContentObject(BaseContentType):
     timelineview_text = _("Tomboy\n{source._desc_sing} {event.subjects[0].text}")
     thumbview_text = _("Tomboy\n{source._desc_sing} {event.subjects[0].text}")
 
-    type_color_representation = common.TANGOCOLORS[0]
+    type_color_representation = common.TANGOCOLORS[0], common.TANGOCOLORS[2]
 
     def launch(self):
         if common.is_command_available("tomboy"):

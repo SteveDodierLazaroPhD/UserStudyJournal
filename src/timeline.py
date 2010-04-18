@@ -87,7 +87,8 @@ class TimelineRenderer(gtk.GenericCellRenderer):
         return self.content_obj.event
 
     @property
-    def color(self):
+    def colors(self):
+        """ A tuple of two colors, the first being the base the outer being the outline"""
         return self.content_obj.type_color_representation
 
     @property
@@ -131,17 +132,14 @@ class TimelineRenderer(gtk.GenericCellRenderer):
         context = window.cairo_create()
         phases = self.phases
         for start, end in phases:
-            context.set_source_rgb(*self.color)
+            context.set_source_rgb(*self.colors[0])
             start = int(start * w)
             end = max(int(end * w), 8)
             if start + 8 > w:
                 start = w - 8
             context.rectangle(x+ start, y, end, self.barsize)
             context.fill()
-            i = (TANGOCOLORS.index(self.color)/3)*3
-            if i == TANGOCOLORS.index(self.color): i += 1
-            color = TANGOCOLORS[i]
-            context.set_source_rgb(*color)
+            context.set_source_rgb(*self.colors[1])
             context.set_line_width(1)
             context.rectangle(x + start+0.5, y+0.5, end, self.barsize)
             context.stroke()
