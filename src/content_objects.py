@@ -40,15 +40,21 @@ import common
 import sources
 
 
-class replaceableProperty(object):
-    """Like a property but replaceable without a AttributeError"""
-    def __init__(self, fget):
-        self._fget = fget
+class CachedAttribute(object):
+    """
+    runs the method once, finds the value, and replace the descriptor
+    in the instance with the found value
+    """
+    def __init__(self, method, name=None):
+        self.method = method
+        self.attr_name = name or method.__name__
 
     def __get__(self, instance, cls):
         if instance is None:
             return self
-        return self._fget(instance)
+        value = self.method(instance)
+        setattr(instance, self.attr_name, value)
+        return value
 
 
 def choose_content_object(event):
@@ -130,14 +136,14 @@ class ContentObject(object):
     def icon(self):
         return self.get_icon()
 
-    @replaceableProperty
+    @CachedAttribute
     def emblems(self):
-        self.emblems = []
-        self.emblems.append(self.get_icon(16))
-        self.emblems.append(None)
-        self.emblems.append(None)
-        self.emblems.append(self.get_actor_pixbuf(16))
-        return self.emblems
+        emblems = []
+        emblems.append(self.get_icon(16))
+        emblems.append(None)
+        emblems.append(None)
+        emblems.append(self.get_actor_pixbuf(16))
+        return emblems
 
     # utility
     def launch(self):
@@ -150,22 +156,20 @@ class ContentObject(object):
     phases = None
 
     # Thumbview and Timelineview methods
-    @replaceableProperty
+    @CachedAttribute
     def type_color_representation(self):
         """
         Uses the tango color pallet to find a color representing the content type
 
         :returns: a rgb tuple
         """
-        self.type_color_representation = common.get_file_color(self.event.subjects[0].interpretation, self.event.subjects[0].mimetype)
-        return self.type_color_representation
+        return common.get_file_color(self.event.subjects[0].interpretation, self.event.subjects[0].mimetype)
 
-    @replaceableProperty
+    @CachedAttribute
     def text(self):
-        self.text = str(self.event.subjects[0].text)
-        return self.text
+        return str(self.event.subjects[0].text)
 
-    @replaceableProperty
+    @CachedAttribute
     def timelineview_text(self):
         """
         :returns: a string of text markup used in timeline widget and elsewhere
@@ -174,17 +178,16 @@ class ContentObject(object):
         interpretation = self.event.subjects[0].interpretation
         t = (common.FILETYPESNAMES[interpretation] if
              interpretation in common.FILETYPESNAMES.keys() else "Unknown")
-        self.timelineview_text = (t + "\n" + text).replace("%", "%%")
-        return self.timelineview_text
+        timelineview_text = (t + "\n" + text).replace("%", "%%")
+        return timelineview_text
 
 
-    @replaceableProperty
+    @CachedAttribute
     def thumbview_text(self):
         """
         :returns: a string of text used in thumb widget and elsewhere
         """
-        self.thumbview_text = self.event.subjects[0].text.replace("&", "&amp;")
-        return self.thumbview_text
+        return self.event.subjects[0].text.replace("&", "&amp;")
 
     def get_actor_desktop_file(self):
         """
@@ -247,13 +250,13 @@ class FileContentObject(GioFile, ContentObject):
         except gio.Error:
             return None
 
-    @replaceableProperty
+    @CachedAttribute
     def thumbview_pixbuf(self):
         """Special method which returns a pixbuf for the thumbview and a ispreview bool describing if it is a preview"""
-        self.thumbview_pixbuf, isthumb = common.PIXBUFCACHE.get_pixbuf_from_uri(self.uri, SIZE_LARGE, iconscale=0.1875, w=SIZE_THUMBVIEW[0], h=SIZE_THUMBVIEW[1])
-        return self.thumbview_pixbuf
+        thumbview_pixbuf, isthumb = common.PIXBUFCACHE.get_pixbuf_from_uri(self.uri, SIZE_LARGE, iconscale=0.1875, w=SIZE_THUMBVIEW[0], h=SIZE_THUMBVIEW[1])
+        return thumbview_pixbuf
 
-    @replaceableProperty
+    @CachedAttribute
     def timelineview_pixbuf(self):
         """Special method which returns a sized pixbuf for the timeline and a ispreview bool describing if it is a preview"""
         usethumb = (True if self.event.subjects[0].interpretation
@@ -269,8 +272,7 @@ class FileContentObject(GioFile, ContentObject):
             pixbuf = pixbuf.scale_simple(32, 24, gtk.gdk.INTERP_TILES)
         if not pixbuf: pixbuf = common.PLACEHOLDER_PIXBUFFS[24]
         is_thumbnail = usethumb&thumb
-        self.timelineview_pixbuf = pixbuf
-        return self.timelineview_pixbuf
+        return pixbuf
 
 
 class BaseContentType(ContentObject):
@@ -339,36 +341,35 @@ class BaseContentType(ContentObject):
             if common.PLACEHOLDER_PIXBUFFS.has_key(size): return common.PLACEHOLDER_PIXBUFFS[size]
         return icon
 
-    @replaceableProperty
+    @CachedAttribute
     def thumbview_pixbuf(self):
         """Special method which returns a pixbuf for the thumbview and a ispreview bool describing if it is a preview"""
         if self.thumbnail_uri:
-            self.thumbview_pixbuf, isthumb = common.PIXBUFCACHE.get_pixbuf_from_uri(
+            thumbview_pixbuf, isthumb = common.PIXBUFCACHE.get_pixbuf_from_uri(
                 self.thumbnail_uri, SIZE_LARGE, iconscale=0.1875, w=SIZE_THUMBVIEW[0], h=SIZE_THUMBVIEW[1])
         else:
-            self.thumbview_pixbuf = None
-        return self.thumbview_pixbuf
+           thumbview_pixbuf = None
+        return thumbview_pixbuf
 
-    @replaceableProperty
+    @CachedAttribute
     def timelineview_pixbuf(self):
         """Special method which returns a sized pixbuf for the timeline and a ispreview bool describing if it is a preview"""
         icon = self.get_icon(SIZE_TIMELINEVIEW[1])
         if not icon:
             icon = common.PLACEHOLDER_PIXBUFFS[24]
-        self.timelineview_pixbuf = icon
-        return self.timelineview_pixbuf
+        return icon
 
-    @replaceableProperty
+    @CachedAttribute
     def emblems(self):
-        self.emblems = []
+        emblems = []
         if (not self.thumbnail_uri) and self.icon_name != "$ACTOR":
-            self.emblems.append(self.get_icon(16))
+            emblems.append(self.get_icon(16))
         else:
-            self.emblems.append(None)
-        self.emblems.append(None)
-        self.emblems.append(None)
-        self.emblems.append(self.get_actor_pixbuf(16))
-        return self.emblems
+            emblems.append(None)
+        emblems.append(None)
+        emblems.append(None)
+        emblems.append(self.get_actor_pixbuf(16))
+        return emblems
 
     def launch(self):
         desktop = self.get_actor_desktop_file()
@@ -530,7 +531,7 @@ class MusicPlayerContentObject(BaseContentType):
     timelineview_text = "{event.subjects[0].text}"
     thumbview_text = "{event.subjects[0].text}"
 
-    @replaceableProperty
+    @CachedAttribute
     def mime_type(self):
         event_mime = self.event.subjects[0].mimetype or ""
         if "audio" not in event_mime or "video" not in event_mime:
@@ -540,8 +541,7 @@ class MusicPlayerContentObject(BaseContentType):
             elif Interpretation.MUSIC.uri == interpretation:
                 event_mime = "audio/x-mpeg"
             else: event_mime = "audio/x-mpeg"
-        self.mime_type = event_mime
-        return self.mime_type
+        return event_mime
 
 
 # Content object list used by the section function. Should use Subclasses but I like to have some order in which these should be used
