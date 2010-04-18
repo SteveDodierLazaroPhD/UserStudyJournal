@@ -421,6 +421,8 @@ class BzrContentObject(BaseContentType):
     timelineview_text = "Bazaar\n{event.subjects[0].text}"
     thumbview_text = "Bazaar\n{event.subjects[0].text}"
 
+    type_color_representation = common.TANGOCOLORS[2]
+
     def launch(self):
         if common.is_command_available("xdg-open"):
             common.launch_command("xdg-open", [self.uri])
@@ -433,6 +435,8 @@ class IMContentObject(BaseContentType):
         if event.subjects[0].interpretation == Interpretation.IM_MESSAGE.uri:
             return cls.create(event)
         return False
+
+    type_color_representation = common.TANGOCOLORS[13]
 
     #fields_to_format = ()#"text", "thumbview_text")
 
@@ -509,6 +513,8 @@ class TomboyContentObject(BaseContentType):
     text = _("{source._desc_sing} {event.subjects[0].text}")
     timelineview_text = _("Tomboy\n{source._desc_sing} {event.subjects[0].text}")
     thumbview_text = _("Tomboy\n{source._desc_sing} {event.subjects[0].text}")
+
+    type_color_representation = common.TANGOCOLORS[0]
 
     def launch(self):
         if common.is_command_available("tomboy"):
