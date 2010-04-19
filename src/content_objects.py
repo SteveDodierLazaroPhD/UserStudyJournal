@@ -195,7 +195,7 @@ class ContentObject(object):
         """
         :returns: a string of text used in thumb widget and elsewhere
         """
-        return self.event.subjects[0].text.replace("&", "&amp;")
+        return self.event.subjects[0].text
 
     def get_actor_desktop_file(self):
         """

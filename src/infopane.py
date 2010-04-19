@@ -382,7 +382,7 @@ class RelatedPane(gtk.TreeView):
                      .   .
                      . . .
 
-    Displays related events using a widget based on our thumbnail ImageView
+    Displays related events using a widget based on gtk.TreeView
     """
     def __init__(self):
         super(RelatedPane, self).__init__()

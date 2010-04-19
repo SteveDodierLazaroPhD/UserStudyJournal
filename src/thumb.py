@@ -116,6 +116,12 @@ class PreviewRenderer(gtk.GenericCellRenderer):
             except:pass
         return True
 
+    @staticmethod
+    def insert_file_markup(text):
+        text = text.replace("&", "&amp;")
+        text = "<span size='6400'>" + text + "</span>"
+        return text
+
     def file_render_pixbuf(self, window, widget, x, y, w, h):
         """
         Renders a icon and file name for non-thumb objects
@@ -134,7 +140,8 @@ class PreviewRenderer(gtk.GenericCellRenderer):
             context.fill()
         draw_frame(context, x, y, w, h)
         context = window.cairo_create()
-        text = self.content_obj.thumbview_text
+        text = self.insert_file_markup(self.content_obj.thumbview_text)
+
         layout = widget.create_pango_layout(text)
         draw_text(context, layout, text, x+5, y+5, self.width-10)
 
