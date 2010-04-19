@@ -30,6 +30,7 @@ except ImportError:
     gst = None
 try: import gtksourceview2
 except ImportError: gtksourceview2 = None
+import threading
 
 from zeitgeist.client import ZeitgeistClient
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
@@ -40,6 +41,7 @@ from common import *
 from eventgatherer import get_related_events_for_uri
 from thumb import ImageView
 from gio_file import GioFile
+import widgets
 
 
 GENERIC_DISPLAY_NAME = "other"
@@ -371,7 +373,7 @@ class InformationPane(gtk.Frame):
         if display: display.set_inactive()
 
 
-class RelatedPane(ImageView):
+class RelatedPane(gtk.TreeView):
     """
                      . . .
                      .   .
@@ -382,9 +384,78 @@ class RelatedPane(ImageView):
 
     Displays related events using a widget based on our thumbnail ImageView
     """
+    last_active = -1
     def __init__(self):
         super(RelatedPane, self).__init__()
-        self.set_orientation(gtk.ORIENTATION_HORIZONTAL)
+        self.popupmenu = widgets.ContextMenu
+        self.connect("button-press-event", self.on_button_press)
+        self.connect("row-activated", self.row_activated)
+        pcolumn = gtk.TreeViewColumn(_("Related Items"))
+        pixbuf_render = gtk.CellRendererPixbuf()
+        pcolumn.pack_start(pixbuf_render)
+        pcolumn.set_cell_data_func(pixbuf_render, self.celldatamethod, "pixbuf")
+        text_render = gtk.CellRendererText()
+        pcolumn.pack_end(text_render)
+        pcolumn.set_cell_data_func(text_render, self.celldatamethod, "text")
+        self.append_column(pcolumn)
+        #self.set_headers_visible(False)
+
+    def celldatamethod(self, column, cell, model, iter_, user_data):
+        if model:
+            obj = model.get_value(iter_, 0)
+            if user_data == "text":
+                cell.set_property("text", obj.text)
+            elif user_data == "pixbuf":
+                cell.set_property("pixbuf", obj.icon)
+
+    def _set_model_in_thread(self, events):
+        """
+        A threaded which generates pixbufs and emblems for a list of events.
+        It takes those properties and appends them to the view's model
+        """
+        lock = threading.Lock()
+        self.active_list = []
+        liststore = gtk.ListStore(gobject.TYPE_PYOBJECT)
+        gtk.gdk.threads_enter()
+        self.set_model(liststore)
+        gtk.gdk.threads_leave()
+        for event in events:
+            obj = content_objects.choose_content_object(event)
+            if not obj: continue
+            gtk.gdk.threads_enter()
+            lock.acquire()
+            self.active_list.append(False)
+            liststore.append((obj,))
+            lock.release()
+            gtk.gdk.threads_leave()
+
+    def set_model_from_list(self, events):
+        """
+        Sets creates/sets a model from a list of zeitgeist events
+        :param events: a list of :class:`Events <zeitgeist.datamodel.Event>`
+        """
+        self.last_active = -1
+        if not events:
+            self.set_model(None)
+            return
+        thread = threading.Thread(target=self._set_model_in_thread, args=(events,))
+        thread.start()
+
+    def on_button_press(self, widget, event):
+        if event.button == 3:
+            path = self.get_path_at_pos(int(event.x), int(event.y))
+            if path:
+                model = self.get_model()
+                obj = model[path[0]][0]
+                self.popupmenu.do_popup(event.time, [obj])
+        return False
+
+    def row_activated(self, widget, path, col, *args):
+        if path:
+            model = self.get_model()
+            if model:
+                obj = model[path[0]][0]
+                obj.launch()
 
 
 class InformationWindow(gtk.Window):
@@ -402,21 +473,19 @@ class InformationWindow(gtk.Window):
         super(InformationWindow, self).__init__()
         box = gtk.HBox()
         vbox = gtk.VBox()
-        relatedlabel = gtk.Label(_("Related Items"))
         self.infopane = InformationPane()
         self.relatedpane = RelatedPane()
         scrolledwindow = gtk.ScrolledWindow()
         box.set_border_width(10)
         box.pack_start(self.infopane, True, True, 10)
         scrolledwindow.set_shadow_type(gtk.SHADOW_IN)
-        self.relatedpane.set_size_request(130, -1)
-        scrolledwindow.set_policy(gtk.POLICY_NEVER, gtk.POLICY_ALWAYS)
+        self.relatedpane.set_size_request(230, -1)
+        scrolledwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
         scrolledwindow.add(self.relatedpane)
-        vbox.pack_start(relatedlabel, False, False)
         vbox.pack_end(scrolledwindow, True, True)
         box.pack_end(vbox, False, False, 10)
         self.add(box)
-        self.set_size_request(600, 600)
+        self.set_size_request(700, 600)
         self.connect("delete-event", self._hide_on_delete)
 
     def _hide_on_delete(self, widget, event):
