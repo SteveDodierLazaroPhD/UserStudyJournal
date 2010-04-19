@@ -384,7 +384,6 @@ class RelatedPane(gtk.TreeView):
 
     Displays related events using a widget based on our thumbnail ImageView
     """
-    last_active = -1
     def __init__(self):
         super(RelatedPane, self).__init__()
         self.popupmenu = widgets.ContextMenu
@@ -392,10 +391,11 @@ class RelatedPane(gtk.TreeView):
         self.connect("row-activated", self.row_activated)
         pcolumn = gtk.TreeViewColumn(_("Related Items"))
         pixbuf_render = gtk.CellRendererPixbuf()
-        pcolumn.pack_start(pixbuf_render)
+        pcolumn.pack_start(pixbuf_render, False)
         pcolumn.set_cell_data_func(pixbuf_render, self.celldatamethod, "pixbuf")
         text_render = gtk.CellRendererText()
-        pcolumn.pack_end(text_render)
+        text_render.set_property("ellipsize", pango.ELLIPSIZE_MIDDLE)
+        pcolumn.pack_end(text_render, True)
         pcolumn.set_cell_data_func(text_render, self.celldatamethod, "text")
         self.append_column(pcolumn)
         #self.set_headers_visible(False)
@@ -480,7 +480,7 @@ class InformationWindow(gtk.Window):
         box.pack_start(self.infopane, True, True, 10)
         scrolledwindow.set_shadow_type(gtk.SHADOW_IN)
         self.relatedpane.set_size_request(230, -1)
-        scrolledwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
+        scrolledwindow.set_policy(gtk.POLICY_NEVER, gtk.POLICY_ALWAYS)
         scrolledwindow.add(self.relatedpane)
         vbox.pack_end(scrolledwindow, True, True)
         box.pack_end(vbox, False, False, 10)
