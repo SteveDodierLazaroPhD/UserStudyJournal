@@ -364,7 +364,7 @@ class InformationPane(gtk.Frame):
     def set_content_object(self, obj):
         self.obj = obj
         self.set_displaytype(obj)
-        self.label.set_markup("<span size='13336'>" + obj.text + "</span>")
+        self.label.set_markup("<span size='13336'>" + obj.text.replace("&", "&amp;") + "</span>")
         self.pathlabel.set_markup("<span color='#979797'>" + obj.uri + "</span>")
         self.datapane.set_content_object(obj)
 
@@ -404,7 +404,7 @@ class RelatedPane(gtk.TreeView):
         if model:
             obj = model.get_value(iter_, 0)
             if user_data == "text":
-                cell.set_property("text", obj.text)
+                cell.set_property("text", obj.text.replace("&", "&amp;"))
             elif user_data == "pixbuf":
                 cell.set_property("pixbuf", obj.icon)
 
