@@ -3,14 +3,14 @@ msgstr ""
 "Project-Id-Version: GNOME Activity Journal\n"
 "Report-Msgid-Bugs-To: zeitgeist@lists.launchpad.net\n"
 "POT-Creation-Date: 2010-02-28 19:33+0100\n"
-"PO-Revision-Date: 2010-02-13 06:19+0000\n"
-"Last-Translator: Nicolas DERIVE <kalon33@ubuntu.com>\n"
+"PO-Revision-Date: 2010-04-20 23:27+0000\n"
+"Last-Translator: Pierre Slamich <pierre.slamich@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Launchpad-Export-Date: 2010-04-19 03:52+0000\n"
+"X-Launchpad-Export-Date: 2010-04-21 04:14+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 "X-Poedit-Language: French\n"
 
@@ -43,7 +43,7 @@ msgstr "Cliquez pour revenir vers aujourd'hui"
 
 #: ../src/main.py:86
 msgid "Powered by Zeitgeist"
-msgstr ""
+msgstr "Fonctionne avec Zeitgeist"
 
 #: ../src/main.py:158 ../src/main.py:180 ../src/main.py:201
 #: ../extra/gnome-activity-journal.desktop.in.h:1
@@ -136,27 +136,27 @@ msgstr "Élements épinglés"
 
 #: ../src/common.py:84
 msgid "Video"
-msgstr ""
+msgstr "Vidéo"
 
 #: ../src/common.py:85
 msgid "Music"
-msgstr ""
+msgstr "Musique"
 
 #: ../src/common.py:86
 msgid "Document"
-msgstr ""
+msgstr "Document"
 
 #: ../src/common.py:87
 msgid "Image"
-msgstr ""
+msgstr "Image"
 
 #: ../src/common.py:88
 msgid "Source Code"
-msgstr ""
+msgstr "Code source"
 
 #: ../src/common.py:89
 msgid "Unknown"
-msgstr ""
+msgstr "Inconnu"
 
 #: ../src/widgets.py:168
 msgid "Type here to search..."
