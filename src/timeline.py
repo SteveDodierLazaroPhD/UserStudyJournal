@@ -249,6 +249,7 @@ class TimelineView(gtk.TreeView):
             obj = content_objects.choose_content_object(event)
             if not obj: continue
             obj.phases = [make_area_from_event(event.timestamp, stop) for (event, stop) in row]
+            obj.phases.sort(key=lambda x: x[0])
             liststore.append((obj,))
         self.set_model(liststore)
 
