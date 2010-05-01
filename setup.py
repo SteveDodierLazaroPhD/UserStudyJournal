@@ -22,46 +22,7 @@ from __future__ import with_statement
 import os
 from glob import glob
 from distutils.core import setup
-from distutils.command.install import install as orig_install
 from DistUtilsExtra.command import *
-
-class _install(orig_install):
-    
-    def _create_symlink(self, src, dst):
-        src = os.path.join(self.prefix, src)
-        dst = os.path.join(self._destdir, dst)
-        if not os.path.islink(dst):
-            print 'Creating symlink "%s"...' % dst
-            os.symlink(src, dst)
-    
-    def _create_directory(self, dir):
-        dir = os.path.join(self._destdir, dir)
-        if not os.path.isdir(dir):
-            print 'Creating directory "%s"...' % dir
-            os.mkdir(dir)
-    
-    def run(self):
-        if self.root and self.prefix:
-            self._destdir = os.path.join(self.root, self.prefix.strip('/'))
-        else:
-            self._destdir = self.prefix
-        orig_install.run(self)
-        # Ensure the needed directories exist
-        self._create_directory('bin')
-        self._create_directory('share/pixmaps')
-        # Create a symlink for the executable file
-        self._create_symlink(
-            'share/gnome-activity-journal/gnome-activity-journal',
-            'bin/gnome-activity-journal')
-        # Symlink the 48x48 PNG icon into share/pixmaps
-        self._create_symlink(
-            'share/gnome-activity-journal/data/icons/hicolor/48x48/apps/' \
-                'gnome-activity-journal.png',
-            'share/pixmaps/gnome-activity-journal.png')
-        # Symlink the icons so that the Journal can find them
-        self._create_symlink(
-            'share/icons/',
-            'share/gnome-activity-journal/data/icons')
 
 class _build_i18n(build_i18n.build_i18n):
 
@@ -116,7 +77,7 @@ setup(
     license = 'GPLv3+',
     platforms = ['GNU/Linux'],
     data_files = list_from_lists(
-        [('share/gnome-activity-journal', ['gnome-activity-journal'])],
+        [('bin/', ['gnome-activity-journal'])],
         [('share/gnome-activity-journal/data', glob('data/*.svg'))],
         [('share/gnome-activity-journal/data/zlogo', glob('data/zlogo/*.png'))],
         [('share/pixmaps/', ['data/gnome-activity-journal.xpm'])],
@@ -127,7 +88,6 @@ setup(
         [('share/gnome-activity-journal/fungtk', glob('fungtk/*.py'))],
         ),
     cmdclass = {
-        'install': _install,
         'build': build_extra.build_extra,
         'build_i18n': _build_i18n,
         #'build_help':  build_help.build_help,

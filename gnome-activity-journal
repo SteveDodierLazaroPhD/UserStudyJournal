@@ -29,7 +29,14 @@ import optparse
 # Where this file lives
 our_dir = os.path.abspath(os.path.dirname(__file__))
 
-# Check for critical modules from other repositories first.
+# If GNOME Activity Journal is installed system-wide, as indicated by
+# this file residing in $prefix/bin, we expect to find the remaining code
+# in $prefix/share/gnome-activity-journal/.
+if os.path.basename(our_dir) == 'bin':
+	sys.path.insert(0, os.path.join(os.path.dirname(our_dir),
+		'share/gnome-activity-journal'))
+
+# Check for critical modules from other repositories.
 # Support side-by-side or nested repositories during development.
 #
 # If zeitgeist is installed locally (with --prefix=<home>/.local) then Python
