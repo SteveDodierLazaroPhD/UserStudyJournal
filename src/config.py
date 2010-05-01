@@ -26,7 +26,7 @@ from fungtk.quickconf import QuickConf
 # Installation details
 BASE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 DATA_PATH = os.path.join(BASE_PATH, "data")
-VERSION = "0.3.3"
+VERSION = "0.3.4"
 GETTEXT_PATH = None
 
 def _get_path(path):
