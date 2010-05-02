@@ -28,6 +28,7 @@ import gio
 import glib
 import gtk
 import os
+import sys
 from xdg import DesktopEntry
 import xml.dom.minidom as dom
 
@@ -397,10 +398,37 @@ class GenericContentObject(BaseContentType):
     Used when no other content type would fit
     """
 
-    icon_name = "$MIME $ACTOR"
-    text = "{event.subjects[0].text}"
-    timelineview_text = "{subject_interpretation.display_name}\n{event.subjects[0].uri}"
-    thumbview_text = "{subject_interpretation.display_name}\n{event.subjects[0].text}"
+    if sys.version_info >= (2,6):
+        icon_name = "$MIME $ACTOR"
+        text = "{event.subjects[0].text}"
+        timelineview_text = "{subject_interpretation.display_name}\n{event.subjects[0].uri}"
+        thumbview_text = "{subject_interpretation.display_name}\n{event.subjects[0].text}"
+    else:
+        def __init__(self, event):
+            super(BaseContentType, self).__init__(event)
+            # String formatting
+            self.wrds = wrds = {
+            }
+            try: wrds["interpretation"] = Interpretation[event.interpretation]
+            except KeyError: wrds["interpretation"] = Interpretation.OPEN_EVENT
+            try: wrds["subject_interpretation"] = Interpretation[event.subjects[0].interpretation]
+            except KeyError: wrds["subject_interpretation"] = Interpretation.UNKNOWN
+            try:
+                wrds["source"] = sources.SUPPORTED_SOURCES[self.event.subjects[0].interpretation]
+            except:
+                wrds["source"] = sources.SUPPORTED_SOURCES[Interpretation.UNKNOWN.uri]
+
+        @CachedAttribute
+        def text(self):
+            return self.event.subjects[0].text
+
+        @CachedAttribute
+        def timelineview_text(self):
+            return self.wrds["subject_interpretation"].display_name + "\n" + self.event.subjects[0].uri
+
+        @CachedAttribute
+        def thumbview_text(self):
+            return self.wrds["subject_interpretation"].display_name + "\n" + self.event.subjects[0].text
 
     def get_icon(self, size=24, *args, **kwargs):
         icon = common.get_icon_for_name(self.mime_type.replace("/", "-"), size)
@@ -560,4 +588,7 @@ class MusicPlayerContentObject(BaseContentType):
 
 
 # Content object list used by the section function. Should use Subclasses but I like to have some order in which these should be used
-CONTENT_OBJECTS = (MusicPlayerContentObject, BzrContentObject, WebContentObject, IMContentObject, TomboyContentObject)
+if sys.version_info >= (2,6):
+    CONTENT_OBJECTS = (MusicPlayerContentObject, BzrContentObject, WebContentObject, IMContentObject, TomboyContentObject)
+else:
+    CONTENT_OBJECTS = tuple()
