@@ -169,7 +169,7 @@ class TimelineRenderer(gtk.GenericCellRenderer):
         state = gtk.STATE_SELECTED if gtk.CELL_RENDERER_SELECTED & flags else gtk.STATE_NORMAL
         color1, color2 = self.textcolor[state]
         text = self._make_timelineview_text(self.text)
-        text = text.format(color1.to_string(), color2.to_string())
+        text = text % (color1.to_string(), color2.to_string())
         layout = widget.create_pango_layout("")
         layout.set_markup(text)
         textw, texth = layout.get_pixel_size()
@@ -198,8 +198,8 @@ class TimelineRenderer(gtk.GenericCellRenderer):
         else:
             p1 = text[0]
             p2 = " "
-        t1 = "<span color='{0}'><b>" + p1 + "</b></span>"
-        t2 = "<span color='{1}'>" + p2 + "</span> "
+        t1 = "<span color='%s'><b>" + p1 + "</b></span>"
+        t2 = "<span color='%s'>" + p2 + "</span> "
         return (str(t1) + "\n" + str(t2) + "").replace("&", "&amp;")
 
     def on_start_editing(self, event, widget, path, background_area, cell_area, flags):
