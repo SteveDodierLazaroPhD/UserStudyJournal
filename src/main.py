@@ -32,7 +32,7 @@ from supporting_widgets import DayButton, DayLabel, Toolbar, ContextMenu, AboutD
 from infopane import InformationContainer
 from histogram import HistogramWidget
 from store import Store, tdelta
-from config import settings
+from config import settings, get_icon_path
 
 
 class ViewContainer(gtk.Notebook):
@@ -165,6 +165,16 @@ class PortalWindow(gtk.Window):
         self.panedcontainer.informationcontainer.hide()
         self.panedcontainer.pinbox.hide()
         self.searchbox.hide()
+
+        self.set_icon_name("gnome-activity-journal")
+        self.set_icon_list(
+            *[gtk.gdk.pixbuf_new_from_file(get_icon_path(f)) for f in (
+                "hicolor/16x16/apps/gnome-activity-journal.png",
+                "hicolor/24x24/apps/gnome-activity-journal.png",
+                "hicolor/32x32/apps/gnome-activity-journal.png",
+                "hicolor/48x48/apps/gnome-activity-journal.png",
+                "hicolor/256x256/apps/gnome-activity-journal.png")])
+
 
     @property
     def active_dates(self):
