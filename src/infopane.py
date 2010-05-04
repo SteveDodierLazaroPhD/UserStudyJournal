@@ -38,19 +38,47 @@ from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
 
 import content_objects
 from common import *
-from eventgatherer import get_related_events_for_uri
-from thumb import ImageView
 from gio_file import GioFile
-import widgets
+import supporting_widgets
 
 
 GENERIC_DISPLAY_NAME = "other"
 
 MIMETYPEMAP = {
     GENERIC_DISPLAY_NAME : ("image", None),
-    "multimedia" : ("video", "audio"),
-    "text" : ("text",),
+    #"multimedia" : ("video", "audio"),
+    #"text" : ("text",),
 }
+
+CLIENT = ZeitgeistClient()
+
+def get_related_events_for_uri(uri, callback):
+    """
+    :param uri: A uri for which to request related uris using zetigeist
+    :param callback: this callback is called once the events are retrieved for
+    the uris. It is called with a list of events.
+    """
+    def _event_request_handler(uris):
+        """
+        :param uris: a list of uris which are related to the windows current uri
+        Seif look here
+        """
+        templates = []
+        if len(uris) > 0:
+            for i, uri in enumerate(uris):
+                templates += [
+                        Event.new_for_values(interpretation=Interpretation.VISIT_EVENT.uri, subject_uri=uri),
+                        Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri, subject_uri=uri),
+                        Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri, subject_uri=uri),
+                        Event.new_for_values(interpretation=Interpretation.OPEN_EVENT.uri, subject_uri=uri)
+                    ]
+            CLIENT.find_events_for_templates(templates, callback,
+                                             [0, time.time()*1000], num_events=50000,
+                                             result_type=ResultType.MostRecentSubjects)
+
+    end = time.time() * 1000
+    start = end - (86400*30*1000)
+    CLIENT.find_related_uris_for_uris([uri], _event_request_handler)
 
 
 def get_media_type(gfile):
@@ -61,9 +89,9 @@ def get_media_type(gfile):
     for key, mimes in MIMETYPEMAP.iteritems():
         if majortype in mimes:
             return key
-    if isinstance(gfile, GioFile):
-        if "text-x-generic" in gfile.icon_names or "text-x-script" in gfile.icon_names:
-            return "text"
+    #if isinstance(gfile, GioFile):
+    #    if "text-x-generic" in gfile.icon_names or "text-x-script" in gfile.icon_names:
+    #        return "text"
     return GENERIC_DISPLAY_NAME
 
 
@@ -95,6 +123,7 @@ class ScrolledDisplay(gtk.ScrolledWindow):
         self._child_obj = self.child_type()
         self.add(self._child_obj)
         self.set_shadow_type(gtk.SHADOW_IN)
+        self.set_size_request(-1, 200)
 
     def set_content_object(self, obj): self._child_obj.set_content_object(obj)
     def set_inactive(self): self._child_obj.set_inactive()
@@ -143,9 +172,9 @@ class ImageDisplay(gtk.Image, ContentDisplay):
     def set_content_object(self, obj):
         if obj:
             if isinstance(obj, GioFile) and obj.has_preview():
-                pixbuf = obj.get_thumbnail(size=SIZE_LARGE, border=3)
+                pixbuf = obj.get_thumbnail(size=SIZE_NORMAL, border=3)
             else:
-                pixbuf = obj.get_icon(size=256)
+                pixbuf = obj.get_icon(size=128)
             self.set_from_pixbuf(pixbuf)
 
 
@@ -292,7 +321,7 @@ class EventDataPane(gtk.Table):
         self.labels[5].set_text(manifestation_name)
 
 
-class InformationPane(gtk.Frame):
+class InformationPane(gtk.VBox):
     """
     . . . . . . . .
     .             .
@@ -324,23 +353,25 @@ class InformationPane(gtk.Frame):
         labelvbox.pack_end(self.pathlabel)
         self.openbutton = gtk.Button(stock=gtk.STOCK_OPEN)
         self.displays = self.displays.copy()
-        self.set_shadow_type(gtk.SHADOW_NONE)
-        self.set_label_widget(labelvbox)
+        #self.set_shadow_type(gtk.SHADOW_NONE)
+        #self.set_label_widget(labelvbox)
+        self.pack_start(labelvbox)
         self.box.set_shadow_type(gtk.SHADOW_NONE)
         buttonhbox.pack_end(self.openbutton, False, False, 5)
         buttonhbox.set_border_width(5)
         vbox.pack_start(self.box, True, True)
         vbox.pack_end(buttonhbox, False, False)
-        self.set_label_align(0.5, 0.5)
-        self.label.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
-        self.pathlabel.set_size_request(300, -1)
+        #self.set_label_align(0.5, 0.5)
+        #self.label.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
+        #self.pathlabel.set_size_request(100, -1)
+        #self.pathlabel.set_size_request(300, -1)
         self.pathlabel.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
         def _launch(w):
             self.obj.launch()
         self.openbutton.connect("clicked", _launch)
 
-        self.datapane = EventDataPane()
-        vbox.pack_end(self.datapane, False, False)
+        #self.datapane = EventDataPane()
+        #vbox.pack_end(self.datapane, False, False)
         self.add(vbox)
         self.show_all()
 
@@ -364,9 +395,9 @@ class InformationPane(gtk.Frame):
     def set_content_object(self, obj):
         self.obj = obj
         self.set_displaytype(obj)
-        self.label.set_markup("<span size='13336'>" + obj.text.replace("&", "&amp;") + "</span>")
+        self.label.set_markup("<span size='12336'>" + obj.text.replace("&", "&amp;") + "</span>")
         self.pathlabel.set_markup("<span color='#979797'>" + obj.uri + "</span>")
-        self.datapane.set_content_object(obj)
+        #self.datapane.set_content_object(obj)
 
     def set_inactive(self):
         display = self.box.get_child()
@@ -386,7 +417,7 @@ class RelatedPane(gtk.TreeView):
     """
     def __init__(self):
         super(RelatedPane, self).__init__()
-        self.popupmenu = widgets.ContextMenu
+        self.popupmenu = supporting_widgets.ContextMenu
         self.connect("button-press-event", self.on_button_press)
         self.connect("row-activated", self.row_activated)
         pcolumn = gtk.TreeViewColumn(_("Related Items"))
@@ -458,7 +489,7 @@ class RelatedPane(gtk.TreeView):
                 obj.launch()
 
 
-class InformationWindow(gtk.Window):
+class InformationContainer(supporting_widgets.Pane):
     """
     . . . . . . . .  . . .
     .             .  .   .
@@ -470,28 +501,21 @@ class InformationWindow(gtk.Window):
     A window which holds the information pane and related pane
     """
     def __init__(self):
-        super(InformationWindow, self).__init__()
-        box = gtk.HBox()
+        super(InformationContainer, self).__init__()
+        box = gtk.VBox()
         vbox = gtk.VBox()
         self.infopane = InformationPane()
         self.relatedpane = RelatedPane()
         scrolledwindow = gtk.ScrolledWindow()
         box.set_border_width(10)
-        box.pack_start(self.infopane, True, True, 10)
+        box.pack_start(self.infopane, False, False, 10)
         scrolledwindow.set_shadow_type(gtk.SHADOW_IN)
-        self.relatedpane.set_size_request(230, -1)
-        scrolledwindow.set_policy(gtk.POLICY_NEVER, gtk.POLICY_ALWAYS)
+        #self.relatedpane.set_size_request(230, -1)
+        scrolledwindow.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
         scrolledwindow.add(self.relatedpane)
         vbox.pack_end(scrolledwindow, True, True)
-        box.pack_end(vbox, False, False, 10)
+        box.pack_end(vbox, True, True, 10)
         self.add(box)
-        self.set_size_request(700, 600)
-        self.connect("delete-event", self._hide_on_delete)
-
-    def _hide_on_delete(self, widget, event):
-        widget.hide()
-        self.infopane.set_inactive()
-        return True
 
     def set_content_object(self, obj):
         def _callback(events):
@@ -500,5 +524,54 @@ class InformationWindow(gtk.Window):
         self.infopane.set_content_object(obj)
         self.show_all()
 
+    def hide_on_delete(self, widget, *args):
+        super(InformationContainer, self).hide_on_delete(widget)
+        self.infopane.set_inactive()
+        return True
 
-InformationWindow = InformationWindow()
+
+##class InformationWindow(gtk.Window):
+##    """
+##    . . . . . . . .  . . .
+##    .             .  .   .
+##    .    Info     .  .   . <--- Related files
+##    .             .  .   .
+##    .             .  .   .
+##    . . . . . . . .  . . .
+##
+##    A window which holds the information pane and related pane
+##    """
+##    def __init__(self):
+##        super(InformationWindow, self).__init__()
+##        box = gtk.HBox()
+##        vbox = gtk.VBox()
+##        self.infopane = InformationPane()
+##        self.relatedpane = RelatedPane()
+##        scrolledwindow = gtk.ScrolledWindow()
+##        box.set_border_width(10)
+##        box.pack_start(self.infopane, True, True, 10)
+##        scrolledwindow.set_shadow_type(gtk.SHADOW_IN)
+##        self.relatedpane.set_size_request(230, -1)
+##        scrolledwindow.set_policy(gtk.POLICY_NEVER, gtk.POLICY_ALWAYS)
+##        scrolledwindow.add(self.relatedpane)
+##        vbox.pack_end(scrolledwindow, True, True)
+##        box.pack_end(vbox, False, False, 10)
+##        self.add(box)
+##        self.set_size_request(700, 600)
+##        self.connect("delete-event", self._hide_on_delete)
+##
+##    def _hide_on_delete(self, widget, event):
+##        widget.hide()
+##        self.infopane.set_inactive()
+##        return True
+##
+##    def set_content_object(self, obj):
+##        def _callback(events):
+##            self.relatedpane.set_model_from_list(events)
+##        get_related_events_for_uri(obj.uri, _callback)
+##        self.infopane.set_content_object(obj)
+##        self.show_all()
+
+
+#InformationWindow = InformationWindow()
+#InformationContainer = InformationContainer()

@@ -4,6 +4,7 @@
 #
 # Copyright © 2009-2010 Seif Lotfy <seif@lotfy.com>
 # Copyright © 2010 Siegfried Gevatter <siegfried@gevatter.com>
+# Copyright © 2010 Randal Barlow <email.tehk@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -26,193 +27,173 @@ import time
 import datetime
 import os
 
-from config import ACCESSIBILITY, settings, get_data_path, get_icon_path
-from widgets import *
-from view import ActivityView
-from histogram import HistogramWidget, JournalHistogram, CairoHistogram
-from daywidgets import DayButton
-from infopane import InformationWindow
+
+from activityviews import MultiViewContainer, TimelineViewContainer, ThumbViewContainer, PinnedPane
+from supporting_widgets import DayButton, DayLabel, Toolbar, ContextMenu, AboutDialog
+from infopane import InformationContainer
+from histogram import HistogramWidget
+from store import Store, tdelta
+from config import settings
+
+InformationContainer = InformationContainer()
+ContextMenu.informationwindow = InformationContainer
 
 
-class Portal(gtk.HBox):
+class ViewContainer(gtk.Notebook):
 
-    def __init__(self):
-        super(Portal, self).__init__()
-
-        self.vbox = gtk.VBox()
-
-        if ACCESSIBILITY:
-            self.cal = HistogramWidget(CairoHistogram)
-        else:
-            self.cal = HistogramWidget(JournalHistogram)
-        self.activityview = ActivityView(self.cal)
-        if settings["amount_days"]:
-            self.activityview.set_num_days(settings["amount_days"])
-        settings.connect("amount_days", lambda key, value:
-                         self.activityview.set_num_days(value or 3))
-
-        self.backbtn = DayButton(0)
-        self.fwdbtn = DayButton(1)
-        self.fwdbtn.set_sensitive(False)
-
-        def handle_fwd_leading(widget, i, ii):
-            self.throbber.animate_for_seconds(1)
-            if i == len(widget.get_datastore()) - widget.selected_range - 1:
-                self.fwdbtn.leading = True
-            else:
-                self.fwdbtn.leading = False
-            if ii < len(widget.get_datastore()) - 1:
-                self.fwdbtn.set_sensitive(True)
-            else:
-                self.fwdbtn.set_sensitive(False)
-            return True
-        self.cal.histogram.connect("selection-set", handle_fwd_leading)
-
-        self.backbtn.connect("clicked", self.moveback)
-        self.fwdbtn.connect("clicked", self.moveup)
-
-        self.add(self.vbox)
-        self.rbox = gtk.VBox()
-        self.rbox.pack_start(self.fwdbtn)
-
-        hbox = gtk.HBox()
-
-        hbox.pack_start(self.backbtn, False, False)
-        hbox.pack_start(self.activityview,3)
-        hbox.pack_start(self.rbox, False, False)
-
-        self.vbox.pack_start(hbox, True, True, 6)
-
-        self.throbber = AnimatedImage(get_data_path("zlogo/zg%d.png"), 150)
-        self.throbber.set_tooltip_text(_("Powered by Zeitgeist"))
-        self.throbber.set_alignment(0.9, 0.98)
-        self.aboutbox = aboutbox = gtk.EventBox()
-        aboutbox.add(self.throbber)
-        align = gtk.Alignment()
-        align.add(self.cal)
-        align.set(0, 0, 1, 1)
-        align.set_padding(0, 0, 23, 7)
-        calhbox = gtk.HBox()
-        calhbox.pack_start(align, True, True, 0)
-        calhbox.pack_start(aboutbox, False, False)
-        self.vbox.pack_end(calhbox, False, False)
-
-        # FIXME: We give focus to the text entry so that it doesn't go to the
-        # "go back" button. Ideally it would be on the first event of the
-        # current day.
+    def __init__(self, store):
+        super(ViewContainer, self).__init__()
+        self.store = store
+        self.set_show_tabs(False)
+        self.set_show_border(False)
+        self.pages = {}
+        self.mutliview = self.pages[0] = MultiViewContainer()
+        self.thumbview = self.pages[1] = ThumbViewContainer()
+        self.timelineview = self.pages[2] = TimelineViewContainer()
+        for widget in (self.mutliview, self.thumbview, self.timelineview):
+            self.append_page(widget)
         self.show_all()
-        self.activityview.searchbox.hide()
-        self.connect("key-press-event", self._global_keypress_handler)
-        self.cal.histogram.connect("column_clicked", self.handle_fwd_sensitivity)
+        self.set_page(0)
 
-    def _global_keypress_handler(self, widget, event):
-        if event.state & gtk.gdk.CONTROL_MASK:
-            if gtk.gdk.keyval_name(event.keyval) == "f":
-                self.activityview.searchbox.show()
-                self.set_focus(self.activityview.searchbox.search)
-                return True
-        elif event.keyval == gtk.keysyms.Home:
-            i  = len(self.cal.histogram.get_datastore()) - 1
-            self.cal.histogram.change_location(i)
-            return True
-        return False
+    def set_day(self, day, page=None):
+        if page == None:
+            page = self.page
+        self.pages[page].set_day(day, self.store)
 
-    def jumpup(self, data=None):
-        self.activityview._set_today_timestamp()
-        self.fwdbtn.set_sensitive(False)
+    @property
+    def page(self):
+        return self.get_current_page()
 
-    def moveup(self, data=None):
-        self.activityview.jump(86400)
-        dayinfocus = int(time.mktime(time.strptime(time.strftime("%d %B %Y") , "%d %B %Y")))
-        if (dayinfocus) < self.activityview.end:
-            self.fwdbtn.set_sensitive(False)
 
-    def handle_fwd_sensitivity(self, widget, i):
-        datastore = widget.get_datastore()
-        if i < len(datastore) - 1:
-            self.fwdbtn.set_sensitive(True)
-        else:
-            self.fwdbtn.set_sensitive(False)
+class PanedContainer(gtk.HBox):
+    def __init__(self):
+        super(PanedContainer, self).__init__()
+        self.pane1 = pane1 = gtk.HPaned()
+        self.pane2 = pane2 = gtk.HPaned()
+        pane1.add2(pane2)
+        self.boxes = {}
+        box1 = self.left_box = gtk.EventBox()
+        box2 = self.center_box = gtk.EventBox()
+        box3 = self.right_box = gtk.EventBox()
+        pane1.pack1(box1, False, False)
+        pane2.pack1(box2, False, True)
+        pane2.pack2(box3, False, False)
+        self.add(pane1)
+        box3.add(InformationContainer)
+        InformationContainer.connect("hide", self.on_change)
+        InformationContainer.connect("show", self.on_change)
+        InformationContainer.set_size_request(100, 100)
 
-    def moveback(self, data=None):
-        self.activityview.jump(-86400)
-        self.fwdbtn.set_sensitive(True)
+        self.pinbox = PinnedPane()
+        box1.add(self.pinbox)
+        box1.show_all()
+
+    def on_change(self, w):
+        self.pane1.set_position(-1)
+        self.pane2.set_position(-1)
 
 
 class PortalWindow(gtk.Window):
+
     def __init__(self):
-        """"""
-        gtk.Window.__init__(self)
-        gtk.Window.__init__(self)
+        super(PortalWindow, self).__init__()
+        self.__initialized = False
         self._requested_size = None
+        # Important
+        self.store = Store()
+        self.day_iter = self.store.today
+        self.toolbar = Toolbar()
+        self.view = ViewContainer(self.store)
+        self.panedcontainer = PanedContainer()
+        self.histogram = HistogramWidget()
+        self.histogram.set_store(self.store)
+        self.histogram.set_dates([self.day_iter.date])
+        self.backward_button = DayButton(0)
+        self.forward_button = DayButton(1)
 
+        # Widget placement
+        vbox = gtk.VBox()
+        hbox = gtk.HBox()
+        histogramhbox = gtk.HBox()
+        hbox.pack_start(self.backward_button, False, False)
+        hbox.pack_start(self.view, True, True, 6)
+        hbox.pack_end(self.forward_button, False, False)
+        vbox.pack_start(self.toolbar, False, False)
+        self.panedcontainer.center_box.add(hbox)
+        vbox.pack_start(self.panedcontainer, True, True, 6)
+        histogramhbox.pack_end(self.histogram, True, True, 24)
+        vbox.pack_end(histogramhbox, False, False)
+        self.add(vbox)
+
+        # Settings
+        self.forward_button.set_sensitive(False)
+        self.backward_button.connect("clicked", self.previous)
+        self.forward_button.connect("clicked", self.next)
+        self.histogram.connect("date-changed", lambda w, date: self.set_date(date))
+        self.show_all()
+        self.view.set_day(self.store.today)
+        self.toolbar.multiview_button.connect("clicked", self.on_view_button_click, 0)
+        self.toolbar.thumbview_button.connect("clicked", self.on_view_button_click, 1)
+        self.toolbar.timelineview_button.connect("clicked", self.on_view_button_click, 2)
+        self.toolbar.throbber.connect("clicked", self.show_about_window)
+        self.toolbar.goto_today_button.connect("clicked", lambda w: self.set_date(datetime.date.today()))
+        self.toolbar.pin_button.connect("clicked", lambda w: self.panedcontainer.pinbox.show_all())
         self.connect("destroy", self.quit)
-        self.set_title(_("Activity Journal"))
-        self.set_position(gtk.WIN_POS_CENTER)
-
-        # Detect when we are maximized
-        self.connect("window-state-event", self._on_window_state_changed)
-
-        self.set_icon_name("gnome-activity-journal")
-        self.set_icon_list(
-            *[gtk.gdk.pixbuf_new_from_file(get_icon_path(f)) for f in (
-                "hicolor/16x16/apps/gnome-activity-journal.png",
-                "hicolor/24x24/apps/gnome-activity-journal.png",
-                "hicolor/32x32/apps/gnome-activity-journal.png",
-                "hicolor/48x48/apps/gnome-activity-journal.png",
-                "hicolor/256x256/apps/gnome-activity-journal.png")])
-        self.portal = Portal()
-        self.add(self.portal)
-        self.set_focus(self.portal.activityview.searchbox.search)
-        self.portal.activityview.connect("date-updated", self._title_handler)
-        ContextMenu.informationwindow = InformationWindow
-        InformationWindow.set_modal(True)
-        InformationWindow.set_transient_for(self)
         self._request_size()
-        self.connect("configure-event", self._on_size_changed)
-        start = datetime.date.fromtimestamp(self.portal.activityview.start).strftime("%A")
-        self.set_title(_("%s to today") % start + " - " + _("Activity Journal"))
-        self.show()
-        self.portal.aboutbox.connect("button-press-event", self.show_about_window)
+        self.set_title_from_date(self.day_iter.date)
+        def setup(*args):
+            self.histogram.scroll_to_end()
+            return False
+        gobject.timeout_add_seconds(1, setup)
+        InformationContainer.hide()
+        self.panedcontainer.pinbox.hide()
 
+    @property
+    def active_dates(self):
+        date = self.day_iter.date
+        if self.view.page != 0: return [date]
+        dates = []
+        for i in range(self.view.mutliview.num_pages):
+            dates.append(date + tdelta(-i))
+        dates.sort()
+        return dates
 
-    def show_about_window(self, widget, event):
+    def set_day(self, day):
+        self.toolbar.do_throb()
+        self.day_iter = day
+        self.handle_button_sensitivity(day.date)
+        self.view.set_day(day)
+        self.histogram.set_dates(self.active_dates)
+        # Set title
+        self.set_title_from_date(day.date)
+
+    def set_date(self, date):
+        self.set_day(self.store[date])
+
+    def next(self, *args):
+        day = self.day_iter.next(self.store)
+        self.set_day(day)
+
+    def previous(self, *args):
+        day = self.day_iter.previous(self.store)
+        self.set_day(day)
+
+    def handle_button_sensitivity(self, date):
+        if date == datetime.date.today():
+            return self.forward_button.set_sensitive(False)
+        return self.forward_button.set_sensitive(True)
+
+    def on_view_button_click(self, button, i):
+        self.view.set_current_page(i)
+        self.view.set_day(self.day_iter, page=i)
+        self.histogram.set_dates(self.active_dates)
+        self.set_title_from_date(self.day_iter.date)
+
+    def show_about_window(self, *args):
         aboutwindow = AboutDialog()
         aboutwindow.set_transient_for(self)
         aboutwindow.run()
         aboutwindow.destroy()
-
-    def _title_handler(self, widget, starti, endi, singleday):
-        endday = datetime.date.fromtimestamp(endi)
-        startday = datetime.date.fromtimestamp(starti)
-        if endday.day == datetime.date.today().day:
-            end = _("Today")
-            start = startday.strftime("%A")
-        elif endday.day == datetime.date.today().day-1:
-            end = _("Yesterday")
-            start = startday.strftime("%A")
-        elif endday.day + 6 > datetime.date.today().day:
-            end = endday.strftime("%A")
-            start = startday.strftime("%A")
-        else:
-            start = startday.strftime("%d %B")
-            end = endday.strftime("%d %B")
-        if singleday:
-            self.set_title(end + " - Activity Journal")
-        else:
-            self.set_title(_("%s to %s") % (start, end) + " - " + _("Activity Journal"))
-
-    def _on_window_state_changed (self, win, event):
-        # When maximized we configure the view so that the left/right buttons
-        # touch the left/right edges of the screen in order to utilize Fitts law
-        if event.new_window_state & gtk.gdk.WINDOW_STATE_MAXIMIZED:
-            # FIXME: Keep vertical padding on self.vbox children withou
-            #        introducing horizontal padding
-            self.set_border_width(0)
-            self.vbox.set_border_width(0)
-        else:
-            self.set_border_width(0)
-            self.portal.vbox.set_property("border-width", 0)
 
     def _request_size(self):
         screen = self.get_screen().get_monitor_geometry(
@@ -232,12 +213,30 @@ class PortalWindow(gtk.Window):
         self.resize(size[0], size[1])
         self._requested_size = size
 
-    def _on_size_changed(self, window, event):
-        if (event.width, event.height) not in self._requested_size:
-            settings["window_width"] = event.width
-            settings["window_height"] = event.height
-        if not settings["amount_days"]:
-            self.portal.activityview.set_num_days(4 if event.width >= 1300 else 3)
+    def set_title_from_date(self, date):
+        pages = self.view.mutliview.num_pages
+        if self.view.page == 0:
+            start_date = date + tdelta(-pages+1)
+        else:
+            start_date = date
+        if date == datetime.date.today():
+            end = _("Today")
+            start = start_date.strftime("%A")
+        elif date == datetime.date.today() + tdelta(-1):
+            end = _("Yesterday")
+            start = start_date.strftime("%A")
+        elif date + tdelta(6) > datetime.date.today():
+            end = date.strftime("%A")
+            start = start_date.strftime("%A")
+        else:
+            start = start_date.strftime("%d %B")
+            end = date.strftime("%d %B")
+        if self.view.page != 0:
+            self.set_title(end + " - Activity Journal")
+        else:
+            self.set_title(_("%s to %s") % (start, end) + " - " + _("Activity Journal"))
 
     def quit(self, widget):
         gtk.main_quit()
+
+

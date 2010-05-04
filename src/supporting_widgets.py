@@ -21,10 +21,12 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import with_statement
+import cairo
 import os
 import gtk
 import gettext
 import datetime
+import math
 import time
 import gobject
 import pango
@@ -41,7 +43,7 @@ from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
 
 from common import shade_gdk_color, combine_gdk_color, is_command_available, \
     launch_command
-from config import BASE_PATH, VERSION, settings, get_icon_path
+from config import BASE_PATH, VERSION, settings, get_icon_path, get_data_path
 from sources import Source, SUPPORTED_SOURCES
 from gio_file import GioFile, SIZE_NORMAL, SIZE_LARGE
 from bookmarker import bookmarker
@@ -51,10 +53,246 @@ except DBusException:
     print "Tracker disabled."
 
 import content_objects
-
+import common
 
 CLIENT = ZeitgeistClient()
 ITEMS = []
+
+
+class DayLabel(gtk.DrawingArea):
+
+
+    _events = (
+        gtk.gdk.ENTER_NOTIFY_MASK | gtk.gdk.LEAVE_NOTIFY_MASK |
+        gtk.gdk.KEY_PRESS_MASK | gtk.gdk.BUTTON_MOTION_MASK |
+        gtk.gdk.POINTER_MOTION_HINT_MASK | gtk.gdk.BUTTON_RELEASE_MASK |
+        gtk.gdk.BUTTON_PRESS_MASK
+    )
+
+    def __init__(self,date=None):
+        super(DayLabel, self).__init__()
+        self.set_events(self._events)
+        self.connect("expose_event", self.expose)
+        if date:
+            self.date = date
+        else:
+            self.date = datetime.date.today()
+        self.set_size_request(100, 60)
+
+    @property
+    def date_string(self):
+        return self.date.strftime("%x")
+
+    @property
+    def weekday_string(self):
+        return self.date.strftime("%A")
+
+    @property
+    def leading(self):
+        if self.date == datetime.date.today():
+            return True
+
+    def set_date(self, date):
+        self.date = date
+        self.queue_draw()
+
+    def expose(self, widget, event):
+        context = widget.window.cairo_create()
+        self.context = context
+
+        bg = self.style.bg[0]
+        red, green, blue = bg.red/65535.0, bg.green/65535.0, bg.blue/65535.0
+        self.font_name = self.style.font_desc.get_family()
+
+        widget.style.set_background(widget.window, gtk.STATE_NORMAL)
+
+        # set a clip region for the expose event
+        context.rectangle(event.area.x, event.area.y, event.area.width, event.area.height)
+        context.clip()
+        self.draw(widget, event, context)
+        self.day_text(widget, event, context)
+        return False
+
+    def day_text(self, widget, event, context):
+        actual_y = self.get_size_request()[1]
+        if actual_y > event.area.height:
+            y = actual_y
+        else:
+            y = event.area.height
+        x = event.area.width
+        gc = self.style.fg_gc[gtk.STATE_SELECTED if self.leading else gtk.STATE_NORMAL]
+        layout = widget.create_pango_layout(self.weekday_string)
+        layout.set_font_description(pango.FontDescription(self.font_name + " Bold 15"))
+        w, h = layout.get_pixel_size()
+        widget.window.draw_layout(gc, (x-w)/2, (y)/2 - h + 5, layout)
+        self.date_text(widget, event, context, (y)/2 + 5)
+
+    def date_text(self, widget, event, context, lastfontheight):
+        gc = self.style.fg_gc[gtk.STATE_SELECTED if self.leading else gtk.STATE_INSENSITIVE]
+        layout = widget.create_pango_layout(self.date_string)
+        layout.set_font_description(pango.FontDescription(self.font_name + " 10"))
+        w, h = layout.get_pixel_size()
+        widget.window.draw_layout(gc, (event.area.width-w)/2, lastfontheight, layout)
+
+    def draw(self, widget, event, context):
+        if self.leading:
+            bg = self.style.bg[gtk.STATE_SELECTED]
+            red, green, blue = bg.red/65535.0, bg.green/65535.0, bg.blue/65535.0
+        else:
+            bg = self.style.bg[gtk.STATE_NORMAL]
+            red = (bg.red * 125 / 100)/65535.0
+            green = (bg.green * 125 / 100)/65535.0
+            blue = (bg.blue * 125 / 100)/65535.0
+        x = 0; y = 0
+        r = 5
+        w, h = event.area.width, event.area.height
+        context.set_source_rgba(red, green, blue, 1)
+        context.new_sub_path()
+        context.arc(r+x, r+y, r, math.pi, 3 * math.pi /2)
+        context.arc(w-r, r+y, r, 3 * math.pi / 2, 0)
+        context.close_path()
+        context.rectangle(0, r, w, h)
+        context.fill_preserve()
+
+
+class DayButton(gtk.DrawingArea):
+    leading = False
+    pressed = False
+    sensitive = True
+    hover = False
+    header_size = 60
+    bg_color = (0, 0, 0, 0)
+    header_color = (1, 1, 1, 1)
+    leading_header_color = (1, 1, 1, 1)
+    internal_color = (0, 1, 0, 1)
+    arrow_color = (1,1,1,1)
+    arrow_color_selected = (1, 1, 1, 1)
+
+    __gsignals__ = {
+        "clicked":  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,()),
+        }
+    _events = (
+        gtk.gdk.ENTER_NOTIFY_MASK | gtk.gdk.LEAVE_NOTIFY_MASK |
+        gtk.gdk.KEY_PRESS_MASK | gtk.gdk.BUTTON_RELEASE_MASK | gtk.gdk.BUTTON_PRESS_MASK |
+        gtk.gdk.MOTION_NOTIFY |   gtk.gdk.POINTER_MOTION_MASK
+    )
+    def __init__(self, side = 0, leading = False):
+        super(DayButton, self).__init__()
+        self.set_events(self._events)
+        self.set_flags(gtk.CAN_FOCUS)
+        self.leading = leading
+        self.side = side
+        self.connect("button_press_event", self.on_press)
+        self.connect("button_release_event", self.clicked_sender)
+        self.connect("key_press_event", self.keyboard_clicked_sender)
+        self.connect("motion_notify_event", self.on_hover)
+        self.connect("leave_notify_event", self._enter_leave_notify, False)
+        self.connect("expose_event", self.expose)
+        self.connect("style-set", self.change_style)
+        self.set_size_request(20, -1)
+
+    def set_sensitive(self, case):
+        self.sensitive = case
+        self.queue_draw()
+
+    def _enter_leave_notify(self, widget, event, bol):
+        self.hover = bol
+        self.queue_draw()
+
+    def on_hover(self, widget, event):
+        if event.y > self.header_size:
+            if not self.hover:
+                self.hover = True
+                self.queue_draw()
+        else:
+            if self.hover:
+                self.hover = False
+                self.queue_draw()
+        return False
+
+    def on_press(self, widget, event):
+        if event.y > self.header_size:
+            self.pressed = True
+            self.queue_draw()
+
+    def keyboard_clicked_sender(self, widget, event):
+        if event.keyval in (gtk.keysyms.Return, gtk.keysyms.space):
+            if self.sensitive:
+                self.emit("clicked")
+            self.pressed = False
+            self.queue_draw()
+            return True
+        return False
+
+    def clicked_sender(self, widget, event):
+        if event.y > self.header_size:
+            if self.sensitive:
+                self.emit("clicked")
+        self.pressed = False
+        self.queue_draw()
+        return True
+
+    def change_style(self, *args, **kwargs):
+        self.bg_color = common.get_gtk_rgba(self.style, "bg", 0)
+        self.header_color = common.get_gtk_rgba(self.style, "bg", 0, 1.25)
+        self.leading_header_color = common.get_gtk_rgba(self.style, "bg", 3)
+        self.internal_color = common.get_gtk_rgba(self.style, "bg", 0, 1.02)
+        self.arrow_color = common.get_gtk_rgba(self.style, "text", 0, 0.6)
+        self.arrow_color_selected = common.get_gtk_rgba(self.style, "bg", 3)
+        self.arrow_color_insensitive = common.get_gtk_rgba(self.style, "text", 4)
+
+    def expose(self, widget, event):
+        context = widget.window.cairo_create()
+
+        context.set_source_rgba(*self.bg_color)
+        context.set_operator(cairo.OPERATOR_SOURCE)
+        context.paint()
+        context.rectangle(event.area.x, event.area.y, event.area.width, event.area.height)
+        context.clip()
+
+        x = 0; y = 0
+        r = 5
+        w, h = event.area.width, event.area.height
+        size = 20
+        if self.sensitive:
+            context.set_source_rgba(*(self.leading_header_color if self.leading else self.header_color))
+            context.new_sub_path()
+            context.move_to(x+r,y)
+            context.line_to(x+w-r,y)
+            context.curve_to(x+w,y,x+w,y,x+w,y+r)
+            context.line_to(x+w,y+h-r)
+            context.curve_to(x+w,y+h,x+w,y+h,x+w-r,y+h)
+            context.line_to(x+r,y+h)
+            context.curve_to(x,y+h,x,y+h,x,y+h-r)
+            context.line_to(x,y+r)
+            context.curve_to(x,y,x,y,x+r,y)
+            context.set_source_rgba(*(self.leading_header_color if self.leading else self.header_color))
+            context.close_path()
+            context.rectangle(0, r, w,  self.header_size)
+            context.fill()
+            context.set_source_rgba(*self.internal_color)
+            context.rectangle(0, self.header_size, w,  h)
+            context.fill()
+            if self.hover:
+                widget.style.paint_box(widget.window, gtk.STATE_PRELIGHT, gtk.SHADOW_OUT,
+                                         event.area, widget, "button",
+                                         event.area.x, self.header_size,
+                                         w, h-self.header_size)
+        size = 10
+        if not self.sensitive:
+            state = gtk.STATE_INSENSITIVE
+        elif self.is_focus() or self.pressed:
+            widget.style.paint_focus(widget.window, gtk.STATE_ACTIVE, event.area,
+                                     widget, None, event.area.x, self.header_size,
+                                     w, h-self.header_size)
+            state = gtk.STATE_SELECTED
+        else:
+            state = gtk.STATE_NORMAL
+        arrow = gtk.ARROW_RIGHT if self.side else gtk.ARROW_LEFT
+        self.style.paint_arrow(widget.window, state, gtk.SHADOW_NONE, None,
+                               self, "arrow", arrow, True,
+                               w/2-size/2, h/2 + size/2, size, size)
+
 
 class SearchBox(gtk.EventBox):
 
@@ -158,6 +396,7 @@ class SearchBox(gtk.EventBox):
             if "tracker" in globals().keys():
                 tracker.search(text, interpretation, callback)
 
+
 class SearchEntry(gtk.Entry):
 
     __gsignals__ = {
@@ -239,6 +478,7 @@ class PreviewTooltip(gtk.Window):
     def preview(self, gio_file):
         return False
 
+
 class StaticPreviewTooltip(PreviewTooltip):
 
     def __init__(self):
@@ -286,6 +526,7 @@ class StaticPreviewTooltip(PreviewTooltip):
                 self.__current.refresh()
             self.__current = None
             gtk.tooltip_trigger_tooltip_query(gtk.gdk.display_get_default())
+
 
 class VideoPreviewTooltip(PreviewTooltip):
 
@@ -341,149 +582,6 @@ class VideoPreviewTooltip(PreviewTooltip):
             finally:
                 gtk.gdk.threads_leave()
 
-class Item(gtk.HBox):
-
-    def __init__(self, event, allow_pin = False):
-
-        gtk.HBox.__init__(self)
-        self.set_border_width(2)
-        self.allow_pin = allow_pin
-        self.btn = gtk.Button()
-        self.search_results = []
-        self.in_search = False
-        self.subject = event.subjects[0]
-        self.content_obj = content_objects.choose_content_object(event)
-        # self.content_obj = GioFile.create(self.subject.uri)
-        self.time = float(event.timestamp) / 1000
-        self.time =  time.strftime("%H:%M", time.localtime(self.time))
-
-        if self.content_obj is not None:
-            self.icon = self.content_obj.get_icon(
-                can_thumb=settings.get('small_thumbnails', False), border=0)
-        else:
-            self.icon = None
-        self.btn.set_relief(gtk.RELIEF_NONE)
-        self.btn.set_focus_on_click(False)
-        self.__init_widget()
-        self.show_all()
-        self.markup = None
-
-        ITEMS.append(self)
-
-    def highlight(self):
-        if self.search_results != searchbox.results:
-            self.search_results = searchbox.results
-            rc_style = self.style
-            text = self.content_obj.text.replace("&", "&amp;")
-            if self.subject.uri in searchbox.results:
-                self.label.set_markup("<span><b>"+text+"</b></span>")
-                self.in_search = True
-                color = rc_style.base[gtk.STATE_SELECTED]
-                self.label.modify_fg(gtk.STATE_NORMAL, color)
-            else:
-                self.label.set_markup("<span>"+text+"</span>")
-                self.in_search = False
-                color = rc_style.text[gtk.STATE_NORMAL]
-                self.label.modify_fg(gtk.STATE_NORMAL, color)
-
-    def __init_widget(self):
-        self.label = gtk.Label()
-        text = self.content_obj.text.replace("&", "&amp;")
-        self.label.set_markup(text)
-        self.label.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
-        self.label.set_alignment(0.0, 0.5)
-
-        if self.icon: img = gtk.image_new_from_pixbuf(self.icon)
-        else: img = None
-        hbox = gtk.HBox()
-        if img: hbox.pack_start(img, False, False, 1)
-        hbox.pack_start(self.label, True, True, 4)
-
-        if self.allow_pin:
-            # TODO: get the name "pin" from theme when icons are properly installed
-            img = gtk.image_new_from_file(get_icon_path("hicolor/24x24/status/pin.png"))
-            self.pin = gtk.Button()
-            self.pin.add(img)
-            self.pin.set_tooltip_text(_("Remove Pin"))
-            self.pin.set_focus_on_click(False)
-            self.pin.set_relief(gtk.RELIEF_NONE)
-            self.pack_end(self.pin, False, False)
-            self.pin.connect("clicked", lambda x: self.set_bookmarked(False))
-        #hbox.pack_end(img, False, False)
-        evbox = gtk.EventBox()
-        self.btn.add(hbox)
-        evbox.add(self.btn)
-        self.pack_start(evbox)
-
-        self.btn.connect("clicked", self.launch)
-        self.btn.connect("button_press_event", self._show_item_popup)
-
-        def realize_cb(widget):
-            evbox.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2))
-
-        self.btn.connect("realize", realize_cb)
-
-
-        def change_style(widget, style):
-            rc_style = self.style
-            color = rc_style.bg[gtk.STATE_NORMAL]
-            fcolor = rc_style.fg[gtk.STATE_NORMAL]
-            color = combine_gdk_color(color, fcolor)
-
-            if self.in_search:
-                color = rc_style.bg[gtk.STATE_SELECTED]
-                self.label.modify_text(gtk.STATE_NORMAL, color)
-            else:
-                color = rc_style.text[gtk.STATE_NORMAL]
-                self.label.modify_text(gtk.STATE_NORMAL, color)
-            self.highlight()
-
-            color = rc_style.bg[gtk.STATE_NORMAL]
-            color = shade_gdk_color(color, 102/100.0)
-            evbox.modify_bg(gtk.STATE_NORMAL, color)
-
-        self.connect("style-set", change_style)
-
-        self.init_multimedia_tooltip()
-
-    def init_multimedia_tooltip(self):
-        """add multimedia tooltip to multimedia files
-        multimedia tooltip is shown for all images, all videos and pdfs
-
-        TODO: make loading of multimedia thumbs async
-        """
-        if isinstance(self.content_obj, GioFile) and self.content_obj.has_preview():
-            icon_names = self.content_obj.icon_names
-            self.set_property("has-tooltip", True)
-            self.connect("query-tooltip", self._handle_tooltip)
-            if "video-x-generic" in icon_names and gst is not None:
-                self.set_tooltip_window(VideoPreviewTooltip)
-            else:
-                self.set_tooltip_window(StaticPreviewTooltip)
-
-    def _handle_tooltip(self, widget, x, y, keyboard_mode, tooltip):
-        # nothing to do here, we always show the multimedia tooltip
-        # if we like video/sound preview later on we can start them here
-        tooltip_window = self.get_tooltip_window()
-        return tooltip_window.preview(self.content_obj)
-
-    def _show_item_popup(self, widget, ev):
-        if ev.button == 3:
-            items = [self.content_obj]
-            ContextMenu.do_popup(ev.time, items)
-
-    def set_bookmarked(self, bool_):
-        uri = unicode(self.subject.uri)
-        if bool_:
-            bookmarker.bookmark(uri)
-        else:
-            bookmarker.unbookmark(uri)
-
-
-    def launch(self, *discard):
-        if self.content_obj is not None:
-            self.content_obj.launch()
-
 
 class AnimatedImage(gtk.Image):
     animating = None
@@ -528,6 +626,15 @@ class AnimatedImage(gtk.Image):
         """
         self.start()
         gobject.timeout_add_seconds(seconds, self.stop)
+
+
+class Throbber(gtk.ToolButton):
+    def __init__(self):
+        super(Throbber, self).__init__()
+        self.image = AnimatedImage(get_data_path("zlogo/zg%d.png"), 150)
+        self.image.set_tooltip_text(_("Powered by Zeitgeist"))
+        #self.image.set_alignment(0.9, 0.98)
+        self.set_icon_widget(self.image)
 
 
 class AboutDialog(gtk.AboutDialog):
@@ -661,6 +768,80 @@ class ContextMenu(gtk.Menu):
 
     def do_send_to(self, menuitem):
         launch_command("nautilus-sendto", map(lambda obj: obj.uri, self.subjects))
+
+
+class Toolbar(gtk.Toolbar):
+    @staticmethod
+    def get_toolbutton(path, label_string):
+        button = gtk.ToolButton()
+        pixbuf = gtk.gdk.pixbuf_new_from_file(path)
+        image = gtk.Image()
+        image.set_from_pixbuf(pixbuf)
+        button.set_icon_widget(image)
+        button.set_label(label_string)
+        return button
+
+    def __init__(self):
+        """"""
+        super(Toolbar, self).__init__()
+        #self.set_style(gtk.TOOLBAR_BOTH)
+        self.multiview_button = mv = self.get_toolbutton(
+            get_data_path("multiview_icon.png"),
+            _("MultiView"))
+        self.thumbview_button = tbv = self.get_toolbutton(
+            get_data_path("thumbview_icon.png"),
+            _("ThumbView"))
+        self.timelineview_button = tlv = self.get_toolbutton(
+            get_data_path("timelineview_icon.png"),
+            _("TimelineView"))
+        #
+        #self.append_space()
+        self.pin_button = pin = self.get_toolbutton(
+            get_icon_path("hicolor/24x24/status/pin.png"),
+            _("Show Pinned Pane"))
+        separator = gtk.SeparatorToolItem()
+        for item in (pin, separator, tlv, tbv, mv):
+            self.insert(item, 0)
+        #
+        separator = gtk.SeparatorToolItem()
+        separator.set_expand(True)
+        separator.set_draw(False)
+        self.goto_today_button = today = gtk.ToolButton(gtk.STOCK_GOTO_LAST)
+        today.set_label( _("Goto Today"))
+        self.throbber = Throbber()
+        for item in (separator, today, self.throbber):
+            self.insert(item, -1)
+
+    def do_throb(self):
+        self.throbber.image.animate_for_seconds(1)
+
+
+class StockIconButton(gtk.Button):
+    def __init__(self, stock_id, size=gtk.ICON_SIZE_BUTTON):
+        super(StockIconButton, self).__init__()
+        self.set_alignment(0, 0)
+        self.set_relief(gtk.RELIEF_NONE)
+        image = gtk.image_new_from_stock(stock_id, size)
+        self.add(image)
+
+
+class Pane(gtk.Frame):
+    """
+    A pane container
+    """
+    def __init__(self):
+        super(Pane, self).__init__()
+        #self.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+        close_button = StockIconButton(gtk.STOCK_CLOSE)
+        self.set_label_widget(close_button)#, False, False)
+        self.connect("delete-event", self.hide_on_delete)
+        close_button.connect("clicked", self.hide_on_delete)
+        self.set_label_align(0,0)
+
+
+    def hide_on_delete(self, widget, *args):
+        self.hide()
+        return True
 
 
 searchbox = SearchBox()

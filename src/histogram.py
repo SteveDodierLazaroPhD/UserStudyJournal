@@ -19,14 +19,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-"""
-Takes a two dementional list of ints and turns it into a graph based on
-the first value a int date, and the second value the number of items on that date
-where items are
-datastore = []
-datastore.append(time, nitems)
-CairoHistogram.set_datastore(datastore)
-"""
 import datetime
 import cairo
 import calendar
@@ -91,20 +83,14 @@ class CairoHistogram(gtk.DrawingArea):
         "shadow" : (1, 1, 1, 0),
         }
 
-    # Today button stuff
-    _today_width = 0
-    _today_text = ""
-    _today_area = None
-    _today_hover = False
+    _store = None
 
-    _datastore = None
     __gsignals__ = {
-        # the index of the first selected item in the datastore.
         "selection-set" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,
-                           (gobject.TYPE_INT,gobject.TYPE_INT)),
+                           (gobject.TYPE_PYOBJECT,)),
         "data-updated" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,()),
         "column_clicked" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,
-                            (gobject.TYPE_INT,))
+                            (gobject.TYPE_PYOBJECT,))
         }
     _connections = {"style-set": "change_style",
                        "expose_event": "_expose",
@@ -112,25 +98,23 @@ class CairoHistogram(gtk.DrawingArea):
                        "motion_notify_event": "mouse_motion_interaction",
                        "key_press_event": "keyboard_interaction",
                        "scroll-event" : "mouse_scroll_interaction",
-                       "selection-set": "check_for_today",
                        }
     _events = (gtk.gdk.KEY_PRESS_MASK | gtk.gdk.BUTTON_MOTION_MASK |
                   gtk.gdk.POINTER_MOTION_HINT_MASK | gtk.gdk.BUTTON_RELEASE_MASK |
                   gtk.gdk.BUTTON_PRESS_MASK)
 
-    def __init__(self, datastore = None, selected_range = 0):
+    def __init__(self):
         """
         :param datastore: The.CairoHistograms two dimensional list of dates and nitems
         :param selected_range: the number of days displayed at once
         """
         super(CairoHistogram, self).__init__()
+        self._selected = []
         self.set_events(self._events)
         self.set_flags(gtk.CAN_FOCUS)
         for key, val in self._connections.iteritems():
             self.connect(key, getattr(self, val))
         self.font_name = self.style.font_desc.get_family()
-        self.set_datastore(datastore if datastore else [], draw = False)
-        self.selected_range = selected_range
 
     def change_style(self, widget, old_style):
         """
@@ -156,49 +140,17 @@ class CairoHistogram(gtk.DrawingArea):
         self.bottom_padding = self.font_size + 9 + widget.style.ythickness
         self.gc = get_gc_from_colormap(widget, 0.6)
 
-    def set_selected_range(self, selected_range):
-        """
-        Set the number of days to be colored as selected
+    def set_store(self, store):
+        if self._store:
+            self._store.disconnect(self._store_connection)
+        self._store = store
+        self.largest = min(max(max(map(lambda x: len(x), store.days)), 1), 100)
+        if not self.get_selected():
+            self.set_selected([datetime.date.today()])
+        self._store_connection = store.connect("update", self.set_store)
 
-        :param selected_range: the range to be used when setting selected coloring
-        """
-        self.selected_range = selected_range
-        return True
-
-    def set_datastore(self, datastore, draw = True):
-        """
-        Sets the objects datastore attribute using a list
-
-        :param datastore: A list that is comprised of rows containing
-        a int time and a int nitems
-        """
-        if isinstance(datastore, list):
-            self._datastore = datastore
-            self.largest = 1
-            for date, nitems in self._datastore:
-                if nitems > self.largest: self.largest = nitems
-            if self.largest > self.max_column_height: self.largest = self.max_column_height
-            self.max_width = self.xincrement + (self.xincrement *len(datastore))
-        else:
-            raise TypeError("Datastore is not a <list>")
-        self.emit("data-updated")
-        self.set_selected(len(datastore) - self.selected_range)
-
-    def get_datastore(self):
-        return self._datastore
-
-    def prepend_data(self, newdatastore):
-        """
-        Adds the items of a new list before the items of the current datastore
-
-        :param newdatastore: the new list to be prepended
-
-        ## WARNING SELECTION WILL CHANGE WHEN DOING THIS TO BE FIXED ##
-        """
-        selected = self.get_selected()[-1]
-        self._datastore = newdatastore + self._datastore
-        self.queue_draw()
-        self.set_selected(len(newdatastore) + selected)
+    def get_store(self):
+        return self._store
 
     def _expose(self, widget, event):
         """
@@ -207,8 +159,6 @@ class CairoHistogram(gtk.DrawingArea):
         widget.style.set_background(widget.window, gtk.STATE_NORMAL)
         context = widget.window.cairo_create()
         self.expose(widget, event, context)
-        if len(self._today_text):
-            self.draw_today(widget, event, context)
 
     def expose(self, widget, event, context):
         """
@@ -230,7 +180,7 @@ class CairoHistogram(gtk.DrawingArea):
         #context.set_source_rgba(*self.colors["bg"])
         context.rectangle(event.area.x, event.area.y, event.area.width, event.area.height - self.bottom_padding)
         context.fill()
-        self.draw_columns_from_datastore(context, event, self.get_selected())
+        self.draw_columns_from_store(context, event, self.get_selected())
         context.set_line_width(1)
         if type(self) == CairoHistogram:
             widget.style.paint_shadow(widget.window, gtk.STATE_NORMAL, gtk.SHADOW_IN,
@@ -240,60 +190,35 @@ class CairoHistogram(gtk.DrawingArea):
             widget.style.paint_focus(widget.window, gtk.STATE_NORMAL, event.area, widget, None, event.area.x, event.area.y,
                                      event.area.width, event.area.height - self.bottom_padding)
 
-    def draw_today(self, widget, event, context):
-        """
-        """
-        layout = widget.create_pango_layout(self._today_text)
-        pangofont = pango.FontDescription(widget.font_name + " %d" % (widget.font_size - 1))
-        if not widget.gc:
-            widget.gc = get_gc_from_colormap(widget, 0.6)
-        layout.set_font_description(pangofont)
-        w, h = layout.get_pixel_size()
-        self._today_width = w + 10
-        self._today_area = (
-            int(event.area.x + event.area.width - self._today_width),
-            int(event.area.height - widget.bottom_padding + 2),
-            self._today_width,
-            widget.bottom_padding - 2)
-        state = gtk.STATE_PRELIGHT
-        shadow = gtk.SHADOW_OUT
-        widget.style.paint_box(
-            widget.window, state, shadow, event.area, widget, "button", *self._today_area)
-        widget.window.draw_layout(
-            widget.gc, int(event.area.x + event.area.width - w -5),
-            int(event.area.height - widget.bottom_padding/2 - h/2), layout)
-
-    def draw_columns_from_datastore(self, context, event, selected):
+    def draw_columns_from_store(self, context, event, selected):
         """
         Draws columns from a datastore
 
         :param context: This drawingarea's cairo context from the expose event
         :param event: a gtk event with x and y values
-        :param selected: a list of the selected columns
+        :param selected: a list of the selected dates
         """
         x = self.start_x_padding
         months_positions = []
-        for i, (date, nitems) in enumerate(self.get_datastore()):
-            if datetime.date.fromtimestamp(date).day == 1:
-                months_positions += [(date, x)]
-            if len(self._highlighted) > 0 and i >= self._highlighted[0] and i <= self._highlighted[-1] and i in self._highlighted:
-                color = self.colors["column_selected_alternative"] if i in selected else self.colors["column_alternative"]
+        for day in self.get_store().days:
+            if day.date.day == 1:
+                months_positions += [(day.date, x)]
+            if day.date in self._highlighted:
+                color = self.colors["column_selected_alternative"] if day.date in selected else self.colors["column_alternative"]
             elif not selected:
                 color = self.colors["column_normal"]
-            elif self._single_day_only  and i != selected[-1]:
-                color = self.colors["column_normal"]
-            elif i >= selected[0] and i <= selected[-1] and i in selected:
+            if day.date in selected:
                 color = self.colors["column_selected"]
             else:
                 color = self.colors["column_normal"]
-            self.draw_column(context, x, event.area.height, nitems, color)
+            self.draw_column(context, x, event.area.height, len(day), color)
             x += self.xincrement
         if x > event.area.width: # Check for resize
             self.set_size_request(x+self.xincrement, event.area.height)
         for date, xpos in months_positions:
             edge = 0
             if (date, xpos) == months_positions[-1]:
-                edge = len(self._datastore)*self.xincrement
+                edge = len(self._store)*self.xincrement
             self.draw_month(context, xpos - self.padding, event.area.height, date, edge)
         self.max_width = x # remove me
 
@@ -339,7 +264,6 @@ class CairoHistogram(gtk.DrawingArea):
         context.move_to(x+self.stroke_offset, 0)
         context.line_to(x+self.stroke_offset, height - self.bottom_padding)
         context.stroke()
-        date = datetime.date.fromtimestamp(date)
         month = calendar.month_name[date.month]
         date = "<span color='%s'>%s %d</span>" % (self.colors["font_color"], month, date.year)
         layout = self.create_pango_layout(date)
@@ -350,23 +274,13 @@ class CairoHistogram(gtk.DrawingArea):
             if x + w > edge: x = edge - w - 5
         self.window.draw_layout(self.gc, int(x + 3), int(height - self.bottom_padding/2 - h/2), layout)
 
-    def set_selected(self, i):
-        """
-        Set the selected items using a int or a list of the selections
-        If you pass this method a int it will select the index + selected_range
-
-        Emits:
-         self._selected[0] and self._selected[-1]
-
-        :param i: a list or a int where the int will select i + selected_range
-        """
-        if len(self._selected):
-            if i == self._selected[0]:
-                return False
-        if isinstance(i, int):
-            self._selected = range(i, i + self.selected_range)
-            self.emit("selection-set", max(i, 0), max(i + self.selected_range - 1, 0))
-        else: self._selected = (-1,)
+    def set_selected(self, dates):
+        if dates == self._selected:
+            return False
+        self._selected = dates
+        if dates:
+            date = dates[-1]
+        self.emit("selection-set", dates)
         self.queue_draw()
         return True
 
@@ -380,7 +294,7 @@ class CairoHistogram(gtk.DrawingArea):
         """
         clears the selected items
         """
-        self._selected = range(len(self._datastore))[-self.selected_range:]
+        self._selected = []
         self.queue_draw()
 
     def set_highlighted(self, highlighted):
@@ -406,7 +320,7 @@ class CairoHistogram(gtk.DrawingArea):
         self._single_day_only = choice
         self.queue_draw()
 
-    def get_datastore_index_from_cartesian(self, x, y):
+    def get_store_index_from_cartesian(self, x, y):
         """
         Gets the datastore index from a x, y value
         """
@@ -417,10 +331,10 @@ class CairoHistogram(gtk.DrawingArea):
             i = self.get_selected()
             if isinstance(i, list) and len(i) > 0: i = i[-1]
             if event.keyval in (gtk.keysyms.space, gtk.keysyms.Right):
-                i += 1
+                i = i + datetime.timedelta(days=1)
             elif event.keyval in (gtk.keysyms.Left, gtk.keysyms.BackSpace):
-                i -= 1
-            if i < len(self.get_datastore()):
+                i = i + datetime.timedelta(days=-1)
+            if i < datetime.date.today() + datetime.timedelta(days=1):
                 self.change_location(i)
 
     def mouse_motion_interaction(self, widget, event, *args, **kwargs):
@@ -428,7 +342,7 @@ class CairoHistogram(gtk.DrawingArea):
         Reacts to mouse moving (while pressed), and clicks
         """
         #if (event.state == gtk.gdk.BUTTON1_MASK and not self._disable_mouse_motion):
-        location = min((self.get_datastore_index_from_cartesian(event.x, event.y), len(self._datastore) - 1))
+        location = min((self.get_store_index_from_cartesian(event.x, event.y), len(self._store.days) - 1))
         if location != self._last_location:
             self.change_location(location)
             self._last_location = location
@@ -439,16 +353,17 @@ class CairoHistogram(gtk.DrawingArea):
         if (event.y > self.get_size_request()[1] - self.bottom_padding and
             event.y < self.get_size_request()[1]):
             return False
-        location = min((self.get_datastore_index_from_cartesian(event.x, event.y), len(self._datastore) - 1))
+        location = min((self.get_store_index_from_cartesian(event.x, event.y), len(self._store.days) - 1))
         if location != self._last_location:
             self.change_location(location)
             self._last_location = location
         return True
 
     def mouse_scroll_interaction(self, widget, event):
-        i = self.get_selected()[-1]
+        date = self.get_selected()[-1]
+        i = self.get_store().dates.index(date)
         if (event.direction in (gtk.gdk.SCROLL_UP, gtk.gdk.SCROLL_RIGHT)):
-            if i+1< len(self.get_datastore()):
+            if i+1< len(self.get_store().days):
                 self.change_location(i+1)
         elif (event.direction in (gtk.gdk.SCROLL_DOWN, gtk.gdk.SCROLL_LEFT)):
             if 0 <= i-1:
@@ -458,23 +373,13 @@ class CairoHistogram(gtk.DrawingArea):
         """
         Handles click events
         """
-        if location < 0:
-            return False
-        self.set_selected(max(location - self.selected_range + 1, 0))
-        self.emit("column_clicked", location)
-        return True
-
-    # Today stuff
-    def check_for_today(self, widget, i, ii):
-        """
-        Changes today to a empty string if the selected item is not today
-        """
-        if ii == len(self.get_datastore())-1:
-            self._today_text = ""
-            self._today_area = None
-        elif len(self._today_text) == 0:
-            self._today_text = _("Today") + " »"
-        self.queue_draw()
+        if isinstance(location, int):
+            if location < 0:
+                return False
+            store = self.get_store()
+            date = store.days[location].date
+        else: date = location
+        self.emit("column_clicked", date)
         return True
 
 
@@ -510,18 +415,18 @@ class TooltipEventBox(gtk.EventBox):
         self.histogram = histogram
         self.container = container
         self.set_property("has-tooltip", True)
-        self.connect("query-tooltip", self.query_tooltip)
+        #self.connect("query-tooltip", self.query_tooltip)
 
     def query_tooltip(self, widget, x, y, keyboard_mode, tooltip):
         if y < self.histogram.get_size_request()[1] - self.histogram.bottom_padding:
-            location = self.histogram.get_datastore_index_from_cartesian(x, y)
+            location = self.histogram.get_store_index_from_cartesian(x, y)
             if location != self._saved_tooltip_location:
                 # don't show the previous tooltip if we moved to another
                 # location
                 self._saved_tooltip_location = location
                 return False
             try:
-                timestamp, count = self.histogram.get_datastore()[location]
+                timestamp, count = self.histogram.get_store()[location]
             except IndexError:
                 # there is no bar for at this location
                 # don't show a tooltip
@@ -529,8 +434,6 @@ class TooltipEventBox(gtk.EventBox):
             date = datetime.date.fromtimestamp(timestamp).strftime("%A, %d %B, %Y")
             tooltip.set_text("%s\n%i %s" % (date, count,
                                             gettext.ngettext("item", "items", count)))
-        elif self.container.histogram._today_text and _in_area(x, y, self.container.histogram._today_area):
-            tooltip.set_text(_("Click today to return to today"))
         else:
             return False
         return True
@@ -573,9 +476,13 @@ class HistogramWidget(gtk.Viewport):
     """
     A container for a CairoHistogram which allows you to scroll
     """
+    __gsignals__ = {
+        # the index of the first selected item in the datastore.
+        "date-changed" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,
+                           (gobject.TYPE_PYOBJECT,)),
+        }
 
-
-    def __init__(self, histo_type, size = (600, 75)):
+    def __init__(self, histo_type=CairoHistogram, size = (600, 75)):
         """
         :param histo_type: a :class:`CairoHistogram <CairoHistogram>` or a derivative
         """
@@ -585,24 +492,20 @@ class HistogramWidget(gtk.Viewport):
         self.eventbox = TooltipEventBox(self.histogram, self)
         self.set_size_request(*size)
         self.add(self.eventbox)
-        self.histogram.connect("button_press_event", self.footer_clicked)
+        self.histogram.connect("column_clicked", self.date_changed)
         self.histogram.connect("selection-set", self.scrubbing_fix)
         self.histogram.queue_draw()
         self.queue_draw()
 
-    def footer_clicked(self, widget, event):
-        """
-        Handles all rejected clicks from bellow the histogram internal view and
-        checks to see if they were inside of the today text
-        """
-        hadjustment = self.get_hadjustment()
-        # Check for today button click
-        if (widget._today_text and event.x > hadjustment.value + hadjustment.page_size - widget._today_width):
-            self.histogram.change_location(len(self.histogram.get_datastore()) - 1)
-            return True
-        else:
-            pass # Drag here
-        return False
+    def date_changed(self, widget, date):
+        self.emit("date-changed", date)
+
+    def set_store(self, store):
+        self.histogram.set_store(store)
+        self.scroll_to_end()
+
+    def set_dates(self, dates):
+        self.histogram.set_selected(dates)
 
     def scroll_to_end(self, *args, **kwargs):
         """
@@ -612,13 +515,17 @@ class HistogramWidget(gtk.Viewport):
         hadjustment.set_value(1)
         hadjustment.set_value(self.histogram.max_width - hadjustment.page_size)
 
-    def scrubbing_fix(self, widget, i, ii):
+    def scrubbing_fix(self, widget, dates):
         """
         Allows scrubbing to scroll the scroll window
         """
+        if not len(dates):
+            return
+        store = widget.get_store()
+        i = store.dates.index(dates[0])
         hadjustment = self.get_hadjustment()
         proposed_xa = ((i) * self.histogram.xincrement) + self.histogram.start_x_padding
-        proposed_xb = ((i + self.histogram.selected_range) * self.histogram.xincrement) + self.histogram.start_x_padding
+        proposed_xb = ((i + len(dates)) * self.histogram.xincrement) + self.histogram.start_x_padding
         if proposed_xa < hadjustment.value:
             hadjustment.set_value(proposed_xa)
         elif proposed_xb > hadjustment.value + hadjustment.page_size:
