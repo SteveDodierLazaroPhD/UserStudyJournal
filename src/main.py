@@ -27,9 +27,8 @@ import time
 import datetime
 import os
 
-
 from activityviews import MultiViewContainer, TimelineViewContainer, ThumbViewContainer, PinnedPane
-from supporting_widgets import DayButton, DayLabel, Toolbar, ContextMenu, AboutDialog, HandleBox, SearchBox
+from supporting_widgets import DayButton, DayLabel, Toolbar, ContextMenu, AboutDialog, HandleBox, SearchBox, TRACKER_ENABLED
 from infopane import InformationContainer
 from histogram import HistogramWidget
 from store import Store, tdelta
@@ -161,6 +160,8 @@ class PortalWindow(gtk.Window):
             self.histogram.scroll_to_end()
             return False
         gobject.timeout_add_seconds(1, setup)
+        if not TRACKER_ENABLED:
+            self.toolbar.search_button.hide()
         self.panedcontainer.informationcontainer.hide()
         self.panedcontainer.pinbox.hide()
         self.searchbox.hide()

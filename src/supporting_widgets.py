@@ -49,7 +49,9 @@ from gio_file import GioFile, SIZE_NORMAL, SIZE_LARGE
 from bookmarker import bookmarker
 try:
     from tracker_wrapper import tracker
+    TRACKER_ENABLED = True
 except DBusException:
+    TRACKER_ENABLED = False
     print "Tracker disabled."
 
 import content_objects
