@@ -799,8 +799,9 @@ class Toolbar(gtk.Toolbar):
         self.pin_button = pin = self.get_toolbutton(
             get_icon_path("hicolor/24x24/status/pin.png"),
             _("Show Pinned Pane"))
+        self.search_button = sb = gtk.ToolButton(gtk.STOCK_FIND)
         separator = gtk.SeparatorToolItem()
-        for item in (pin, separator, tlv, tbv, mv):
+        for item in (pin, sb, separator, tlv, tbv, mv):
             self.insert(item, 0)
         #
         separator = gtk.SeparatorToolItem()

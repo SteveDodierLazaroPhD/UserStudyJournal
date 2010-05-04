@@ -29,7 +29,7 @@ import os
 
 
 from activityviews import MultiViewContainer, TimelineViewContainer, ThumbViewContainer, PinnedPane
-from supporting_widgets import DayButton, DayLabel, Toolbar, ContextMenu, AboutDialog, HandleBox
+from supporting_widgets import DayButton, DayLabel, Toolbar, ContextMenu, AboutDialog, HandleBox, SearchBox
 from infopane import InformationContainer
 from histogram import HistogramWidget
 from store import Store, tdelta
@@ -124,7 +124,7 @@ class PortalWindow(gtk.Window):
         self.histogram.set_dates([self.day_iter.date])
         self.backward_button = DayButton(0)
         self.forward_button = DayButton(1)
-
+        self.searchbox = SearchBox()
         # Widget placement
         vbox = gtk.VBox()
         hbox = gtk.HBox()
@@ -134,6 +134,7 @@ class PortalWindow(gtk.Window):
         hbox.pack_end(self.forward_button, False, False)
         vbox.pack_start(self.toolbar, False, False)
         self.panedcontainer.center_box.add(hbox)
+        vbox.pack_start(self.searchbox, False, False)
         vbox.pack_start(self.panedcontainer, True, True, 6)
         histogramhbox.pack_end(self.histogram, True, True, 24)
         vbox.pack_end(histogramhbox, False, False)
@@ -152,6 +153,7 @@ class PortalWindow(gtk.Window):
         self.toolbar.throbber.connect("clicked", self.show_about_window)
         self.toolbar.goto_today_button.connect("clicked", lambda w: self.set_date(datetime.date.today()))
         self.toolbar.pin_button.connect("clicked", lambda w: self.panedcontainer.pinbox.show_all())
+        self.toolbar.search_button.connect("clicked", lambda w: self.searchbox.show_all())
         self.connect("destroy", self.quit)
         self._request_size()
         self.set_title_from_date(self.day_iter.date)
@@ -161,6 +163,7 @@ class PortalWindow(gtk.Window):
         gobject.timeout_add_seconds(1, setup)
         self.panedcontainer.informationcontainer.hide()
         self.panedcontainer.pinbox.hide()
+        self.searchbox.hide()
 
     @property
     def active_dates(self):
