@@ -354,19 +354,6 @@ class SearchBox(gtk.EventBox):
             self.emit("clear")
 
     def _init_combobox(self):
-
-        self.clearbtn = gtk.Button()
-        #label = gtk.Label()
-        #label.set_markup("<span><b>X</b></span>")
-
-        img = gtk.image_new_from_stock("gtk-close", gtk.ICON_SIZE_MENU)
-        self.clearbtn.add(img)
-        self.clearbtn.set_focus_on_click(False)
-        self.clearbtn.set_relief(gtk.RELIEF_NONE)
-        self.hbox.pack_end(self.clearbtn, False, False)
-        self.clearbtn.connect("clicked", lambda button: self.hide())
-        self.clearbtn.connect("clicked", lambda button: self.search.set_text(""))
-
         self.combobox = gtk.combo_box_new_text()
         self.combobox.set_focus_on_click(False)
         self.hbox.pack_end(self.combobox, False, False, 6)
@@ -395,6 +382,12 @@ class SearchBox(gtk.EventBox):
                     interpretation = self.category[self.combobox.get_active_text()]
             if "tracker" in globals().keys():
                 tracker.search(text, interpretation, callback)
+
+    def toggle_visibility(self):
+        if self.get_property("visible"):
+            self.hide()
+        else:
+            self.show()
 
 
 class SearchEntry(gtk.Entry):

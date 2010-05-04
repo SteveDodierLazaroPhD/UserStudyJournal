@@ -153,7 +153,7 @@ class PortalWindow(gtk.Window):
         self.toolbar.throbber.connect("clicked", self.show_about_window)
         self.toolbar.goto_today_button.connect("clicked", lambda w: self.set_date(datetime.date.today()))
         self.toolbar.pin_button.connect("clicked", lambda w: self.panedcontainer.pinbox.show_all())
-        self.toolbar.search_button.connect("clicked", lambda w: self.searchbox.show_all())
+        self.toolbar.search_button.connect("clicked", lambda w: self.searchbox.toggle_visibility())
         self.connect("destroy", self.quit)
         self._request_size()
         self.set_title_from_date(self.day_iter.date)
