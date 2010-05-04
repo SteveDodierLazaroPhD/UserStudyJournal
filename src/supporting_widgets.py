@@ -849,6 +849,7 @@ class HandleBox(gtk.HandleBox):
         super(HandleBox, self).__init__()
         self.set_handle_position(position)
         self.set_snap_edge(snap)
+        self.set_shadow_type(gtk.SHADOW_NONE)
         self.connect("child-attached", self.child_attached)
         self.connect("child-detached", self.child_detached)
 
@@ -863,7 +864,6 @@ class HandleBox(gtk.HandleBox):
         self.set_size_request(-1,-1)
 
 
-searchbox = SearchBox()
 if gst is not None:
     VideoPreviewTooltip = VideoPreviewTooltip()
 else:
