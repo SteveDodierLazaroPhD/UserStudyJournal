@@ -29,14 +29,11 @@ import os
 
 
 from activityviews import MultiViewContainer, TimelineViewContainer, ThumbViewContainer, PinnedPane
-from supporting_widgets import DayButton, DayLabel, Toolbar, ContextMenu, AboutDialog
+from supporting_widgets import DayButton, DayLabel, Toolbar, ContextMenu, AboutDialog, HandleBox
 from infopane import InformationContainer
 from histogram import HistogramWidget
 from store import Store, tdelta
 from config import settings
-
-InformationContainer = InformationContainer()
-ContextMenu.informationwindow = InformationContainer
 
 
 class ViewContainer(gtk.Notebook):
@@ -79,18 +76,35 @@ class PanedContainer(gtk.HBox):
         pane2.pack1(box2, False, True)
         pane2.pack2(box3, False, False)
         self.add(pane1)
-        box3.add(InformationContainer)
-        InformationContainer.connect("hide", self.on_change)
-        InformationContainer.connect("show", self.on_change)
-        InformationContainer.set_size_request(100, 100)
 
+        self.informationcontainer = InformationContainer()
+        ContextMenu.informationwindow = self.informationcontainer
+        self.h1 = handle = HandleBox()
+        handle.add(self.informationcontainer)
+        box3.add(handle)
+        self.informationcontainer.connect("hide", self.on_hide)
+        self.informationcontainer.connect("show", self.on_show)
+        self.informationcontainer.set_size_request(100, 100)
         self.pinbox = PinnedPane()
-        box1.add(self.pinbox)
+        self.pinbox.connect("hide", self.on_hide)
+        self.pinbox.connect("show", self.on_show)
+        self.h2 = handle = HandleBox()
+        handle.add(self.pinbox)
+        box1.add(handle)
         box1.show_all()
+        self.show_all()
 
-    def on_change(self, w):
+    def on_show(self, w, *args):
         self.pane1.set_position(-1)
         self.pane2.set_position(-1)
+        handle = self.h1 if w == self.informationcontainer else self.h2
+        handle.show()
+
+    def on_hide(self, w, *args):
+        self.pane1.set_position(-1)
+        self.pane2.set_position(-1)
+        handle = self.h1 if w == self.informationcontainer else self.h2
+        handle.hide()
 
 
 class PortalWindow(gtk.Window):
@@ -145,7 +159,7 @@ class PortalWindow(gtk.Window):
             self.histogram.scroll_to_end()
             return False
         gobject.timeout_add_seconds(1, setup)
-        InformationContainer.hide()
+        self.panedcontainer.informationcontainer.hide()
         self.panedcontainer.pinbox.hide()
 
     @property

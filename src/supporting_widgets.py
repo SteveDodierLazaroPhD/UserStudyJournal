@@ -844,6 +844,25 @@ class Pane(gtk.Frame):
         return True
 
 
+class HandleBox(gtk.HandleBox):
+    def __init__(self, position=gtk.POS_TOP, snap=gtk.POS_TOP):
+        super(HandleBox, self).__init__()
+        self.set_handle_position(position)
+        self.set_snap_edge(snap)
+        self.connect("child-attached", self.child_attached)
+        self.connect("child-detached", self.child_detached)
+
+    def child_attached(self, handlebox, widget):
+        self.set_size_request(-1, -1)
+
+    def child_detached(self, handlebox, widget):
+        if widget.window:
+            x, y, width, height, depth = widget.window.get_geometry()
+            child = self.get_child()
+            child.set_size_request(width, height)
+        self.set_size_request(-1,-1)
+
+
 searchbox = SearchBox()
 if gst is not None:
     VideoPreviewTooltip = VideoPreviewTooltip()
