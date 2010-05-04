@@ -283,6 +283,7 @@ class Store(gobject.GObject):
             i+=len(item)
         return i
 
+
 gobject.type_register(Day)
 gobject.type_register(Store)
 

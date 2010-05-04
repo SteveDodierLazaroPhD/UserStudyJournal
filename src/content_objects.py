@@ -75,7 +75,21 @@ def choose_content_object(event):
     return GenericContentObject.create(event)
 
 
-class ContentObject(object):
+class Object(object):
+    """
+    Keeps a list of instances of this class
+    """
+    instances = []
+    def __init__(self):
+        super(Object, self).__init__()
+        Object.instances.append(self)
+
+    def __del__(self):
+        Object.instances.remove(self)
+        return super(Object, self).__del__()
+
+
+class ContentObject(object):#(Object):
     """
     Defines the required interface of a Content object. This is a abstract class.
     """
@@ -93,6 +107,7 @@ class ContentObject(object):
         return False
 
     def __init__(self, event):
+        super(ContentObject, self).__init__()
         self._event = event
 
     @classmethod
