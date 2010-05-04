@@ -228,8 +228,8 @@ class DayView(gtk.VBox):
                     self.view.pack_start(box)
                 else:
                     ungrouped_events += events
-                box = CategoryBox(None, ungrouped_events)
-                self.view.pack_start(box)
+            box = CategoryBox(None, ungrouped_events)
+            self.view.pack_start(box)
             self.show_all()
 
 
