@@ -178,13 +178,14 @@ class DayViewContainer(gtk.VBox):
 
 class DayView(gtk.VBox):
 
-    def __init__(self, title=""):
+    def __init__(self, title=None):
         super(DayView, self).__init__()
         #self.add(gtk.Button("LOL"))
         # Create the title label
-        self.label = gtk.Label(title)
-        self.label.set_alignment(0.03, 0.5)
-        self.pack_start(self.label, False, False, 6)
+        if title:
+            self.label = gtk.Label(title)
+            self.label.set_alignment(0.03, 0.5)
+            self.pack_start(self.label, False, False, 6)
         # Create the main container
         self.view = None
 
@@ -198,7 +199,8 @@ class DayView(gtk.VBox):
         color = self.style.bg[gtk.STATE_NORMAL]
         fcolor = self.style.fg[gtk.STATE_NORMAL]
         color = combine_gdk_color(color, fcolor)
-        self.label.modify_fg(gtk.STATE_NORMAL, color)
+        if hasattr(self, "label"):
+            self.label.modify_fg(gtk.STATE_NORMAL, color)
 
     def clear(self):
         if self.view:
@@ -1104,7 +1106,7 @@ class PinBox(DayView):
         # Setup event criteria for querying
         self.event_timerange = TimeRange.until_now()
         # Initialize the widget
-        super(PinBox, self).__init__(_("Pinned items"))
+        super(PinBox, self).__init__()#_("Pinned items"))
         # Connect to relevant signals
         bookmarker.connect("reload", self.set_from_templates)
         self.set_from_templates()
@@ -1151,6 +1153,7 @@ class PinnedPane(Pane):
         self.add(vbox)
         self.set_size_request(200, -1)
         self.set_label_align(1,0)
+        bookmarker.connect("reload", lambda *args: self.show())
 
 
 ## gobject registration

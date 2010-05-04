@@ -688,7 +688,7 @@ class ContextMenu(gtk.Menu):
         self.menuitems = {
             "open" : gtk.ImageMenuItem(gtk.STOCK_OPEN),
             "unpin" : gtk.MenuItem(_("Remove Pin")),
-            "pin" : gtk.MenuItem(_("Pin to Today")),
+            "pin" : gtk.MenuItem(_("Add Pin")),
             "delete" : gtk.MenuItem(_("Delete item from Journal")),
             "delete_uri" : gtk.MenuItem(_("Delete all events with this URI")),
             "info" : gtk.MenuItem(_("More Information")),
