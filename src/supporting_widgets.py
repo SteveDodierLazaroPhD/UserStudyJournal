@@ -391,6 +391,19 @@ class SearchBox(gtk.EventBox):
         else:
             self.show()
 
+    def __search(self, results):
+        for obj in content_objects.ContentObject.instances:
+            setattr(obj, "matches_search", False)
+        templates = []
+        for result in results:
+            template += [Event.new_for_values(subject_uri=result)]
+        objs = []
+        for template in templates:
+            objs += list(content_objects.ContentObject.find_matching_events(template))
+        objs = set(objs)
+        for obj in objs:
+            setattr(obj, "matches_search", True)
+
 
 class SearchEntry(gtk.Entry):
 

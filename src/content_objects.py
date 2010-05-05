@@ -89,11 +89,16 @@ class Object(object):
         return super(Object, self).__del__()
 
 
-class ContentObject(object):#(Object):
+class ContentObject(Object):
     """
     Defines the required interface of a Content object. This is a abstract class.
     """
-    # Paths where .desktop files are stored.
+
+    @classmethod
+    def find_matching_events(cls, template):
+        for obj in cls.instances:
+            if obj.event.matches_template(template):
+                yield obj
 
     @classmethod
     def use_class(cls, event):
