@@ -31,6 +31,7 @@ import time
 import gobject
 import pango
 import gio
+import threading
 from dbus.exceptions import DBusException
 try:
     import gst
@@ -378,8 +379,27 @@ class SearchBox(gtk.EventBox):
                     cat = self.category[self.combobox.get_active_text()]
                     interpretation = self.category[self.combobox.get_active_text()]
             if interpretation:
-                return content_objects.search(text, callback, interpretation)
-            return content_objects.search(text, callback)
+                return self.do_search(text, callback, interpretation)
+            return self.do_search(text, callback)
+
+    @staticmethod
+    def do_search(text, callback, interpretation=None):
+        def _search(text, callback):
+            matching = []
+            for obj in content_objects.Object.instances:
+                subject = obj.event.subjects[0]
+                if text.lower() in subject.text.lower() or text in subject.uri:
+                    if interpretation:
+                        try:
+                            if subject.interpretation != interpretation:
+                                continue
+                        except: continue
+                    matching.append(obj)
+            gtk.gdk.threads_enter()
+            callback(matching)
+            gtk.gdk.threads_leave()
+        thread = threading.Thread(target=_search, args=(text, callback))
+        thread.start()
 
     def toggle_visibility(self):
         if self.get_property("visible"):

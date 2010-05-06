@@ -29,7 +29,6 @@ import glib
 import gtk
 import os
 import sys
-import threading
 from xdg import DesktopEntry
 import xml.dom.minidom as dom
 
@@ -74,39 +73,6 @@ def choose_content_object(event):
     if event.subjects[0].uri.startswith("file://"):
         return FileContentObject.create(event)
     return GenericContentObject.create(event)
-
-def legacy_search(text, callback, key="uri", cmp_func=lambda x, v: True if x.lower() in v.lower() else False):
-    def _search(text, key, callback, cmp_func):
-        matching = []
-        for obj in Object.instances:
-            value = getattr(obj, key)
-            if cmp_func(text, value):
-                matching.append(obj)
-        gtk.gdk.threads_enter()
-        callback(matching)
-        gtk.gdk.threads_leave()
-    thread = threading.Thread(target=_search, args=(text,key, callback, cmp_func))
-    thread.start()
-
-def search(text, callback, interpretation=None):
-    def _search(text, callback):
-        matching = []
-        for obj in Object.instances:
-            subject = obj.event.subjects[0]
-            if text.lower() in subject.text.lower() or text in subject.uri:
-                if interpretation:
-                    try:
-                        if subject.interpretation != interpretation:
-                            continue
-                    except: continue
-                matching.append(obj)
-        gtk.gdk.threads_enter()
-        callback(matching)
-        gtk.gdk.threads_leave()
-
-
-    thread = threading.Thread(target=_search, args=(text, callback))
-    thread.start()
 
 
 class Object(object):
