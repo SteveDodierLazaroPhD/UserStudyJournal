@@ -124,6 +124,7 @@ class PortalWindow(gtk.Window):
         self.backward_button = DayButton(0)
         self.forward_button = DayButton(1)
         self.searchbox = SearchBox
+        self.searchbox.store = self.store
         # Widget placement
         vbox = gtk.VBox()
         hbox = gtk.HBox()

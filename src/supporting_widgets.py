@@ -306,7 +306,8 @@ class SearchBox(gtk.EventBox):
         gtk.EventBox.__init__(self)
 
         self.text = ""
-
+        self.callback = None
+        self.store = None
         self.set_border_width(3)
         self.hbox = gtk.HBox()
         self.add(self.hbox)
@@ -379,11 +380,11 @@ class SearchBox(gtk.EventBox):
                     cat = self.category[self.combobox.get_active_text()]
                     interpretation = self.category[self.combobox.get_active_text()]
             if interpretation:
-                return self.do_search(text, callback, interpretation)
-            return self.do_search(text, callback)
+                return self.do_search_objs(text, callback, interpretation)
+            return self.do_search_objs(text, callback)
 
     @staticmethod
-    def do_search(text, callback=None, interpretation=None):
+    def do_search_objs(text, callback=None, interpretation=None):
         if not callback: return
         def _search(text, callback):
             matching = []
@@ -401,6 +402,26 @@ class SearchBox(gtk.EventBox):
             gtk.gdk.threads_leave()
         thread = threading.Thread(target=_search, args=(text, callback))
         thread.start()
+
+    def do_search_using_zeitgeist(self, text, callback=None, interpretation=""):
+        if not text: return
+        print text
+        self.callback = callback
+        templates = [
+            Event.new_for_values(subject_text="*"+text+"*", subject_interpretation=interpretation),
+            Event.new_for_values(subject_uri="*"+text+"*", subject_interpretation=interpretation)
+        ]
+        CLIENT.find_event_ids_for_templates(templates, self._search_callback, storage_state=2, num_events=20, result_type=0)
+
+    def _search_callback(self, ids):
+        objs = []
+        for id_ in ids:
+            try:
+                obj.append(self.store[id_])
+            except KeyError:
+                continue
+        if self.callback:
+            self.callback(objs)
 
     def toggle_visibility(self):
         if self.get_property("visible"):

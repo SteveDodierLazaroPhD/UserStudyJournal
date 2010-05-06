@@ -338,8 +338,9 @@ class Item(gtk.HBox):
         self.__init_widget()
         self.show_all()
         self.markup = None
+        self.__highlight()
         SearchBox.connect("search", self.__highlight)
-        SearchBox.connect("clear", self.__highlight)
+        SearchBox.connect("clear", self.__clear)
 
     def __highlight(self, *args):
         rc_style = self.style
@@ -352,6 +353,13 @@ class Item(gtk.HBox):
             self.label.set_markup("<span>" + text + "</span>")
             color = rc_style.text[gtk.STATE_NORMAL]
             self.label.modify_fg(gtk.STATE_NORMAL, color)
+
+    def __clear(self, *args):
+        text = self.content_obj.text.replace("&", "&amp;")
+        rc_style = self.style
+        self.label.set_markup("<span>" + text + "</span>")
+        color = rc_style.text[gtk.STATE_NORMAL]
+        self.label.modify_fg(gtk.STATE_NORMAL, color)
 
     def __init_widget(self):
         self.label = gtk.Label()
