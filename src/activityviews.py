@@ -34,7 +34,7 @@ import content_objects
 from config import settings
 from sources import SUPPORTED_SOURCES
 from store import ContentStruct, CLIENT
-from supporting_widgets import DayLabel, ContextMenu, StaticPreviewTooltip, VideoPreviewTooltip, Pane
+from supporting_widgets import DayLabel, ContextMenu, StaticPreviewTooltip, VideoPreviewTooltip, Pane, SearchBox
 
 from zeitgeist.datamodel import ResultType, StorageState, TimeRange
 
@@ -322,7 +322,6 @@ class Item(gtk.HBox):
         self.allow_pin = allow_pin
         self.btn = gtk.Button()
         self.search_results = []
-        self.in_search = False
         self.subject = event.subjects[0]
         self.content_obj = content_struct.content_object
         # self.content_obj = GioFile.create(self.subject.uri)
@@ -339,6 +338,20 @@ class Item(gtk.HBox):
         self.__init_widget()
         self.show_all()
         self.markup = None
+        SearchBox.connect("search", self.__highlight)
+        SearchBox.connect("clear", self.__highlight)
+
+    def __highlight(self, *args):
+        rc_style = self.style
+        text = self.content_obj.text.replace("&", "&amp;")
+        if self.content_obj.matches_search:
+            self.label.set_markup("<span><b>" + text + "</b></span>")
+            color = rc_style.base[gtk.STATE_SELECTED]
+            self.label.modify_fg(gtk.STATE_NORMAL, color)
+        else:
+            self.label.set_markup("<span>" + text + "</span>")
+            color = rc_style.text[gtk.STATE_NORMAL]
+            self.label.modify_fg(gtk.STATE_NORMAL, color)
 
     def __init_widget(self):
         self.label = gtk.Label()
@@ -600,6 +613,8 @@ class ThumbIconView(gtk.IconView):
         self.pack_end(render)
         self.add_attribute(render, "content_obj", 0)
         self.set_margin(10)
+        SearchBox.connect("search", lambda *args: self.queue_draw())
+        SearchBox.connect("clear", lambda *args: self.queue_draw())
 
     def _set_model_in_thread(self, items):
         """
@@ -977,7 +992,8 @@ class TimelineView(gtk.TreeView):
         self.set_headers_visible(False)
         self.set_property("has-tooltip", True)
         self.set_tooltip_window(StaticPreviewTooltip)
-
+        SearchBox.connect("search", lambda *args: self.queue_draw())
+        SearchBox.connect("clear", lambda *args: self.queue_draw())
 
     def set_model_from_list(self, items):
         """

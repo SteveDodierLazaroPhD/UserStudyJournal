@@ -47,12 +47,6 @@ from config import BASE_PATH, VERSION, settings, get_icon_path, get_data_path
 from sources import Source, SUPPORTED_SOURCES
 from gio_file import GioFile, SIZE_NORMAL, SIZE_LARGE
 from bookmarker import bookmarker
-try:
-    from tracker_wrapper import tracker
-    TRACKER_ENABLED = True
-except DBusException:
-    TRACKER_ENABLED = False
-    print "Tracker disabled."
 
 import content_objects
 import common
@@ -348,6 +342,7 @@ class SearchBox(gtk.EventBox):
         self.hbox.connect("style-set", change_style)
         self.search.connect("search", self.set_search)
         self.search.connect("clear", self.clear)
+        self.connect("search", self.__search)
 
     def clear(self, widget):
         if self.text.strip() != "" and self.text.strip() != self.search.default_text:
@@ -368,7 +363,7 @@ class SearchBox(gtk.EventBox):
         if not self.text.strip() == text.strip():
             self.text = text
             def callback(results):
-                self.results = [s[1] for s in results]
+                self.results = results
                 self.emit("search", results)
 
             if not text:
@@ -382,8 +377,9 @@ class SearchBox(gtk.EventBox):
                 else:
                     cat = self.category[self.combobox.get_active_text()]
                     interpretation = self.category[self.combobox.get_active_text()]
-            if "tracker" in globals().keys():
-                tracker.search(text, interpretation, callback)
+            if interpretation:
+                return content_objects.search(text, callback, interpretation)
+            return content_objects.search(text, callback)
 
     def toggle_visibility(self):
         if self.get_property("visible"):
@@ -391,17 +387,10 @@ class SearchBox(gtk.EventBox):
         else:
             self.show()
 
-    def __search(self, results):
+    def __search(self, this, results):
         for obj in content_objects.ContentObject.instances:
             setattr(obj, "matches_search", False)
-        templates = []
-        for result in results:
-            template += [Event.new_for_values(subject_uri=result)]
-        objs = []
-        for template in templates:
-            objs += list(content_objects.ContentObject.find_matching_events(template))
-        objs = set(objs)
-        for obj in objs:
+        for obj in results:
             setattr(obj, "matches_search", True)
 
 
@@ -879,3 +868,4 @@ else:
     VideoPreviewTooltip = None
 StaticPreviewTooltip = StaticPreviewTooltip()
 ContextMenu = ContextMenu()
+SearchBox = SearchBox()
