@@ -68,7 +68,7 @@ class CairoHistogram(gtk.DrawingArea):
     pangofont = None
     _disable_mouse_motion = False
     selected_range = 0
-    _highlighted = tuple()
+    _highlighted = []
     _last_location = -1
     _single_day_only = False
     colors = {
@@ -205,9 +205,7 @@ class CairoHistogram(gtk.DrawingArea):
                 months_positions += [(day.date, x)]
             if day.date in self._highlighted:
                 color = self.colors["column_selected_alternative"] if day.date in selected else self.colors["column_alternative"]
-            elif not selected:
-                color = self.colors["column_normal"]
-            if day.date in selected:
+            elif day.date in selected:
                 color = self.colors["column_selected"]
             else:
                 color = self.colors["column_normal"]

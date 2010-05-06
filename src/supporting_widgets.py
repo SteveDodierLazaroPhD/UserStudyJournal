@@ -383,7 +383,8 @@ class SearchBox(gtk.EventBox):
             return self.do_search(text, callback)
 
     @staticmethod
-    def do_search(text, callback, interpretation=None):
+    def do_search(text, callback=None, interpretation=None):
+        if not callback: return
         def _search(text, callback):
             matching = []
             for obj in content_objects.Object.instances:

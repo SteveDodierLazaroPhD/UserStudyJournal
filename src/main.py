@@ -172,7 +172,8 @@ class PortalWindow(gtk.Window):
                 "hicolor/32x32/apps/gnome-activity-journal.png",
                 "hicolor/48x48/apps/gnome-activity-journal.png",
                 "hicolor/256x256/apps/gnome-activity-journal.png")])
-
+        self.searchbox.connect("search", self._on_search)
+        self.searchbox.connect("clear", self._on_search_clear)
 
     @property
     def active_dates(self):
@@ -220,6 +221,15 @@ class PortalWindow(gtk.Window):
         aboutwindow.set_transient_for(self)
         aboutwindow.run()
         aboutwindow.destroy()
+
+    def _on_search(self, box, results):
+        dates = []
+        for obj in results:
+            dates.append(datetime.date.fromtimestamp(int(obj.event.timestamp)/1000.0))
+        self.histogram.histogram.set_highlighted(dates)
+
+    def _on_search_clear(self, *args):
+        self.histogram.histogram.clear_highlighted()
 
     def _request_size(self):
         screen = self.get_screen().get_monitor_geometry(
