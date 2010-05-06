@@ -19,8 +19,10 @@
 
 import datetime
 import gobject
+import gtk
 import sys
 import time
+import threading
 from zeitgeist.client import ZeitgeistClient, ZeitgeistDBusInterface
 from zeitgeist.datamodel import Event, ResultType, Interpretation
 
@@ -105,6 +107,9 @@ class ContentStruct(object):
             self.event = value
         else:
             self.event = ContentStruct.event
+        gtk.gdk.threads_enter()
+        content_object_selector_function(self.event)
+        gtk.gdk.threads_leave()
 
     def do_build(self):
         CLIENT.get_events([self.id], self.set_event)
@@ -282,6 +287,16 @@ class Store(gobject.GObject):
         for item in self._days.itervalues():
             i+=len(item)
         return i
+
+    def build_all(self, threaded=False):
+        def _build():
+            for day in self.days:
+                for item in day.items:
+                    item.do_build()
+        if threaded:
+            thread = threading.Thread(target=_build)
+            thread.start()
+        else: return _build
 
 
 gobject.type_register(Day)

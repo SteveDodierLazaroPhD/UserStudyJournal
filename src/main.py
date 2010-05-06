@@ -49,7 +49,7 @@ class ViewContainer(gtk.Notebook):
         for widget in (self.mutliview, self.thumbview, self.timelineview):
             self.append_page(widget)
         self.show_all()
-        self.set_page(0)
+        self.set_current_page(0)
 
     def set_day(self, day, page=None):
         if page == None:
@@ -158,8 +158,9 @@ class PortalWindow(gtk.Window):
         self.set_title_from_date(self.day_iter.date)
         def setup(*args):
             self.histogram.scroll_to_end()
+            #self.store.build_all(threaded=True)
             return False
-        gobject.timeout_add_seconds(1, setup)
+        gobject.timeout_add_seconds(5, setup)
         self.panedcontainer.informationcontainer.hide()
         self.panedcontainer.pinbox.hide()
         self.searchbox.hide()
