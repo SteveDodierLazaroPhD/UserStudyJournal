@@ -43,17 +43,21 @@ from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
     ResultType
 
 from common import shade_gdk_color, combine_gdk_color, is_command_available, \
-    launch_command
+    launch_command, get_gtk_rgba
 from config import BASE_PATH, VERSION, settings, get_icon_path, get_data_path
 from sources import Source, SUPPORTED_SOURCES
 from gio_file import GioFile, SIZE_NORMAL, SIZE_LARGE
 from bookmarker import bookmarker
-
 import content_objects
-import common
+from store import STORE
 
 CLIENT = ZeitgeistClient()
 ITEMS = []
+
+try:
+    from tracker_wrapper import TRACKER
+except ImportError:
+    TRACKER = None
 
 
 class DayLabel(gtk.DrawingArea):
@@ -230,13 +234,13 @@ class DayButton(gtk.DrawingArea):
         return True
 
     def change_style(self, *args, **kwargs):
-        self.bg_color = common.get_gtk_rgba(self.style, "bg", 0)
-        self.header_color = common.get_gtk_rgba(self.style, "bg", 0, 1.25)
-        self.leading_header_color = common.get_gtk_rgba(self.style, "bg", 3)
-        self.internal_color = common.get_gtk_rgba(self.style, "bg", 0, 1.02)
-        self.arrow_color = common.get_gtk_rgba(self.style, "text", 0, 0.6)
-        self.arrow_color_selected = common.get_gtk_rgba(self.style, "bg", 3)
-        self.arrow_color_insensitive = common.get_gtk_rgba(self.style, "text", 4)
+        self.bg_color = get_gtk_rgba(self.style, "bg", 0)
+        self.header_color = get_gtk_rgba(self.style, "bg", 0, 1.25)
+        self.leading_header_color = get_gtk_rgba(self.style, "bg", 3)
+        self.internal_color = get_gtk_rgba(self.style, "bg", 0, 1.02)
+        self.arrow_color = get_gtk_rgba(self.style, "text", 0, 0.6)
+        self.arrow_color_selected = get_gtk_rgba(self.style, "bg", 3)
+        self.arrow_color_insensitive = get_gtk_rgba(self.style, "text", 4)
 
     def expose(self, widget, event):
         context = widget.window.cairo_create()
@@ -307,7 +311,6 @@ class SearchBox(gtk.EventBox):
 
         self.text = ""
         self.callback = None
-        self.store = None
         self.set_border_width(3)
         self.hbox = gtk.HBox()
         self.add(self.hbox)
@@ -380,12 +383,22 @@ class SearchBox(gtk.EventBox):
                     cat = self.category[self.combobox.get_active_text()]
                     interpretation = self.category[self.combobox.get_active_text()]
             if interpretation:
-                return self.do_search_objs(text, callback, interpretation)
-            return self.do_search_objs(text, callback)
+                return self.do_search(text, callback, interpretation)
+            return self.do_search(text, callback)
+
+    def do_search(self, text, callback=None, interpretation=None):
+        if not callback: return
+        if TRACKER and 1==2: #DISABLED FOR NOW. Causes a crash in zeitgeist
+            self.do_search_tracker(text, callback, interpretation)
+        else:
+            self.do_search_objs(text, callback, interpretation)
 
     @staticmethod
-    def do_search_objs(text, callback=None, interpretation=None):
-        if not callback: return
+    def do_search_tracker(text, callback, interpretation=None):
+        TRACKER.search(text, interpretation, callback, True)
+
+    @staticmethod
+    def do_search_objs(text, callback, interpretation=None):
         def _search(text, callback):
             matching = []
             for obj in content_objects.Object.instances:
@@ -417,7 +430,7 @@ class SearchBox(gtk.EventBox):
         objs = []
         for id_ in ids:
             try:
-                obj.append(self.store[id_])
+                obj.append(STORE[id_])
             except KeyError:
                 continue
         if self.callback:
@@ -859,6 +872,7 @@ class Toolbar(gtk.Toolbar):
 class TagCloud(gtk.Label):
     max_font_size = 11000.0
     min_font_size = 6000.0
+    mid_font_size = 8500.0
     _size_diff = max_font_size - min_font_size
 
     def __init__(self):
@@ -867,16 +881,6 @@ class TagCloud(gtk.Label):
         self.set_line_wrap_mode(pango.WRAP_WORD)
         self.set_justify(gtk.JUSTIFY_CENTER)
         self.connect( "size-allocate", self.size_allocate )
-        sample = {
-            "Hello":5,
-            "World":20,
-            "Foo":1,
-            "Bar":83,
-            "Sample":4,
-            "text":23,
-            "ThisIsAExample":52,
-        }
-        self.set_tags(sample)
 
     def size_allocate(self, label, alloc):
         label.set_size_request(alloc.width - 2, -1 )
@@ -885,17 +889,21 @@ class TagCloud(gtk.Label):
         self.set_text("")
 
     def make_tag(self, tag, value, min_value, max_value):
-        value = (value-min_value)/(max_value-min_value)
-        size = (value * self._size_diff) + self.min_font_size
+        if (min_value+max_value+value)/3 == value:
+            size = self.mid_font_size
+        else:
+            value = (value-min_value)/(max_value-min_value)
+            size = (value * self._size_diff) + self.min_font_size
         return "<span size='" + str(int(size)) + "'>" + tag + "</span>"
 
     def set_tags(self, tag_dict):
+        if not tag_dict: return self.set_text("")
         text_lst = []
-        min_value = float(min(1, *tag_dict.values()))
-        max_value = float(max(1, *tag_dict.values()))
+        min_value = min(float(min(1, *tag_dict.values())), 1)
+        max_value = max(float(max(1, *tag_dict.values())), 1)
         for tag in tag_dict.keys():
             text_lst.append(self.make_tag(tag, tag_dict[tag], min_value, max_value))
-        self.set_markup(" ".join(text_lst))
+        self.set_markup("  ".join(text_lst))
 
 
 class StockIconButton(gtk.Button):

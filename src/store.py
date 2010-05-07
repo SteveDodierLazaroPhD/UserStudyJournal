@@ -177,6 +177,14 @@ class Day(gobject.GObject):
         for event in events:
             self._items[event.id] = ContentStruct(event.id, event)
 
+    @DoEmit("update")
+    def insert_event(self, event, overwrite=False):
+        if not overwrite and self.has_id(event.id):
+            self._items[event.id].event = event
+            return False
+        self._items[event.id] = ContentStruct(event.id, event)
+        return True
+
     def next(self, store):
         date = self.date + datetime.timedelta(days=1)
         return store[date]
@@ -313,10 +321,14 @@ class Store(gobject.GObject):
             return True
         gobject.timeout_add_seconds(1, _build)
 
+    def add_event(self, event):
+        date = datetime.date.fromtimestamp(int(event.timestamp)/1000)
+        day = self[date]
+        day.insert_event(event)
+
 
 
 gobject.type_register(Day)
 gobject.type_register(Store)
 
-
-
+STORE = Store()

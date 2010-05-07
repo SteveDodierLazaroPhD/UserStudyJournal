@@ -31,7 +31,7 @@ from activityviews import MultiViewContainer, TimelineViewContainer, ThumbViewCo
 from supporting_widgets import DayButton, DayLabel, Toolbar, ContextMenu, AboutDialog, HandleBox, SearchBox
 from infopane import InformationContainer
 from histogram import HistogramWidget
-from store import Store, tdelta
+from store import Store, tdelta, STORE
 from config import settings, get_icon_path
 
 
@@ -113,7 +113,7 @@ class PortalWindow(gtk.Window):
         self.__initialized = False
         self._requested_size = None
         # Important
-        self.store = Store()
+        self.store = STORE
         self.day_iter = self.store.today
         self.toolbar = Toolbar()
         self.view = ViewContainer(self.store)
@@ -124,7 +124,6 @@ class PortalWindow(gtk.Window):
         self.backward_button = DayButton(0)
         self.forward_button = DayButton(1)
         self.searchbox = SearchBox
-        self.searchbox.store = self.store
         # Widget placement
         vbox = gtk.VBox()
         hbox = gtk.HBox()

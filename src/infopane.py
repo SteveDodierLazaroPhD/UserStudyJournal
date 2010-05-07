@@ -40,17 +40,21 @@ import content_objects
 from common import *
 from gio_file import GioFile
 import supporting_widgets
+from store import STORE
+
+try:
+    from tracker_wrapper import TRACKER
+except ImportError: TRACKER = None
 
 
 GENERIC_DISPLAY_NAME = "other"
-
 MIMETYPEMAP = {
     GENERIC_DISPLAY_NAME : ("image", None),
     #"multimedia" : ("video", "audio"),
     #"text" : ("text",),
 }
-
 CLIENT = ZeitgeistClient()
+
 
 def get_related_events_for_uri(uri, callback):
     """
@@ -524,56 +528,19 @@ class InformationContainer(supporting_widgets.Pane):
             self.relatedpane.set_model_from_list(events)
         get_related_events_for_uri(obj.uri, _callback)
         self.infopane.set_content_object(obj)
+        self.set_tags(obj)
         self.show_all()
+
+    def set_tags(self, obj):
+        if TRACKER:
+            tag_dict = {}
+            tags = TRACKER.get_tag_dict_for_uri(obj.uri)
+            self.tag_cloud.set_tags(tags)
+        else:
+            self.tag_cloud.set_text("")
 
     def hide_on_delete(self, widget, *args):
         super(InformationContainer, self).hide_on_delete(widget)
         self.infopane.set_inactive()
         return True
 
-
-##class InformationWindow(gtk.Window):
-##    """
-##    . . . . . . . .  . . .
-##    .             .  .   .
-##    .    Info     .  .   . <--- Related files
-##    .             .  .   .
-##    .             .  .   .
-##    . . . . . . . .  . . .
-##
-##    A window which holds the information pane and related pane
-##    """
-##    def __init__(self):
-##        super(InformationWindow, self).__init__()
-##        box = gtk.HBox()
-##        vbox = gtk.VBox()
-##        self.infopane = InformationPane()
-##        self.relatedpane = RelatedPane()
-##        scrolledwindow = gtk.ScrolledWindow()
-##        box.set_border_width(10)
-##        box.pack_start(self.infopane, True, True, 10)
-##        scrolledwindow.set_shadow_type(gtk.SHADOW_IN)
-##        self.relatedpane.set_size_request(230, -1)
-##        scrolledwindow.set_policy(gtk.POLICY_NEVER, gtk.POLICY_ALWAYS)
-##        scrolledwindow.add(self.relatedpane)
-##        vbox.pack_end(scrolledwindow, True, True)
-##        box.pack_end(vbox, False, False, 10)
-##        self.add(box)
-##        self.set_size_request(700, 600)
-##        self.connect("delete-event", self._hide_on_delete)
-##
-##    def _hide_on_delete(self, widget, event):
-##        widget.hide()
-##        self.infopane.set_inactive()
-##        return True
-##
-##    def set_content_object(self, obj):
-##        def _callback(events):
-##            self.relatedpane.set_model_from_list(events)
-##        get_related_events_for_uri(obj.uri, _callback)
-##        self.infopane.set_content_object(obj)
-##        self.show_all()
-
-
-#InformationWindow = InformationWindow()
-#InformationContainer = InformationContainer()
