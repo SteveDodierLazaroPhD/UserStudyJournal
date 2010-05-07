@@ -18,6 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import datetime
+import dbus
 import gobject
 import gtk
 import sys
@@ -101,12 +102,15 @@ class ContentStruct(object):
             CLIENT.get_events([self.id], self.set_event)
 
     def set_event(self, value):
-        if isinstance(value, tuple) or isinstance(value, list) and len(value):
+        if isinstance(value, dbus.Array) or isinstance(value, list) or isinstance(value, tuple) and len(value):
             self.event = value[0]
         elif isinstance(value, Event):
             self.event = value
         else:
             self.event = ContentStruct.event
+        self.build_struct()
+
+    def build_struct(self):
         gtk.gdk.threads_enter()
         content_object_selector_function(self.event)
         gtk.gdk.threads_leave()
@@ -228,6 +232,14 @@ class Day(gobject.GObject):
                              r[0][0].event.timestamp))
         return results
 
+    def do_build(self):
+        CLIENT.get_events(self._items.keys(), self.__set_events_by_id)
+
+    def __set_events_by_id(self, events):
+        for event in events:
+            self._items[event.id].event = event
+            self._items[event.id].build_struct()
+
 
 class Store(gobject.GObject):
     __gsignals__ = {
@@ -251,6 +263,7 @@ class Store(gobject.GObject):
 
     def __init__(self):
         super(Store, self).__init__()
+        self.run_build_thread = False
         self._days = {}
         self._day_connections = {}
         today = datetime.date.today()
@@ -288,17 +301,22 @@ class Store(gobject.GObject):
             i+=len(item)
         return i
 
-    def build_all(self, threaded=False):
+    def build_all(self):
+        self.__build_count = 0
+        self._current_day = self.today.previous(self).previous(self)
         def _build():
-            for day in self.days:
-                for item in day.items:
-                    item.do_build()
-        if threaded:
-            thread = threading.Thread(target=_build)
-            thread.start()
-        else: return _build
+            if self.__build_count > 70:
+                return False
+            self._current_day.do_build()
+            self._current_day = self._current_day.previous(self)
+            self.__build_count += 1
+            return True
+        gobject.timeout_add_seconds(1, _build)
+
 
 
 gobject.type_register(Day)
 gobject.type_register(Store)
+
+
 

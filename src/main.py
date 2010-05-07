@@ -159,9 +159,9 @@ class PortalWindow(gtk.Window):
         self.set_title_from_date(self.day_iter.date)
         def setup(*args):
             self.histogram.scroll_to_end()
-            #self.store.build_all(threaded=True)
+            self.store.build_all()
             return False
-        gobject.timeout_add_seconds(5, setup)
+        gobject.timeout_add_seconds(2, setup)
         self.panedcontainer.informationcontainer.hide()
         self.panedcontainer.pinbox.hide()
         self.searchbox.hide()
@@ -274,7 +274,6 @@ class PortalWindow(gtk.Window):
         else:
             self.set_title(_("%s to %s") % (start, end) + " - " + _("Activity Journal"))
 
-    def quit(self, widget):
+    def quit(self, *args):
         gtk.main_quit()
-
 
