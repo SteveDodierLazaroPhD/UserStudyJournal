@@ -348,32 +348,23 @@ class InformationPane(gtk.VBox):
     def __init__(self):
         super(InformationPane, self).__init__()
         vbox = gtk.VBox()
-        buttonhbox = gtk.HBox()
         self.box = gtk.Frame()
         self.label = gtk.Label()
         self.pathlabel = gtk.Label()
         labelvbox = gtk.VBox()
         labelvbox.pack_start(self.label)
         labelvbox.pack_end(self.pathlabel)
-        self.openbutton = gtk.Button(stock=gtk.STOCK_OPEN)
         self.displays = self.displays.copy()
         #self.set_shadow_type(gtk.SHADOW_NONE)
         #self.set_label_widget(labelvbox)
         self.pack_start(labelvbox)
         self.box.set_shadow_type(gtk.SHADOW_NONE)
-        buttonhbox.pack_end(self.openbutton, False, False, 5)
-        buttonhbox.set_border_width(5)
         vbox.pack_start(self.box, True, True)
-        vbox.pack_end(buttonhbox, False, False)
         #self.set_label_align(0.5, 0.5)
         #self.label.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
         #self.pathlabel.set_size_request(100, -1)
         #self.pathlabel.set_size_request(300, -1)
         self.pathlabel.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
-        def _launch(w):
-            self.obj.launch()
-        self.openbutton.connect("clicked", _launch)
-
         #self.datapane = EventDataPane()
         #vbox.pack_end(self.datapane, False, False)
         self.add(vbox)
@@ -493,6 +484,21 @@ class RelatedPane(gtk.TreeView):
                 obj.launch()
 
 
+class InformationToolbar(gtk.Toolbar):
+    def __init__(self):
+        super(InformationToolbar, self).__init__()
+        self.set_icon_size(gtk.ICON_SIZE_SMALL_TOOLBAR)
+        self.open_button = ob = gtk.ToolButton(gtk.STOCK_OPEN)
+        self.delete_button = del_ = gtk.ToolButton(gtk.STOCK_DELETE)
+        self.add_tag_button = add = gtk.ToolButton(gtk.STOCK_ADD)
+        #self.pin_button = pin = supporting_widgets.Toolbar.get_toolbutton(
+        #    get_icon_path("hicolor/24x24/status/pin.png"),
+        #    _("Add Pin"))
+        sep = gtk.SeparatorToolItem()
+        for item in (del_, sep, add, ob):
+            self.insert(item, 0)
+
+
 class InformationContainer(supporting_widgets.Pane):
     """
     . . . . . . . .  . . .
@@ -506,24 +512,39 @@ class InformationContainer(supporting_widgets.Pane):
     """
     def __init__(self):
         super(InformationContainer, self).__init__()
-        box = gtk.VBox()
+        box1 = gtk.VBox()
+        box2 = gtk.VBox()
         vbox = gtk.VBox()
+        self.toolbar = InformationToolbar()
         self.infopane = InformationPane()
         self.tag_cloud = supporting_widgets.TagCloud()
         self.relatedpane = RelatedPane()
         scrolledwindow = gtk.ScrolledWindow()
-        box.set_border_width(10)
-        box.pack_start(self.infopane, False, False, 4)
-        box.pack_start(self.tag_cloud, False, False, 2)
+        box2.set_border_width(10)
+        box1.pack_start(self.toolbar, False, False)
+        box2.pack_start(self.infopane, False, False, 4)
+        box2.pack_start(self.tag_cloud, False, False, 2)
         scrolledwindow.set_shadow_type(gtk.SHADOW_IN)
         #self.relatedpane.set_size_request(230, -1)
         scrolledwindow.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
         scrolledwindow.add(self.relatedpane)
         vbox.pack_end(scrolledwindow, True, True)
-        box.pack_end(vbox, True, True, 10)
-        self.add(box)
+        box2.pack_end(vbox, True, True, 10)
+        box1.add(box2)
+        self.add(box1)
+        def _launch(w):
+            self.obj.launch()
+        self.toolbar.open_button.connect("clicked", _launch)
+        self.toolbar.delete_button.connect("clicked", self.do_delete_events_with_shared_uri)
+
+    def do_delete_events_with_shared_uri(self, *args):
+        CLIENT.find_event_ids_for_template(
+            Event.new_for_values(subject_uri=self.obj.uri),
+            lambda ids: CLIENT.delete_events(map(int, ids)))
+        self.hide()
 
     def set_content_object(self, obj):
+        self.obj = obj
         def _callback(events):
             self.relatedpane.set_model_from_list(events)
         get_related_events_for_uri(obj.uri, _callback)
