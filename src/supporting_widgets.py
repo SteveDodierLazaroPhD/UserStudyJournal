@@ -856,6 +856,48 @@ class Toolbar(gtk.Toolbar):
         self.throbber.image.animate_for_seconds(1)
 
 
+class TagCloud(gtk.Label):
+    max_font_size = 11000.0
+    min_font_size = 6000.0
+    _size_diff = max_font_size - min_font_size
+
+    def __init__(self):
+        super(TagCloud, self).__init__()
+        self.set_line_wrap(True)
+        self.set_line_wrap_mode(pango.WRAP_WORD)
+        self.set_justify(gtk.JUSTIFY_CENTER)
+        self.connect( "size-allocate", self.size_allocate )
+        sample = {
+            "Hello":5,
+            "World":20,
+            "Foo":1,
+            "Bar":83,
+            "Sample":4,
+            "text":23,
+            "ThisIsAExample":52,
+        }
+        self.set_tags(sample)
+
+    def size_allocate(self, label, alloc):
+        label.set_size_request(alloc.width - 2, -1 )
+
+    def clear(self):
+        self.set_text("")
+
+    def make_tag(self, tag, value, min_value, max_value):
+        value = (value-min_value)/(max_value-min_value)
+        size = (value * self._size_diff) + self.min_font_size
+        return "<span size='" + str(int(size)) + "'>" + tag + "</span>"
+
+    def set_tags(self, tag_dict):
+        text_lst = []
+        min_value = float(min(1, *tag_dict.values()))
+        max_value = float(max(1, *tag_dict.values()))
+        for tag in tag_dict.keys():
+            text_lst.append(self.make_tag(tag, tag_dict[tag], min_value, max_value))
+        self.set_markup(" ".join(text_lst))
+
+
 class StockIconButton(gtk.Button):
     def __init__(self, stock_id, size=gtk.ICON_SIZE_BUTTON):
         super(StockIconButton, self).__init__()
