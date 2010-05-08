@@ -553,16 +553,15 @@ class InformationContainer(supporting_widgets.Pane):
         self.toolbar = InformationToolbar()
         self.infopane = InformationPane()
         self.tag_cloud = supporting_widgets.TagCloud()
+        self.expander = expander = gtk.Expander()
+        expander.set_label(_("Tags"))
+        expander.add(self.tag_cloud)
         self.relatedpane = RelatedPane()
         scrolledwindow = gtk.ScrolledWindow()
-        self.sep1 = gtk.HSeparator()
-        self.sep2 = gtk.HSeparator()
         box2.set_border_width(10)
         box1.pack_start(self.toolbar, False, False)
         box2.pack_start(self.infopane, False, False, 4)
-        box2.pack_start(self.sep1, False, False, 4)
-        box2.pack_start(self.tag_cloud, False, False, 4)
-        box2.pack_start(self.sep2, False, False)
+        box2.pack_start(expander, False, False, 4)
         scrolledwindow.set_shadow_type(gtk.SHADOW_IN)
         #self.relatedpane.set_size_request(230, -1)
         scrolledwindow.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
@@ -620,11 +619,11 @@ class InformationContainer(supporting_widgets.Pane):
         else:
             self.tag_cloud.set_text("")
         if self.tag_cloud.get_text() == "":
-            self.sep1.hide()
-            self.sep2.hide()
+            self.expander.set_sensitive(False)
+            self.expander.set_expanded(False)
         else:
-            self.sep1.show()
-            self.sep2.show()
+            self.expander.set_sensitive(True)
+            self.expander.set_expanded(True)
 
     def hide_on_delete(self, widget, *args):
         super(InformationContainer, self).hide_on_delete(widget)
