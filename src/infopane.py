@@ -513,16 +513,22 @@ class InformationToolbar(gtk.Toolbar):
         ob.set_label(_("Launch this subject"))
         self.delete_button = del_ = supporting_widgets.ToolButton(gtk.STOCK_DELETE)
         del_.set_label(_("Delete this subject"))
-        self.add_tag_button = add = supporting_widgets.ToolButton(gtk.STOCK_ADD)
-        add.set_label(_("Add a tag"))
-        self.new_tag_entry = new = NewTagTool()
+        if TRACKER:
+            self.add_tag_button = add = supporting_widgets.ToolButton(gtk.STOCK_ADD)
+            add.set_label(_("Add a tag"))
+            self.new_tag_entry = new = NewTagTool()
+        else:
+            new = None
+            add = None
         #self.pin_button = pin = supporting_widgets.Toolbar.get_toolbutton(
         #    get_icon_path("hicolor/24x24/status/pin.png"),
         #    _("Add Pin"))
         sep = gtk.SeparatorToolItem()
         for item in (del_, sep, new, add, ob):
-            self.insert(item, 0)
-        new.hide_all()
+            if item:
+                self.insert(item, 0)
+        if new:
+            new.hide_all()
 
 
 class InformationContainer(supporting_widgets.Pane):
@@ -566,8 +572,9 @@ class InformationContainer(supporting_widgets.Pane):
             self.obj.launch()
         self.toolbar.open_button.connect("clicked", _launch)
         self.toolbar.delete_button.connect("clicked", self.do_delete_events_with_shared_uri)
-        self.toolbar.add_tag_button.connect("clicked", self.on_add_tag_press)
-        self.toolbar.new_tag_entry.connect("finished", self.do_add_tag)
+        if TRACKER:
+            self.toolbar.add_tag_button.connect("clicked", self.on_add_tag_press)
+            self.toolbar.new_tag_entry.connect("finished", self.do_add_tag)
 
     def on_add_tag_press(self, *args):
         if self.toolbar.new_tag_entry.get_property("visible"):
@@ -597,8 +604,9 @@ class InformationContainer(supporting_widgets.Pane):
         self.infopane.set_content_object(obj)
         self.set_tags(obj)
         self.show()
-        self.toolbar.new_tag_entry.hide()
-        self.toolbar.add_tag_button.set_stock_id(gtk.STOCK_ADD)
+        if TRACKER:
+            self.toolbar.new_tag_entry.hide()
+            self.toolbar.add_tag_button.set_stock_id(gtk.STOCK_ADD)
 
     def set_tags(self, obj):
         if TRACKER:
