@@ -350,7 +350,7 @@ class InformationPane(gtk.VBox):
         self.box = gtk.Frame()
         self.label = gtk.Label()
         self.pathlabel = gtk.Label()
-        self.pathlabel.modify_font(pango.FontDescription("Monospace 8"))
+        self.pathlabel.modify_font(pango.FontDescription("Monospace 7"))
         labelvbox = gtk.VBox()
         labelvbox.pack_start(self.label)
         labelvbox.pack_end(self.pathlabel)
@@ -384,7 +384,7 @@ class InformationPane(gtk.VBox):
         self.obj = obj
         self.set_displaytype(obj)
         self.label.set_markup("<span size='12336'>" + obj.text.replace("&", "&amp;") + "</span>")
-        self.pathlabel.set_markup("<span color='#979797'>" + obj.uri + "</span>")
+        self.pathlabel.set_markup("<span color='#979797'>" + obj.uri.replace("&", "&amp;") + "</span>")
         #self.datapane.set_content_object(obj)
 
     def set_inactive(self):

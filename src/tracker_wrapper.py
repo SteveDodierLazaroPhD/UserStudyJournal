@@ -113,13 +113,17 @@ class TrackerBackend:
 
     def get_tag_dict_for_uri(self, uri):
         tag_dict = {}
-        tags = [x for x in
-            self.iface.SparqlQuery(StandardQueries.GET_TAGS_FOR_FILE % (uri))]
-        for tag in tags:
-            name = str(tag[1])
-            urn = tag[0]
-            tag_dict[name] = random.randint(1, 100)
-        return tag_dict
+        try:
+            tags = [x for x in
+                self.iface.SparqlQuery(StandardQueries.GET_TAGS_FOR_FILE % (uri))]
+            for tag in tags:
+                name = str(tag[1])
+                urn = tag[0]
+                tag_dict[name] = random.randint(1, 100)
+            return tag_dict
+        except dbus.exceptions.DBusException as e:
+            print "TAG SEARCH FAILURE", e
+            return tag_dict
 
     def search_tracker(self, text):
         # Unmarshal the dbus objects in the response
