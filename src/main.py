@@ -158,7 +158,7 @@ class PortalWindow(gtk.Window):
         self.set_title_from_date(self.day_iter.date)
         def setup(*args):
             self.histogram.scroll_to_end()
-            self.store.build_all()
+            #self.store.build_all()
             return False
         gobject.timeout_add_seconds(2, setup)
         self.panedcontainer.informationcontainer.hide()
