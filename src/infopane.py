@@ -486,6 +486,7 @@ class NewTagToolEntry(supporting_widgets.SearchEntry):
 class NewTagTool(gtk.ToolItem):
     __gsignals__ = {
         "finished":  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,(gobject.TYPE_STRING,)),
+        "clicked":  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,()),
     }
     def __init__(self):
         super(NewTagTool, self).__init__()
@@ -502,6 +503,8 @@ class NewTagTool(gtk.ToolItem):
         if self.entry.get_text() != self.entry.default_text:
             self.emit("finished", self.entry.get_text())
             self.entry.set_text(self.entry.default_text)
+        else:
+            self.emit("clicked")
         self.hide()
 
 
@@ -575,6 +578,7 @@ class InformationContainer(supporting_widgets.Pane):
         if TRACKER:
             self.toolbar.add_tag_button.connect("clicked", self.on_add_tag_press)
             self.toolbar.new_tag_entry.connect("finished", self.do_add_tag)
+            self.toolbar.new_tag_entry.connect("clicked", lambda *x:self.toolbar.add_tag_button.set_stock_id(gtk.STOCK_ADD))
 
     def on_add_tag_press(self, *args):
         if self.toolbar.new_tag_entry.get_property("visible"):
@@ -585,9 +589,9 @@ class InformationContainer(supporting_widgets.Pane):
             self.toolbar.add_tag_button.set_stock_id(gtk.STOCK_CANCEL)
 
     def do_add_tag(self, w, text):
-        self.toolbar.add_tag_button.set_stock_id(gtk.STOCK_ADD)
         if TRACKER:
             TRACKER.add_tag_to_uri(text, self.obj.uri)
+            self.toolbar.add_tag_button.set_stock_id(gtk.STOCK_ADD)
         self.set_tags(self.obj)
 
     def do_delete_events_with_shared_uri(self, *args):
