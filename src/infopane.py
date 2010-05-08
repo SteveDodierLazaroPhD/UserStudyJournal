@@ -140,7 +140,6 @@ class TextDisplay(gtksourceview2.View if gtksourceview2
     modules are not found
     """
     def __init__(self):
-        """"""
         super(TextDisplay, self).__init__()
         self.textbuffer = (gtksourceview2.Buffer() if gtksourceview2
                            else gtk.TextBuffer())
@@ -351,22 +350,16 @@ class InformationPane(gtk.VBox):
         self.box = gtk.Frame()
         self.label = gtk.Label()
         self.pathlabel = gtk.Label()
+        self.pathlabel.modify_font(pango.FontDescription("Monospace 8"))
         labelvbox = gtk.VBox()
         labelvbox.pack_start(self.label)
         labelvbox.pack_end(self.pathlabel)
         self.displays = self.displays.copy()
-        #self.set_shadow_type(gtk.SHADOW_NONE)
-        #self.set_label_widget(labelvbox)
-        self.pack_start(labelvbox)
+        self.pack_start(labelvbox, True, True, 5)
         self.box.set_shadow_type(gtk.SHADOW_NONE)
         vbox.pack_start(self.box, True, True)
-        #self.set_label_align(0.5, 0.5)
-        #self.label.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
-        #self.pathlabel.set_size_request(100, -1)
-        #self.pathlabel.set_size_request(300, -1)
         self.pathlabel.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
-        #self.datapane = EventDataPane()
-        #vbox.pack_end(self.datapane, False, False)
+        self.label.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
         self.add(vbox)
         self.show_all()
 
@@ -553,10 +546,14 @@ class InformationContainer(supporting_widgets.Pane):
         self.tag_cloud = supporting_widgets.TagCloud()
         self.relatedpane = RelatedPane()
         scrolledwindow = gtk.ScrolledWindow()
+        self.sep1 = gtk.HSeparator()
+        self.sep2 = gtk.HSeparator()
         box2.set_border_width(10)
         box1.pack_start(self.toolbar, False, False)
         box2.pack_start(self.infopane, False, False, 4)
-        box2.pack_start(self.tag_cloud, False, False, 2)
+        box2.pack_start(self.sep1, False, False, 4)
+        box2.pack_start(self.tag_cloud, False, False, 4)
+        box2.pack_start(self.sep2, False, False)
         scrolledwindow.set_shadow_type(gtk.SHADOW_IN)
         #self.relatedpane.set_size_request(230, -1)
         scrolledwindow.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
@@ -610,6 +607,12 @@ class InformationContainer(supporting_widgets.Pane):
             self.tag_cloud.set_tags(tags)
         else:
             self.tag_cloud.set_text("")
+        if self.tag_cloud.get_text() == "":
+            self.sep1.hide()
+            self.sep2.hide()
+        else:
+            self.sep1.show()
+            self.sep2.show()
 
     def hide_on_delete(self, widget, *args):
         super(InformationContainer, self).hide_on_delete(widget)

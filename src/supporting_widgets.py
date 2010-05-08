@@ -823,7 +823,6 @@ class ContextMenu(gtk.Menu):
 
 
 class ToolButton(gtk.ToolButton):
-    tooltip_widget = gtk.Tooltips()
     def __init__(self, *args, **kwargs):
         super(ToolButton, self).__init__(*args, **kwargs)
 
@@ -832,7 +831,7 @@ class ToolButton(gtk.ToolButton):
         self.set_tooltip_text(text)
 
     def set_tooltip_text(self, text):
-        self.set_tooltip(self.tooltip_widget, text)
+        gtk.Widget.set_tooltip_text(self, text)
 
 
 class Toolbar(gtk.Toolbar):
@@ -847,7 +846,6 @@ class Toolbar(gtk.Toolbar):
         return button
 
     def __init__(self):
-        """"""
         super(Toolbar, self).__init__()
         #self.set_style(gtk.TOOLBAR_BOTH)
         self.multiview_button = mv = self.get_toolbutton(
