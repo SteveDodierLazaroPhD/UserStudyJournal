@@ -517,8 +517,11 @@ class InformationToolbar(gtk.Toolbar):
         super(InformationToolbar, self).__init__()
         self.set_icon_size(gtk.ICON_SIZE_SMALL_TOOLBAR)
         self.open_button = ob = gtk.ToolButton(gtk.STOCK_OPEN)
+        ob.set_label(_("Launch this subject"))
         self.delete_button = del_ = gtk.ToolButton(gtk.STOCK_DELETE)
+        del_.set_label(_("Delete this subject"))
         self.add_tag_button = add = gtk.ToolButton(gtk.STOCK_ADD)
+        add.set_label(_("Add a tag"))
         self.new_tag_entry = new = NewTagTool()
         #self.pin_button = pin = supporting_widgets.Toolbar.get_toolbutton(
         #    get_icon_path("hicolor/24x24/status/pin.png"),
@@ -598,6 +601,7 @@ class InformationContainer(supporting_widgets.Pane):
         self.set_tags(obj)
         self.show()
         self.toolbar.new_tag_entry.hide()
+        self.toolbar.add_tag_button.set_stock_id(gtk.STOCK_ADD)
 
     def set_tags(self, obj):
         if TRACKER:
