@@ -58,18 +58,6 @@ class StandardQueries:
              nao:prefLabel ?labels .
         } ORDER BY ASC(?labels)""" # % some URI
 
-    NEW_TAG = """
-        INSERT {
-          _:tag a nao:Tag ;
-                nao:prefLabel '%s' .
-        } WHERE {
-          OPTIONAL {
-             ?tag a nao:Tag ;
-                  nao:prefLabel '%s'
-          } .
-          FILTER (!bound(?tag))
-        } """ # % (new_tag, new_tag)
-
     ADD_EXISTING_TAG = """
         INSERT {
           ?unknown nao:hasTag ?id
@@ -79,14 +67,27 @@ class StandardQueries:
           ?id nao:prefLabel '%s'
         }""" # % (uri, label)
 
-    GET_LABEL_FROM_TAG = """
-        SELECT ?label
-        WHERE {
-          ?label nao:hasTag <%s>
-        }"""
-
     GET_FILES_WITH_TAGS = """
     """
+
+    GET_TAGS_WITH_LABEL = """
+        SELECT ?tag
+        WHERE {
+          ?tag a nao:Tag .
+          ?tag nao:prefLabel '%s' .
+        }
+    """ #% label
+
+    ADD_NEW_TAG_TO_FILE = """
+        INSERT {
+          _:tag a nao:Tag ;
+                nao:prefLabel '%s' .
+          ?unknown nao:hasTag _:tag
+        } WHERE {
+          ?unknown nie:isStoredAs ?as .
+          ?as nie:url '%s'
+        }
+    """ # % (label, uri)
 
 
 class TrackerBackend:
@@ -96,6 +97,13 @@ class TrackerBackend:
         self.tracker = bus.get_object(TRACKER_NAME, TRACKER_OBJ)
         self.iface = dbus.Interface(self.tracker, TRACKER_IFACE)
         self.zg = CLIENT
+
+    def add_tag_to_uri(self, label, uri):
+        result = list(self.iface.SparqlQuery(StandardQueries.GET_TAGS_WITH_LABEL % label))
+        if result:
+            self.iface.SparqlUpdate(StandardQueries.ADD_EXISTING_TAG % (uri, label))
+        else:
+            self.iface.SparqlUpdate(StandardQueries.ADD_NEW_TAG_TO_FILE % (label, uri))
 
     def get_tags_for_uri(self, uri):
         tags = [x for x in

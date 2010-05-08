@@ -484,6 +484,34 @@ class RelatedPane(gtk.TreeView):
                 obj.launch()
 
 
+class NewTagToolEntry(supporting_widgets.SearchEntry):
+    default_text = _("Type to add a tag")
+    def __init__(self):
+        super(NewTagToolEntry, self).__init__()
+
+
+class NewTagTool(gtk.ToolItem):
+    __gsignals__ = {
+        "finished":  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,(gobject.TYPE_STRING,)),
+    }
+    def __init__(self):
+        super(NewTagTool, self).__init__()
+        self.hbox = gtk.HBox()
+        self.button = supporting_widgets.StockIconButton(gtk.STOCK_OK)
+        self.entry = NewTagToolEntry()
+        self.entry.set_size_request(100,-1)
+        self.hbox.pack_start(self.entry, True, True)
+        self.hbox.pack_end(self.button, True, True)
+        self.add(self.hbox)
+        self.button.connect("clicked", self.emit_finished)
+
+    def emit_finished(self, *args):
+        if self.entry.get_text() != self.entry.default_text:
+            self.emit("finished", self.entry.get_text())
+            self.entry.set_text(self.entry.default_text)
+        self.hide()
+
+
 class InformationToolbar(gtk.Toolbar):
     def __init__(self):
         super(InformationToolbar, self).__init__()
@@ -491,12 +519,14 @@ class InformationToolbar(gtk.Toolbar):
         self.open_button = ob = gtk.ToolButton(gtk.STOCK_OPEN)
         self.delete_button = del_ = gtk.ToolButton(gtk.STOCK_DELETE)
         self.add_tag_button = add = gtk.ToolButton(gtk.STOCK_ADD)
+        self.new_tag_entry = new = NewTagTool()
         #self.pin_button = pin = supporting_widgets.Toolbar.get_toolbutton(
         #    get_icon_path("hicolor/24x24/status/pin.png"),
         #    _("Add Pin"))
         sep = gtk.SeparatorToolItem()
-        for item in (del_, sep, add, ob):
+        for item in (del_, sep, new, add, ob):
             self.insert(item, 0)
+        new.hide_all()
 
 
 class InformationContainer(supporting_widgets.Pane):
@@ -536,6 +566,22 @@ class InformationContainer(supporting_widgets.Pane):
             self.obj.launch()
         self.toolbar.open_button.connect("clicked", _launch)
         self.toolbar.delete_button.connect("clicked", self.do_delete_events_with_shared_uri)
+        self.toolbar.add_tag_button.connect("clicked", self.on_add_tag_press)
+        self.toolbar.new_tag_entry.connect("finished", self.do_add_tag)
+
+    def on_add_tag_press(self, *args):
+        if self.toolbar.new_tag_entry.get_property("visible"):
+            self.toolbar.new_tag_entry.hide()
+            self.toolbar.add_tag_button.set_stock_id(gtk.STOCK_ADD)
+        else:
+            self.toolbar.new_tag_entry.show()
+            self.toolbar.add_tag_button.set_stock_id(gtk.STOCK_CANCEL)
+
+    def do_add_tag(self, w, text):
+        self.toolbar.add_tag_button.set_stock_id(gtk.STOCK_ADD)
+        if TRACKER:
+            TRACKER.add_tag_to_uri(text, self.obj.uri)
+        self.set_tags(self.obj)
 
     def do_delete_events_with_shared_uri(self, *args):
         CLIENT.find_event_ids_for_template(
@@ -550,7 +596,8 @@ class InformationContainer(supporting_widgets.Pane):
         get_related_events_for_uri(obj.uri, _callback)
         self.infopane.set_content_object(obj)
         self.set_tags(obj)
-        self.show_all()
+        self.show()
+        self.toolbar.new_tag_entry.hide()
 
     def set_tags(self, obj):
         if TRACKER:
