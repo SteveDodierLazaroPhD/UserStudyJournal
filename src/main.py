@@ -175,6 +175,7 @@ class PortalWindow(gtk.Window):
                 "hicolor/256x256/apps/gnome-activity-journal.png")])
         self.searchbox.connect("search", self._on_search)
         self.searchbox.connect("clear", self._on_search_clear)
+        self.toolbar.view_buttons[0].set_sensitive(False)
 
     @property
     def active_dates(self):
@@ -212,6 +213,9 @@ class PortalWindow(gtk.Window):
         return self.forward_button.set_sensitive(True)
 
     def on_view_button_click(self, button, i):
+        for button in self.toolbar.view_buttons:
+            button.set_sensitive(True)
+        self.toolbar.view_buttons[i].set_sensitive(False)
         self.view.set_current_page(i)
         self.view.set_day(self.day_iter, page=i)
         self.histogram.set_dates(self.active_dates)

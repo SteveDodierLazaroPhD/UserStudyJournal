@@ -516,11 +516,11 @@ class InformationToolbar(gtk.Toolbar):
     def __init__(self):
         super(InformationToolbar, self).__init__()
         self.set_icon_size(gtk.ICON_SIZE_SMALL_TOOLBAR)
-        self.open_button = ob = gtk.ToolButton(gtk.STOCK_OPEN)
+        self.open_button = ob = supporting_widgets.ToolButton(gtk.STOCK_OPEN)
         ob.set_label(_("Launch this subject"))
-        self.delete_button = del_ = gtk.ToolButton(gtk.STOCK_DELETE)
+        self.delete_button = del_ = supporting_widgets.ToolButton(gtk.STOCK_DELETE)
         del_.set_label(_("Delete this subject"))
-        self.add_tag_button = add = gtk.ToolButton(gtk.STOCK_ADD)
+        self.add_tag_button = add = supporting_widgets.ToolButton(gtk.STOCK_ADD)
         add.set_label(_("Add a tag"))
         self.new_tag_entry = new = NewTagTool()
         #self.pin_button = pin = supporting_widgets.Toolbar.get_toolbutton(

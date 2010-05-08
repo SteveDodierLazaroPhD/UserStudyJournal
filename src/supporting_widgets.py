@@ -822,10 +822,23 @@ class ContextMenu(gtk.Menu):
         launch_command("nautilus-sendto", map(lambda obj: obj.uri, self.subjects))
 
 
+class ToolButton(gtk.ToolButton):
+    tooltip_widget = gtk.Tooltips()
+    def __init__(self, *args, **kwargs):
+        super(ToolButton, self).__init__(*args, **kwargs)
+
+    def set_label(self, text):
+        super(ToolButton, self).set_label(text)
+        self.set_tooltip_text(text)
+
+    def set_tooltip_text(self, text):
+        self.set_tooltip(self.tooltip_widget, text)
+
+
 class Toolbar(gtk.Toolbar):
     @staticmethod
     def get_toolbutton(path, label_string):
-        button = gtk.ToolButton()
+        button = ToolButton()
         pixbuf = gtk.gdk.pixbuf_new_from_file(path)
         image = gtk.Image()
         image.set_from_pixbuf(pixbuf)
@@ -839,14 +852,15 @@ class Toolbar(gtk.Toolbar):
         #self.set_style(gtk.TOOLBAR_BOTH)
         self.multiview_button = mv = self.get_toolbutton(
             get_data_path("multiview_icon.png"),
-            _("MultiView"))
+            _("Switch to MultiView"))
         self.thumbview_button = tbv = self.get_toolbutton(
             get_data_path("thumbview_icon.png"),
-            _("ThumbView"))
+            _("Switch to ThumbView"))
         self.timelineview_button = tlv = self.get_toolbutton(
             get_data_path("timelineview_icon.png"),
-            _("TimelineView"))
+            _("Switch to TimelineView"))
         #
+        self.view_buttons = [mv, tbv, tlv]
         #self.append_space()
         self.pin_button = pin = self.get_toolbutton(
             get_icon_path("hicolor/24x24/status/pin.png"),
