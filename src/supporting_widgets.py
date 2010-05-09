@@ -395,7 +395,7 @@ class SearchBox(gtk.EventBox):
 
     @staticmethod
     def do_search_tracker(text, callback, interpretation=None):
-        TRACKER.search(text, interpretation, callback, True)
+        TRACKER.search(text, interpretation, callback)
 
     @staticmethod
     def do_search_objs(text, callback, interpretation=None):

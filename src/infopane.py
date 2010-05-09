@@ -547,6 +547,7 @@ class InformationContainer(supporting_widgets.Pane):
     """
     def __init__(self):
         super(InformationContainer, self).__init__()
+        self.set_label_align(1, 0)
         box1 = gtk.VBox()
         box2 = gtk.VBox()
         vbox = gtk.VBox()

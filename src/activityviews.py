@@ -129,7 +129,6 @@ class MultiViewContainer(gtk.HBox):
             widget.modify_bg(gtk.STATE_NORMAL, bgcolor)
 
 
-
 class DayViewContainer(gtk.VBox):
     event_templates = (
         Event.new_for_values(interpretation=Interpretation.VISIT_EVENT.uri),

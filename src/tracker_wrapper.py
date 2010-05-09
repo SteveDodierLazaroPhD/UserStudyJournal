@@ -45,7 +45,7 @@ class StandardQueries:
     QUERY_BY_TEXT = """
         SELECT ?u WHERE {
         ?u a nie:InformationElement ;
-        fts:match "%s*" .
+            fts:match "%s*" .
         } """ # % text
 
     GET_TAGS_FOR_FILE = """
@@ -128,21 +128,17 @@ class TrackerBackend:
     def search_tracker(self, text):
         # Unmarshal the dbus objects in the response
         return [str(x[0]) for x in
-            self.iface.SparqlQuery(StandardQueries.QUERY_BY_TEXT % (text))]
+            self.iface.SparqlQuery(StandardQueries.QUERY_BY_TEXT % text)]
 
-    def search_zeitgeist(self, uris, interpretation, search_callback, use_objs):
+    def search_zeitgeist(self, uris, interpretation, search_callback, use_objs=True):
 
         def _handle_find_events(events):
-            results = []
-            for event in events:
-                results.append(
-                    (int(event.timestamp) / 1000, event.subjects[0].uri))
             if not use_objs:
-                search_callback(results)
+                search_callback(events)
             else:
-                map(STORE.add_event, results)
-                obj = map(lambda e:STORE[e.id], results)
-                search_callback(results)
+                map(STORE.add_event, events)
+                objs = map(lambda e:STORE[e.id], events)
+                search_callback(objs)
         events = []
         for uri in uris:
             subject = Subject.new_for_values(uri=uri)
@@ -153,9 +149,11 @@ class TrackerBackend:
         self.zg.find_events_for_templates(events, _handle_find_events,
             TimeRange.until_now(), num_events=50000, result_type=0)
 
-    def search(self, text, interpretation, search_callback, use_objs=False):
-        uris = self.search_tracker(text)
+    def search(self, text, interpretation, search_callback):
+        uris = list(set(self.search_tracker(text)))
+        #if len(uris) > 200:
         if len(uris) > 0:
-            self.search_zeitgeist(uris, interpretation, search_callback, use_objs)
+            self.search_zeitgeist(uris, interpretation, search_callback)
+
 
 TRACKER = TrackerBackend()
