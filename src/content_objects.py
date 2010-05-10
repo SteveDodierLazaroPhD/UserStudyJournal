@@ -517,7 +517,7 @@ class IMContentObject(BaseContentType):
         }
         status_icon_funcs = {
             "available" : lambda s: common.get_icon_for_name("empathy-available", s),
-            "offline" : lambda s: common.get_icon_for_name("empathy-offline", s),
+            "offline" : lambda s: common.get_icon_for_name("dempathy-offline", s),
             "away" : lambda s: common.get_icon_for_name("empathy-away", s),
             "busy" : lambda s: common.get_icon_for_name("empathy-busy", s),
         }

@@ -583,7 +583,7 @@ def launch_string_command(command):
 ###
 # Telepathy
 ###
-TELEPATHY = False
+TELEPATHY = True
 
 
 
