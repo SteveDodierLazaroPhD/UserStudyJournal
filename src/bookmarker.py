@@ -38,15 +38,15 @@ class Bookmarker(gobject.GObject):
                     gobject.TYPE_NONE,
                     (gobject.TYPE_PYOBJECT,))
         }
-    
+
     # PUBLIC!
     bookmarks = []
-    
+
     def __init__(self):
         gobject.GObject.__init__(self)
         self.bookmarks_file = os.path.join(USER_DATA_PATH, "bookmarks.pickled")
         self._load()
-    
+
     def _load(self):
         if os.path.isfile(self.bookmarks_file):
             try:
@@ -58,13 +58,13 @@ class Bookmarker(gobject.GObject):
                             removable.append(bookmark)
                     for uri in removable:
                         self.bookmarks.remove(uri)
-            except BadPickleGet:
+            except:
                 print "Pin database is corrupt."
-    
+
     def _save(self):
         with open(self.bookmarks_file, "w") as f:
             cPickle.dump(self.bookmarks, f)
-    
+
     def bookmark(self, uri):
         if not uri in self.bookmarks and event_exists(uri):
             self.bookmarks.append(uri)
@@ -76,7 +76,7 @@ class Bookmarker(gobject.GObject):
             self.bookmarks.remove(uri)
         self._save()
         self.emit("reload", self.bookmarks)
-    
+
     def is_bookmarked(self, uri):
         return uri in self.bookmarks
 
