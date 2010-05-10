@@ -517,7 +517,7 @@ class IMContentObject(BaseContentType):
         }
         status_icon_funcs = {
             "available" : lambda s: common.get_icon_for_name("empathy-available", s),
-            "offline" : lambda s: common.get_icon_for_name("dempathy-offline", s),
+            "offline" : lambda s: common.get_icon_for_name("empathy-offline", s),
             "away" : lambda s: common.get_icon_for_name("empathy-away", s),
             "busy" : lambda s: common.get_icon_for_name("empathy-busy", s),
         }
@@ -537,9 +537,9 @@ class IMContentObject(BaseContentType):
         def get_icon(self, size=24, *args, **kwargs):
             status = self.get_subject_status()
             if size in (24, 48):
-                #try:
-                return self.status_icon_funcs[status](size)
-                #except:pass
+                try:
+                    return self.status_icon_funcs[status](size)
+                except:pass
             return BaseContentType.get_icon(self, size, *args, **kwargs)
 
         @property
