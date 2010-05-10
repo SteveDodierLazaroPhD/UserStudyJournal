@@ -495,42 +495,46 @@ class IMContentObject(BaseContentType):
 
     type_color_representation = common.TANGOCOLORS[13], common.TANGOCOLORS[14]
 
-    #fields_to_format = ()#"text", "thumbview_text")
 
     icon_name = "empathy"
-    text = _("{source._desc_sing} with {event.subjects[0].text}")
-    timelineview_text = _("{source._desc_sing} with {event.subjects[0].text}\n{event.subjects[0].uri}")
-    thumbview_text = _("{source._desc_sing} with {event.subjects[0].text}")
+    USE_TELEPATHY = True
+    if not USE_TELEPATHY:
+        text = _("{source._desc_sing} with {event.subjects[0].text}")
+        timelineview_text = _("{source._desc_sing} with {event.subjects[0].text}\n{event.subjects[0].uri}")
+        thumbview_text = _("{source._desc_sing} with {event.subjects[0].text}")
 
-    status_symbols = {
-        "active" : u" <span color='#4E9A06' weight='bold' rise='1000'>◉</span>",
-        "offline" : u" <span color='#A40000' weight='bold' rise='1000'>▼</span>",
-        "away" : u" <span color='#C4A000' weight='bold' rise='1000'>◎</span>",
-    }
+    else:
+        fields_to_format = ()#"text", "thumbview_text")
+        status_symbols = {
+            "active" : u" <span color='#4E9A06' weight='bold' rise='2000' size='6000'>" + _("Available") + "</span>",
+            "offline" : u" <span color='#A40000' weight='bold' rise='2000' size='6000'>" + _("Offline") + "</span>",
+            "away" : u" <span color='#C4A000' weight='bold' rise='2000' size='6000'>" + _("Away") + "</span>",
+            "busy" : u" <span color='#C4A000' weight='bold' rise='2000' size='6000'>" + _("Busy") + "</span>",
+        }
 
-    def get_subject_status_string(self):
-        """
-        :returns: the status string from status_symbols according to the subjects
-        status in telepathy
+        def get_subject_status_string(self):
+            """
+            :returns: the status string from status_symbols according to the subjects
+            status in telepathy
 
-        !!to be implemented!!
-        """
-        return self.status_symbols["offline"]
+            !!to be implemented!!
+            """
+            return self.status_symbols["offline"]
 
-    @property
-    def _text(self):
-        status = self.get_subject_status_string()
-        return self.wrds["source"]._desc_sing + " " + _("with") + status + self.event.subjects[0].text
+        @property
+        def text(self):
+            status = self.get_subject_status_string()
+            return self.wrds["source"]._desc_sing + " " + _("with") + " " + self.event.subjects[0].text + status
 
-    @property
-    def _timelineview_text(self):
-        status = self.get_subject_status_string()
-        return self.wrds["source"]._desc_sing + " " + _("with") + status + self.event.subjects[0].text + "\n" + self.uri
+        @property
+        def timelineview_text(self):
+            status = self.get_subject_status_string()
+            return self.wrds["source"]._desc_sing + " " + _("with") + " " + self.event.subjects[0].text + "\n" + self.uri + status
 
-    @property
-    def _thumbview_text(self):
-        status = self.get_subject_status_string()
-        return self.wrds["source"]._desc_sing + " " + _("with") + status + self.event.subjects[0].text
+        @property
+        def thumbview_text(self):
+            status = self.get_subject_status_string()
+            return self.wrds["source"]._desc_sing + " " + _("with") + " " + self.event.subjects[0].text + "\n" + status
 
     def launch(self):
         if common.is_command_available("empathy"):

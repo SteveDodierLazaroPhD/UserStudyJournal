@@ -25,11 +25,6 @@ import gtk
 import mimetypes
 import os
 import pango
-try: import gst
-except ImportError:
-    gst = None
-try: import gtksourceview2
-except ImportError: gtksourceview2 = None
 import threading
 
 from zeitgeist.client import ZeitgeistClient
@@ -86,20 +81,6 @@ def get_related_events_for_uri(uri, callback):
     CLIENT.find_related_uris_for_uris([uri], _event_request_handler)
 
 
-def get_media_type(gfile):
-    uri = gfile.uri
-    if not uri.startswith("file://") or not gfile:
-        return GENERIC_DISPLAY_NAME
-    majortype = gfile.mime_type.split("/")[0]
-    for key, mimes in MIMETYPEMAP.iteritems():
-        if majortype in mimes:
-            return key
-    #if isinstance(gfile, GioFile):
-    #    if "text-x-generic" in gfile.icon_names or "text-x-script" in gfile.icon_names:
-    #        return "text"
-    return GENERIC_DISPLAY_NAME
-
-
 class ContentDisplay(object):
     """
     The abstract base class for content displays
@@ -117,58 +98,6 @@ class ContentDisplay(object):
         pass
 
 
-class ScrolledDisplay(gtk.ScrolledWindow):
-    """
-    A scrolled window container that acts as a proxy for a child
-    use type to make wrapers for your type
-    """
-    child_type = gtk.Widget
-    def __init__(self):
-        super(ScrolledDisplay, self).__init__()
-        self._child_obj = self.child_type()
-        self.add(self._child_obj)
-        self.set_shadow_type(gtk.SHADOW_IN)
-        self.set_size_request(-1, 200)
-
-    def set_content_object(self, obj): self._child_obj.set_content_object(obj)
-    def set_inactive(self): self._child_obj.set_inactive()
-
-
-class TextDisplay(gtksourceview2.View if gtksourceview2
-                  else gtk.TextView, ContentDisplay):
-    """
-    A text preview display which uses a sourceview or a textview if sourceview
-    modules are not found
-    """
-    def __init__(self):
-        super(TextDisplay, self).__init__()
-        self.textbuffer = (gtksourceview2.Buffer() if gtksourceview2
-                           else gtk.TextBuffer())
-        self.set_buffer(self.textbuffer)
-        self.set_editable(False)
-        font  = pango.FontDescription()
-        font.set_family("Monospace")
-        self.modify_font(font)
-        if gtksourceview2:
-            self.manager = gtksourceview2.LanguageManager()
-            self.textbuffer.set_highlight_syntax(True)
-
-    def get_language_from_mime_type(self, mime):
-        for id_ in self.manager.get_language_ids():
-            temp_language = self.manager.get_language(id_)
-            if mime in temp_language.get_mime_types():
-                return temp_language
-        return None
-
-    def set_content_object(self, obj):
-        if obj:
-            content = obj.get_content()
-            self.textbuffer.set_text(content)
-            if gtksourceview2:
-                lang = self.get_language_from_mime_type(obj.mime_type)
-                self.textbuffer.set_language(lang)
-
-
 class ImageDisplay(gtk.Image, ContentDisplay):
     """
     A display based on GtkImage to display a uri's thumb or icon using GioFile
@@ -180,91 +109,6 @@ class ImageDisplay(gtk.Image, ContentDisplay):
             else:
                 pixbuf = obj.get_icon(size=128)
             self.set_from_pixbuf(pixbuf)
-
-
-class MultimediaDisplay(gtk.VBox, ContentDisplay):
-    """
-    a display which words for video and audio using gstreamer
-    """
-    def __init__(self):
-        super(MultimediaDisplay, self).__init__()
-        self.playing = False
-        self.mediascreen = gtk.DrawingArea()
-        self.player = gst.element_factory_make("playbin", "player")
-        bus = self.player.get_bus()
-        bus.add_signal_watch()
-        bus.enable_sync_message_emission()
-        bus.connect("message", self.on_message)
-        bus.connect("sync-message::element", self.on_sync_message)
-        buttonbox = gtk.HBox()
-        self.playbutton = gtk.Button()
-        buttonbox.pack_start(self.playbutton, True, False)
-        self.playbutton.gtkimage = gtk.Image()
-        self.playbutton.add(self.playbutton.gtkimage)
-        self.playbutton.gtkimage.set_from_stock(gtk.STOCK_MEDIA_PAUSE, 2)
-        self.pack_start(self.mediascreen, True, True, 10)
-        self.pack_end(buttonbox, False, False)
-        self.playbutton.connect("clicked", self.on_play_click)
-        self.playbutton.set_relief(gtk.RELIEF_NONE)
-        self.connect("hide", self._handle_hide)
-
-    def _handle_hide(self, widget):
-        self.player.set_state(gst.STATE_NULL)
-
-    def set_playing(self):
-        """
-        Set MultimediaDisplay.player's state to playing
-        """
-        self.player.set_state(gst.STATE_PLAYING)
-        self.playbutton.gtkimage.set_from_stock(gtk.STOCK_MEDIA_PAUSE, 2)
-        self.playing = True
-
-    def set_paused(self):
-        """
-        Set MultimediaDisplay.player's state to paused
-        """
-        self.player.set_state(gst.STATE_PAUSED)
-        self.playbutton.gtkimage.set_from_stock(gtk.STOCK_MEDIA_PLAY, 2)
-        self.playing = False
-
-
-    def set_content_object(self, obj):
-        if isinstance(obj, GioFile):
-            self.player.set_state(gst.STATE_NULL)
-            self.player.set_property("uri", obj.uri)
-            self.set_playing()
-
-    def set_inactive(self):
-        self.player.set_state(gst.STATE_NULL)
-        self.playing = False
-
-    def on_play_click(self, widget):
-        if self.playing:
-            return self.set_paused()
-        return self.set_playing()
-
-    def on_sync_message(self, bus, message):
-        if message.structure is None:
-            return
-        message_name = message.structure.get_name()
-        if message_name == "prepare-xwindow-id":
-            imagesink = message.src
-            imagesink.set_property("force-aspect-ratio", True)
-            gtk.gdk.threads_enter()
-            try:
-                self.show_all()
-                imagesink.set_xwindow_id(self.mediascreen.window.xid)
-            finally:
-                gtk.gdk.threads_leave()
-
-    def on_message(self, bus, message):
-        t = message.type
-        if t == gst.MESSAGE_EOS:
-            self.player.set_state(gst.STATE_NULL)
-        elif t == gst.MESSAGE_ERROR:
-            self.player.set_state(gst.STATE_NULL)
-            err, debug = message.parse_error()
-            print "Error: %s" % err, debug
 
 
 class EventDataPane(gtk.Table):
@@ -336,13 +180,6 @@ class InformationPane(gtk.VBox):
 
     Holds widgets which display information about a uri
     """
-    displays = {
-        GENERIC_DISPLAY_NAME : ImageDisplay,
-        "multimedia" : MultimediaDisplay if gst else ImageDisplay,
-        "text" : type("TextScrolledWindow", (ScrolledDisplay,),
-                      {"child_type" : TextDisplay}),
-    }
-
     obj = None
 
     def __init__(self):
@@ -355,42 +192,31 @@ class InformationPane(gtk.VBox):
         labelvbox = gtk.VBox()
         labelvbox.pack_start(self.label)
         labelvbox.pack_end(self.pathlabel)
-        self.displays = self.displays.copy()
         self.pack_start(labelvbox, True, True, 5)
         self.box.set_shadow_type(gtk.SHADOW_NONE)
         vbox.pack_start(self.box, True, True)
         self.pathlabel.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
         self.label.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
         self.add(vbox)
+        self.display_widget = ImageDisplay()
+        self.box.add(self.display_widget)
         self.show_all()
 
     def set_displaytype(self, obj):
         """
         Determines the ContentDisplay to use for a given uri
         """
-        media_type = get_media_type(obj)
-        display_widget = self.displays[media_type]
-        if isinstance(display_widget, type):
-            display_widget = self.displays[media_type] = display_widget()
-        if display_widget.parent != self.box:
-            child = self.box.get_child()
-            if child:
-                self.box.remove(child)
-                child.set_inactive()
-            self.box.add(display_widget)
-        display_widget.set_content_object(obj)
+        self.display_widget.set_content_object(obj)
         self.show_all()
 
     def set_content_object(self, obj):
         self.obj = obj
         self.set_displaytype(obj)
-        self.label.set_markup("<span size='12336'>" + obj.text.replace("&", "&amp;") + "</span>")
+        self.label.set_markup("<span size='10336'>" + obj.text.replace("&", "&amp;") + "</span>")
         self.pathlabel.set_markup("<span color='#979797'>" + obj.uri.replace("&", "&amp;") + "</span>")
-        #self.datapane.set_content_object(obj)
 
     def set_inactive(self):
-        display = self.box.get_child()
-        if display: display.set_inactive()
+        pass
 
 
 class RelatedPane(gtk.TreeView):

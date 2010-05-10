@@ -721,9 +721,8 @@ class ThumbView(gtk.VBox):
         self.labels = [gtk.Label() for x in xrange(3)]
         for i in xrange(3):
             text = TIMELABELS[i]
-            line = 50 - len(text)
             self.labels[i].set_markup(
-                "\n  <span size='10336'>%s <s>%s</s></span>" % (text, " "*line))
+                "\n  <span size='10336'>%s</span>" % (text))
             self.labels[i].set_justify(gtk.JUSTIFY_RIGHT)
             self.labels[i].set_alignment(0, 0)
             self.pack_start(self.labels[i], False, False)
