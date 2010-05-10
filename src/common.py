@@ -579,3 +579,12 @@ def launch_string_command(command):
     null = os.open(os.devnull, os.O_RDWR)
     subprocess.Popen(command, stdout=null, stderr=null,
                      close_fds=True)
+
+###
+# Telepathy
+###
+TELEPATHY = False
+
+
+
+

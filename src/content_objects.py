@@ -497,20 +497,33 @@ class IMContentObject(BaseContentType):
 
 
     icon_name = "empathy"
-    USE_TELEPATHY = True
-    if not USE_TELEPATHY:
+    if not common.TELEPATHY:
         text = _("{source._desc_sing} with {event.subjects[0].text}")
         timelineview_text = _("{source._desc_sing} with {event.subjects[0].text}\n{event.subjects[0].uri}")
         thumbview_text = _("{source._desc_sing} with {event.subjects[0].text}")
 
+        def launch(self):
+            if common.is_command_available("empathy"):
+                common.launch_command("empathy", [self.uri])
+
+
     else:
         fields_to_format = ()#"text", "thumbview_text")
         status_symbols = {
-            "active" : u" <span color='#4E9A06' weight='bold' rise='2000' size='6000'>" + _("Available") + "</span>",
+            "available" : u" <span color='#4E9A06' weight='bold' rise='2000' size='6000'>" + _("Available") + "</span>",
             "offline" : u" <span color='#A40000' weight='bold' rise='2000' size='6000'>" + _("Offline") + "</span>",
             "away" : u" <span color='#C4A000' weight='bold' rise='2000' size='6000'>" + _("Away") + "</span>",
             "busy" : u" <span color='#C4A000' weight='bold' rise='2000' size='6000'>" + _("Busy") + "</span>",
         }
+        status_icon_funcs = {
+            "available" : lambda s: common.get_icon_for_name("empathy-available", s),
+            "offline" : lambda s: common.get_icon_for_name("empathy-offline", s),
+            "away" : lambda s: common.get_icon_for_name("empathy-away", s),
+            "busy" : lambda s: common.get_icon_for_name("empathy-busy", s),
+        }
+
+        def get_subject_status(self):
+            return "offline"
 
         def get_subject_status_string(self):
             """
@@ -519,12 +532,20 @@ class IMContentObject(BaseContentType):
 
             !!to be implemented!!
             """
-            return self.status_symbols["offline"]
+            return self.status_symbols[self.get_subject_status()]
+
+        def get_icon(self, size=24, *args, **kwargs):
+            status = self.get_subject_status()
+            if size in (24, 48):
+                #try:
+                return self.status_icon_funcs[status](size)
+                #except:pass
+            return BaseContentType.get_icon(self, size, *args, **kwargs)
 
         @property
         def text(self):
             status = self.get_subject_status_string()
-            return self.wrds["source"]._desc_sing + " " + _("with") + " " + self.event.subjects[0].text + status
+            return self.wrds["source"]._desc_sing + " " + _("with") + " " + self.event.subjects[0].text
 
         @property
         def timelineview_text(self):
@@ -536,9 +557,9 @@ class IMContentObject(BaseContentType):
             status = self.get_subject_status_string()
             return self.wrds["source"]._desc_sing + " " + _("with") + " " + self.event.subjects[0].text + "\n" + status
 
-    def launch(self):
-        if common.is_command_available("empathy"):
-            common.launch_command("empathy", [self.uri])
+        def launch(self):
+            if common.is_command_available("empathy"):
+                common.launch_command("empathy", [self.uri])
 
 
 class WebContentObject(BaseContentType):
