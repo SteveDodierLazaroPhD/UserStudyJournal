@@ -881,7 +881,12 @@ class Toolbar(gtk.Toolbar):
         self.throbber.image.animate_for_seconds(1)
 
 
-class TagCloud(gtk.Label):
+class TagCloud(gtk.VBox):
+    __gsignals__ = {
+        "add-tag":  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,(gobject.TYPE_STRING,)),
+        "remove-tag":  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,(gobject.TYPE_STRING,)),
+    }
+
     max_font_size = 11000.0
     min_font_size = 6000.0
     mid_font_size = 8500.0
@@ -889,10 +894,57 @@ class TagCloud(gtk.Label):
 
     def __init__(self):
         super(TagCloud, self).__init__()
-        self.set_line_wrap(True)
-        self.set_line_wrap_mode(pango.WRAP_WORD)
-        self.set_justify(gtk.JUSTIFY_CENTER)
-        self.connect( "size-allocate", self.size_allocate )
+        self.label = gtk.Label()
+        self.pack_start(self.label, True, True)
+        self.label.set_line_wrap(True)
+        self.label.set_line_wrap_mode(pango.WRAP_WORD)
+        self.label.set_justify(gtk.JUSTIFY_CENTER)
+        self.label.connect( "size-allocate", self.size_allocate )
+        self.button_box = box = gtk.HBox()
+        self.entry_box = entry_box = gtk.HBox()
+        self.pack_end(self.button_box, False, False)
+        self.add_button = add = StockIconButton(gtk.STOCK_CANCEL)
+        self.finish_button = finish = StockIconButton(gtk.STOCK_OK)
+        self.entry = entry = gtk.Entry()
+        box.pack_start(add, False, False)
+        box.pack_end(entry_box)
+        entry_box.pack_start(entry)
+        entry_box.pack_end(finish, False, False)
+        finish.connect("clicked", self._add_tag)
+        self.add_button.connect("clicked", self.toggle_tag_entry_box)
+        entry_box.show_all()
+        entry_box.set_no_show_all(True)
+        self.toggle_tag_entry_box()
+
+    def toggle_tag_entry_box(self, *args):
+        if self.entry_box.get_property("visible"):
+            self.entry_box.hide()
+            self.entry.set_text("")
+            self.add_button.set_stock(gtk.STOCK_ADD)
+        else:
+            self.entry_box.show()
+            self.add_button.set_stock(gtk.STOCK_CANCEL)
+
+    def _add_tag(self, *args):
+        tag = self.entry.get_text()
+        if tag:
+            self.emit("add-tag", tag)
+        self.toggle_tag_entry_box()
+        #if self.entry_box.get_property("visible"):
+        #    self.entry_box.hide()
+        #    self.add_button.set_stock(gtk.STOCK_ADD)
+        #else:
+        #    self.entry_box.show()
+        #    self.add_button.set_stock(gtk.STOCK_CANCEL)
+
+    def get_text(self):
+        return self.label.get_text()
+
+    def set_text(self, text):
+        return self.label.set_text(text)
+
+    def set_markup(self, markup):
+        return self.label.set_markup(markup)
 
     def size_allocate(self, label, alloc):
         label.set_size_request(alloc.width - 2, -1 )
@@ -921,10 +973,14 @@ class TagCloud(gtk.Label):
 class StockIconButton(gtk.Button):
     def __init__(self, stock_id, size=gtk.ICON_SIZE_BUTTON):
         super(StockIconButton, self).__init__()
+        self.size = size
         self.set_alignment(0, 0)
         self.set_relief(gtk.RELIEF_NONE)
-        image = gtk.image_new_from_stock(stock_id, size)
-        self.add(image)
+        self.image = gtk.image_new_from_stock(stock_id, size)
+        self.add(self.image)
+
+    def set_stock(self, stock_id):
+        self.image.set_from_stock(stock_id, self.size)
 
 
 class Pane(gtk.Frame):

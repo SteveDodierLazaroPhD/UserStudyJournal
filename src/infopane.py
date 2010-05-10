@@ -36,6 +36,7 @@ from zeitgeist.client import ZeitgeistClient
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
      ResultType, TimeRange
 
+from bookmarker import bookmarker
 import content_objects
 from common import *
 from gio_file import GioFile
@@ -477,37 +478,6 @@ class RelatedPane(gtk.TreeView):
                 obj.launch()
 
 
-class NewTagToolEntry(supporting_widgets.SearchEntry):
-    default_text = _("Type to add a tag")
-    def __init__(self):
-        super(NewTagToolEntry, self).__init__()
-
-
-class NewTagTool(gtk.ToolItem):
-    __gsignals__ = {
-        "finished":  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,(gobject.TYPE_STRING,)),
-        "clicked":  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,()),
-    }
-    def __init__(self):
-        super(NewTagTool, self).__init__()
-        self.hbox = gtk.HBox()
-        self.button = supporting_widgets.StockIconButton(gtk.STOCK_OK)
-        self.entry = NewTagToolEntry()
-        self.entry.set_size_request(100,-1)
-        self.hbox.pack_start(self.entry, True, True)
-        self.hbox.pack_end(self.button, True, True)
-        self.add(self.hbox)
-        self.button.connect("clicked", self.emit_finished)
-
-    def emit_finished(self, *args):
-        if self.entry.get_text() != self.entry.default_text:
-            self.emit("finished", self.entry.get_text())
-            self.entry.set_text(self.entry.default_text)
-        else:
-            self.emit("clicked")
-        self.hide()
-
-
 class InformationToolbar(gtk.Toolbar):
     def __init__(self):
         super(InformationToolbar, self).__init__()
@@ -516,22 +486,13 @@ class InformationToolbar(gtk.Toolbar):
         ob.set_label(_("Launch this subject"))
         self.delete_button = del_ = supporting_widgets.ToolButton(gtk.STOCK_DELETE)
         del_.set_label(_("Delete this subject"))
-        if TRACKER:
-            self.add_tag_button = add = supporting_widgets.ToolButton(gtk.STOCK_ADD)
-            add.set_label(_("Add a tag"))
-            self.new_tag_entry = new = NewTagTool()
-        else:
-            new = None
-            add = None
-        #self.pin_button = pin = supporting_widgets.Toolbar.get_toolbutton(
-        #    get_icon_path("hicolor/24x24/status/pin.png"),
-        #    _("Add Pin"))
+        self.pin_button = pin = supporting_widgets.Toolbar.get_toolbutton(
+            get_icon_path("hicolor/24x24/status/pin.png"),
+            _("Add Pin"))
         sep = gtk.SeparatorToolItem()
-        for item in (del_, sep, new, add, ob):
+        for item in (del_, pin, sep, ob):
             if item:
                 self.insert(item, 0)
-        if new:
-            new.hide_all()
 
 
 class InformationContainer(supporting_widgets.Pane):
@@ -553,16 +514,18 @@ class InformationContainer(supporting_widgets.Pane):
         vbox = gtk.VBox()
         self.toolbar = InformationToolbar()
         self.infopane = InformationPane()
-        self.tag_cloud = supporting_widgets.TagCloud()
-        self.expander = expander = gtk.Expander()
-        expander.set_label(_("Tags"))
-        expander.add(self.tag_cloud)
+        if TRACKER:
+            self.tag_cloud_frame = frame = gtk.Frame()
+            frame.set_label( _("Tags:"))
+            self.tag_cloud = supporting_widgets.TagCloud()
+            frame.add(self.tag_cloud)
         self.relatedpane = RelatedPane()
         scrolledwindow = gtk.ScrolledWindow()
         box2.set_border_width(10)
         box1.pack_start(self.toolbar, False, False)
         box2.pack_start(self.infopane, False, False, 4)
-        box2.pack_start(expander, False, False, 4)
+        if TRACKER:
+            box2.pack_start(frame, False, False, 4)
         scrolledwindow.set_shadow_type(gtk.SHADOW_IN)
         #self.relatedpane.set_size_request(230, -1)
         scrolledwindow.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
@@ -575,23 +538,19 @@ class InformationContainer(supporting_widgets.Pane):
             self.obj.launch()
         self.toolbar.open_button.connect("clicked", _launch)
         self.toolbar.delete_button.connect("clicked", self.do_delete_events_with_shared_uri)
+        self.toolbar.pin_button.connect("clicked", self.do_toggle_bookmark)
         if TRACKER:
-            self.toolbar.add_tag_button.connect("clicked", self.on_add_tag_press)
-            self.toolbar.new_tag_entry.connect("finished", self.do_add_tag)
-            self.toolbar.new_tag_entry.connect("clicked", lambda *x:self.toolbar.add_tag_button.set_stock_id(gtk.STOCK_ADD))
+            self.tag_cloud.connect("add-tag", self.on_add_tag)
 
-    def on_add_tag_press(self, *args):
-        if self.toolbar.new_tag_entry.get_property("visible"):
-            self.toolbar.new_tag_entry.hide()
-            self.toolbar.add_tag_button.set_stock_id(gtk.STOCK_ADD)
+    def do_toggle_bookmark(self, *args):
+        if bookmarker.is_bookmarked(self.obj.uri):
+            bookmarker.unbookmark(self.obj.uri)
         else:
-            self.toolbar.new_tag_entry.show()
-            self.toolbar.add_tag_button.set_stock_id(gtk.STOCK_CANCEL)
+            bookmarker.bookmark(self.obj.uri)
 
-    def do_add_tag(self, w, text):
+    def on_add_tag(self, w, text):
         if TRACKER:
             TRACKER.add_tag_to_uri(text, self.obj.uri)
-            self.toolbar.add_tag_button.set_stock_id(gtk.STOCK_ADD)
         self.set_tags(self.obj)
 
     def do_delete_events_with_shared_uri(self, *args):
@@ -606,25 +565,14 @@ class InformationContainer(supporting_widgets.Pane):
             self.relatedpane.set_model_from_list(events)
         get_related_events_for_uri(obj.uri, _callback)
         self.infopane.set_content_object(obj)
-        self.set_tags(obj)
-        self.show()
         if TRACKER:
-            self.toolbar.new_tag_entry.hide()
-            self.toolbar.add_tag_button.set_stock_id(gtk.STOCK_ADD)
+            self.set_tags(obj)
+        self.show()
 
     def set_tags(self, obj):
-        if TRACKER:
-            tag_dict = {}
-            tags = TRACKER.get_tag_dict_for_uri(obj.uri)
-            self.tag_cloud.set_tags(tags)
-        else:
-            self.tag_cloud.set_text("")
-        if self.tag_cloud.get_text() == "":
-            self.expander.set_sensitive(False)
-            self.expander.set_expanded(False)
-        else:
-            self.expander.set_sensitive(True)
-            self.expander.set_expanded(True)
+        tag_dict = {}
+        tags = TRACKER.get_tag_dict_for_uri(obj.uri)
+        self.tag_cloud.set_tags(tags)
 
     def hide_on_delete(self, widget, *args):
         super(InformationContainer, self).hide_on_delete(widget)

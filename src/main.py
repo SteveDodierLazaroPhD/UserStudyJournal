@@ -90,8 +90,6 @@ class PanedContainer(gtk.HBox):
         self.h2 = handle = HandleBox()
         handle.add(self.pinbox)
         box1.add(handle)
-        box1.show_all()
-        self.show_all()
 
     def on_show(self, w, *args):
         self.pane1.set_position(-1)
