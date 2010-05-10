@@ -77,7 +77,7 @@ def get_related_events_for_uri(uri, callback):
                         Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri, subject_uri=uri),
                         Event.new_for_values(interpretation=Interpretation.OPEN_EVENT.uri, subject_uri=uri)
                     ]
-            CLIENT.find_events_for_templates(templates, callback,
+            CLIENT.find_event_ids_for_templates(templates, callback,
                                              [0, time.time()*1000], num_events=50000,
                                              result_type=ResultType.MostRecentSubjects)
 
@@ -428,9 +428,9 @@ class RelatedPane(gtk.TreeView):
             elif user_data == "pixbuf":
                 cell.set_property("pixbuf", obj.icon)
 
-    def _set_model_in_thread(self, events):
+    def _set_model_in_thread(self, structs):
         """
-        A threaded which generates pixbufs and emblems for a list of events.
+        A threaded which generates pixbufs and emblems for a list of structs.
         It takes those properties and appends them to the view's model
         """
         lock = threading.Lock()
@@ -439,13 +439,12 @@ class RelatedPane(gtk.TreeView):
         gtk.gdk.threads_enter()
         self.set_model(liststore)
         gtk.gdk.threads_leave()
-        for event in events:
-            obj = content_objects.choose_content_object(event)
-            if not obj: continue
+        for struct in structs:
+            if not struct.content_object: continue
             gtk.gdk.threads_enter()
             lock.acquire()
             self.active_list.append(False)
-            liststore.append((obj,))
+            liststore.append((struct.content_object,))
             lock.release()
             gtk.gdk.threads_leave()
 
@@ -561,7 +560,10 @@ class InformationContainer(supporting_widgets.Pane):
 
     def set_content_object(self, obj):
         self.obj = obj
-        def _callback(events):
+        def _callback(ids):
+            events = []
+            for id_ in ids:
+                events.append(STORE.get_event_from_id(id_))
             self.relatedpane.set_model_from_list(events)
         get_related_events_for_uri(obj.uri, _callback)
         self.infopane.set_content_object(obj)

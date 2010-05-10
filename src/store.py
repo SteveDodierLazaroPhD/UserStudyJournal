@@ -287,6 +287,20 @@ class Store(gobject.GObject):
         self._days[key] = day
         self._day_connections[key] = day.connect("update", lambda *args: self.emit("update"))
 
+    def get_event_from_id(self, id_):
+        struct = ContentStruct(id_)
+        date = datetime.date.fromtimestamp(int(struct.event.timestamp)/1000)
+        if date in self.dates:
+            nstruct = self[date][id_]
+            nstruct.event = struct.event
+            del struct
+            return nstruct
+        else:
+            day = Day(date)
+            self.add_day(date, day)
+            day._items[id_] = struct
+            return struct
+
     def __getitem__(self, key):
         if isinstance(key, datetime.date):
             # Return day from date
