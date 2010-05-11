@@ -580,11 +580,4 @@ def launch_string_command(command):
     subprocess.Popen(command, stdout=null, stderr=null,
                      close_fds=True)
 
-###
-# Telepathy
-###
-TELEPATHY = True
-
-
-
 

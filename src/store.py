@@ -39,6 +39,37 @@ content_object_selector_function = content_objects.choose_content_object
 tdelta = lambda x: datetime.timedelta(days=x)
 
 
+def get_related_events_for_uri(uri, callback):
+    """
+    :param uri: A uri for which to request related uris using zetigeist
+    :param callback: this callback is called once the events are retrieved for
+    the uris. It is called with a list of events.
+    """
+    def _event_request_handler(ids):
+        events = []
+        for id_ in ids:
+            events.append(STORE.get_event_from_id(id_))
+        callback(events)
+
+    def _event_id_request_handler(uris):
+        templates = []
+        if len(uris) > 0:
+            for i, uri in enumerate(uris):
+                templates += [
+                        Event.new_for_values(interpretation=Interpretation.VISIT_EVENT.uri, subject_uri=uri),
+                        Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri, subject_uri=uri),
+                        Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri, subject_uri=uri),
+                        Event.new_for_values(interpretation=Interpretation.OPEN_EVENT.uri, subject_uri=uri)
+                    ]
+            CLIENT.find_event_ids_for_templates(templates, _event_request_handler,
+                                             [0, time.time()*1000], num_events=50000,
+                                             result_type=ResultType.MostRecentSubjects)
+
+    end = time.time() * 1000
+    start = end - (86400*30*1000)
+    CLIENT.find_related_uris_for_uris([uri], _event_id_request_handler)
+
+
 def reduce_dates_by_timedelta(dates, delta):
     new_dates = []
     for date in dates:

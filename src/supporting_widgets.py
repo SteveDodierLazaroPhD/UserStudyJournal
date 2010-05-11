@@ -49,15 +49,12 @@ from sources import Source, SUPPORTED_SOURCES
 from gio_file import GioFile, SIZE_NORMAL, SIZE_LARGE
 from bookmarker import bookmarker
 import content_objects
-from store import STORE
+from store import STORE, get_related_events_for_uri
 
 CLIENT = ZeitgeistClient()
 ITEMS = []
 
-try:
-    from tracker_wrapper import TRACKER
-except ImportError:
-    TRACKER = None
+from external import TRACKER
 
 
 class DayLabel(gtk.DrawingArea):
@@ -1021,6 +1018,255 @@ class HandleBox(gtk.HandleBox):
             child.set_size_request(width, height)
         self.set_size_request(-1,-1)
 
+
+#######################
+# More Information Pane
+##
+
+class InformationPane(gtk.VBox):
+    """
+    . . . . . . . .
+    .             .
+    .    Info     .
+    .             .
+    .             .
+    . . . . . . . .
+
+    Holds widgets which display information about a uri
+    """
+    obj = None
+
+    class _ImageDisplay(gtk.Image):
+        """
+        A display based on GtkImage to display a uri's thumb or icon using GioFile
+        """
+        def set_content_object(self, obj):
+            if obj:
+                if isinstance(obj, GioFile) and obj.has_preview():
+                    pixbuf = obj.get_thumbnail(size=SIZE_NORMAL, border=3)
+                else:
+                    pixbuf = obj.get_icon(size=128)
+                self.set_from_pixbuf(pixbuf)
+
+    def __init__(self):
+        super(InformationPane, self).__init__()
+        vbox = gtk.VBox()
+        self.box = gtk.Frame()
+        self.label = gtk.Label()
+        self.pathlabel = gtk.Label()
+        self.pathlabel.modify_font(pango.FontDescription("Monospace 7"))
+        labelvbox = gtk.VBox()
+        labelvbox.pack_start(self.label)
+        labelvbox.pack_end(self.pathlabel)
+        self.pack_start(labelvbox, True, True, 5)
+        self.box.set_shadow_type(gtk.SHADOW_NONE)
+        vbox.pack_start(self.box, True, True)
+        self.pathlabel.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
+        self.label.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
+        self.add(vbox)
+        self.display_widget = self._ImageDisplay()
+        self.box.add(self.display_widget)
+        self.show_all()
+
+    def set_displaytype(self, obj):
+        """
+        Determines the ContentDisplay to use for a given uri
+        """
+        self.display_widget.set_content_object(obj)
+        self.show_all()
+
+    def set_content_object(self, obj):
+        self.obj = obj
+        self.set_displaytype(obj)
+        self.label.set_markup("<span size='10336'>" + obj.text.replace("&", "&amp;") + "</span>")
+        self.pathlabel.set_markup("<span color='#979797'>" + obj.uri.replace("&", "&amp;") + "</span>")
+
+
+class _RelatedPane(gtk.TreeView):
+    """
+                     . . .
+                     .   .
+                     .   . <--- Related files
+                     .   .
+                     .   .
+                     . . .
+
+    Displays related events using a widget based on gtk.TreeView
+    """
+    def __init__(self):
+        super(_RelatedPane, self).__init__()
+        self.popupmenu = ContextMenu
+        self.connect("button-press-event", self.on_button_press)
+        self.connect("row-activated", self.row_activated)
+        pcolumn = gtk.TreeViewColumn(_("Related Items"))
+        pixbuf_render = gtk.CellRendererPixbuf()
+        pcolumn.pack_start(pixbuf_render, False)
+        pcolumn.set_cell_data_func(pixbuf_render, self.celldatamethod, "pixbuf")
+        text_render = gtk.CellRendererText()
+        text_render.set_property("ellipsize", pango.ELLIPSIZE_MIDDLE)
+        pcolumn.pack_end(text_render, True)
+        pcolumn.set_cell_data_func(text_render, self.celldatamethod, "text")
+        self.append_column(pcolumn)
+        #self.set_headers_visible(False)
+
+    def celldatamethod(self, column, cell, model, iter_, user_data):
+        if model:
+            obj = model.get_value(iter_, 0)
+            if user_data == "text":
+                cell.set_property("text", obj.text.replace("&", "&amp;"))
+            elif user_data == "pixbuf":
+                cell.set_property("pixbuf", obj.icon)
+
+    def _set_model_in_thread(self, structs):
+        """
+        A threaded which generates pixbufs and emblems for a list of structs.
+        It takes those properties and appends them to the view's model
+        """
+        lock = threading.Lock()
+        self.active_list = []
+        liststore = gtk.ListStore(gobject.TYPE_PYOBJECT)
+        gtk.gdk.threads_enter()
+        self.set_model(liststore)
+        gtk.gdk.threads_leave()
+        for struct in structs:
+            if not struct.content_object: continue
+            gtk.gdk.threads_enter()
+            lock.acquire()
+            self.active_list.append(False)
+            liststore.append((struct.content_object,))
+            lock.release()
+            gtk.gdk.threads_leave()
+
+    def set_model_from_list(self, events):
+        """
+        Sets creates/sets a model from a list of zeitgeist events
+        :param events: a list of :class:`Events <zeitgeist.datamodel.Event>`
+        """
+        self.last_active = -1
+        if not events:
+            self.set_model(None)
+            return
+        thread = threading.Thread(target=self._set_model_in_thread, args=(events,))
+        thread.start()
+
+    def on_button_press(self, widget, event):
+        if event.button == 3:
+            path = self.get_path_at_pos(int(event.x), int(event.y))
+            if path:
+                model = self.get_model()
+                obj = model[path[0]][0]
+                self.popupmenu.do_popup(event.time, [obj])
+        return False
+
+    def row_activated(self, widget, path, col, *args):
+        if path:
+            model = self.get_model()
+            if model:
+                obj = model[path[0]][0]
+                obj.launch()
+
+
+class InformationContainer(Pane):
+    """
+    . . . . . . . .  . . .
+    .             .  .   .
+    .    Info     .  .   . <--- Related files
+    .             .  .   .
+    .             .  .   .
+    . . . . . . . .  . . .
+
+    A window which holds the information pane and related pane
+    """
+
+    class _InformationToolbar(gtk.Toolbar):
+        def __init__(self):
+            gtk.Toolbar.__init__(self)
+            self.set_icon_size(gtk.ICON_SIZE_SMALL_TOOLBAR)
+            self.open_button = ob = ToolButton(gtk.STOCK_OPEN)
+            ob.set_label(_("Launch this subject"))
+            self.delete_button = del_ = ToolButton(gtk.STOCK_DELETE)
+            del_.set_label(_("Delete this subject"))
+            self.pin_button = pin = Toolbar.get_toolbutton(
+                get_icon_path("hicolor/24x24/status/pin.png"),
+                _("Add Pin"))
+            sep = gtk.SeparatorToolItem()
+            for item in (del_, pin, sep, ob):
+                if item:
+                    self.insert(item, 0)
+
+    def __init__(self):
+        super(InformationContainer, self).__init__()
+        self.set_label_align(1, 0)
+        box1 = gtk.VBox()
+        box2 = gtk.VBox()
+        vbox = gtk.VBox()
+        self.toolbar = self._InformationToolbar()
+        self.infopane = InformationPane()
+        if TRACKER:
+            self.tag_cloud_frame = frame = gtk.Frame()
+            frame.set_label( _("Tags:"))
+            self.tag_cloud = TagCloud()
+            frame.add(self.tag_cloud)
+        self.relatedpane = _RelatedPane()
+        scrolledwindow = gtk.ScrolledWindow()
+        box2.set_border_width(10)
+        box1.pack_start(self.toolbar, False, False)
+        box2.pack_start(self.infopane, False, False, 4)
+        if TRACKER:
+            box2.pack_start(frame, False, False, 4)
+        scrolledwindow.set_shadow_type(gtk.SHADOW_IN)
+        #self.relatedpane.set_size_request(230, -1)
+        scrolledwindow.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        scrolledwindow.add(self.relatedpane)
+        vbox.pack_end(scrolledwindow, True, True)
+        box2.pack_end(vbox, True, True, 10)
+        box1.add(box2)
+        self.add(box1)
+        def _launch(w):
+            self.obj.launch()
+        self.toolbar.open_button.connect("clicked", _launch)
+        self.toolbar.delete_button.connect("clicked", self.do_delete_events_with_shared_uri)
+        self.toolbar.pin_button.connect("clicked", self.do_toggle_bookmark)
+        if TRACKER:
+            self.tag_cloud.connect("add-tag", self.on_add_tag)
+
+    def do_toggle_bookmark(self, *args):
+        if bookmarker.is_bookmarked(self.obj.uri):
+            bookmarker.unbookmark(self.obj.uri)
+        else:
+            bookmarker.bookmark(self.obj.uri)
+
+    def on_add_tag(self, w, text):
+        if TRACKER:
+            TRACKER.add_tag_to_uri(text, self.obj.uri)
+        self.set_tags(self.obj)
+
+    def do_delete_events_with_shared_uri(self, *args):
+        CLIENT.find_event_ids_for_template(
+            Event.new_for_values(subject_uri=self.obj.uri),
+            lambda ids: CLIENT.delete_events(map(int, ids)))
+        self.hide()
+
+    def set_content_object(self, obj):
+        self.obj = obj
+        def _callback(events):
+            self.relatedpane.set_model_from_list(events)
+        get_related_events_for_uri(obj.uri, _callback)
+        self.infopane.set_content_object(obj)
+        if TRACKER:
+            self.set_tags(obj)
+        self.show()
+
+    def set_tags(self, obj):
+        tag_dict = {}
+        tags = TRACKER.get_tag_dict_for_uri(obj.uri)
+        self.tag_cloud.set_tags(tags)
+
+    def hide_on_delete(self, widget, *args):
+        super(InformationContainer, self).hide_on_delete(widget)
+        return True
+
+###
 
 if gst is not None:
     VideoPreviewTooltip = VideoPreviewTooltip()

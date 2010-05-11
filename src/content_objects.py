@@ -40,6 +40,8 @@ from gio_file import GioFile, THUMBS, ICONS, SIZE_LARGE, SIZE_NORMAL, SIZE_THUMB
 import common
 import sources
 
+from external import TELEPATHY
+
 
 class CachedAttribute(object):
     """
@@ -497,7 +499,7 @@ class IMContentObject(BaseContentType):
 
 
     icon_name = "empathy"
-    if not common.TELEPATHY:
+    if not TELEPATHY:
         text = _("{source._desc_sing} with {event.subjects[0].text}")
         timelineview_text = _("{source._desc_sing} with {event.subjects[0].text}\n{event.subjects[0].uri}")
         thumbview_text = _("{source._desc_sing} with {event.subjects[0].text}")

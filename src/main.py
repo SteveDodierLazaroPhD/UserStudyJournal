@@ -27,12 +27,14 @@ import time
 import datetime
 import os
 
-from activityviews import MultiViewContainer, TimelineViewContainer, ThumbViewContainer, PinnedPane
-from supporting_widgets import DayButton, DayLabel, Toolbar, ContextMenu, AboutDialog, HandleBox, SearchBox
-from infopane import InformationContainer
+from activity_widgets import MultiViewContainer, TimelineViewContainer, ThumbViewContainer, PinnedPane
+from supporting_widgets import DayButton, DayLabel, Toolbar, ContextMenu, AboutDialog, HandleBox, SearchBox, InformationContainer
 from histogram import HistogramWidget
 from store import Store, tdelta, STORE
 from config import settings, get_icon_path
+import external
+
+external.STORE = STORE
 
 
 class ViewContainer(gtk.Notebook):

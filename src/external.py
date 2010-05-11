@@ -25,8 +25,6 @@ import os
 import gtk
 import random
 import time
-from content_objects import ContentObject
-from store import STORE
 
 from zeitgeist.client import ZeitgeistClient
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
@@ -38,6 +36,7 @@ except RuntimeError, e:
     print "Unable to connect to Zeitgeist: %s" % e
     CLIENT = None
 
+STORE = None
 
 TRACKER_NAME = 'org.freedesktop.Tracker1'
 TRACKER_OBJ = '/org/freedesktop/Tracker1/Resources'
@@ -138,9 +137,10 @@ class TrackerBackend:
             if not use_objs:
                 search_callback(events)
             else:
-                map(STORE.add_event, events)
-                objs = map(lambda e:STORE[e.id], events)
-                search_callback(objs)
+                if STORE:
+                    map(STORE.add_event, events)
+                    objs = map(lambda e:STORE[e.id], events)
+                    search_callback(objs)
         events = []
         for uri in uris:
             subject = Subject.new_for_values(uri=uri)
@@ -157,5 +157,12 @@ class TrackerBackend:
         if len(uris) > 0:
             self.search_zeitgeist(uris, interpretation, search_callback)
 
+try:
+    TRACKER = TrackerBackend()
+except:
+    TRACKER = None
 
-TRACKER = TrackerBackend()
+
+# Telepathy
+
+TELEPATHY = None
