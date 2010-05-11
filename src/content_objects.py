@@ -39,9 +39,8 @@ from config import get_icon_path, get_data_path
 # Fix for merging this and giofile
 import common
 from common import GioFile, THUMBS, ICONS, SIZE_LARGE, SIZE_NORMAL, SIZE_THUMBVIEW, SIZE_TIMELINEVIEW
-
+#
 from config import SUPPORTED_SOURCES
-
 from external import TELEPATHY
 
 

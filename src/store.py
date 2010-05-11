@@ -216,11 +216,15 @@ class Day(gobject.GObject):
         self._items[event.id] = ContentStruct(event.id, event)
         return True
 
-    def next(self, store):
+    def next(self, store=None):
+        if not store:
+            store = STORE # Singleton
         date = self.date + datetime.timedelta(days=1)
         return store[date]
 
-    def previous(self, store):
+    def previous(self, store=None):
+        if not store:
+            store = STORE # Singleton
         date = self.date + datetime.timedelta(days=-1)
         return store[date]
 

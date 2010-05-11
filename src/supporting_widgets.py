@@ -905,6 +905,7 @@ class TagCloud(gtk.VBox):
         entry_box.pack_start(entry)
         entry_box.pack_end(finish, False, False)
         finish.connect("clicked", self._add_tag)
+        entry.connect("activate", self._add_tag)
         self.add_button.connect("clicked", self.toggle_tag_entry_box)
         entry_box.show_all()
         entry_box.set_no_show_all(True)

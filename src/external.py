@@ -42,7 +42,7 @@ TRACKER_NAME = 'org.freedesktop.Tracker1'
 TRACKER_OBJ = '/org/freedesktop/Tracker1/Resources'
 TRACKER_IFACE = 'org.freedesktop.Tracker1.Resources'
 
-class StandardQueries:
+class TrackerQueries:
     QUERY_BY_TEXT = """
         SELECT ?u WHERE {
         ?u a nie:InformationElement ;
@@ -100,15 +100,15 @@ class TrackerBackend:
         self.zg = CLIENT
 
     def add_tag_to_uri(self, label, uri):
-        result = list(self.iface.SparqlQuery(StandardQueries.GET_TAGS_WITH_LABEL % label))
+        result = list(self.iface.SparqlQuery(TrackerQueries.GET_TAGS_WITH_LABEL % label))
         if result:
-            self.iface.SparqlUpdate(StandardQueries.ADD_EXISTING_TAG % (uri, label))
+            self.iface.SparqlUpdate(TrackerQueries.ADD_EXISTING_TAG % (uri, label))
         else:
-            self.iface.SparqlUpdate(StandardQueries.ADD_NEW_TAG_TO_FILE % (label, uri))
+            self.iface.SparqlUpdate(TrackerQueries.ADD_NEW_TAG_TO_FILE % (label, uri))
 
     def get_tags_for_uri(self, uri):
         tags = [x for x in
-            self.iface.SparqlQuery(StandardQueries.GET_TAGS_FOR_FILE % (uri))]
+            self.iface.SparqlQuery(TrackerQueries.GET_TAGS_FOR_FILE % (uri))]
         tag_names = [x[1] for x in tags]
         return tag_names
 
@@ -116,7 +116,7 @@ class TrackerBackend:
         tag_dict = {}
         try:
             tags = [x for x in
-                self.iface.SparqlQuery(StandardQueries.GET_TAGS_FOR_FILE % (uri))]
+                self.iface.SparqlQuery(TrackerQueries.GET_TAGS_FOR_FILE % (uri))]
             for tag in tags:
                 name = str(tag[1])
                 urn = tag[0]
@@ -129,7 +129,7 @@ class TrackerBackend:
     def search_tracker(self, text):
         # Unmarshal the dbus objects in the response
         return [str(x[0]) for x in
-            self.iface.SparqlQuery(StandardQueries.QUERY_BY_TEXT % text)]
+            self.iface.SparqlQuery(TrackerQueries.QUERY_BY_TEXT % text)]
 
     def search_zeitgeist(self, uris, interpretation, search_callback, use_objs=True):
 
