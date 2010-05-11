@@ -142,7 +142,6 @@ class PortalWindow(gtk.Window):
         hbox.pack_end(self.forward_button, False, False)
         vbox.pack_start(self.toolbar, False, False)
         self.panedcontainer.center_box.add(hbox)
-        vbox.pack_start(self.searchbox, False, False)
         vbox.pack_start(self.panedcontainer, True, True, 6)
         histogramhbox.pack_end(self.histogram, True, True, 24)
         vbox.pack_end(histogramhbox, False, False)

@@ -289,7 +289,7 @@ class DayButton(gtk.DrawingArea):
                                w/2-size/2, h/2 + size/2, size, size)
 
 
-class SearchBox(gtk.EventBox):
+class SearchBox(gtk.ToolItem):
 
     __gsignals__ = {
         "clear" : (gobject.SIGNAL_RUN_FIRST,
@@ -301,21 +301,16 @@ class SearchBox(gtk.EventBox):
     }
 
     def __init__(self):
-        gtk.EventBox.__init__(self)
+        gtk.ToolItem.__init__(self)
 
         self.text = ""
         self.callback = None
         self.set_border_width(3)
         self.hbox = gtk.HBox()
         self.add(self.hbox)
-
         self.results = []
-
         self.search = SearchEntry()
-
         self.hbox.pack_start(self.search)
-        self.hbox.set_border_width(6)
-
         self.category = {}
 
         for source in SUPPORTED_SOURCES.keys():
@@ -467,7 +462,7 @@ class SearchEntry(gtk.Entry):
 
         self.set_width_chars(30)
         self.set_text(self.default_text)
-        self.set_size_request(-1, 32)
+        #self.set_size_request(-1, 28)
         self.connect("changed", lambda w: self._queue_search())
         self.connect("focus-in-event", self._entry_focus_in)
         self.connect("focus-out-event", self._entry_focus_out)
@@ -858,8 +853,10 @@ class Toolbar(gtk.Toolbar):
             get_icon_path("hicolor/24x24/status/pin.png"),
             _("Show Pinned Pane"))
         self.search_button = sb = gtk.ToolButton(gtk.STOCK_FIND)
-        separator = gtk.SeparatorToolItem()
-        for item in (pin, sb, separator, tlv, tbv, mv):
+        self.search_dialog = sdialog = SearchBox
+        sep1 = gtk.SeparatorToolItem()
+        sep2 = gtk.SeparatorToolItem()
+        for item in (sdialog, sb, sep2, pin, sep1, tlv, tbv, mv):
             self.insert(item, 0)
         #
         separator = gtk.SeparatorToolItem()
