@@ -562,7 +562,7 @@ def scale_to_fill(pixbuf, neww, newh):
 class PixbufCache(dict):
     """
     A pixbuf cache dict which stores, loads, and saves pixbufs to a cache and to
-    the users filesystem. The naming scheme for thumb files are use hash
+    the users filesystem. The naming scheme for thumb files is based on hash()
 
     There are huge flaws with this object. It does not have a ceiling, and it
     does not remove thumbnails from the file system. Essentially meaning the
@@ -640,6 +640,7 @@ class PixbufCache(dict):
 
 PIXBUFCACHE = PixbufCache()
 
+
 def get_icon_for_name(name, size):
     """
     return a icon for a name
@@ -674,7 +675,6 @@ def get_icon_from_object_at_uri(uri, size):
         if pb:
             return pb
     return False
-
 
 
 ##
@@ -714,7 +714,10 @@ def launch_string_command(command):
     subprocess.Popen(command, stdout=null, stderr=null,
                      close_fds=True)
 
-# GioFile
+##
+## GioFile
+##
+
 class GioFile(object):
 
     @classmethod

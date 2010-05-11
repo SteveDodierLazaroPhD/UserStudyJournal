@@ -72,7 +72,6 @@ class _GenericViewWidget(gtk.VBox):
 
 #####################
 ## MultiView code
-## This doesnt work, No idea why
 #####################
 
 class MultiViewContainer(gtk.HBox):

@@ -1020,7 +1020,7 @@ class HandleBox(gtk.HandleBox):
 # More Information Pane
 ##
 
-class InformationPane(gtk.VBox):
+class InformationBox(gtk.VBox):
     """
     . . . . . . . .
     .             .
@@ -1046,7 +1046,7 @@ class InformationPane(gtk.VBox):
                 self.set_from_pixbuf(pixbuf)
 
     def __init__(self):
-        super(InformationPane, self).__init__()
+        super(InformationBox, self).__init__()
         vbox = gtk.VBox()
         self.box = gtk.Frame()
         self.label = gtk.Label()
@@ -1198,7 +1198,7 @@ class InformationContainer(Pane):
         box2 = gtk.VBox()
         vbox = gtk.VBox()
         self.toolbar = self._InformationToolbar()
-        self.infopane = InformationPane()
+        self.infopane = InformationBox()
         if TRACKER:
             self.tag_cloud_frame = frame = gtk.Frame()
             frame.set_label( _("Tags:"))
