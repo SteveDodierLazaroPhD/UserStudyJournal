@@ -147,7 +147,10 @@ class CairoHistogram(gtk.DrawingArea):
         self.largest = min(max(max(map(lambda x: len(x), store.days)), 1), 100)
         if not self.get_selected():
             self.set_selected([datetime.date.today()])
+        else:
+            self.set_selected(self.get_selected())
         self._store_connection = store.connect("update", self.set_store)
+        self.queue_draw()
 
     def get_store(self):
         return self._store
@@ -494,6 +497,11 @@ class HistogramWidget(gtk.Viewport):
         self.histogram.connect("selection-set", self.scrubbing_fix)
         self.histogram.queue_draw()
         self.queue_draw()
+        self.connect("size-allocate", self.on_resize)
+
+    def on_resize(self, widget, allocation):
+        dates = self.histogram.get_selected()
+        self.scrubbing_fix(self.histogram, dates)
 
     def date_changed(self, widget, date):
         self.emit("date-changed", date)

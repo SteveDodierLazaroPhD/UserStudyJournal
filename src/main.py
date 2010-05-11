@@ -157,10 +157,12 @@ class PortalWindow(gtk.Window):
         self._request_size()
         self.set_title_from_date(self.day_iter.date)
         def setup(*args):
+            self.histogram.set_dates(self.active_dates)
             self.histogram.scroll_to_end()
             #self.store.build_all()
             return False
-        gobject.timeout_add_seconds(2, setup)
+        gobject.timeout_add_seconds(1, setup)
+        self.histogram.scroll_to_end()
         self.panedcontainer.informationcontainer.hide()
         self.panedcontainer.pinbox.hide()
         self.searchbox.hide()
