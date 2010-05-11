@@ -43,9 +43,8 @@ from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
     ResultType
 
 from common import shade_gdk_color, combine_gdk_color, is_command_available, \
-    launch_command, get_gtk_rgba
+    launch_command, get_gtk_rgba, SIZE_NORMAL, SIZE_LARGE, GioFile
 from config import BASE_PATH, VERSION, settings, get_icon_path, get_data_path, bookmarker, SUPPORTED_SOURCES
-from gio_file import GioFile, SIZE_NORMAL, SIZE_LARGE
 import content_objects
 from store import STORE, get_related_events_for_uri
 

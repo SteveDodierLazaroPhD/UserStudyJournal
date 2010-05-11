@@ -697,7 +697,7 @@ class ThumbIconView(gtk.IconView):
                 self.set_tooltip_window(VideoPreviewTooltip)
             else:
                 self.set_tooltip_window(StaticPreviewTooltip)
-            gio_file = GioFile.create(uri)
+            gio_file = content_objects.GioFile.create(uri)
             return tooltip_window.preview(gio_file)
         return False
 
