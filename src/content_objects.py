@@ -38,7 +38,7 @@ from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation
 from config import get_icon_path, get_data_path
 from gio_file import GioFile, THUMBS, ICONS, SIZE_LARGE, SIZE_NORMAL, SIZE_THUMBVIEW, SIZE_TIMELINEVIEW
 import common
-import sources
+from config import SUPPORTED_SOURCES
 
 from external import TELEPATHY
 
@@ -318,7 +318,7 @@ class BaseContentType(ContentObject):
     content_obj is self
     interpretation is the event interpretation
     subject_interpretation is the first subjects interpretation
-    source = the sources.SUPPORTED_SOURCES source for the interpretation
+    source = the SUPPORTED_SOURCES source for the interpretation
 
     if icon_name is equal to $ACTOR then the actor icon is used
     if icon_name is equal to $MIME then the MIME icon is used
@@ -348,9 +348,9 @@ class BaseContentType(ContentObject):
         try: wrds["subject_interpretation"] = Interpretation[event.subjects[0].interpretation]
         except KeyError: wrds["subject_interpretation"] = Interpretation.UNKNOWN
         try:
-            wrds["source"] = sources.SUPPORTED_SOURCES[self.event.subjects[0].interpretation]
+            wrds["source"] = SUPPORTED_SOURCES[self.event.subjects[0].interpretation]
         except:
-            wrds["source"] = sources.SUPPORTED_SOURCES[Interpretation.UNKNOWN.uri]
+            wrds["source"] = SUPPORTED_SOURCES[Interpretation.UNKNOWN.uri]
         for name in self.fields_to_format:
             val = getattr(self, name)
             setattr(self, name, val.format(**wrds))
@@ -437,9 +437,9 @@ class GenericContentObject(BaseContentType):
             try: wrds["subject_interpretation"] = Interpretation[event.subjects[0].interpretation]
             except KeyError: wrds["subject_interpretation"] = Interpretation.UNKNOWN
             try:
-                wrds["source"] = sources.SUPPORTED_SOURCES[self.event.subjects[0].interpretation]
+                wrds["source"] = SUPPORTED_SOURCES[self.event.subjects[0].interpretation]
             except:
-                wrds["source"] = sources.SUPPORTED_SOURCES[Interpretation.UNKNOWN.uri]
+                wrds["source"] = SUPPORTED_SOURCES[Interpretation.UNKNOWN.uri]
 
         @CachedAttribute
         def text(self):

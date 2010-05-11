@@ -25,6 +25,7 @@ and handle colors, pixbufs, and text
 
 import cairo
 import gobject
+import gettext
 import gtk
 import os
 import pango

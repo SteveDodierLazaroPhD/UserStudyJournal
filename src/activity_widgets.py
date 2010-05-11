@@ -28,11 +28,9 @@ import math
 import pango
 import threading
 
-from bookmarker import bookmarker
 from common import *
 import content_objects
-from config import settings
-from sources import SUPPORTED_SOURCES
+from config import settings, bookmarker, SUPPORTED_SOURCES
 from store import ContentStruct, CLIENT
 from supporting_widgets import DayLabel, ContextMenu, StaticPreviewTooltip, VideoPreviewTooltip, Pane, SearchBox
 

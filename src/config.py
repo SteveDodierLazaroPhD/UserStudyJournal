@@ -18,10 +18,18 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import with_statement
+import cPickle
+import gettext
+import gobject
 import os
+import urllib
 from xdg import BaseDirectory
 
 from fungtk.quickconf import QuickConf
+
+from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
+    ResultType
 
 # Installation details
 BASE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -56,3 +64,84 @@ settings = QuickConf("/apps/gnome-activity-journal")
 # GConf keys only updated at startup and globally useful
 # (TODO: shouldn't we always connect to changes?)
 ACCESSIBILITY = settings.get("accessibility", False)
+
+def event_exists(uri):
+        # TODO: Move this into Zeitgeist's datamodel.py
+        return not uri.startswith("file://") or os.path.exists(
+            urllib.unquote(str(uri[7:])))
+
+
+class Bookmarker(gobject.GObject):
+
+    __gsignals__ = {
+        "reload" : (gobject.SIGNAL_RUN_FIRST,
+                    gobject.TYPE_NONE,
+                    (gobject.TYPE_PYOBJECT,))
+        }
+
+    # PUBLIC!
+    bookmarks = []
+
+    def __init__(self):
+        gobject.GObject.__init__(self)
+        self.bookmarks_file = os.path.join(USER_DATA_PATH, "bookmarks.pickled")
+        self._load()
+
+    def _load(self):
+        if os.path.isfile(self.bookmarks_file):
+            try:
+                with open(self.bookmarks_file) as f:
+                    self.bookmarks = cPickle.load(f)
+                    removable = []
+                    for bookmark in self.bookmarks:
+                        if not event_exists(bookmark):
+                            removable.append(bookmark)
+                    for uri in removable:
+                        self.bookmarks.remove(uri)
+            except:
+                print "Pin database is corrupt."
+
+    def _save(self):
+        with open(self.bookmarks_file, "w") as f:
+            cPickle.dump(self.bookmarks, f)
+
+    def bookmark(self, uri):
+        if not uri in self.bookmarks and event_exists(uri):
+            self.bookmarks.append(uri)
+        self._save()
+        self.emit("reload", self.bookmarks)
+
+    def unbookmark(self, uri):
+        if uri in self.bookmarks:
+            self.bookmarks.remove(uri)
+        self._save()
+        self.emit("reload", self.bookmarks)
+
+    def is_bookmarked(self, uri):
+        return uri in self.bookmarks
+
+bookmarker = Bookmarker()
+
+# Sources
+
+class Source:
+
+    def __init__(self, interpretation, icon, desc_sing, desc_pl):
+        self.name = interpretation.name
+        self.icon = icon
+        self._desc_sing = desc_sing
+        self._desc_pl = desc_pl
+
+    def group_label(self, num):
+        return gettext.ngettext(self._desc_sing, self._desc_pl, num)
+
+SUPPORTED_SOURCES = {
+    # TODO: Move this into Zeitgeist's library, implemented properly
+    Interpretation.VIDEO.uri: Source(Interpretation.VIDEO, "gnome-mime-video", _("Worked with a Video"), _("Worked with Videos")),
+    Interpretation.MUSIC.uri: Source(Interpretation.MUSIC, "gnome-mime-audio", _("Worked with Audio"), _("Worked with Audio")),
+    Interpretation.IMAGE.uri: Source(Interpretation.IMAGE, "image", _("Worked with an Image"), _("Worked with Images")),
+    Interpretation.DOCUMENT.uri: Source(Interpretation.DOCUMENT, "stock_new-presentation", _("Edited or Read Document"), _("Edited or Read Documents")),
+    Interpretation.SOURCECODE.uri: Source(Interpretation.SOURCECODE, "applications-development", _("Edited or Read Code"), _("Edited or Read Code")),
+    Interpretation.IM_MESSAGE.uri: Source(Interpretation.IM_MESSAGE, "applications-internet", _("Conversation"), _("Conversations")),
+    Interpretation.UNKNOWN.uri: Source(Interpretation.UNKNOWN, "applications-other", _("Other Activity"), _("Other Activities")),
+}
