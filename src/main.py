@@ -98,12 +98,21 @@ class PanedContainer(gtk.HBox):
         self.pane2.set_position(-1)
         handle = self.h1 if w == self.informationcontainer else self.h2
         handle.show()
+        if w == self.informationcontainer:
+            self.right_box.show()
+        elif w == self.pinbox:
+            self.left_box.show()
+
 
     def on_hide(self, w, *args):
         self.pane1.set_position(-1)
         self.pane2.set_position(-1)
         handle = self.h1 if w == self.informationcontainer else self.h2
         handle.hide()
+        if w == self.informationcontainer:
+            self.right_box.hide()
+        elif w == self.pinbox:
+            self.left_box.hide()
 
 
 class PortalWindow(gtk.Window):
