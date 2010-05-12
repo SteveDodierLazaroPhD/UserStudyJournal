@@ -197,21 +197,39 @@ class Hamster(object):
                 return self._dictionary[key]
             return object.__getattribute__(self, key)
 
-        def get_event(self):
-            return None
+        def _make_event(self, tval, interp):
+            return Event.new_for_values(
+                interpretation = interp,
+                manifestation = Manifestation.USER_ACTIVITY.uri,
+                actor = "applications://hamster-standalone.desktop",
+                timestamp = tval*1000,
+                subject_interpretation = Interpretation.COMMENT.uri,
+                subject_manifestation = Manifestation.UNKNOWN.uri,
+                subject_text = str(self.name) + str(self.description),
+                subject_uri = ("hamster://%d" % int(self.id)),
+            )
+
+        def get_events(self):
+            events = []
+            events.append(self._make_event(int(self.start_time), Interpretation.OPEN_EVENT.uri))
+            if self.end_time:
+                events.append(self._make_event(int(self.end_time), Interpretation.CLOSE_EVENT.uri))
+            return events
 
     def __init__(self):
         bus = dbus.SessionBus()
         self.hamster = bus.get_object(HAMSTER_URI, HAMSTER_PATH)
         self.iface = dbus.Interface(self.hamster, dbus_interface=HAMSTER_URI)
 
-    def get_facts(self, date):
-        start = time.mktime((date + datetime.timedelta(days=-1)).timetuple())
-        end = start+86401
+    def get_facts(self, start=1, end=86400, date=None):
+        if date:
+            start = time.mktime(date.timetuple()) - time.timezone
+            end = start+86399
         return map(self.Fact, self.iface.GetFacts(start, end))
 
 try:
     HAMSTER = Hamster()
 except:
     HAMSTER = None
+
 
