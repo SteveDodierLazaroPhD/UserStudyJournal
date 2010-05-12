@@ -90,6 +90,15 @@ class TrackerQueries:
         }
     """ # % (label, uri)
 
+    REMOVE_TAG = """
+        DELETE {
+          ?unknown nao:hasTag ?id
+        } WHERE {
+          ?unknown nie:isStoredAs ?as .
+          ?as nie:url '%s' .
+          ?id nao:prefLabel '%s'
+        }""" # % (uri, label)
+
 
 class TrackerBackend:
 
@@ -98,6 +107,9 @@ class TrackerBackend:
         self.tracker = bus.get_object(TRACKER_NAME, TRACKER_OBJ)
         self.iface = dbus.Interface(self.tracker, TRACKER_IFACE)
         self.zg = CLIENT
+
+    def remove_tag_from_uri(self, label, uri):
+        self.iface.SparqlUpdate(TrackerQueries.REMOVE_TAG % (uri, label))
 
     def add_tag_to_uri(self, label, uri):
         result = list(self.iface.SparqlQuery(TrackerQueries.GET_TAGS_WITH_LABEL % label))

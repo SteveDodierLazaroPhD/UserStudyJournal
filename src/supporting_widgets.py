@@ -1266,8 +1266,7 @@ class InformationContainer(Pane):
 
     def on_remove_tag(self, w, text):
         if TRACKER:
-            print "NOT IMPLEMENTED"
-            # TRACKER.remove_tag_from_uri(text, self.obj.uri)
+            TRACKER.remove_tag_from_uri(text, self.obj.uri)
         self.set_tags(self.obj)
 
     def on_add_tag(self, w, text):
