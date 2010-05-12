@@ -28,6 +28,7 @@ from zeitgeist.client import ZeitgeistClient, ZeitgeistDBusInterface
 from zeitgeist.datamodel import Event, ResultType, Interpretation
 
 import content_objects
+import external
 
 CLIENT = ZeitgeistClient()
 INTERFACE = ZeitgeistDBusInterface()
@@ -380,4 +381,6 @@ class Store(gobject.GObject):
 gobject.type_register(Day)
 gobject.type_register(Store)
 
+# Init
 STORE = Store()
+external.STORE = STORE

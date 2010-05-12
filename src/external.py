@@ -206,7 +206,7 @@ class Hamster(object):
         self.iface = dbus.Interface(self.hamster, dbus_interface=HAMSTER_URI)
 
     def get_facts(self, date):
-        start = time.mktime(date.timetuple())
+        start = time.mktime((date + datetime.timedelta(days=-1)).timetuple())
         end = start+86401
         return map(self.Fact, self.iface.GetFacts(start, end))
 
