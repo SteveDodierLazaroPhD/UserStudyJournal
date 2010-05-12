@@ -596,11 +596,28 @@ class EmailContentObject(BaseContentType):
         if event.subjects[0].interpretation == Interpretation.EMAIL:
             return cls.create(event)
         return False
-
     icon_name = "$MIME $ACTOR"
-    text = _("{source._desc_sing} from {event.subjects[0].text}")
-    timelineview_text = _("{source._desc_sing} from {event.subjects[0].text}\n{event.subjects[0].uri}")
-    thumbview_text = _("{source._desc_sing} from {event.subjects[0].text}")
+
+    fields_to_format = ("_text", "_timelineview_text", "_thumbview_text")
+
+    _text = _("{source._desc_sing} from {event.subjects[0].text}")
+    _timelineview_text = _("{source._desc_sing} from {event.subjects[0].text}\n{event.subjects[0].uri}")
+    _thumbview_text = _("{source._desc_sing} from {event.subjects[0].text}")
+
+    @CachedAttribute
+    def _attachment_string(self): return (_(" (%s Attachments)") % str(len(self.event.subjects)))
+
+    @CachedAttribute
+    def text(self):
+        return self._text + self._attachment_string
+
+    @CachedAttribute
+    def timelineview_text(self):
+        return self._timelineview_text + self._attachment_string
+
+    @CachedAttribute
+    def thumbview_text(self):
+        return self._thumbview_text + self._attachment_string
 
 
 class TomboyContentObject(BaseContentType):
