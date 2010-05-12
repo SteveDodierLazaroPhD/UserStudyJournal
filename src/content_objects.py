@@ -587,6 +587,22 @@ class WebContentObject(BaseContentType):
     #type_color_representation = (207/255.0, 77/255.0, 16/255.0), (207/255.0, 77/255.0, 16/255.0)
 
 
+class EmailContentObject(BaseContentType):
+    """
+    An Email Content Object where any additional subjects are considered attachments
+    """
+    @classmethod
+    def use_class(cls, event):
+        if event.subjects[0].interpretation == Interpretation.EMAIL:
+            return cls.create(event)
+        return False
+
+    icon_name = "$MIME $ACTOR"
+    text = _("{source._desc_sing} from {event.subjects[0].text}")
+    timelineview_text = _("{source._desc_sing} from {event.subjects[0].text}\n{event.subjects[0].uri}")
+    thumbview_text = _("{source._desc_sing} from {event.subjects[0].text}")
+
+
 class TomboyContentObject(BaseContentType):
     @classmethod
     def use_class(cls, event):
@@ -638,6 +654,6 @@ class MusicPlayerContentObject(BaseContentType):
 
 # Content object list used by the section function. Should use Subclasses but I like to have some order in which these should be used
 if sys.version_info >= (2,6):
-    CONTENT_OBJECTS = (MusicPlayerContentObject, BzrContentObject, WebContentObject, IMContentObject, TomboyContentObject)
+    CONTENT_OBJECTS = (MusicPlayerContentObject, BzrContentObject, WebContentObject, IMContentObject, TomboyContentObject, EmailContentObject)
 else:
     CONTENT_OBJECTS = tuple()
