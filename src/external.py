@@ -20,6 +20,7 @@
 
 #raise ImportError()
 
+import datetime
 import dbus
 import os
 import gtk
@@ -178,3 +179,39 @@ except:
 # Telepathy
 
 TELEPATHY = None
+
+# Hamster
+
+HAMSTER_PATH = "/org/gnome/Hamster"
+HAMSTER_URI = "org.gnome.Hamster"
+
+
+class Hamster(object):
+
+    class Fact(object):
+        def __init__(self, dictionary):
+            self._dictionary = dictionary
+
+        def __getattr__(self, key):
+            if self._dictionary.has_key(key):
+                return self._dictionary[key]
+            return object.__getattribute__(self, key)
+
+        def get_event(self):
+            return None
+
+    def __init__(self):
+        bus = dbus.SessionBus()
+        self.hamster = bus.get_object(HAMSTER_URI, HAMSTER_PATH)
+        self.iface = dbus.Interface(self.hamster, dbus_interface=HAMSTER_URI)
+
+    def get_facts(self, date):
+        start = time.mktime(date.timetuple())
+        end = start+86401
+        return map(self.Fact, self.iface.GetFacts(start, end))
+
+try:
+    HAMSTER = Hamster()
+except:
+    HAMSTER = None
+
