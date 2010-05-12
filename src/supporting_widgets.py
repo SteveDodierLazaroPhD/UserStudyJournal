@@ -407,7 +407,6 @@ class SearchBox(gtk.ToolItem):
 
     def do_search_using_zeitgeist(self, text, callback=None, interpretation=""):
         if not text: return
-        print text
         self.callback = callback
         templates = [
             Event.new_for_values(subject_text="*"+text+"*", subject_interpretation=interpretation),
@@ -428,8 +427,9 @@ class SearchBox(gtk.ToolItem):
     def toggle_visibility(self):
         if self.get_property("visible"):
             self.hide()
-        else:
-            self.show()
+            return False
+        self.show()
+        return True
 
     def __search(self, this, results):
         for obj in content_objects.ContentObject.instances:
@@ -883,8 +883,23 @@ class TagCloud(gtk.VBox):
     mid_font_size = 8500.0
     _size_diff = max_font_size - min_font_size
 
+    class SelectTagMenu(gtk.Menu):
+        def clear(self):
+            for item in self.get_children():
+                self.remove(item)
+                item.destroy()
+
+        def set_tags(self, tags, callback):
+            self.clear()
+            for tag in tags:
+                item = gtk.MenuItem(label=tag)
+                self.add(item)
+                item.connect("activate", callback, tag)
+            self.show_all()
+
     def __init__(self):
         super(TagCloud, self).__init__()
+        self.tag_dict = {}
         self.label = gtk.Label()
         self.pack_start(self.label, True, True)
         self.label.set_line_wrap(True)
@@ -896,17 +911,29 @@ class TagCloud(gtk.VBox):
         self.pack_end(self.button_box, False, False)
         self.add_button = add = StockIconButton(gtk.STOCK_CANCEL)
         self.finish_button = finish = StockIconButton(gtk.STOCK_OK)
+        self.remove_button = remove = StockIconButton(gtk.STOCK_REMOVE)
         self.entry = entry = gtk.Entry()
         box.pack_start(add, False, False)
         box.pack_end(entry_box)
+        box.pack_end(remove, False, False)
         entry_box.pack_start(entry)
         entry_box.pack_end(finish, False, False)
         finish.connect("clicked", self._add_tag)
         entry.connect("activate", self._add_tag)
         self.add_button.connect("clicked", self.toggle_tag_entry_box)
+        self.remove_button.connect("button-press-event", self.show_remove_menu)
         entry_box.show_all()
         entry_box.set_no_show_all(True)
+        # Remove tags
+        self.tag_menu = tag_menu = self.SelectTagMenu()
+        tag_menu.attach_to_widget(remove, lambda *args:None)
+        ##
         self.toggle_tag_entry_box()
+
+    def show_remove_menu(self, w, event):
+        if event.button == 1 and self.tag_dict:
+            self.tag_menu.set_tags(self.tag_dict.keys(), self.remove_tag)
+            self.tag_menu.popup(None, None, None, event.button, event.time)
 
     def toggle_tag_entry_box(self, *args):
         if self.entry_box.get_property("visible"):
@@ -916,6 +943,10 @@ class TagCloud(gtk.VBox):
         else:
             self.entry_box.show()
             self.add_button.set_stock(gtk.STOCK_CANCEL)
+
+    def remove_tag(self, w, tag):
+        if tag:
+            self.emit("remove-tag", tag)
 
     def _add_tag(self, *args):
         tag = self.entry.get_text()
@@ -953,6 +984,7 @@ class TagCloud(gtk.VBox):
         return "<span size='" + str(int(size)) + "'>" + tag + "</span>"
 
     def set_tags(self, tag_dict):
+        self.tag_dict = tag_dict
         if not tag_dict: return self.set_text("")
         text_lst = []
         min_value = min(float(min(1, *tag_dict.values())), 1)
@@ -1224,12 +1256,19 @@ class InformationContainer(Pane):
         self.toolbar.pin_button.connect("clicked", self.do_toggle_bookmark)
         if TRACKER:
             self.tag_cloud.connect("add-tag", self.on_add_tag)
+            self.tag_cloud.connect("remove-tag", self.on_remove_tag)
 
     def do_toggle_bookmark(self, *args):
         if bookmarker.is_bookmarked(self.obj.uri):
             bookmarker.unbookmark(self.obj.uri)
         else:
             bookmarker.bookmark(self.obj.uri)
+
+    def on_remove_tag(self, w, text):
+        if TRACKER:
+            print "NOT IMPLEMENTED"
+            # TRACKER.remove_tag_from_uri(text, self.obj.uri)
+        self.set_tags(self.obj)
 
     def on_add_tag(self, w, text):
         if TRACKER:
