@@ -42,16 +42,14 @@ from zeitgeist.client import ZeitgeistClient
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
     ResultType
 
+import content_objects
 from common import shade_gdk_color, combine_gdk_color, is_command_available, \
     launch_command, get_gtk_rgba, SIZE_NORMAL, SIZE_LARGE, GioFile
 from config import BASE_PATH, VERSION, settings, get_icon_path, get_data_path, bookmarker, SUPPORTED_SOURCES
-import content_objects
 from store import STORE, get_related_events_for_uri
+from external import TRACKER
 
 CLIENT = ZeitgeistClient()
-ITEMS = []
-
-from external import TRACKER
 
 
 class DayLabel(gtk.DrawingArea):
@@ -953,12 +951,6 @@ class TagCloud(gtk.VBox):
         if tag:
             self.emit("add-tag", tag)
         self.toggle_tag_entry_box()
-        #if self.entry_box.get_property("visible"):
-        #    self.entry_box.hide()
-        #    self.add_button.set_stock(gtk.STOCK_ADD)
-        #else:
-        #    self.entry_box.show()
-        #    self.add_button.set_stock(gtk.STOCK_CANCEL)
 
     def get_text(self):
         return self.label.get_text()
@@ -1020,7 +1012,6 @@ class Pane(gtk.Frame):
         close_button.connect("clicked", self.hide_on_delete)
         self.set_label_align(0,0)
 
-
     def hide_on_delete(self, widget, *args):
         self.hide()
         return True
@@ -1052,13 +1043,6 @@ class HandleBox(gtk.HandleBox):
 
 class InformationBox(gtk.VBox):
     """
-    . . . . . . . .
-    .             .
-    .    Info     .
-    .             .
-    .             .
-    . . . . . . . .
-
     Holds widgets which display information about a uri
     """
     obj = None
@@ -1111,13 +1095,6 @@ class InformationBox(gtk.VBox):
 
 class _RelatedPane(gtk.TreeView):
     """
-                     . . .
-                     .   .
-                     .   . <--- Related files
-                     .   .
-                     .   .
-                     . . .
-
     Displays related events using a widget based on gtk.TreeView
     """
     def __init__(self):
@@ -1165,10 +1142,6 @@ class _RelatedPane(gtk.TreeView):
             gtk.gdk.threads_leave()
 
     def set_model_from_list(self, events):
-        """
-        Sets creates/sets a model from a list of zeitgeist events
-        :param events: a list of :class:`Events <zeitgeist.datamodel.Event>`
-        """
         self.last_active = -1
         if not events:
             self.set_model(None)
@@ -1202,7 +1175,7 @@ class InformationContainer(Pane):
     .             .  .   .
     . . . . . . . .  . . .
 
-    A window which holds the information pane and related pane
+    A pane which holds the information pane and related pane
     """
 
     class _InformationToolbar(gtk.Toolbar):
@@ -1231,7 +1204,7 @@ class InformationContainer(Pane):
         self.infopane = InformationBox()
         if TRACKER:
             self.tag_cloud_frame = frame = gtk.Frame()
-            frame.set_label( _("Tags:"))
+            frame.set_label( _("Tags"))
             self.tag_cloud = TagCloud()
             frame.add(self.tag_cloud)
         self.relatedpane = _RelatedPane()
@@ -1242,7 +1215,6 @@ class InformationContainer(Pane):
         if TRACKER:
             box2.pack_start(frame, False, False, 4)
         scrolledwindow.set_shadow_type(gtk.SHADOW_IN)
-        #self.relatedpane.set_size_request(230, -1)
         scrolledwindow.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
         scrolledwindow.add(self.relatedpane)
         vbox.pack_end(scrolledwindow, True, True)

@@ -39,6 +39,7 @@ from zeitgeist.datamodel import ResultType, StorageState, TimeRange
 
 class _GenericViewWidget(gtk.VBox):
     day = None
+    day_signal_id = None
 
     def __init__(self):
         gtk.VBox.__init__(self)
@@ -111,10 +112,6 @@ class MultiViewContainer(gtk.HBox):
         return days
 
     def update_day(self, *args):
-        #print "UPDATED", i, dayobj
-        #if i != None and dayobj:
-        #    print "DO IT"
-        #    return self.pages[i].set_day(dayobj)
         for page, day in map(None, reversed(self.pages), self.days):
             page.set_day(day)
 
@@ -133,7 +130,6 @@ class DayViewContainer(gtk.VBox):
         Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri),
         Event.new_for_values(interpretation=Interpretation.OPEN_EVENT.uri),
     )
-    # Do day label stuff here please
     def __init__(self):
         super(DayViewContainer, self).__init__()
         self.daylabel = DayLabel()
@@ -176,7 +172,6 @@ class DayView(gtk.VBox):
 
     def __init__(self, title=None):
         super(DayView, self).__init__()
-        #self.add(gtk.Button("LOL"))
         # Create the title label
         if title:
             self.label = gtk.Label(title)
@@ -241,32 +236,24 @@ class CategoryBox(gtk.HBox):
             if not struct.content_object:continue
             item = Item(struct, pinnable)
             hbox = gtk.HBox ()
-            #label = gtk.Label("")
-            #hbox.pack_start(label, False, False, 7)
             hbox.pack_start(item, True, True, 0)
             self.view.pack_start(hbox, False, False, 0)
             hbox.show_all()
-            #label.show()
             self.pack_end(hbox)
-
         # If this isn't a set of ungrouped events, give it a label
         if category:
             # Place the items into a box and simulate left padding
             self.box = gtk.HBox()
-            #label = gtk.Label("")
             self.box.pack_start(self.view)
-
             hbox = gtk.HBox()
             # Add the title button
             if category in SUPPORTED_SOURCES:
                 text = SUPPORTED_SOURCES[category].group_label(len(event_structs))
             else:
                 text = "Unknown"
-
             label = gtk.Label()
             label.set_markup("<span>%s</span>" % text)
             #label.set_ellipsize(pango.ELLIPSIZE_END)
-
             hbox.pack_start(label, True, True, 0)
 
             label = gtk.Label()
@@ -274,39 +261,30 @@ class CategoryBox(gtk.HBox):
             label.set_alignment(1.0,0.5)
             label.set_alignment(1.0,0.5)
             hbox.pack_end(label, False, False, 2)
-
             hbox.set_border_width(3)
-
             self.expander = gtk.Expander()
             self.expander.set_label_widget(hbox)
-
             self.vbox.pack_start(self.expander, False, False)
             self.expander.add(self.box)#
-
             self.pack_start(self.vbox, True, True, 24)
-
             self.expander.show_all()
             self.show()
             hbox.show_all()
             label.show_all()
             self.view.show()
-
         else:
             self.box = self.view
             self.vbox.pack_end(self.box)
             self.box.show()
             self.show()
-
             self.pack_start(self.vbox, True, True, 16)
-
         self.show_all()
 
-    def on_toggle(self, view, bool):
-        if bool:
+    def on_toggle(self, view, bool_):
+        if bool_:
             self.box.show()
         else:
             self.box.hide()
-        pinbox.show_all()
 
 
 class Item(gtk.HBox):
@@ -320,10 +298,8 @@ class Item(gtk.HBox):
         self.search_results = []
         self.subject = event.subjects[0]
         self.content_obj = content_struct.content_object
-        # self.content_obj = GioFile.create(self.subject.uri)
         self.time = float(event.timestamp) / 1000
         self.time =  time.strftime("%H:%M", time.localtime(self.time))
-
         if self.content_obj is not None:
             self.icon = self.content_obj.get_icon(
                 can_thumb=settings.get('small_thumbnails', False), border=0)
@@ -363,13 +339,11 @@ class Item(gtk.HBox):
         self.label.set_markup(text)
         self.label.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
         self.label.set_alignment(0.0, 0.5)
-
         if self.icon: img = gtk.image_new_from_pixbuf(self.icon)
         else: img = None
         hbox = gtk.HBox()
         if img: hbox.pack_start(img, False, False, 1)
         hbox.pack_start(self.label, True, True, 4)
-
         if self.allow_pin:
             # TODO: get the name "pin" from theme when icons are properly installed
             img = gtk.image_new_from_file(get_icon_path("hicolor/24x24/status/pin.png"))
@@ -380,12 +354,10 @@ class Item(gtk.HBox):
             self.pin.set_relief(gtk.RELIEF_NONE)
             self.pack_end(self.pin, False, False)
             self.pin.connect("clicked", lambda x: self.set_bookmarked(False))
-        #hbox.pack_end(img, False, False)
         evbox = gtk.EventBox()
         self.btn.add(hbox)
         evbox.add(self.btn)
         self.pack_start(evbox)
-
         self.btn.connect("clicked", self.launch)
         self.btn.connect("button_press_event", self._show_item_popup)
 
@@ -393,7 +365,6 @@ class Item(gtk.HBox):
             evbox.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2))
 
         self.btn.connect("realize", realize_cb)
-
         self.init_multimedia_tooltip()
 
     def init_multimedia_tooltip(self):
@@ -429,7 +400,6 @@ class Item(gtk.HBox):
         else:
             bookmarker.unbookmark(uri)
 
-
     def launch(self, *discard):
         if self.content_obj is not None:
             self.content_obj.launch()
@@ -439,7 +409,6 @@ class Item(gtk.HBox):
 ## ThumbView code
 #####################
 class ThumbViewContainer(_GenericViewWidget):
-    day_signal_id = None
 
     def __init__(self):
         _GenericViewWidget.__init__(self)
@@ -801,8 +770,6 @@ class TimelineViewContainer(_GenericViewWidget):
         self.ruler.modify_bg(gtk.STATE_NORMAL, color)
 
 
-
-
 class _TimelineRenderer(gtk.GenericCellRenderer):
     """
     Renders timeline columns, and text for a for properties
@@ -961,6 +928,9 @@ class _TimelineRenderer(gtk.GenericCellRenderer):
 
 
 class TimelineView(gtk.TreeView):
+    child_width = _TimelineRenderer.width
+    child_height = _TimelineRenderer.height
+
     @staticmethod
     def make_area_from_event(timestamp, duration):
         """
@@ -973,9 +943,6 @@ class TimelineView(gtk.TreeView):
         w = max(duration/3600.0/1000.0/24.0, 0)
         x = ((int(timestamp)/1000.0 - time.timezone)%86400)/3600/24.0
         return [x, w]
-
-    child_width = _TimelineRenderer.width
-    child_height = _TimelineRenderer.height
 
     def __init__(self):
         super(TimelineView, self).__init__()
@@ -1067,6 +1034,7 @@ class _TimelineHeader(gtk.DrawingArea):
     even_line_height = 12
 
     line_color = (0, 0, 0, 1)
+
     def __init__(self):
         super(_TimelineHeader, self).__init__()
         self.connect("expose-event", self.expose)
@@ -1121,11 +1089,8 @@ class _TimelineHeader(gtk.DrawingArea):
 class PinBox(DayView):
 
     def __init__(self):
-        # Setup event criteria for querying
         self.event_timerange = TimeRange.until_now()
-        # Initialize the widget
         super(PinBox, self).__init__()#_("Pinned items"))
-        # Connect to relevant signals
         bookmarker.connect("reload", self.set_from_templates)
         self.set_from_templates()
 
@@ -1135,7 +1100,6 @@ class PinBox(DayView):
             # Abort, or we will query with no templates and get lots of
             # irrelevant events.
             return None
-
         templates = []
         for bookmark in bookmarker.bookmarks:
             templates.append(Event.new_for_values(subject_uri=bookmark))
@@ -1143,9 +1107,10 @@ class PinBox(DayView):
 
     def set_from_templates(self, *args, **kwargs):
         if bookmarker.bookmarks:
-            CLIENT.find_event_ids_for_templates(self.event_templates, self.do_set,
-                                            self.event_timerange,
-                                            StorageState.Any, 10000, ResultType.MostRecentSubjects)
+            CLIENT.find_event_ids_for_templates(
+                self.event_templates, self.do_set,
+                self.event_timerange,
+                StorageState.Any, 10000, ResultType.MostRecentSubjects)
 
     def do_set(self, event_ids):
         objs = []

@@ -440,15 +440,6 @@ def add_background(pixbuf, color=0xffffffff):
                         255)
     return result
 
-def _crop_pixbuf(pixbuf, x, y, size=SIZE_LARGE):
-    """ returns a part of the given pixbuf as new one """
-    result = gtk.gdk.Pixbuf(pixbuf.get_colorspace(),
-                            True,
-                            pixbuf.get_bits_per_sample(),
-                            size[0], size[1])
-    pixbuf.copy_area(x, y, x+size[0], y+size[1], result, 0, 0)
-    return result
-
 def create_opendocument_thumb(path):
     """ extracts the thumbnail of an Opendocument document as pixbuf """
     thumb = tempfile.NamedTemporaryFile()
@@ -466,6 +457,15 @@ def create_opendocument_thumb(path):
     pixbuf = gtk.gdk.pixbuf_new_from_file(thumb.name)
     thumb.close()
     return add_background(pixbuf)
+
+def __crop_pixbuf(pixbuf, x, y, size=SIZE_LARGE):
+    """ returns a part of the given pixbuf as new one """
+    result = gtk.gdk.Pixbuf(pixbuf.get_colorspace(),
+                            True,
+                            pixbuf.get_bits_per_sample(),
+                            size[0], size[1])
+    pixbuf.copy_area(x, y, x+size[0], y+size[1], result, 0, 0)
+    return result
 
 def create_text_thumb(gio_file, size=None, threshold=2):
     """ tries to use pygments to get a thumbnail of a text file """
@@ -497,7 +497,7 @@ def create_text_thumb(gio_file, size=None, threshold=2):
         if height > threshold*size[1]:
             new_height = threshold*size[1]
         if new_height is not None or new_width is not None:
-            pixbuf = _crop_pixbuf(pixbuf, 0, 0, (new_width or width, new_height or height))
+            pixbuf = __crop_pixbuf(pixbuf, 0, 0, (new_width or width, new_height or height))
     return pixbuf
 
 
