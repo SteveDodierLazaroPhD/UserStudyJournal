@@ -30,7 +30,7 @@ import os
 from activity_widgets import MultiViewContainer, TimelineViewContainer, ThumbViewContainer, PinnedPane
 from supporting_widgets import DayButton, DayLabel, Toolbar, ContextMenu, AboutDialog, HandleBox, SearchBox, InformationContainer
 from histogram import HistogramWidget
-from store import Store, tdelta, STORE
+from store import Store, tdelta, STORE, AUTOLOAD
 from config import settings, get_icon_path
 
 
@@ -161,9 +161,13 @@ class PortalWindow(gtk.Window):
         self.connect("destroy", self.quit)
         self._request_size()
         self.set_title_from_date(self.day_iter.date)
+        self.watch_cursor = gtk.gdk.Cursor(gtk.gdk.WATCH)
+        self.window.set_cursor(self.watch_cursor)
         def setup(*args):
             self.histogram.set_dates(self.active_dates)
             self.histogram.scroll_to_end()
+            if AUTOLOAD:
+                self.store.request_n_days_events(90, lambda:self.window.set_cursor(None))
             #self.store.build_all()
             return False
         gobject.timeout_add_seconds(1, setup)
