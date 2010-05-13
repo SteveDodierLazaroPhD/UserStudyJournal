@@ -30,6 +30,8 @@ from zeitgeist.datamodel import Event, ResultType, Interpretation
 import content_objects
 import external
 
+AUTOLOAD = True # Should the store request events in the background?
+
 CLIENT = ZeitgeistClient()
 INTERFACE = ZeitgeistDBusInterface()
 MAXEVENTS = 999999
@@ -321,6 +323,8 @@ class Store(gobject.GObject):
             day = Day(date)
             self.add_day(date, day)
             t -= 86400
+        if AUTOLOAD:
+            gobject.timeout_add_seconds(2, self.request_n_days_events)
 
     @DoEmit("update")
     def add_day(self, key, day):
@@ -363,7 +367,7 @@ class Store(gobject.GObject):
             i+=len(item)
         return i
 
-    def request_n_days_events(self, n):
+    def request_n_days_events(self, n=90):
         event_templates = (
             Event.new_for_values(interpretation=Interpretation.VISIT_EVENT.uri),
             Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri),
@@ -381,7 +385,7 @@ class Store(gobject.GObject):
         start = end - n*86400
         CLIENT.find_events_for_templates(event_templates, callback, [start*1000, end*1000],
                                          num_events=50000,)
-                                         #result_type=ResultType.LeastRecentSubjects)
+        return False
 
     def build_all(self):
         self.__build_count = 0
