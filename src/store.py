@@ -182,7 +182,7 @@ class Day(gobject.GObject):
         CLIENT.find_event_ids_for_templates(self.templates, self.set_ids, self.time_range, num_events=MAXEVENTS)
         CLIENT.install_monitor(self.time_range, self.templates, self.insert_events, self.remove_ids)
         if external.HAMSTER:
-            facts = external.HAMSTER.get_facts(self.start-86400, self.end-86400)
+            facts = external.HAMSTER.get_facts(self.start, self.end)
             for fact in facts:
                 self.insert_events(None, fact.get_events())
 

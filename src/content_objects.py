@@ -352,6 +352,10 @@ class BaseContentType(ContentObject):
             wrds["source"] = SUPPORTED_SOURCES[self.event.subjects[0].interpretation]
         except:
             wrds["source"] = SUPPORTED_SOURCES[Interpretation.UNKNOWN.uri]
+        try:
+            wrds["manifestation"] = Manifestation[event.manifestation]
+        except:
+            wrds["manifestation"] = Manifestation.UNKNOWN
         for name in self.fields_to_format:
             val = getattr(self, name)
             setattr(self, name, val.format(**wrds))
@@ -587,6 +591,22 @@ class WebContentObject(BaseContentType):
     #type_color_representation = (207/255.0, 77/255.0, 16/255.0), (207/255.0, 77/255.0, 16/255.0)
 
 
+class HamsterContentObject(BaseContentType):
+    """
+    Used for Hamster(time tracker)
+    """
+    @classmethod
+    def use_class(cls, event):
+        if event.actor == "applications://hamster-standalone.desktop":
+            return cls.create(event)
+        return False
+
+    icon_name = "hamster-applet"
+    text = "{manifestation.display_name} {event.subjects[0].text}"
+    timelineview_text = "{manifestation.display_name}\n{event.subjects[0].uri}"
+    thumbview_text = "{manifestation.display_name}\n{event.subjects[0].text}"
+
+
 class EmailContentObject(BaseContentType):
     """
     An Email Content Object where any additional subjects are considered attachments
@@ -671,6 +691,6 @@ class MusicPlayerContentObject(BaseContentType):
 
 # Content object list used by the section function. Should use Subclasses but I like to have some order in which these should be used
 if sys.version_info >= (2,6):
-    CONTENT_OBJECTS = (MusicPlayerContentObject, BzrContentObject, WebContentObject, IMContentObject, TomboyContentObject, EmailContentObject)
+    CONTENT_OBJECTS = (MusicPlayerContentObject, BzrContentObject, WebContentObject, IMContentObject, TomboyContentObject, EmailContentObject, HamsterContentObject)
 else:
     CONTENT_OBJECTS = tuple()

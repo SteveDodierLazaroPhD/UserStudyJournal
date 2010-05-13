@@ -186,7 +186,23 @@ HAMSTER_PATH = "/org/gnome/Hamster"
 HAMSTER_URI = "org.gnome.Hamster"
 
 
+
 class Hamster(object):
+    class HamsterEvent(Event):
+        def _HAMSTER_ID_COUNTER():
+            i = 1
+            while True:
+                i -= 1
+                yield i
+        HAMSTER_ID_COUNTER = _HAMSTER_ID_COUNTER()
+
+        def __init__(self, *args, **kwargs):
+            Event.__init__(self, *args, **kwargs)
+            self._id = self.HAMSTER_ID_COUNTER.next()
+
+        @property
+        def id(self):
+            return self._id
 
     class Fact(object):
         def __init__(self, dictionary):
@@ -198,7 +214,7 @@ class Hamster(object):
             return object.__getattribute__(self, key)
 
         def _make_event(self, tval, interp):
-            return Event.new_for_values(
+            return Hamster.HamsterEvent.new_for_values(
                 interpretation = interp,
                 manifestation = Manifestation.USER_ACTIVITY.uri,
                 actor = "applications://hamster-standalone.desktop",
@@ -225,7 +241,10 @@ class Hamster(object):
         if date:
             start = time.mktime(date.timetuple()) - time.timezone
             end = start+86399
+        start -= 86400
+        end -= 86400
         return map(self.Fact, self.iface.GetFacts(start, end))
+
 
 try:
     HAMSTER = Hamster()
