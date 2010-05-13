@@ -363,6 +363,26 @@ class Store(gobject.GObject):
             i+=len(item)
         return i
 
+    def request_n_days_events(self, n):
+        event_templates = (
+            Event.new_for_values(interpretation=Interpretation.VISIT_EVENT.uri),
+            Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri),
+            Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri),
+            Event.new_for_values(interpretation=Interpretation.OPEN_EVENT.uri),
+        )
+        def callback(events):
+            def _thread_fn(events):
+                map(lambda e:self.add_event(e, True), events)
+                return False
+            thread = threading.Thread(target=_thread_fn, args=(events,))
+            thread.start()
+            #gobject.timeout_add_seconds(1, _thread_fn, events)
+        end = time.time() - 3*86400
+        start = end - n*86400
+        CLIENT.find_events_for_templates(event_templates, callback, [start*1000, end*1000],
+                                         num_events=50000,)
+                                         #result_type=ResultType.LeastRecentSubjects)
+
     def build_all(self):
         self.__build_count = 0
         self._current_day = self.today.previous(self).previous(self)
@@ -375,10 +395,10 @@ class Store(gobject.GObject):
             return True
         gobject.timeout_add_seconds(1, _build)
 
-    def add_event(self, event):
+    def add_event(self, event, overwrite=False):
         date = datetime.date.fromtimestamp(int(event.timestamp)/1000)
         day = self[date]
-        day.insert_event(event)
+        day.insert_event(event, overwrite)
 
 
 

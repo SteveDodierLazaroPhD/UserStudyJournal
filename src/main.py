@@ -162,6 +162,7 @@ class PortalWindow(gtk.Window):
         self._request_size()
         self.set_title_from_date(self.day_iter.date)
         def setup(*args):
+            self.store.request_n_days_events(90)
             self.histogram.set_dates(self.active_dates)
             self.histogram.scroll_to_end()
             #self.store.build_all()

@@ -1006,7 +1006,7 @@ class Pane(gtk.Frame):
     def __init__(self):
         super(Pane, self).__init__()
         #self.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-        close_button = StockIconButton(gtk.STOCK_CLOSE)
+        self.close_button = close_button = StockIconButton(gtk.STOCK_CLOSE)
         self.set_label_widget(close_button)#, False, False)
         self.connect("delete-event", self.hide_on_delete)
         close_button.connect("clicked", self.hide_on_delete)
@@ -1195,7 +1195,13 @@ class InformationContainer(Pane):
                     self.insert(item, 0)
 
     def __init__(self):
-        super(InformationContainer, self).__init__()
+        #super(InformationContainer, self).__init__()
+        super(Pane, self).__init__()
+        self.close_button = close_button = ToolButton()
+        close_button.set_stock_id(gtk.STOCK_CLOSE)
+        close_button.set_label(_("Close"))
+        self.connect("delete-event", self.hide_on_delete)
+        close_button.connect("clicked", self.hide_on_delete)
         self.set_label_align(1, 0)
         box1 = gtk.VBox()
         box2 = gtk.VBox()
@@ -1209,7 +1215,7 @@ class InformationContainer(Pane):
             frame.add(self.tag_cloud)
         self.relatedpane = _RelatedPane()
         scrolledwindow = gtk.ScrolledWindow()
-        box2.set_border_width(10)
+        box2.set_border_width(5)
         box1.pack_start(self.toolbar, False, False)
         box2.pack_start(self.infopane, False, False, 4)
         if TRACKER:
@@ -1230,6 +1236,12 @@ class InformationContainer(Pane):
             self.tag_cloud.connect("add-tag", self.on_add_tag)
             self.tag_cloud.connect("remove-tag", self.on_remove_tag)
         self.connect("size-allocate", self.size_allocate)
+        # Remove the close button
+        separator = gtk.SeparatorToolItem()
+        separator.set_expand(True)
+        separator.set_draw(False)
+        self.toolbar.insert(separator, -1)
+        self.toolbar.insert(close_button, -1)
 
     def size_allocate(self, widget, allocation):
         if allocation.height < 400:
