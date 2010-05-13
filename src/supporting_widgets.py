@@ -1056,7 +1056,7 @@ class InformationBox(gtk.VBox):
                 if isinstance(obj, GioFile) and obj.has_preview():
                     pixbuf = obj.get_thumbnail(size=SIZE_NORMAL, border=3)
                 else:
-                    pixbuf = obj.get_icon(size=128)
+                    pixbuf = obj.get_icon(size=64)
                 self.set_from_pixbuf(pixbuf)
 
     def __init__(self):
@@ -1229,6 +1229,14 @@ class InformationContainer(Pane):
         if TRACKER:
             self.tag_cloud.connect("add-tag", self.on_add_tag)
             self.tag_cloud.connect("remove-tag", self.on_remove_tag)
+        self.connect("size-allocate", self.size_allocate)
+
+    def size_allocate(self, widget, allocation):
+        if allocation.height < 400:
+            self.infopane.display_widget.hide()
+        else:
+            self.infopane.display_widget.show()
+
 
     def do_toggle_bookmark(self, *args):
         if bookmarker.is_bookmarked(self.obj.uri):
