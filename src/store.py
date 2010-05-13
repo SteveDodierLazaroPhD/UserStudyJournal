@@ -376,13 +376,12 @@ class Store(gobject.GObject):
         )
         def callback(events):
             def _thread_fn(events):
-                map(lambda e:self.add_event(e, True), events)
+                map(self.add_event, events)
                 if func:
                     func()
                 return False
             thread = threading.Thread(target=_thread_fn, args=(events,))
             thread.start()
-            #gobject.timeout_add_seconds(1, _thread_fn, events)
         end = time.time() - 3*86400
         start = end - n*86400
         CLIENT.find_events_for_templates(
@@ -401,10 +400,13 @@ class Store(gobject.GObject):
             return True
         gobject.timeout_add_seconds(1, _build)
 
-    def add_event(self, event, overwrite=False):
+    def add_event(self, event, overwrite=False, idle=True):
         date = datetime.date.fromtimestamp(int(event.timestamp)/1000)
         day = self[date]
-        day.insert_event(event, overwrite)
+        if idle:
+            gobject.idle_add(day.insert_event, event, overwrite)
+        else:
+            day.insert_event(event, overwrite)
 
 
 
