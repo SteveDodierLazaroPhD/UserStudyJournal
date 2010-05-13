@@ -401,10 +401,14 @@ class Store(gobject.GObject):
         gobject.timeout_add_seconds(1, _build)
 
     def add_event(self, event, overwrite=False, idle=True):
+
         date = datetime.date.fromtimestamp(int(event.timestamp)/1000)
         day = self[date]
         if idle:
-            gobject.idle_add(day.insert_event, event, overwrite)
+            def _idle_add(event, overwrite):
+                day.insert_event(event, overwrite)
+                return False
+            gobject.idle_add(_idle_add, event, overwrite)
         else:
             day.insert_event(event, overwrite)
 
