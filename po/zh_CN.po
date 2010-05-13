@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-activity-journal\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-02-28 19:33+0100\n"
+"POT-Creation-Date: 2010-04-22 16:05+0200\n"
 "PO-Revision-Date: 2010-03-20 05:35+0000\n"
 "Last-Translator: Xhacker Liu <liu.dongyuan@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <zh_CN@li.org>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Launchpad-Export-Date: 2010-04-19 03:52+0000\n"
+"X-Launchpad-Export-Date: 2010-05-13 04:50+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../gnome-activity-journal:76
@@ -30,39 +30,64 @@ msgstr "错误"
 msgid "Unable to connect to Zeitgeist:"
 msgstr "无法连接到 Zeitgeist："
 
-#: ../src/histogram.py:468 ../src/main.py:187 ../src/daywidgets.py:61
-#: ../src/daywidgets.py:250 ../src/daywidgets.py:412
+#: ../src/content_objects.py:452 ../src/content_objects.py:454
+msgid "{source._desc_sing} with {event.subjects[0].text}"
+msgstr ""
+
+#: ../src/content_objects.py:453
+msgid ""
+"{source._desc_sing} with {event.subjects[0].text}\n"
+"{event.subjects[0].uri}"
+msgstr ""
+
+#: ../src/content_objects.py:474 ../src/content_objects.py:479
+#: ../src/content_objects.py:484
+msgid "with"
+msgstr ""
+
+#: ../src/content_objects.py:522
+msgid "{source._desc_sing} {event.subjects[0].text}"
+msgstr ""
+
+#: ../src/content_objects.py:523 ../src/content_objects.py:524
+msgid ""
+"Tomboy\n"
+"{source._desc_sing} {event.subjects[0].text}"
+msgstr ""
+
+#: ../src/histogram.py:476 ../src/main.py:189 ../src/daywidgets.py:61
+#: ../src/daywidgets.py:242 ../src/daywidgets.py:429
 msgid "Today"
 msgstr "今天"
 
-#: ../src/histogram.py:522
+#: ../src/histogram.py:531
 msgid "item"
 msgid_plural "items"
 msgstr[0] "项"
 
-#: ../src/histogram.py:524
+#: ../src/histogram.py:533
 msgid "Click today to return to today"
 msgstr "点击今天回到今天"
 
-#: ../src/main.py:86
+#: ../src/main.py:87
 msgid "Powered by Zeitgeist"
 msgstr "Zeitgeist 强力驱动"
 
-#: ../src/main.py:158 ../src/main.py:180 ../src/main.py:201
+#: ../src/main.py:150 ../src/main.py:174 ../src/main.py:203
 #: ../extra/gnome-activity-journal.desktop.in.h:1
 msgid "Activity Journal"
 msgstr "活动志"
 
-#: ../src/main.py:180
+#: ../src/main.py:174
 #, python-format
 msgid "%s to today"
 msgstr "%s 到 今天"
 
-#: ../src/main.py:190 ../src/daywidgets.py:63 ../src/daywidgets.py:252
+#: ../src/main.py:192 ../src/daywidgets.py:63 ../src/daywidgets.py:244
 msgid "Yesterday"
 msgstr "昨天"
 
-#: ../src/main.py:201
+#: ../src/main.py:203
 #, python-format
 msgid "%s to %s"
 msgstr "%s 到 %s"
@@ -101,34 +126,70 @@ msgid "Edited or Read Code"
 msgstr "编辑或阅读代码"
 
 #: ../src/sources.py:45
+msgid "Conversation"
+msgstr ""
+
+#: ../src/sources.py:45
+msgid "Conversations"
+msgstr ""
+
+#: ../src/sources.py:46
 msgid "Other Activity"
 msgstr "其他活动"
 
-#: ../src/sources.py:45
+#: ../src/sources.py:46
 msgid "Other Activities"
 msgstr "其他活动"
 
-#: ../src/daywidgets.py:111 ../src/daywidgets.py:199
-msgid "Click to return multiday view"
-msgstr "点击回到多日视图"
+#: ../src/infopane.py:242
+msgid "Actor"
+msgstr ""
 
-#: ../src/daywidgets.py:229 ../src/common.py:97
+#. 0
+#: ../src/infopane.py:243
+msgid "Time"
+msgstr ""
+
+#. 2
+#: ../src/infopane.py:245
+msgid "Interpretation"
+msgstr ""
+
+#. 3
+#: ../src/infopane.py:246
+msgid "Subject Interpretation"
+msgstr ""
+
+#. 4
+#: ../src/infopane.py:247
+msgid "Manifestation"
+msgstr ""
+
+#: ../src/infopane.py:392
+msgid "Related Items"
+msgstr ""
+
+#: ../src/daywidgets.py:111 ../src/daywidgets.py:191
+msgid "Click to return to multiday view"
+msgstr ""
+
+#: ../src/daywidgets.py:221 ../src/common.py:124
 msgid "Morning"
 msgstr "上午"
 
-#: ../src/daywidgets.py:230 ../src/common.py:97
+#: ../src/daywidgets.py:222 ../src/common.py:124
 msgid "Afternoon"
 msgstr "下午"
 
-#: ../src/daywidgets.py:231 ../src/common.py:97
+#: ../src/daywidgets.py:223 ../src/common.py:124
 msgid "Evening"
 msgstr "晚上"
 
-#: ../src/daywidgets.py:312
+#: ../src/daywidgets.py:304
 msgid "Left click for a detailed timeline view"
 msgstr "单击转到详细时间线视图"
 
-#: ../src/daywidgets.py:314
+#: ../src/daywidgets.py:306
 msgid "Right click for a thumbnail view"
 msgstr "右击转到缩略图视图"
 
@@ -137,49 +198,65 @@ msgstr "右击转到缩略图视图"
 msgid "Pinned items"
 msgstr "固定的项目"
 
-#: ../src/common.py:84
+#: ../src/common.py:108
 msgid "Video"
 msgstr "视频"
 
-#: ../src/common.py:85
+#: ../src/common.py:109
 msgid "Music"
 msgstr "音乐"
 
-#: ../src/common.py:86
+#: ../src/common.py:110
 msgid "Document"
 msgstr "文档"
 
-#: ../src/common.py:87
+#: ../src/common.py:111
 msgid "Image"
 msgstr "图片"
 
-#: ../src/common.py:88
+#: ../src/common.py:112
 msgid "Source Code"
 msgstr "源码"
 
-#: ../src/common.py:89
+#: ../src/common.py:113
 msgid "Unknown"
 msgstr "未知"
 
-#: ../src/widgets.py:168
+#: ../src/common.py:114
+msgid "IM Message"
+msgstr ""
+
+#: ../src/common.py:115
+msgid "Email"
+msgstr ""
+
+#: ../src/widgets.py:172
 msgid "Type here to search..."
 msgstr "输入以搜索..."
 
-#: ../src/widgets.py:468 ../src/widgets.py:643
+#: ../src/widgets.py:407 ../src/widgets.py:583
 msgid "Remove Pin"
 msgstr "取消固定"
 
-#: ../src/widgets.py:644
+#: ../src/widgets.py:584
 msgid "Pin to Today"
 msgstr "固定到今天"
 
-#: ../src/widgets.py:645
+#: ../src/widgets.py:585
 msgid "Delete item from Journal"
 msgstr "从活动志中删除"
 
-#: ../src/widgets.py:646
-msgid "Most used with..."
-msgstr "最常用的..."
+#: ../src/widgets.py:586
+msgid "Delete all events with this URI"
+msgstr ""
+
+#: ../src/widgets.py:587
+msgid "More Information"
+msgstr ""
+
+#: ../src/widgets.py:599
+msgid "Send To..."
+msgstr ""
 
 #: ../extra/gnome-activity-journal.desktop.in.h:2
 msgid ""
@@ -233,3 +310,9 @@ msgstr "窗口高度"
 #: ../extra/gnome-activity-journal.schemas.in.h:10
 msgid "Window width"
 msgstr "窗口宽度"
+
+#~ msgid "Click to return multiday view"
+#~ msgstr "点击回到多日视图"
+
+#~ msgid "Most used with..."
+#~ msgstr "最常用的..."
