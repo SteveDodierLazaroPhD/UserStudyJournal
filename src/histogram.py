@@ -383,6 +383,12 @@ class CairoHistogram(gtk.DrawingArea):
         self.emit("column_clicked", date)
         return True
 
+    left_icon = get_icon_for_name("back", 16)
+    right_icon = get_icon_for_name("forward", 16)
+    def _expose_scroll_buttons(self, widget, event):
+        render_pixbuf(widget.window, event.area.x + event.area.width-16, event.area.y+event.area.height-16, self.right_icon, False)
+        render_pixbuf(widget.window, event.area.x, event.area.y+event.area.height-16, self.left_icon, False)
+
 
 def _in_area(coord_x, coord_y, area):
     """check if some given X,Y coordinates are within an area.
@@ -498,6 +504,16 @@ class HistogramWidget(gtk.Viewport):
         self.histogram.queue_draw()
         self.queue_draw()
         self.connect("size-allocate", self.on_resize)
+        self.histogram.connect("button-press-event", self.mouse_click_scroll)
+
+    def mouse_click_scroll(self, widget, event):
+        hadjustment = self.get_hadjustment()
+        value = hadjustment.get_value()
+        if event.x - value < 16:
+            hadjustment.set_value(max(0, value-10))
+        elif event.x > value + hadjustment.page_size - 16:
+            hadjustment.set_value(min(self.histogram.max_width, value+10))
+        self.histogram.queue_draw()
 
     def on_resize(self, widget, allocation):
         dates = self.histogram.get_selected()
