@@ -30,8 +30,10 @@ import os
 from activity_widgets import MultiViewContainer, TimelineViewContainer, ThumbViewContainer, PinnedPane
 from supporting_widgets import DayButton, DayLabel, Toolbar, ContextMenu, AboutDialog, HandleBox, SearchBox, InformationContainer
 from histogram import HistogramWidget
-from store import Store, tdelta, STORE, AUTOLOAD
+from store import Store, tdelta, STORE
 from config import settings, get_icon_path
+
+AUTOLOAD = True # Should the store request events in the background?
 
 
 class ViewContainer(gtk.Notebook):
@@ -159,6 +161,7 @@ class PortalWindow(gtk.Window):
         self.toolbar.goto_today_button.connect("clicked", lambda w: self.set_date(datetime.date.today()))
         self.toolbar.pin_button.connect("clicked", lambda w: self.panedcontainer.pinbox.show_all())
         self.toolbar.search_button.connect("clicked", self.toggle_searchbox_visibility)
+        self.store.connect("update", self.histogram.histogram.set_store)
         self.connect("destroy", self.quit)
         self._request_size()
         self.set_title_from_date(self.day_iter.date)
@@ -167,9 +170,10 @@ class PortalWindow(gtk.Window):
         def setup(*args):
             self.histogram.set_dates(self.active_dates)
             self.histogram.scroll_to_end()
+            def _finish():
+                self.window.set_cursor(None)
             if AUTOLOAD:
-                self.store.request_n_days_events(90, lambda:self.window.set_cursor(None))
-            #self.store.build_all()
+                self.store.request_last_n_days_events(90, _finish)
             return False
         gobject.timeout_add_seconds(1, setup)
         self.histogram.scroll_to_end()

@@ -141,16 +141,14 @@ class CairoHistogram(gtk.DrawingArea):
         self.gc = get_gc_from_colormap(widget, 0.6)
 
     def set_store(self, store):
-        if self._store:
-            self._store.disconnect(self._store_connection)
         self._store = store
         self.largest = min(max(max(map(lambda x: len(x), store.days)), 1), 100)
         if not self.get_selected():
             self.set_selected([datetime.date.today()])
         else:
             self.set_selected(self.get_selected())
-        self._store_connection = store.connect("update", self.set_store)
         self.queue_draw()
+        self.last_updated = time.time()
 
     def get_store(self):
         return self._store
