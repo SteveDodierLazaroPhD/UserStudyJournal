@@ -237,7 +237,7 @@ class Hamster(object):
                 timestamp = tval*1000,
                 subject_interpretation = Interpretation.COMMENT.uri,
                 subject_manifestation = Manifestation.UNKNOWN.uri,
-                subject_text = str(self.name) + str(self.description),
+                subject_text = str(self.name) + ": " + str(self.description),
                 subject_uri = ("hamster://%d" % int(self.id)),
             )
 

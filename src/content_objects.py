@@ -606,9 +606,9 @@ class HamsterContentObject(BaseContentType):
         return False
 
     icon_name = "hamster-applet"
-    text = "{manifestation.display_name} {event.subjects[0].text}"
-    timelineview_text = "{manifestation.display_name}\n{event.subjects[0].text}"
-    thumbview_text = "{manifestation.display_name}\n{event.subjects[0].text}"
+    text = "Time Tracker: {event.subjects[0].text}"
+    timelineview_text = "Time Tracker: \n{event.subjects[0].text}"
+    thumbview_text = "Time Tracker \n{event.subjects[0].text}"
 
 
 class EmailContentObject(BaseContentType):
