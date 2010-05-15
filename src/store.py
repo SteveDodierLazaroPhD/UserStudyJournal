@@ -219,6 +219,8 @@ class Day(gobject.GObject):
             self._items[event.id].event = event
             return False
         self._items[event.id] = ContentStruct(event.id, event)
+        if overwrite:
+            self._items[event.id].content_object = content_object_selector_function(event)
         return True
 
     def next(self, store=None):
@@ -405,7 +407,7 @@ class Store(gobject.GObject):
             return True
         gobject.timeout_add_seconds(1, _build)
 
-    def add_event(self, event, overwrite=False, idle=True):
+    def add_event(self, event, overwrite=True, idle=True):
 
         date = datetime.date.fromtimestamp(int(event.timestamp)/1000)
         day = self[date]

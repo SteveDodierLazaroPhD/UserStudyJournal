@@ -38,6 +38,11 @@ try:
 except ImportError:
     gst = None
 
+try:
+    import sexy
+except ImportError:
+    sexy = None
+
 from zeitgeist.client import ZeitgeistClient
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
     ResultType
@@ -436,7 +441,7 @@ class SearchBox(gtk.ToolItem):
             setattr(obj, "matches_search", True)
 
 
-class SearchEntry(gtk.Entry):
+class SearchEntry(gtk.Entry if not sexy else sexy.IconEntry):
 
     __gsignals__ = {
         "clear" : (gobject.SIGNAL_RUN_FIRST,
@@ -464,6 +469,11 @@ class SearchEntry(gtk.Entry):
         self.connect("changed", lambda w: self._queue_search())
         self.connect("focus-in-event", self._entry_focus_in)
         self.connect("focus-out-event", self._entry_focus_out)
+        if sexy:
+            findicon = gtk.Image()
+            findicon.set_from_stock(gtk.STOCK_FIND, gtk.ICON_SIZE_BUTTON)
+            self.set_icon(sexy.ICON_ENTRY_PRIMARY, findicon)
+            self.add_clear_button()
         #self.connect("icon-press", self._icon_press)
         self.show_all()
 
@@ -927,6 +937,7 @@ class TagCloud(gtk.VBox):
         tag_menu.attach_to_widget(remove, lambda *args:None)
         ##
         self.toggle_tag_entry_box()
+        self.label.connect("activate-link", self.on_url_activated)
 
     def show_remove_menu(self, w, event):
         if event.button == 1 and self.tag_dict:
@@ -973,7 +984,11 @@ class TagCloud(gtk.VBox):
         else:
             value = (value-min_value)/(max_value-min_value)
             size = (value * self._size_diff) + self.min_font_size
-        return "<span size='" + str(int(size)) + "'>" + tag + "</span>"
+        return "<a href='" + tag + "'><span size='" + str(int(size)) + "'>" + tag + "</span></a>"
+
+    def on_url_activated(self, widget, url):
+        print url, "Clicked"
+        return True
 
     def set_tags(self, tag_dict):
         self.tag_dict = tag_dict
