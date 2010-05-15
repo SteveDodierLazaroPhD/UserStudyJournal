@@ -476,7 +476,7 @@ class SearchEntry(gtk.Entry):
         # Note: GTK_ENTRY_ICON_SECONDARY does not seem to be bound in PyGTK.
         if int(pos) == 1 and not self.get_text() == self.default_text:
             self._entry_clear_no_change_handler()
-        elif event.button == 1:
+        elif event.button == 1 and pos == 0:
             self.emit("close")
 
     def _entry_focus_in(self, widget, x):
