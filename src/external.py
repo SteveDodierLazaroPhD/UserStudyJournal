@@ -45,9 +45,12 @@ TRACKER_IFACE = 'org.freedesktop.Tracker1.Resources'
 
 class TrackerQueries:
     QUERY_BY_TEXT = """
-        SELECT ?u WHERE {
-        ?u a nie:InformationElement ;
+        SELECT ?url
+        WHERE {
+          ?u a nie:InformationElement ;
             fts:match "%s*" .
+            nie:isStoredAs ?as .
+          ?as nie:url ?url .
         } """ # % text
 
     GET_TAGS_FOR_FILE = """
@@ -70,7 +73,15 @@ class TrackerQueries:
         }""" # % (uri, label)
 
     GET_FILES_WITH_TAGS = """
-    """
+        SELECT ?url
+        WHERE {
+          ?u a nie:InformationElement ;
+             nao:hasTag ?tags ;
+             nie:isStoredAs ?as .
+          ?tags a nao:Tag ;
+             nao:prefLabel '%s' .
+          ?as nie:url ?url .
+        }""" #%  label
 
     GET_TAGS_WITH_LABEL = """
         SELECT ?tag
@@ -124,6 +135,11 @@ class TrackerBackend:
             self.iface.SparqlQuery(TrackerQueries.GET_TAGS_FOR_FILE % (uri))]
         tag_names = [x[1] for x in tags]
         return tag_names
+
+    def get_uris_for_tag(self, label):
+        files = [str(x[0]) for x in
+            self.iface.SparqlQuery(TrackerQueries.GET_FILES_WITH_TAGS % (label))]
+        return files
 
     def get_tag_dict_for_uri(self, uri):
         tag_dict = {}

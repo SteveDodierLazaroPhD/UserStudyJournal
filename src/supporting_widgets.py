@@ -949,7 +949,7 @@ class TagCloud(gtk.VBox):
         tag_menu.attach_to_widget(remove, lambda *args:None)
         ##
         self.toggle_tag_entry_box()
-        self.label.connect("activate-link", self.on_url_activated)
+        self.label.connect("activate-link", self.on_tag_activated)
 
     def show_remove_menu(self, w, event):
         if event.button == 1 and self.tag_dict:
@@ -998,8 +998,17 @@ class TagCloud(gtk.VBox):
             size = (value * self._size_diff) + self.min_font_size
         return "<a href='" + tag + "'><span size='" + str(int(size)) + "'>" + tag + "</span></a>"
 
-    def on_url_activated(self, widget, url):
-        print url, "Clicked"
+    def on_tag_activated(self, widget, tag):
+        print tag, "Clicked"
+        if TRACKER:
+            files = TRACKER.get_uris_for_tag(tag)
+            if files:
+                results = []
+                for obj in content_objects.Object.instances:
+                    if obj.uri in files:
+                        results.append(obj)
+                SearchBox.emit("search", results)
+
         return True
 
     def set_tags(self, tag_dict):
