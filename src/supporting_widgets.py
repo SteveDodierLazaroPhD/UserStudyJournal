@@ -357,7 +357,6 @@ class SearchBox(gtk.ToolItem):
             def callback(results):
                 self.results = results
                 self.emit("search", results)
-
             if not text:
                 text = self.search.get_text()
             if text == self.search.default_text or text.strip() == "":
@@ -430,8 +429,7 @@ class SearchBox(gtk.ToolItem):
         return True
 
     def __search(self, this, results):
-        for obj in content_objects.ContentObject.instances:
-            setattr(obj, "matches_search", False)
+        content_objects.ContentObject.clear_search_matches()
         for obj in results:
             setattr(obj, "matches_search", True)
 
@@ -999,16 +997,17 @@ class TagCloud(gtk.VBox):
         return "<a href='" + tag + "'><span size='" + str(int(size)) + "'>" + tag + "</span></a>"
 
     def on_tag_activated(self, widget, tag):
-        print tag, "Clicked"
         if TRACKER:
-            files = TRACKER.get_uris_for_tag(tag)
-            if files:
-                results = []
-                for obj in content_objects.Object.instances:
-                    if obj.uri in files:
-                        results.append(obj)
-                SearchBox.emit("search", results)
-
+            def _thread():
+                files = TRACKER.get_uris_for_tag(tag)
+                if files:
+                    results = []
+                    for obj in content_objects.Object.instances:
+                        if obj.uri in files:
+                            results.append(obj)
+                    SearchBox.emit("search", results)
+            thread = threading.Thread(target=_thread)
+            thread.start()
         return True
 
     def set_tags(self, tag_dict):

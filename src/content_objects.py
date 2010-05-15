@@ -88,6 +88,10 @@ class Object(object):
         super(Object, self).__init__()
         Object.instances.append(self)
 
+    @classmethod
+    def clear_search_matches(cls):
+        map(lambda o: setattr(o, "matches_search", False), cls.instances)
+
     def __del__(self):
         Object.instances.remove(self)
         return super(Object, self).__del__()
@@ -603,7 +607,7 @@ class HamsterContentObject(BaseContentType):
 
     icon_name = "hamster-applet"
     text = "{manifestation.display_name} {event.subjects[0].text}"
-    timelineview_text = "{manifestation.display_name}\n{event.subjects[0].uri}"
+    timelineview_text = "{manifestation.display_name}\n{event.subjects[0].text}"
     thumbview_text = "{manifestation.display_name}\n{event.subjects[0].text}"
 
 
