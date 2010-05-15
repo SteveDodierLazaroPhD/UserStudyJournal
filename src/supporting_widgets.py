@@ -38,11 +38,6 @@ try:
 except ImportError:
     gst = None
 
-try:
-    import sexy
-except ImportError:
-    sexy = None
-
 from zeitgeist.client import ZeitgeistClient
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
     ResultType
@@ -441,7 +436,7 @@ class SearchBox(gtk.ToolItem):
             setattr(obj, "matches_search", True)
 
 
-class SearchEntry(gtk.Entry if not sexy else sexy.IconEntry):
+class SearchEntry(gtk.Entry):
 
     __gsignals__ = {
         "clear" : (gobject.SIGNAL_RUN_FIRST,
@@ -449,7 +444,10 @@ class SearchEntry(gtk.Entry if not sexy else sexy.IconEntry):
                    ()),
         "search" : (gobject.SIGNAL_RUN_FIRST,
                     gobject.TYPE_NONE,
-                    (gobject.TYPE_STRING,))
+                    (gobject.TYPE_STRING,)),
+        "close" : (gobject.SIGNAL_RUN_FIRST,
+                   gobject.TYPE_NONE,
+                   ()),
     }
 
     default_text = _("Type here to search...")
@@ -469,18 +467,17 @@ class SearchEntry(gtk.Entry if not sexy else sexy.IconEntry):
         self.connect("changed", lambda w: self._queue_search())
         self.connect("focus-in-event", self._entry_focus_in)
         self.connect("focus-out-event", self._entry_focus_out)
-        if sexy:
-            findicon = gtk.Image()
-            findicon.set_from_stock(gtk.STOCK_FIND, gtk.ICON_SIZE_BUTTON)
-            self.set_icon(sexy.ICON_ENTRY_PRIMARY, findicon)
-            self.add_clear_button()
-        #self.connect("icon-press", self._icon_press)
+        self.set_icon_from_stock(gtk.ENTRY_ICON_PRIMARY, gtk.STOCK_CANCEL)
+        self.set_icon_from_stock(gtk.ENTRY_ICON_SECONDARY, gtk.STOCK_CLEAR)
+        self.connect("icon-press", self._icon_press)
         self.show_all()
 
     def _icon_press(self, widget, pos, event):
         # Note: GTK_ENTRY_ICON_SECONDARY does not seem to be bound in PyGTK.
         if int(pos) == 1 and not self.get_text() == self.default_text:
             self._entry_clear_no_change_handler()
+        elif event.button == 1:
+            self.emit("close")
 
     def _entry_focus_in(self, widget, x):
         if self.get_text() == self.default_text:
@@ -862,6 +859,9 @@ class Toolbar(gtk.Toolbar):
             _("Show Pinned Pane"))
         self.search_button = sb = gtk.ToolButton(gtk.STOCK_FIND)
         self.search_dialog = sdialog = SearchBox
+        self.search_dialog.search.connect("close", self.toggle_searchbox_visibility)
+        self.search_button.connect("clicked", self.toggle_searchbox_visibility)
+
         sep1 = gtk.SeparatorToolItem()
         sep2 = gtk.SeparatorToolItem()
         for item in (sdialog, sb, sep2, pin, sep1, tlv, tbv, mv):
@@ -878,6 +878,18 @@ class Toolbar(gtk.Toolbar):
 
     def do_throb(self):
         self.throbber.image.animate_for_seconds(1)
+
+    def toggle_searchbox_visibility(self, w):
+        result = self.search_dialog.toggle_visibility()
+        if result:
+            self.search_button.hide()
+        else:
+            self.search_button.show()
+        #if result:
+        #    self.search_dialog.set_stock_id(gtk.STOCK_CANCEL)
+        #else:
+        #    self.search_dialog.set_stock_id(gtk.STOCK_FIND)
+
 
 
 class TagCloud(gtk.VBox):

@@ -160,7 +160,6 @@ class PortalWindow(gtk.Window):
         self.toolbar.throbber.connect("clicked", self.show_about_window)
         self.toolbar.goto_today_button.connect("clicked", lambda w: self.set_date(datetime.date.today()))
         self.toolbar.pin_button.connect("clicked", lambda w: self.panedcontainer.pinbox.show_all())
-        self.toolbar.search_button.connect("clicked", self.toggle_searchbox_visibility)
         self.store.connect("update", self.histogram.histogram.set_store)
         self.connect("destroy", self.quit)
         self._request_size()
@@ -222,13 +221,6 @@ class PortalWindow(gtk.Window):
     def previous(self, *args):
         day = self.day_iter.previous(self.store)
         self.set_day(day)
-
-    def toggle_searchbox_visibility(self, w):
-        result = self.searchbox.toggle_visibility()
-        if result:
-            self.toolbar.search_button.set_stock_id(gtk.STOCK_CANCEL)
-        else:
-            self.toolbar.search_button.set_stock_id(gtk.STOCK_FIND)
 
     def handle_button_sensitivity(self, date):
         if date == datetime.date.today():
