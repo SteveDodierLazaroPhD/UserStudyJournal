@@ -921,7 +921,7 @@ class TagCloud(gtk.VBox):
         self.remove_button = remove = StockIconButton(gtk.STOCK_REMOVE)
         self.entry = entry = gtk.Entry()
         box.pack_start(add, False, False)
-        box.pack_end(entry_box)
+        box.pack_start(entry_box)
         box.pack_end(remove, False, False)
         entry_box.pack_start(entry)
         entry_box.pack_end(finish, False, False)
