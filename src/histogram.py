@@ -420,7 +420,7 @@ class TooltipEventBox(gtk.EventBox):
         self.histogram = histogram
         self.container = container
         self.set_property("has-tooltip", True)
-        #self.connect("query-tooltip", self.query_tooltip)
+        self.connect("query-tooltip", self.query_tooltip)
 
     def query_tooltip(self, widget, x, y, keyboard_mode, tooltip):
         if y < self.histogram.get_size_request()[1] - self.histogram.bottom_padding:
@@ -431,12 +431,13 @@ class TooltipEventBox(gtk.EventBox):
                 self._saved_tooltip_location = location
                 return False
             try:
-                timestamp, count = self.histogram.get_store()[location]
+                day = self.histogram.get_store().days[location]
+                count = len(day)
             except IndexError:
                 # there is no bar for at this location
                 # don't show a tooltip
                 return False
-            date = datetime.date.fromtimestamp(timestamp).strftime("%A, %d %B, %Y")
+            date = day.date.strftime("%A, %d %B, %Y")
             tooltip.set_text("%s\n%i %s" % (date, count,
                                             gettext.ngettext("item", "items", count)))
         else:
