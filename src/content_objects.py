@@ -607,7 +607,7 @@ class HamsterContentObject(BaseContentType):
 
     icon_name = "hamster-applet"
     text = "Time Tracker: {event.subjects[0].text}"
-    timelineview_text = "Time Tracker: \n{event.subjects[0].text}"
+    timelineview_text = "Time Tracker \n{event.subjects[0].text}"
     thumbview_text = "Time Tracker \n{event.subjects[0].text}"
 
 

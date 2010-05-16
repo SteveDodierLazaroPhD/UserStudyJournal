@@ -169,11 +169,10 @@ class DayButton(gtk.DrawingArea):
         gtk.gdk.KEY_PRESS_MASK | gtk.gdk.BUTTON_RELEASE_MASK | gtk.gdk.BUTTON_PRESS_MASK |
         gtk.gdk.MOTION_NOTIFY |   gtk.gdk.POINTER_MOTION_MASK
     )
-    def __init__(self, side = 0, leading = False):
+    def __init__(self, side = 0, sensitive=True):
         super(DayButton, self).__init__()
         self.set_events(self._events)
         self.set_flags(gtk.CAN_FOCUS)
-        self.leading = leading
         self.side = side
         self.connect("button_press_event", self.on_press)
         self.connect("button_release_event", self.clicked_sender)
@@ -183,6 +182,10 @@ class DayButton(gtk.DrawingArea):
         self.connect("expose_event", self.expose)
         self.connect("style-set", self.change_style)
         self.set_size_request(20, -1)
+        self.set_sensitive(sensitive)
+
+    def set_leading(self, leading):
+        self.leading = leading
 
     def set_sensitive(self, case):
         self.sensitive = case

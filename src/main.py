@@ -130,7 +130,7 @@ class PortalWindow(gtk.Window):
         self.histogram.set_store(self.store)
         self.histogram.set_dates([self.day_iter.date])
         self.backward_button = DayButton(0)
-        self.forward_button = DayButton(1)
+        self.forward_button = DayButton(1, sensitive=False)
         self.searchbox = SearchBox
         # Widget placement
         vbox = gtk.VBox()
@@ -148,12 +148,13 @@ class PortalWindow(gtk.Window):
         self.add(vbox)
 
         # Settings
-        self.forward_button.set_sensitive(False)
+        self.show_all()
+        self._request_size()
+        self.view.set_day(self.store.today)
+        self.connect("destroy", self.quit)
         self.backward_button.connect("clicked", self.previous)
         self.forward_button.connect("clicked", self.next)
         self.histogram.connect("date-changed", lambda w, date: self.set_date(date))
-        self.show_all()
-        self.view.set_day(self.store.today)
         self.toolbar.multiview_button.connect("clicked", self.on_view_button_click, 0)
         self.toolbar.thumbview_button.connect("clicked", self.on_view_button_click, 1)
         self.toolbar.timelineview_button.connect("clicked", self.on_view_button_click, 2)
@@ -161,8 +162,8 @@ class PortalWindow(gtk.Window):
         self.toolbar.goto_today_button.connect("clicked", lambda w: self.set_date(datetime.date.today()))
         self.toolbar.pin_button.connect("clicked", lambda w: self.panedcontainer.pinbox.show_all())
         self.store.connect("update", self.histogram.histogram.set_store)
-        self.connect("destroy", self.quit)
-        self._request_size()
+        self.searchbox.connect("search", self._on_search)
+        self.searchbox.connect("clear", self._on_search_clear)
         self.set_title_from_date(self.day_iter.date)
         self.watch_cursor = gtk.gdk.Cursor(gtk.gdk.WATCH)
         self.window.set_cursor(self.watch_cursor)
@@ -179,7 +180,7 @@ class PortalWindow(gtk.Window):
         self.panedcontainer.informationcontainer.hide()
         self.panedcontainer.pinbox.hide()
         self.searchbox.hide()
-
+        # Window configuration
         self.set_icon_name("gnome-activity-journal")
         self.set_icon_list(
             *[gtk.gdk.pixbuf_new_from_file(get_icon_path(f)) for f in (
@@ -188,8 +189,6 @@ class PortalWindow(gtk.Window):
                 "hicolor/32x32/apps/gnome-activity-journal.png",
                 "hicolor/48x48/apps/gnome-activity-journal.png",
                 "hicolor/256x256/apps/gnome-activity-journal.png")])
-        self.searchbox.connect("search", self._on_search)
-        self.searchbox.connect("clear", self._on_search_clear)
         self.toolbar.view_buttons[0].set_sensitive(False)
 
     @property
@@ -223,9 +222,14 @@ class PortalWindow(gtk.Window):
         self.set_day(day)
 
     def handle_button_sensitivity(self, date):
-        if date == datetime.date.today():
+        today = datetime.date.today()
+        if date == today:
             return self.forward_button.set_sensitive(False)
-        return self.forward_button.set_sensitive(True)
+        elif date == today + tdelta(-1):
+            self.forward_button.set_leading(True)
+        else:
+            self.forward_button.set_leading(False)
+        self.forward_button.set_sensitive(True)
 
     def on_view_button_click(self, button, i):
         for button in self.toolbar.view_buttons:
@@ -254,7 +258,6 @@ class PortalWindow(gtk.Window):
     def _request_size(self):
         screen = self.get_screen().get_monitor_geometry(
             self.get_screen().get_monitor_at_point(*self.get_position()))
-
         min_size = (1024, 600) # minimum netbook size
         size = [
             min(max(int(screen[2] * 0.80), min_size[0]), screen[2]),
