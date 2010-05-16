@@ -202,7 +202,6 @@ HAMSTER_PATH = "/org/gnome/Hamster"
 HAMSTER_URI = "org.gnome.Hamster"
 
 
-
 class Hamster(object):
     class HamsterEvent(Event):
         def _HAMSTER_ID_COUNTER():

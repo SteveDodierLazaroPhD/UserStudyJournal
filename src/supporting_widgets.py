@@ -46,10 +46,8 @@ import content_objects
 from common import shade_gdk_color, combine_gdk_color, is_command_available, \
     launch_command, get_gtk_rgba, SIZE_NORMAL, SIZE_LARGE, GioFile
 from config import BASE_PATH, VERSION, settings, get_icon_path, get_data_path, bookmarker, SUPPORTED_SOURCES
-from store import STORE, get_related_events_for_uri
+from store import STORE, get_related_events_for_uri, CLIENT
 from external import TRACKER
-
-CLIENT = ZeitgeistClient()
 
 
 class DayLabel(gtk.DrawingArea):
@@ -452,10 +450,6 @@ class SearchEntry(gtk.Entry):
     }
 
     default_text = _("Type here to search...")
-
-    # The font style of the text in the entry.
-    #font_style = None
-
     # TODO: What is this?
     search_timeout = 0
 
@@ -464,17 +458,15 @@ class SearchEntry(gtk.Entry):
 
         self.set_width_chars(30)
         self.set_text(self.default_text)
-        #self.set_size_request(-1, 28)
         self.connect("changed", lambda w: self._queue_search())
         self.connect("focus-in-event", self._entry_focus_in)
         self.connect("focus-out-event", self._entry_focus_out)
-        self.set_icon_from_stock(gtk.ENTRY_ICON_PRIMARY, gtk.STOCK_CANCEL)
-        self.set_icon_from_stock(gtk.ENTRY_ICON_SECONDARY, gtk.STOCK_CLEAR)
+        self.set_icon_from_stock(0, gtk.STOCK_CANCEL)
+        self.set_icon_from_stock(1, gtk.STOCK_CLEAR)
         self.connect("icon-press", self._icon_press)
         self.show_all()
 
     def _icon_press(self, widget, pos, event):
-        # Note: GTK_ENTRY_ICON_SECONDARY does not seem to be bound in PyGTK.
         if int(pos) == 1 and not self.get_text() == self.default_text:
             self._entry_clear_no_change_handler()
         elif event.button == 1 and pos == 0:
@@ -812,7 +804,6 @@ class ContextMenu(gtk.Menu):
                 Event.new_for_values(subject_uri=uri),
                 lambda ids: CLIENT.delete_events(map(int, ids)))
 
-
     def do_send_to(self, menuitem):
         launch_command("nautilus-sendto", map(lambda obj: obj.uri, self.subjects))
 
@@ -886,11 +877,6 @@ class Toolbar(gtk.Toolbar):
             self.search_button.hide()
         else:
             self.search_button.show()
-        #if result:
-        #    self.search_dialog.set_stock_id(gtk.STOCK_CANCEL)
-        #else:
-        #    self.search_dialog.set_stock_id(gtk.STOCK_FIND)
-
 
 
 class TagCloud(gtk.VBox):
@@ -1133,6 +1119,12 @@ class InformationBox(gtk.VBox):
 
 class _RelatedPane(gtk.TreeView):
     """
+    . . . . .
+    .       .
+    .       . <--- Related files
+    .       .
+    . . . . .
+
     Displays related events using a widget based on gtk.TreeView
     """
     def __init__(self):
@@ -1179,12 +1171,12 @@ class _RelatedPane(gtk.TreeView):
             lock.release()
             gtk.gdk.threads_leave()
 
-    def set_model_from_list(self, events):
+    def set_model_from_list(self, structs):
         self.last_active = -1
-        if not events:
+        if not structs:
             self.set_model(None)
             return
-        thread = threading.Thread(target=self._set_model_in_thread, args=(events,))
+        thread = threading.Thread(target=self._set_model_in_thread, args=(structs,))
         thread.start()
 
     def on_button_press(self, widget, event):
@@ -1206,12 +1198,17 @@ class _RelatedPane(gtk.TreeView):
 
 class InformationContainer(Pane):
     """
-    . . . . . . . .  . . .
-    .             .  .   .
-    .    Info     .  .   . <--- Related files
-    .             .  .   .
-    .             .  .   .
-    . . . . . . . .  . . .
+    . . . . .
+    .  URI  .
+    . Info  .
+    .       .
+    . Tags  .
+    . . . . .
+    . . . . .
+    .       .
+    .       . <--- Related files
+    .       .
+    . . . . .
 
     A pane which holds the information pane and related pane
     """

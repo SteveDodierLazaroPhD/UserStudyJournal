@@ -187,6 +187,9 @@ class Day(gobject.GObject):
                 self.insert_events(None, fact.get_events())
 
     def has_id(self, id_):
+        """
+        Returns True if the this object contains an event with the given id
+        """
         return self._items.has_key(id_)
 
     def __getitem__(self, id_):
@@ -215,6 +218,17 @@ class Day(gobject.GObject):
 
     @DoEmit("update")
     def insert_event(self, event, overwrite=False):
+        """
+        Insert an event into the day object
+
+        Emits a 'update' signal
+        """
+        return self._insert_event(event, overwrite)
+
+    def _insert_event(self, event, overwrite=False):
+        """
+        Insert an event into the day object without emitting a 'update' signal
+        """
         if not overwrite and self.has_id(event.id):
             self._items[event.id].event = event
             return False
@@ -224,12 +238,18 @@ class Day(gobject.GObject):
         return True
 
     def next(self, store=None):
+        """
+        Return the next day in the given store
+        """
         if not store:
             store = STORE # Singleton
         date = self.date + datetime.timedelta(days=1)
         return store[date]
 
     def previous(self, store=None):
+        """
+        Return the previous day in the given store
+        """
         if not store:
             store = STORE # Singleton
         date = self.date + datetime.timedelta(days=-1)
@@ -366,6 +386,11 @@ class Store(gobject.GObject):
         return i
 
     def request_last_n_days_events(self, n=90, func=None):
+        """
+        Find the events for 'n' days and packs them into the store
+
+        Optionally calls func upon completion
+        """
         event_templates = (
             Event.new_for_values(interpretation=Interpretation.VISIT_EVENT.uri),
             Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri),
@@ -413,7 +438,8 @@ class Store(gobject.GObject):
         day = self[date]
         if idle:
             def _idle_add(event, overwrite):
-                day.insert_event(event, overwrite)
+                # Use _insert_event to avoid update signals
+                day._insert_event(event, overwrite)
                 return False
             gobject.idle_add(_idle_add, event, overwrite)
         else:
