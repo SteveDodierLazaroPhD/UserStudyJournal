@@ -605,10 +605,12 @@ class HamsterContentObject(BaseContentType):
             return cls.create(event)
         return False
 
+    _prefix = _("Time Tracker")
+
     icon_name = "hamster-applet"
-    text = "Time Tracker: {event.subjects[0].text}"
-    timelineview_text = "Time Tracker \n{event.subjects[0].text}"
-    thumbview_text = "Time Tracker \n{event.subjects[0].text}"
+    text = _prefix + ": {event.subjects[0].text}"
+    timelineview_text = _prefix + "\n{event.subjects[0].text}"
+    thumbview_text = _prefix + "\n{event.subjects[0].text}"
 
 
 class EmailContentObject(BaseContentType):
