@@ -1,6 +1,6 @@
 # -.- coding: utf-8 -.-
 #
-# Filename
+# GNOME Activity Journal
 #
 # Copyright © 2010 Randal Barlow <email.tehk@gmail.com>
 # Copyright © 2010 Siegfried Gevatter <siegfried@gevatter.com>

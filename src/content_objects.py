@@ -1,6 +1,6 @@
 # -.- coding: utf-8 -.-
 #
-# content_objects.py
+# GNOME Activity Journal
 #
 # Copyright © 2010 Randal Barlow
 #
