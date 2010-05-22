@@ -25,8 +25,8 @@ import time
 
 from zeitgeist.datamodel import Event, Interpretation, ResultType
 
-from config import settings, get_icon_path
-from store import STORE
+from config import settings, get_icon_path, SUPPORTED_SOURCES
+from store import STORE, CLIENT
 
 
 class BoxMenuItem(gtk.MenuItem):
@@ -51,6 +51,53 @@ class BoxMenuItem(gtk.MenuItem):
         self.image.set_from_pixbuf(obj.get_icon(22))
 
 
+class MostUsedMenu(gtk.Menu):
+    def __init__(self, interp):
+        super(MostUsedMenu, self).__init__()
+        self.templates = [Event.new_for_values(subject_interpretation=interp.uri)]
+        self.request_items()
+
+    def clear(self): map(self.remove, self.get_children)
+
+    def ids_reply_handler(self, ids):
+        structs = map(STORE.get_event_from_id, ids)
+        for struct in structs:
+            if struct.content_object:
+                item = BoxMenuItem(struct.content_object)
+                item.show_all()
+                self.append(item)
+
+    def request_items(self):
+        CLIENT.find_event_ids_for_templates(
+            self.templates, self.ids_reply_handler,
+            num_events=10, result_type=ResultType.MostPopularSubjects)
+
+
+
+class MostUsedParentMenu(gtk.Menu):
+    sources = (
+        (Interpretation.VIDEO, "gnome-mime-video"),
+        (Interpretation.MUSIC, "gnome-mime-audio"),
+        (Interpretation.IMAGE, "gnome-mime-image"),
+        (Interpretation.DOCUMENT, "x-office-document"),
+        (Interpretation.SOURCECODE, "gnome-mime-text"),
+        (Interpretation.IM_MESSAGE, "empathy"),
+        (Interpretation.EMAIL, "email"),
+        (Interpretation.UNKNOWN, "gnome-other"),
+
+        )
+    def __init__(self):
+        super(MostUsedParentMenu, self).__init__()
+        for interp, icon_name in self.sources:
+            menu = gtk.ImageMenuItem(interp.display_name)
+            image = gtk.image_new_from_icon_name(icon_name, 22)
+            image.show_all()
+            menu.set_image(image)
+            child_menu = MostUsedMenu(interp)
+            menu.set_submenu(child_menu)
+            self.append(menu)
+
+
 class AppletMenu(gtk.Menu):
     __gsignals__ = {
         "set" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
@@ -71,8 +118,11 @@ class AppletMenu(gtk.Menu):
         self.toggle_button.set_active(True)
         self.quit_button = gtk.ImageMenuItem(stock_id=gtk.STOCK_QUIT)
         self.seperator = gtk.SeparatorMenuItem()
-        self.kept_members = (self.toggle_button, self.quit_button, self.seperator)
-        for item in (self.toggle_button, self.quit_button, self.seperator):
+        self.most_used = gtk.ImageMenuItem(_("Most Used"))
+        self.most_used.set_image(gtk.image_new_from_icon_name("user-bookmarks", 22))
+        self.most_used.set_submenu(MostUsedParentMenu())
+        self.kept_members = (self.toggle_button, self.quit_button, self.seperator, self.most_used)
+        for item in self.kept_members:
             self.append(item)
             item.show_all()
         self.set_day(STORE.today)
@@ -110,7 +160,7 @@ class StatusIcon(gtk.StatusIcon):
     def __init__(self):
         super(StatusIcon, self).__init__()
         self.set_from_file(get_icon_path("hicolor/scalable/apps/gnome-activity-journal.svg"))
-        self.set_tooltip("Recently used")
+        self.set_tooltip( _("Activity Journal"))
         self.menu = AppletMenu()
         self.connect("popup-menu", self.popup_menu_cb, self.menu)
         self.menu.toggle_button.connect(

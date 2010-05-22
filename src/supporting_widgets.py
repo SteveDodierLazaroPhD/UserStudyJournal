@@ -872,6 +872,10 @@ class Toolbar(gtk.Toolbar):
 
     def show_settings(self, *args):
         dialog = PreferencesDialog()
+        w = self
+        while w.parent:
+            w = w.parent
+        dialog.set_transient_for(w)
         dialog.show_all()
 
     def do_throb(self):
