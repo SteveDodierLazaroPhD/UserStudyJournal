@@ -256,8 +256,14 @@ class Day(gobject.GObject):
         return store[date]
 
     def filter(self, event_template=None, result_type=None):
-        items = self.filter_event_template(event_template)
-        items = self.filter_result_type(items, result_type)
+        if event_template:
+            items = self.filter_event_template(event_template)
+            items = self.filter_result_type(items, result_type)
+        elif result_type:
+            items = self.filter_result_type(self._items.values(), result_type)
+        else:
+            items = self._items.values()
+        items.sort(key=lambda obj: int(obj.event.timestamp))
         return items
 
     def filter_event_template(self, event_template):

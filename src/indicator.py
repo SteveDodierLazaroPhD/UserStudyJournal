@@ -29,26 +29,26 @@ from config import settings, get_icon_path, SUPPORTED_SOURCES
 from store import STORE, CLIENT
 
 
-class BoxMenuItem(gtk.MenuItem):
+class IconMenuItem(gtk.ImageMenuItem):
     def __init__(self, obj=None):
-        super(BoxMenuItem, self).__init__()
-        self.box = gtk.HBox()
-        self.label = gtk.Label()
+        super(IconMenuItem, self).__init__("Sample")
+        self.label = self.get_child()
+        self.remove(self.label)
+
+        box = gtk.HBox()
+        self.actor_image = gtk.Image()
+        box.pack_start(self.label, False, False)
+        box.pack_end(self.actor_image, False, False)
+        self.add(box)
         self.image = gtk.Image()
-        self.box.pack_start(self.image, False, False)
-        self.box.pack_start(self.label, False, True, 2)
-        self.image.set_alignment(0,0)
-        self.add(self.box)
-        # Display magic
-        self.label.set_max_width_chars(40)
-        self.label.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
-        self.label.set_justify(gtk.JUSTIFY_LEFT)
+        self.set_image(self.image)
         if obj: self.set_from_content_object(obj)
 
     def set_from_content_object(self, obj):
         self.connect("activate", lambda w, obj: obj.launch(), obj)
         self.label.set_text(obj.text)
-        self.image.set_from_pixbuf(obj.get_icon(22))
+        self.image.set_from_pixbuf(obj.get_icon(24))
+        self.actor_image.set_from_pixbuf(obj.get_actor_pixbuf(16))
 
 
 class MostUsedMenu(gtk.Menu):
@@ -63,7 +63,7 @@ class MostUsedMenu(gtk.Menu):
         structs = map(STORE.get_event_from_id, ids)
         for struct in structs:
             if struct.content_object:
-                item = BoxMenuItem(struct.content_object)
+                item = IconMenuItem(struct.content_object)
                 item.show_all()
                 self.append(item)
 
@@ -90,7 +90,7 @@ class MostUsedParentMenu(gtk.Menu):
         super(MostUsedParentMenu, self).__init__()
         for interp, icon_name in self.sources:
             menu = gtk.ImageMenuItem(interp.display_name)
-            image = gtk.image_new_from_icon_name(icon_name, 22)
+            image = gtk.image_new_from_icon_name(icon_name, 24)
             image.show_all()
             menu.set_image(image)
             child_menu = MostUsedMenu(interp)
@@ -117,11 +117,12 @@ class AppletMenu(gtk.Menu):
         self.toggle_button = gtk.CheckMenuItem(_("Show Activity Journal"))
         self.toggle_button.set_active(True)
         self.quit_button = gtk.ImageMenuItem(stock_id=gtk.STOCK_QUIT)
-        self.seperator = gtk.SeparatorMenuItem()
         self.most_used = gtk.ImageMenuItem(_("Most Used"))
-        self.most_used.set_image(gtk.image_new_from_icon_name("user-bookmarks", 22))
+        self.most_used.set_image(gtk.image_new_from_icon_name("user-bookmarks", 24))
         self.most_used.set_submenu(MostUsedParentMenu())
-        self.kept_members = (self.toggle_button, self.quit_button, self.seperator, self.most_used)
+        self.kept_members = (gtk.SeparatorMenuItem(), self.most_used,
+                             gtk.SeparatorMenuItem(), self.toggle_button,
+                             self.quit_button)
         for item in self.kept_members:
             self.append(item)
             item.show_all()
@@ -142,10 +143,10 @@ class AppletMenu(gtk.Menu):
 
     def set(self, *args):
         self.clear()
-        for struct in self.day.filter(self.event_templates, result_type=ResultType.MostRecentSubjects)[-10:]:
+        for struct in self.day.filter(self.event_templates, result_type=ResultType.MostRecentSubjects)[-10::]:
             if struct.content_object:
-                m = BoxMenuItem(struct.content_object)
-                self.append(m)
+                m = IconMenuItem(struct.content_object)
+                self.prepend(m)
                 m.show_all()
         self.emit("set")
 
