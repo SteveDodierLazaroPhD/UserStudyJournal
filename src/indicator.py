@@ -17,7 +17,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#import appindicator
+#try:
+#    import appindicator
+#except ImportError:
+appindicator = None
 import gobject
 import gtk
 import pango
@@ -151,27 +154,50 @@ class AppletMenu(gtk.Menu):
         self.emit("set")
 
 
-class StatusIcon(gtk.StatusIcon):
-    __gsignals__ = {
-        "toggle-visibility" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_BOOLEAN,)),
-        "quit" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
-
-    }
-
+class StatusIconAbstract(gobject.GObject):
     def __init__(self):
-        super(StatusIcon, self).__init__()
-        self.set_from_file(get_icon_path("hicolor/scalable/apps/gnome-activity-journal.svg"))
-        self.set_tooltip( _("Activity Journal"))
         self.menu = AppletMenu()
-        self.connect("popup-menu", self.popup_menu_cb, self.menu)
         self.menu.toggle_button.connect(
             "toggled",
             lambda *args: self.emit("toggle-visibility", self.menu.toggle_button.get_active()))
         self.menu.quit_button.connect("activate", lambda *args: self.emit("quit"))
 
+
+gobject.signal_new(
+    "toggle-visibility", StatusIconAbstract, gobject.SIGNAL_RUN_FIRST,
+     gobject.TYPE_NONE, (gobject.TYPE_BOOLEAN,)
+)
+
+gobject.signal_new(
+    "quit", StatusIconAbstract, gobject.SIGNAL_RUN_FIRST,
+     gobject.TYPE_NONE, ()
+)
+
+
+class StatusIcon(StatusIconAbstract, gtk.StatusIcon):
+    def __init__(self):
+        gtk.StatusIcon.__init__(self)
+        StatusIconAbstract.__init__(self)
+        self.set_from_file(get_icon_path("hicolor/scalable/apps/gnome-activity-journal.svg"))
+        self.set_tooltip( _("Activity Journal"))
+        self.connect("popup-menu", self.popup_menu_cb, self.menu)
+
     def popup_menu_cb(self, widget, button, activate_time, menu):
         menu.popup(None, None, gtk.status_icon_position_menu,
                    button, activate_time, self)
+
+
+if appindicator:
+    class IndicatorIcon(StatusIconAbstract, appindicator.Indicator):
+        def __init__(self):
+            appindicator.Indicator.__init__(self, "activity-journal-client", "journal-indicator", appindicator.CATEGORY_APPLICATION_STATUS)
+            StatusIconAbstract.__init__(self)
+            self.set_menu(self.menu)
+            self.set_status(appindicator.STATUS_ACTIVE)
+            self.set_icon("time")
+            self.set_attention_icon ("indicator-messages-new")
+            self.menu.connect("set", lambda *args: self.set_menu(self.menu))
+
 
 
 

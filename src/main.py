@@ -135,8 +135,11 @@ class PortalWindow(gtk.Window):
         self.forward_button = DayButton(1, sensitive=False)
         self.searchbox = SearchBox
         if SHOW_STATUSICON:
-            self.status = indicator.StatusIcon()
-            self.status.set_visible(True)
+            if indicator.appindicator:
+                self.status = indicator.IndicatorIcon()
+            else:
+                self.status = indicator.StatusIcon()
+                self.status.set_visible(True)
             self.status.connect("toggle-visibility", lambda w, v: self.toggle_show_hide(v))
             self.status.connect("quit", lambda *args: gtk.main_quit())
         # Widget placement

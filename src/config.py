@@ -29,7 +29,11 @@ import os
 import urllib
 from xdg import BaseDirectory
 
-from fungtk.quickconf import QuickConf
+try:
+    from fungtk.quickconf import QuickConf
+except:
+    from quickconf import QuickConf
+
 
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
     ResultType
