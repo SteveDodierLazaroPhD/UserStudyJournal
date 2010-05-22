@@ -31,7 +31,9 @@ from activity_widgets import MultiViewContainer, TimelineViewContainer, ThumbVie
 from supporting_widgets import DayButton, DayLabel, Toolbar, ContextMenu, AboutDialog, HandleBox, SearchBox, InformationContainer
 from histogram import HistogramWidget
 from store import Store, tdelta, STORE
-from config import settings, get_icon_path
+from config import settings, get_icon_path, SHOW_STATUSICON
+
+import indicator
 
 AUTOLOAD = True # Should the store request events in the background?
 
@@ -132,6 +134,11 @@ class PortalWindow(gtk.Window):
         self.backward_button = DayButton(0)
         self.forward_button = DayButton(1, sensitive=False)
         self.searchbox = SearchBox
+        if SHOW_STATUSICON:
+            self.status = indicator.StatusIcon()
+            self.status.set_visible(True)
+            self.status.connect("toggle-visibility", lambda w, v: self.toggle_show_hide(v))
+            self.status.connect("quit", lambda *args: gtk.main_quit())
         # Widget placement
         vbox = gtk.VBox()
         hbox = gtk.HBox()
@@ -190,6 +197,10 @@ class PortalWindow(gtk.Window):
                 "hicolor/48x48/apps/gnome-activity-journal.png",
                 "hicolor/256x256/apps/gnome-activity-journal.png")])
         self.toolbar.view_buttons[0].set_sensitive(False)
+
+    def toggle_show_hide(self, val):
+        if val: self.show()
+        else: self.hide()
 
     @property
     def active_dates(self):

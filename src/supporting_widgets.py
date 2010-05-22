@@ -859,14 +859,20 @@ class Toolbar(gtk.Toolbar):
         for item in (sdialog, sb, sep2, pin, sep1, tlv, tbv, mv):
             self.insert(item, 0)
         #
+        self.pref = gtk.ToolButton(gtk.STOCK_PREFERENCES)
         separator = gtk.SeparatorToolItem()
         separator.set_expand(True)
         separator.set_draw(False)
         self.goto_today_button = today = gtk.ToolButton(gtk.STOCK_GOTO_LAST)
         today.set_label( _("Goto Today"))
         self.throbber = Throbber()
-        for item in (separator, today, self.throbber):
+        for item in (separator, today, self.pref, self.throbber):
             self.insert(item, -1)
+        self.pref.connect("clicked", self.show_settings)
+
+    def show_settings(self, *args):
+        dialog = PreferencesDialog()
+        dialog.show_all()
 
     def do_throb(self):
         self.throbber.image.animate_for_seconds(1)
@@ -1325,6 +1331,36 @@ class InformationContainer(Pane):
     def hide_on_delete(self, widget, *args):
         super(InformationContainer, self).hide_on_delete(widget)
         return True
+
+
+class PreferencesDialog(gtk.Dialog):
+    bool_settings = {
+        #key : (Description, default)
+        "show_status_icon" : (_("Show status icon"), False),
+
+        }
+    def __init__(self):
+        super(PreferencesDialog, self).__init__()
+        self.set_title(_("Preferences"))
+        area = self.get_content_area()
+        label = gtk.Label(_("Some changes require a restart"))
+        label.set_sensitive(False)
+        area.add(label)
+        self.__build()
+
+    def do_set_settings(self, key, value):
+        settings.set(key, value)
+
+    def __build(self):
+        content = self.get_content_area()
+        for key in self.bool_settings:
+            text, default = self.bool_settings[key]
+            cb = gtk.CheckButton(text)
+            content.add(cb)
+            value = settings.get(key, default)
+            cb.set_active(value)
+            cb.connect("toggled", lambda w, key: self.do_set_settings(key, w.get_active()), key)
+
 
 ###
 

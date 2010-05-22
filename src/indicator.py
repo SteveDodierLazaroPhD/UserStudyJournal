@@ -1,0 +1,126 @@
+# -.- coding: utf-8 -.-
+#
+# GNOME Activity Journal
+#
+# Copyright © 2010 Randal Barlow
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+#import appindicator
+import gobject
+import gtk
+import pango
+import time
+
+from zeitgeist.datamodel import Event, Interpretation, ResultType
+
+from config import settings, get_icon_path
+from store import STORE
+
+
+class BoxMenuItem(gtk.MenuItem):
+    def __init__(self, obj=None):
+        super(BoxMenuItem, self).__init__()
+        self.box = gtk.HBox()
+        self.label = gtk.Label()
+        self.image = gtk.Image()
+        self.box.pack_start(self.image, False, False)
+        self.box.pack_start(self.label, False, True, 2)
+        self.image.set_alignment(0,0)
+        self.add(self.box)
+        # Display magic
+        self.label.set_max_width_chars(40)
+        self.label.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
+        self.label.set_justify(gtk.JUSTIFY_LEFT)
+        if obj: self.set_from_content_object(obj)
+
+    def set_from_content_object(self, obj):
+        self.connect("activate", lambda w, obj: obj.launch(), obj)
+        self.label.set_text(obj.text)
+        self.image.set_from_pixbuf(obj.get_icon(22))
+
+
+class AppletMenu(gtk.Menu):
+    __gsignals__ = {
+        "set" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
+    }
+
+    event_templates = (
+        Event.new_for_values(interpretation=Interpretation.VISIT_EVENT.uri),
+        Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri),
+        Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri),
+        Event.new_for_values(interpretation=Interpretation.OPEN_EVENT.uri),
+    )
+    day_connection_id = None
+    day = None
+
+    def __init__(self):
+        super(AppletMenu, self).__init__()
+        self.toggle_button = gtk.CheckMenuItem(_("Show Activity Journal"))
+        self.toggle_button.set_active(True)
+        self.quit_button = gtk.ImageMenuItem(stock_id=gtk.STOCK_QUIT)
+        self.seperator = gtk.SeparatorMenuItem()
+        self.kept_members = (self.toggle_button, self.quit_button, self.seperator)
+        for item in (self.toggle_button, self.quit_button, self.seperator):
+            self.append(item)
+            item.show_all()
+        self.set_day(STORE.today)
+
+    def clear(self):
+        for item in self:
+            if item not in self.kept_members:
+                self.remove(item)
+        return True
+
+    def set_day(self, day):
+        if self.day:
+            self.day.disconnect(self.day_connection_id)
+        day.connect("update", self.set)
+        self.day = day
+        self.set()
+
+    def set(self, *args):
+        self.clear()
+        for struct in self.day.filter(self.event_templates, result_type=ResultType.MostRecentSubjects)[-10:]:
+            if struct.content_object:
+                m = BoxMenuItem(struct.content_object)
+                self.append(m)
+                m.show_all()
+        self.emit("set")
+
+
+class StatusIcon(gtk.StatusIcon):
+    __gsignals__ = {
+        "toggle-visibility" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_BOOLEAN,)),
+        "quit" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
+
+    }
+
+    def __init__(self):
+        super(StatusIcon, self).__init__()
+        self.set_from_file(get_icon_path("hicolor/scalable/apps/gnome-activity-journal.svg"))
+        self.set_tooltip("Recently used")
+        self.menu = AppletMenu()
+        self.connect("popup-menu", self.popup_menu_cb, self.menu)
+        self.menu.toggle_button.connect(
+            "toggled",
+            lambda *args: self.emit("toggle-visibility", self.menu.toggle_button.get_active()))
+        self.menu.quit_button.connect("activate", lambda *args: self.emit("quit"))
+
+    def popup_menu_cb(self, widget, button, activate_time, menu):
+        menu.popup(None, None, gtk.status_icon_position_menu,
+                   button, activate_time, self)
+
+
+

@@ -68,6 +68,8 @@ settings = QuickConf("/apps/gnome-activity-journal")
 # (TODO: shouldn't we always connect to changes?)
 ACCESSIBILITY = settings.get("accessibility", False)
 
+SHOW_STATUSICON = settings.get("show_status_icon", False)
+
 def event_exists(uri):
         # TODO: Move this into Zeitgeist's datamodel.py
         return not uri.startswith("file://") or os.path.exists(
