@@ -26,7 +26,7 @@ import gtk
 import pango
 import time
 
-from zeitgeist.datamodel import Event, Interpretation, ResultType
+from zeitgeist.datamodel import Event, Interpretation, Manifestation, ResultType
 
 from config import settings, get_icon_path, SUPPORTED_SOURCES
 from store import STORE, CLIENT
@@ -55,9 +55,9 @@ class IconMenuItem(gtk.ImageMenuItem):
 
 
 class MostUsedMenu(gtk.Menu):
-    def __init__(self, interp):
+    def __init__(self, templates):
         super(MostUsedMenu, self).__init__()
-        self.templates = [Event.new_for_values(subject_interpretation=interp.uri)]
+        self.templates = templates
         self.request_items()
 
     def clear(self): map(self.remove, self.get_children)
@@ -87,16 +87,22 @@ class MostUsedParentMenu(gtk.Menu):
         (Interpretation.IM_MESSAGE, "empathy"),
         (Interpretation.EMAIL, "email"),
         (Interpretation.UNKNOWN, "gnome-other"),
-
+        (Manifestation.WEB_HISTORY, "text-html"),
         )
     def __init__(self):
         super(MostUsedParentMenu, self).__init__()
-        for interp, icon_name in self.sources:
-            menu = gtk.ImageMenuItem(interp.display_name)
+        for symbol, icon_name in self.sources:
+            menu = gtk.ImageMenuItem(symbol.display_name)
             image = gtk.image_new_from_icon_name(icon_name, 24)
             image.show_all()
             menu.set_image(image)
-            child_menu = MostUsedMenu(interp)
+            if symbol.uri in Interpretation:
+                templates = [Event.new_for_values(subject_interpretation=symbol.uri)]
+            elif symbol.uri in Manifestation:
+                templates = [Event.new_for_values(subject_manifestation=symbol.uri)]
+            else:
+                templates = []
+            child_menu = MostUsedMenu(templates)
             menu.set_submenu(child_menu)
             self.append(menu)
 
