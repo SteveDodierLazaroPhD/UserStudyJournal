@@ -123,6 +123,7 @@ class PortalWindow(gtk.Window):
         self.__initialized = False
         self._requested_size = None
         # Important
+        self._request_size()
         self.store = STORE
         self.day_iter = self.store.today
         self.toolbar = Toolbar()
@@ -149,11 +150,13 @@ class PortalWindow(gtk.Window):
         vbox.pack_end(histogramhbox, False, False)
         self.add(vbox)
         self.show_all()
+        self.panedcontainer.informationcontainer.hide()
+        self.panedcontainer.pinbox.hide()
         # Settings
-        self._request_size()
         self.view.set_day(self.store.today)
         # Connections
         self.connect("destroy", self.quit)
+        self.connect("delete-event", self.on_delete)
         self.backward_button.connect("clicked", self.previous)
         self.forward_button.connect("clicked", self.next)
         self.histogram.connect("date-changed", lambda w, date: self.set_date(date))
@@ -176,8 +179,6 @@ class PortalWindow(gtk.Window):
         gobject.timeout_add_seconds(1, setup)
         self.histogram.scroll_to_end()
         # hide unused widgets
-        self.panedcontainer.informationcontainer.hide()
-        self.panedcontainer.pinbox.hide()
         self.searchbox.hide()
         # Window configuration
         self.set_icon_name("gnome-activity-journal")
@@ -319,6 +320,11 @@ class PortalWindow(gtk.Window):
             self.set_title(end + " - Activity Journal")
         else:
             self.set_title(_("%s to %s") % (start, end) + " - " + _("Activity Journal"))
+
+    def on_delete(self, w, event):
+        x, y = self.get_size()
+        settings["window_width"] = x
+        settings["window_height"] = y
 
     def quit(self, *args):
         gtk.main_quit()
