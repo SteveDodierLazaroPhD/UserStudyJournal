@@ -1348,13 +1348,20 @@ class PreferencesDialog(gtk.Dialog):
         self.set_title(_("Preferences"))
         self.set_size_request(200, 300)
         area = self.get_content_area()
+        ## Option Frame
         frame = gtk.Frame()
         frame.set_label_widget(gtk.Label(_("Options")))
         frame.set_shadow_type(gtk.SHADOW_NONE)
         self.option_box = gtk.VBox()
         self.option_box.set_border_width(10)
         frame.add(self.option_box)
-        area.add(frame)
+        area.pack_start(frame, False, False)
+        ## Blacklist
+        blacklist_pane = gtk.Frame(_("Black list"))
+        blacklist_pane.set_shadow_type(gtk.SHADOW_NONE)
+        area.pack_end(blacklist_pane)
+        # Treeview here
+        ##
         self.__build()
 
     def do_set_settings(self, key, value):
