@@ -140,8 +140,12 @@ class PortalWindow(gtk.Window):
             else:
                 self.status = indicator.StatusIcon()
                 self.status.set_visible(True)
-            self.status.connect("toggle-visibility", lambda w, v: self.toggle_show_hide(v))
+            self.status.connect("toggle-visibility", lambda w, v: self.set_visibility(v))
             self.status.connect("quit", lambda *args: gtk.main_quit())
+            def _cb(*args):
+                val = self.toggle_visibility()
+                self.status.menu.toggle_button.set_active(val)
+            self.status.connect("activate", _cb)
         # Widget placement
         vbox = gtk.VBox()
         hbox = gtk.HBox()
@@ -201,9 +205,16 @@ class PortalWindow(gtk.Window):
                 "hicolor/256x256/apps/gnome-activity-journal.png")])
         self.toolbar.view_buttons[0].set_sensitive(False)
 
-    def toggle_show_hide(self, val):
+    def set_visibility(self, val):
         if val: self.show()
         else: self.hide()
+
+    def toggle_visibility(self):
+        if self.get_property("visible"):
+            self.hide()
+            return False
+        self.show()
+        return True
 
     @property
     def active_dates(self):

@@ -32,6 +32,19 @@ from config import settings, get_icon_path, SUPPORTED_SOURCES
 from store import STORE, CLIENT
 
 
+class LabelSeparatorMenuItem(gtk.MenuItem):
+    def __init__(self, label_text=""):
+        super(LabelSeparatorMenuItem, self).__init__()
+        box = gtk.HBox()
+        self.label = gtk.Label(label_text)
+        self.label.set_alignment(0.4, 0.5)
+        #box.pack_start(gtk.HSeparator(), True, True)
+        box.pack_start(self.label, True, True)
+        #box.pack_end(gtk.HSeparator(), True, True)
+        self.add(box)
+        self.set_sensitive(False)
+
+
 class IconMenuItem(gtk.ImageMenuItem):
     def __init__(self, obj=None):
         super(IconMenuItem, self).__init__("Sample")
@@ -76,37 +89,6 @@ class MostUsedMenu(gtk.Menu):
             num_events=10, result_type=ResultType.MostPopularSubjects)
 
 
-
-class MostUsedParentMenu(gtk.Menu):
-    sources = (
-        (Interpretation.VIDEO, "gnome-mime-video"),
-        (Interpretation.MUSIC, "gnome-mime-audio"),
-        (Interpretation.IMAGE, "gnome-mime-image"),
-        (Interpretation.DOCUMENT, "x-office-document"),
-        (Interpretation.SOURCECODE, "gnome-mime-text"),
-        (Interpretation.IM_MESSAGE, "empathy"),
-        (Interpretation.EMAIL, "email"),
-        (Interpretation.UNKNOWN, "gnome-other"),
-        (Manifestation.WEB_HISTORY, "text-html"),
-        )
-    def __init__(self):
-        super(MostUsedParentMenu, self).__init__()
-        for symbol, icon_name in self.sources:
-            menu = gtk.ImageMenuItem(symbol.display_name)
-            image = gtk.image_new_from_icon_name(icon_name, 24)
-            image.show_all()
-            menu.set_image(image)
-            if symbol.uri in Interpretation:
-                templates = [Event.new_for_values(subject_interpretation=symbol.uri)]
-            elif symbol.uri in Manifestation:
-                templates = [Event.new_for_values(subject_manifestation=symbol.uri)]
-            else:
-                templates = []
-            child_menu = MostUsedMenu(templates)
-            menu.set_submenu(child_menu)
-            self.append(menu)
-
-
 class AppletMenu(gtk.Menu):
     __gsignals__ = {
         "set" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
@@ -121,17 +103,39 @@ class AppletMenu(gtk.Menu):
     day_connection_id = None
     day = None
 
+    sources = (
+        (Interpretation.VIDEO, "gnome-mime-video"),
+        (Interpretation.MUSIC, "gnome-mime-audio"),
+        (Interpretation.IMAGE, "gnome-mime-image"),
+        (Interpretation.DOCUMENT, "x-office-document"),
+        (Interpretation.SOURCECODE, "gnome-mime-text"),
+        (Interpretation.IM_MESSAGE, "empathy"),
+        (Interpretation.EMAIL, "email"),
+        (Interpretation.UNKNOWN, "gnome-other"),
+        (Manifestation.WEB_HISTORY, "text-html"),
+        )
+
     def __init__(self):
         super(AppletMenu, self).__init__()
         self.toggle_button = gtk.CheckMenuItem(_("Show Activity Journal"))
         self.toggle_button.set_active(True)
         self.quit_button = gtk.ImageMenuItem(stock_id=gtk.STOCK_QUIT)
-        self.most_used = gtk.ImageMenuItem(_("Most Used"))
-        self.most_used.set_image(gtk.image_new_from_icon_name("user-bookmarks", 24))
-        self.most_used.set_submenu(MostUsedParentMenu())
-        self.kept_members = (gtk.SeparatorMenuItem(), self.most_used,
-                             gtk.SeparatorMenuItem(), self.toggle_button,
-                             self.quit_button)
+        self.kept_members = [LabelSeparatorMenuItem(_("Recently Used")), LabelSeparatorMenuItem(_("Most Used"))]
+        for symbol, icon_name in self.sources:
+            menu = gtk.ImageMenuItem(symbol.display_name)
+            image = gtk.image_new_from_icon_name(icon_name, 24)
+            image.show_all()
+            menu.set_image(image)
+            if symbol.uri in Interpretation:
+                templates = [Event.new_for_values(subject_interpretation=symbol.uri)]
+            elif symbol.uri in Manifestation:
+                templates = [Event.new_for_values(subject_manifestation=symbol.uri)]
+            else:
+                templates = []
+            child_menu = MostUsedMenu(templates)
+            menu.set_submenu(child_menu)
+            self.kept_members.append(menu)
+        self.kept_members += [gtk.SeparatorMenuItem(), self.toggle_button, self.quit_button]
         for item in self.kept_members:
             self.append(item)
             item.show_all()
@@ -152,10 +156,10 @@ class AppletMenu(gtk.Menu):
 
     def set(self, *args):
         self.clear()
-        for struct in self.day.filter(self.event_templates, result_type=ResultType.MostRecentSubjects)[-10::]:
+        for struct in self.day.filter(self.event_templates, result_type=ResultType.MostRecentSubjects)[-8::]:
             if struct.content_object:
                 m = IconMenuItem(struct.content_object)
-                self.prepend(m)
+                self.insert(m, 1)
                 m.show_all()
         self.emit("set")
 
