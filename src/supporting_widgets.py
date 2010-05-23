@@ -1346,21 +1346,25 @@ class PreferencesDialog(gtk.Dialog):
     def __init__(self):
         super(PreferencesDialog, self).__init__()
         self.set_title(_("Preferences"))
+        self.set_size_request(200, 300)
         area = self.get_content_area()
-        label = gtk.Label(_("Some changes require a restart"))
-        label.set_sensitive(False)
-        area.add(label)
+        frame = gtk.Frame()
+        frame.set_label_widget(gtk.Label(_("Options")))
+        frame.set_shadow_type(gtk.SHADOW_NONE)
+        self.option_box = gtk.VBox()
+        self.option_box.set_border_width(10)
+        frame.add(self.option_box)
+        area.add(frame)
         self.__build()
 
     def do_set_settings(self, key, value):
         settings.set(key, value)
 
     def __build(self):
-        content = self.get_content_area()
         for key in self.bool_settings:
             text, default = self.bool_settings[key]
             cb = gtk.CheckButton(text)
-            content.add(cb)
+            self.option_box.pack_start(cb, False, False)
             value = settings.get(key, default)
             cb.set_active(value)
             cb.connect("toggled", lambda w, key: self.do_set_settings(key, w.get_active()), key)

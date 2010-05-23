@@ -184,7 +184,8 @@ class StatusIcon(StatusIconAbstract, gtk.StatusIcon):
     def __init__(self):
         gtk.StatusIcon.__init__(self)
         StatusIconAbstract.__init__(self)
-        self.set_from_file(get_icon_path("hicolor/scalable/apps/gnome-activity-journal.svg"))
+        #self.set_from_file(get_icon_path("hicolor/scalable/apps/gnome-activity-journal.svg"))
+        self.set_from_file(get_icon_path("hicolor/24x24/apps/gnome-activity-journal.png"))
         self.set_tooltip( _("Activity Journal"))
         self.connect("popup-menu", self.popup_menu_cb, self.menu)
 
