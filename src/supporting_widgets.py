@@ -869,6 +869,7 @@ class Toolbar(gtk.Toolbar):
         for item in (separator, today, self.pref, self.throbber):
             self.insert(item, -1)
         self.pref.connect("clicked", self.show_settings)
+        self.view_buttons[0].set_sensitive(False)
 
     def show_settings(self, *args):
         dialog = PreferencesDialog()

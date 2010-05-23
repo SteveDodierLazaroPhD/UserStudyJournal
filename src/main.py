@@ -148,11 +148,11 @@ class PortalWindow(gtk.Window):
         histogramhbox.pack_end(self.histogram, True, True, 30)
         vbox.pack_end(histogramhbox, False, False)
         self.add(vbox)
-
-        # Settings
         self.show_all()
+        # Settings
         self._request_size()
         self.view.set_day(self.store.today)
+        # Connections
         self.connect("destroy", self.quit)
         self.backward_button.connect("clicked", self.previous)
         self.forward_button.connect("clicked", self.next)
@@ -167,18 +167,15 @@ class PortalWindow(gtk.Window):
         self.searchbox.connect("search", self._on_search)
         self.searchbox.connect("clear", self._on_search_clear)
         self.set_title_from_date(self.day_iter.date)
-        self.watch_cursor = gtk.gdk.Cursor(gtk.gdk.WATCH)
-        self.window.set_cursor(self.watch_cursor)
         def setup(*args):
             self.histogram.set_dates(self.active_dates)
             self.histogram.scroll_to_end()
-            def _finish():
-                self.window.set_cursor(None)
             if AUTOLOAD:
-                self.store.request_last_n_days_events(90, _finish)
+                self.store.request_last_n_days_events(90)
             return False
         gobject.timeout_add_seconds(1, setup)
         self.histogram.scroll_to_end()
+        # hide unused widgets
         self.panedcontainer.informationcontainer.hide()
         self.panedcontainer.pinbox.hide()
         self.searchbox.hide()
@@ -191,21 +188,21 @@ class PortalWindow(gtk.Window):
                 "hicolor/32x32/apps/gnome-activity-journal.png",
                 "hicolor/48x48/apps/gnome-activity-journal.png",
                 "hicolor/256x256/apps/gnome-activity-journal.png")])
-        self.toolbar.view_buttons[0].set_sensitive(False)
         gobject.idle_add(self.__build_status_icon)
 
     def __build_status_icon(self):
-        if indicator.appindicator:
-            self.status = indicator.IndicatorIcon()
-        else:
-            self.status = indicator.StatusIcon()
-            self.status.set_visible(True)
-        self.status.connect("toggle-visibility", lambda w, v: self.set_visibility(v))
-        self.status.connect("quit", lambda *args: gtk.main_quit())
-        def _cb(*args):
-            val = self.toggle_visibility()
-            self.status.menu.toggle_button.set_active(val)
-        self.status.connect("activate", _cb)
+        if settings.get("show_status_icon", False):
+            if indicator.appindicator:
+                self.status = indicator.IndicatorIcon()
+            else:
+                self.status = indicator.StatusIcon()
+                self.status.set_visible(True)
+            self.status.connect("toggle-visibility", lambda w, v: self.set_visibility(v))
+            self.status.connect("quit", lambda *args: gtk.main_quit())
+            def _cb(*args):
+                val = self.toggle_visibility()
+                self.status.menu.toggle_button.set_active(val)
+            self.status.connect("activate", _cb)
         return False
 
     def set_visibility(self, val):
