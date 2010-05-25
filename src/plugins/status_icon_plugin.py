@@ -29,8 +29,8 @@ import time
 
 from zeitgeist.datamodel import Event, Interpretation, Manifestation, ResultType
 
-# Handled by main since that module is a core module
-#from config import get_icon_path
+# Import from journal by using 'from src'
+from src import config
 
 __plugin_name__ = "Status Icon"
 __description__ = "Displays a icon in the notification area which shows recent" + \
@@ -226,11 +226,9 @@ def activate(client, store, window):
     global CLIENT
     global STORE
     global JOURNAL_WINDOW
-    global config
     CLIENT = client
     STORE = store
     JOURNAL_WINDOW = window
-    config = __import__("src.config", fromlist='config', globals=globals())
     # Plugin Setup
     if appindicator:
         status = IndicatorIcon()
