@@ -697,6 +697,6 @@ class MusicPlayerContentObject(BaseContentType):
 
 # Content object list used by the section function. Should use Subclasses but I like to have some order in which these should be used
 if sys.version_info >= (2,6):
-    CONTENT_OBJECTS = (MusicPlayerContentObject, BzrContentObject, WebContentObject, IMContentObject, TomboyContentObject, EmailContentObject, HamsterContentObject)
+    CONTENT_OBJECTS = [MusicPlayerContentObject, BzrContentObject, WebContentObject, IMContentObject, TomboyContentObject, EmailContentObject, HamsterContentObject]
 else:
-    CONTENT_OBJECTS = tuple()
+    CONTENT_OBJECTS = []
