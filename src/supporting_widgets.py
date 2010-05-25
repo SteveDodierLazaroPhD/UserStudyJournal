@@ -23,12 +23,12 @@
 from __future__ import with_statement
 import cairo
 import os
+import gobject
 import gtk
 import gettext
 import datetime
 import math
 import time
-import gobject
 import pango
 import gio
 import threading
@@ -45,7 +45,7 @@ from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
 import content_objects
 from common import shade_gdk_color, combine_gdk_color, is_command_available, \
     launch_command, get_gtk_rgba, SIZE_NORMAL, SIZE_LARGE, GioFile
-from config import BASE_PATH, VERSION, settings, get_icon_path, get_data_path, bookmarker, SUPPORTED_SOURCES
+from config import BASE_PATH, VERSION, settings, PluginManager, get_icon_path, get_data_path, bookmarker, SUPPORTED_SOURCES
 from store import STORE, get_related_events_for_uri, CLIENT
 from external import TRACKER
 
@@ -871,13 +871,10 @@ class Toolbar(gtk.Toolbar):
         self.pref.connect("clicked", self.show_settings)
         self.view_buttons[0].set_sensitive(False)
 
+        self.dialog = PreferencesDialog()
+
     def show_settings(self, *args):
-        dialog = PreferencesDialog()
-        w = self
-        while w.parent:
-            w = w.parent
-        dialog.set_transient_for(w)
-        dialog.show_all()
+        self.dialog.show_all()
 
     def do_throb(self):
         self.throbber.image.animate_for_seconds(1)
@@ -1340,11 +1337,6 @@ class InformationContainer(Pane):
 
 class PreferencesDialog(gtk.Dialog):
     class _PluginTreeView(gtk.TreeView):
-        # Replace this with dynamic ones from the plugin manager
-        temporary_items = [
-            ["Status Icon", settings.get("show_status_icon", False),
-             lambda b: settings.set("show_status_icon", b)]
-        ]
         def __init__(self):
             gtk.TreeView.__init__(self)
             self.set_headers_visible(False)
@@ -1358,27 +1350,30 @@ class PreferencesDialog(gtk.Dialog):
             pcolumn.add_attribute(text_render, "markup", 0)
             self.append_column(pcolumn)
             self.connect("row-activated" , self.on_activate)
-            self.set_items(self.temporary_items)
+            entries = PluginManager.plugin_settings._gconf.all_entries(PluginManager.plugin_settings._root)
+            self.set_items(entries)
+
+        def set_state(self, entry, state):
+            PluginManager.plugin_settings._gconf.set_bool(entry.key, state)
 
         def on_activate(self, widget, path, column):
             model = self.get_model()
             model[path][1] = not model[path][1]
-            model[path][2](model[path][1])
+            self.set_state(model[path][2], model[path][1])
 
-        def set_items(self, items):
+        def set_items(self, entries):
             store = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_BOOLEAN, gobject.TYPE_PYOBJECT)
-            map(store.append, items)
+            for entry in entries:
+                store.append( [os.path.basename(entry.key), entry.value.get_bool(), entry])
             self.set_model(store)
 
     def __init__(self):
         super(PreferencesDialog, self).__init__()
         self.set_title(_("Preferences"))
-        self.set_size_request(200, 300)
+        self.set_size_request(400, 500)
         area = self.get_content_area()
-        ## Notebook
         notebook = gtk.Notebook()
         area.pack_start(notebook)
-        ##
         plugbox = gtk.VBox()
         plugbox.set_border_width(10)
         self.plug_tree = self._PluginTreeView()
@@ -1387,7 +1382,9 @@ class PreferencesDialog(gtk.Dialog):
         scroll_win.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         scroll_win.add(self.plug_tree)
         plugbox.add(scroll_win)
+        plugbox.pack_end(gtk.Label(_("Changing plugin states requires Journal to be restarted")), False, False, 5)
         notebook.append_page(plugbox, gtk.Label( _("Plugins")))
+        self.connect("delete-event", lambda *args: (True, self.hide())[0])
 
 
 
