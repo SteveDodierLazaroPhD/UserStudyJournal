@@ -143,22 +143,25 @@ class Source(object):
 
 class PluginManager(object):
     """
-    Loads a module and calls the module's main(client, store, window) function
+    Loads a module and calls the module's activate(client, store, window) function
 
     Where:
     client is a zeitgeist client
     store is a the backing Store which controls journal
     window is the Journal window
 
-
-    All plugins must have a main function, a __plugin_name__ string, and a
-    __description__ string
+    All plugins must have:
+    func activate(client, store, window): build up when the plugin is enabled
+    func deactivate(client, store, window): tear down when the plugin is disabled
+    str __plugin_name__: plugin name
+    str __description__: description of the plugin
     """
     plugin_settings = QuickConf("/apps/gnome-activity-journal/plugins")
 
     standard_plugins = ["status_icon_plugin"]
 
     def __init__(self, client, store, window):
+        self.plugins = {}
         self.client = client
         self.store = store
         self.window = window
@@ -180,20 +183,21 @@ class PluginManager(object):
     def import_plugins(self, plugs, prefix="", level=-1):
         plugins = []
         for plugin_name in plugs:
-            state = self.plugin_settings.get(plugin_name, False)
-            if not state: continue # If the plugin is not True it will not be loaded
             try:
-                plug_module = __import__(prefix + plugin_name, level=level, fromlist=[plugin_name])
-                plugins.append(plug_module)
-                print  plug_module.__plugin_name__ + " has been imported"
-            except ImportError as e:
+                plugin_module = __import__(prefix + plugin_name, level=level, fromlist=[plugin_name])
+                plugins.append((plugin_name, plugin_module))
+                self.plugins[plugin_name] = plugin_module
+                # print  plugin_module.__plugin_name__ + " has been imported"
+            except Exception as e:
                 print " Importing %s failed." % plugin_name, e
         return plugins
 
     def load_plugins(self, plugins):
-        for plug_module in plugins:
+        for plugin_name, plug_module in plugins:
             try:
-                plug_module.main(self.client, self.store, self.window)
+                state = self.plugin_settings.get(plugin_name, False)
+                if not state: continue # If the plugin is not True it will not be loaded
+                plug_module.activate(self.client, self.store, self.window)
                 print  plug_module.__plugin_name__ + " has been loaded"
             except Exception as e:
                 print "Loading %s failed." % plugin_name, e

@@ -192,6 +192,7 @@ class PortalWindow(gtk.Window):
 
     def load_plugins(self):
         self.plug_manager = PluginManager(CLIENT, STORE, self)
+        self.toolbar.preferences_dialog.plug_tree.set_items(self.plug_manager.plugins)
         return False
 
     def set_visibility(self, val):

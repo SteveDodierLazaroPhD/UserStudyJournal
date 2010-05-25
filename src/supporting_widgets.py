@@ -871,10 +871,10 @@ class Toolbar(gtk.Toolbar):
         self.pref.connect("clicked", self.show_settings)
         self.view_buttons[0].set_sensitive(False)
 
-        self.dialog = PreferencesDialog()
+        self.preferences_dialog = PreferencesDialog()
 
     def show_settings(self, *args):
-        self.dialog.show_all()
+        self.preferences_dialog.show_all()
 
     def do_throb(self):
         self.throbber.image.animate_for_seconds(1)
@@ -1350,8 +1350,6 @@ class PreferencesDialog(gtk.Dialog):
             pcolumn.add_attribute(text_render, "markup", 0)
             self.append_column(pcolumn)
             self.connect("row-activated" , self.on_activate)
-            entries = PluginManager.plugin_settings._gconf.all_entries(PluginManager.plugin_settings._root)
-            self.set_items(entries)
 
         def set_state(self, entry, state):
             PluginManager.plugin_settings._gconf.set_bool(entry.key, state)
@@ -1361,10 +1359,20 @@ class PreferencesDialog(gtk.Dialog):
             model[path][1] = not model[path][1]
             self.set_state(model[path][2], model[path][1])
 
-        def set_items(self, entries):
+        def set_items(self, plugins):
+            entries = PluginManager.plugin_settings._gconf.all_entries(PluginManager.plugin_settings._root)
             store = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_BOOLEAN, gobject.TYPE_PYOBJECT)
             for entry in entries:
-                store.append( [os.path.basename(entry.key), entry.value.get_bool(), entry])
+                bname = os.path.basename(entry.key)
+                if plugins.has_key(bname):
+                    # Load the plugin if the plugin is found
+                    module = plugins[bname]
+                    name = module.__plugin_name__
+                    desc = "\n<span size='7000'>" + module.__description__ + "</span>"
+                    store.append( [name+desc, False if entry.value is None else entry.value.get_bool(), entry])
+                else:
+                    # Remove the key if no plugin is found
+                    PluginManager.plugin_settings._gconf.unset(entry.key)
             self.set_model(store)
 
     def __init__(self):
@@ -1385,8 +1393,6 @@ class PreferencesDialog(gtk.Dialog):
         plugbox.pack_end(gtk.Label(_("Changing plugin states requires Journal to be restarted")), False, False, 5)
         notebook.append_page(plugbox, gtk.Label( _("Plugins")))
         self.connect("delete-event", lambda *args: (True, self.hide())[0])
-
-
 
 
 ###

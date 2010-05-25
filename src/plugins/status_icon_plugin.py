@@ -34,7 +34,7 @@ from zeitgeist.datamodel import Event, Interpretation, Manifestation, ResultType
 
 __plugin_name__ = "Status Icon"
 __description__ = "Displays a icon in the notification area which shows recent" + \
-                "and most used items as collected by zeitgeist"
+                " and most used items as collected by zeitgeist"
 
 
 CLIENT, STORE, JOURNAL_WINDOW = None, None, None
@@ -218,7 +218,7 @@ if appindicator:
             self.menu.connect("set", lambda *args: self.set_menu(self.menu))
 
 
-def main(client, store, window):
+def activate(client, store, window):
     """ Called by the PluginManager as the plugins entry point
 
     initializes the plugin"""
@@ -243,5 +243,11 @@ def main(client, store, window):
         val = window.toggle_visibility()
         status.menu.toggle_button.set_active(val)
     status.connect("activate", _cb)
+
+
+def deactivate(client, store, window):
+    """ Tears down the plugin"""
+    pass
+
 
 
