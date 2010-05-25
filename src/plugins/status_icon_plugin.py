@@ -29,10 +29,16 @@ import time
 
 from zeitgeist.datamodel import Event, Interpretation, Manifestation, ResultType
 
+# Handled by main since that module is a core module
 #from config import get_icon_path
 
-# These are given by the plugin manager as globals
-# CLIENT, STORE, JOURNAL_WINDOW
+__plugin_name__ = "Status Icon"
+__description__ = "Displays a icon in the notification area which shows recent" + \
+                "and most used items as collected by zeitgeist"
+
+
+CLIENT, STORE, JOURNAL_WINDOW = None, None, None
+
 
 class LabelSeparatorMenuItem(gtk.MenuItem):
     def __init__(self, label_text=""):
@@ -191,7 +197,7 @@ class StatusIcon(StatusIconAbstract, gtk.StatusIcon):
         gtk.StatusIcon.__init__(self)
         StatusIconAbstract.__init__(self)
         #self.set_from_file(get_icon_path("hicolor/scalable/apps/gnome-activity-journal.svg"))
-        self.set_from_file(get_icon_path("hicolor/24x24/apps/gnome-activity-journal.png"))
+        self.set_from_file(config.get_icon_path("hicolor/24x24/apps/gnome-activity-journal.png"))
         self.set_tooltip( _("Activity Journal"))
         self.connect("popup-menu", self.popup_menu_cb, self.menu)
 
@@ -213,14 +219,19 @@ if appindicator:
 
 
 def main(client, store, window):
-    """ Called by the PluginManager """
-    print "Status Icon started"
-    # Imports
-    config = __import__("src.config", fromlist='config')
-    global get_icon_path
-    get_icon_path = config.get_icon_path
+    """ Called by the PluginManager as the plugins entry point
 
-    # Setup
+    initializes the plugin"""
+    # Imports and globals
+    global CLIENT
+    global STORE
+    global JOURNAL_WINDOW
+    global config
+    CLIENT = client
+    STORE = store
+    JOURNAL_WINDOW = window
+    config = __import__("src.config", fromlist='config', globals=globals())
+    # Plugin Setup
     if appindicator:
         status = IndicatorIcon()
     else:

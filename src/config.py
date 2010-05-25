@@ -131,7 +131,6 @@ bookmarker = Bookmarker()
 # Sources
 
 class Source:
-
     def __init__(self, interpretation, icon, desc_sing, desc_pl):
         self.name = interpretation.name
         self.icon = icon
@@ -153,19 +152,41 @@ SUPPORTED_SOURCES = {
     Interpretation.UNKNOWN.uri: Source(Interpretation.UNKNOWN, "applications-other", _("Other Activity"), _("Other Activities")),
 }
 
+# Plugin manager
 
 class PluginManager(object):
-    plugins = []
+    """
+    Loads a module and calls the module's main(client, store, window) function
+
+    Where:
+    client is a zeitgeist client
+    store is a the backing Store which controls journal
+    window is the Journal window
+
+
+    All plugins must have a main function, a __plugin_name__ string, and a
+    __description__ string
+    """
+    standard_plugins = []
     if settings.get("show_status_icon", False):
-        plugins.append('indicator')
+        standard_plugins.append("status_icon_plugin")
+
+    user_plugs = []
 
     def __init__(self, client, store, window):
+        self.client = client
         self.store = store
         self.window = window
-        globs = {"CLIENT":client, "STORE":store, "JOURNAL_WINDOW":window}
-        for plugin_name in self.plugins:
+        self.load_plugs(self.standard_plugins, prefix="src.plugins.")
+        self.load_plugs(self.user_plugs, level=0)
+
+    def load_plugs(self, plugs, prefix="", level=-1):
+        for plugin_name in plugs:
             print "Importing %s" % plugin_name
-            plug_module = __import__('src.plugins.' + plugin_name, level=-1, fromlist=[plugin_name])
-            plug_module.__dict__.update(globs)
-            plug_module.main(client, store, window)
+            try:
+                plug_module = __import__(prefix + plugin_name, level=level, fromlist=[plugin_name])
+                plug_module.main(self.client, self.store, self.window)
+                print  plug_module.__plugin_name__ + " has been loaded"
+            except ImportError:
+                print " Importing %s failed" % plugin_name
 
