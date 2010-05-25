@@ -1339,43 +1339,57 @@ class InformationContainer(Pane):
 
 
 class PreferencesDialog(gtk.Dialog):
-    bool_settings = {
-        #key : (Description, default)
-        "show_status_icon" : (_("Show status icon"), False),
+    class _PluginTreeView(gtk.TreeView):
+        # Replace this with dynamic ones from the plugin manager
+        temporary_items = [
+            ["Status Icon", settings.get("show_status_icon", False),
+             lambda b: settings.set("show_status_icon", b)]
+        ]
+        def __init__(self):
+            gtk.TreeView.__init__(self)
+            self.set_headers_visible(False)
+            pcolumn = gtk.TreeViewColumn("")
+            toggle_render = gtk.CellRendererToggle()
+            pcolumn.pack_start(toggle_render, False)
+            pcolumn.add_attribute(toggle_render, "active", 1)
+            text_render = gtk.CellRendererText()
+            text_render.set_property("ellipsize", pango.ELLIPSIZE_MIDDLE)
+            pcolumn.pack_end(text_render, True)
+            pcolumn.add_attribute(text_render, "markup", 0)
+            self.append_column(pcolumn)
+            self.connect("row-activated" , self.on_activate)
+            self.set_items(self.temporary_items)
 
-        }
+        def on_activate(self, widget, path, column):
+            model = self.get_model()
+            model[path][1] = not model[path][1]
+            model[path][2](model[path][1])
+
+        def set_items(self, items):
+            store = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_BOOLEAN, gobject.TYPE_PYOBJECT)
+            map(store.append, items)
+            self.set_model(store)
+
     def __init__(self):
         super(PreferencesDialog, self).__init__()
         self.set_title(_("Preferences"))
         self.set_size_request(200, 300)
         area = self.get_content_area()
-        ## Option Frame
-        frame = gtk.Frame()
-        frame.set_label_widget(gtk.Label(_("Options")))
-        frame.set_shadow_type(gtk.SHADOW_NONE)
-        self.option_box = gtk.VBox()
-        self.option_box.set_border_width(10)
-        frame.add(self.option_box)
-        area.pack_start(frame, False, False)
-        ## Blacklist
-        blacklist_pane = gtk.Frame(_("Black list"))
-        blacklist_pane.set_shadow_type(gtk.SHADOW_NONE)
-        area.pack_end(blacklist_pane)
-        # Treeview here
+        ## Notebook
+        notebook = gtk.Notebook()
+        area.pack_start(notebook)
         ##
-        self.__build()
+        plugbox = gtk.VBox()
+        plugbox.set_border_width(10)
+        self.plug_tree = self._PluginTreeView()
+        scroll_win = gtk.ScrolledWindow()
+        scroll_win.set_shadow_type(gtk.SHADOW_IN)
+        scroll_win.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        scroll_win.add(self.plug_tree)
+        plugbox.add(scroll_win)
+        notebook.append_page(plugbox, gtk.Label( _("Plugins")))
 
-    def do_set_settings(self, key, value):
-        settings.set(key, value)
 
-    def __build(self):
-        for key in self.bool_settings:
-            text, default = self.bool_settings[key]
-            cb = gtk.CheckButton(text)
-            self.option_box.pack_start(cb, False, False)
-            value = settings.get(key, default)
-            cb.set_active(value)
-            cb.connect("toggled", lambda w, key: self.do_set_settings(key, w.get_active()), key)
 
 
 ###

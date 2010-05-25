@@ -47,6 +47,10 @@ VERSION = "0.3.4.1"
 GETTEXT_PATH = None
 
 USER_DATA_PATH = BaseDirectory.save_data_path("gnome-activity-journal")
+PLUGIN_PATH = os.path.join(USER_DATA_PATH, "plugins")
+if not os.path.exists(PLUGIN_PATH) or not os.path.isdir(PLUGIN_PATH):
+    PLUGIN_PATH = None
+
 settings = QuickConf("/apps/gnome-activity-journal")
 
 def _get_path(path):
@@ -154,28 +158,44 @@ class PluginManager(object):
         standard_plugins.append("status_icon_plugin")
 
     def __init__(self, client, store, window):
+        self.loaded = []
+        self.plugins = {}
         self.client = client
         self.store = store
         self.window = window
-        self.load_plugs(self.standard_plugins, prefix="src.plugins.")
-        plug_path = os.path.join(USER_DATA_PATH, "plugins")
-        if os.path.exists(plug_path) and os.path.isdir(plug_path):
-            sys.path.append(plug_path)
+        self.import_plugs(self.standard_plugins, prefix="src.plugins.")
+        self.load_all_plugins()
+        if PLUGIN_PATH:
+            sys.path.append(PLUGIN_PATH)
             user_plugs = []
-            for module_file in os.listdir(plug_path):
+            for module_file in os.listdir(PLUGIN_PATH):
                 if module_file.endswith(".py"):
-                    user_plugs.append(module_file.replace(".py", "").replace("-", "_"))
-            self.load_plugs(user_plugs, level=0)
+                    modname = module_file.replace(".py", "").replace("-", "_")
+                    #if modname in PLUGIN_LIST:
+                    user_plugs.append(modname)
+            self.import_plugs(user_plugs, level=0)
+            self.load_all_plugins()
 
-    def load_plugs(self, plugs, prefix="", level=-1):
+    def import_plugs(self, plugs, prefix="", level=-1):
         for plugin_name in plugs:
-            print "Importing %s" % plugin_name
             try:
                 plug_module = __import__(prefix + plugin_name, level=level, fromlist=[plugin_name])
+                self.plugins[plugin_name] = plug_module
+                print  plug_module.__plugin_name__ + " has been imported"
+            except Exception as e:
+                print " Importing %s failed." % plugin_name, e
+
+    def load_all_plugins(self):
+        for plugin_name in self.plugins:
+            if plugin_name in self.loaded:
+                continue
+            try:
+                plug_module = self.plugins[plugin_name]
                 plug_module.main(self.client, self.store, self.window)
                 print  plug_module.__plugin_name__ + " has been loaded"
             except Exception as e:
-                print " Importing %s failed." % plugin_name, e
+                print "Loading %s failed." % plugin_name, e
+            self.loaded.append(plugin_name)
 
 
 # Singletons and constants
