@@ -30,10 +30,9 @@ import os
 from activity_widgets import MultiViewContainer, TimelineViewContainer, ThumbViewContainer, PinnedPane
 from supporting_widgets import DayButton, DayLabel, Toolbar, ContextMenu, AboutDialog, HandleBox, SearchBox, InformationContainer
 from histogram import HistogramWidget
-from store import Store, tdelta, STORE
-from config import settings, get_icon_path
+from store import Store, tdelta, STORE, CLIENT
+from config import settings, get_icon_path, PluginManager
 
-import indicator
 
 AUTOLOAD = True # Should the store request events in the background?
 
@@ -189,21 +188,10 @@ class PortalWindow(gtk.Window):
                 "hicolor/32x32/apps/gnome-activity-journal.png",
                 "hicolor/48x48/apps/gnome-activity-journal.png",
                 "hicolor/256x256/apps/gnome-activity-journal.png")])
-        gobject.idle_add(self.__build_status_icon)
+        gobject.idle_add(self.setup_plugins)
 
-    def __build_status_icon(self):
-        if settings.get("show_status_icon", False):
-            if indicator.appindicator:
-                self.status = indicator.IndicatorIcon()
-            else:
-                self.status = indicator.StatusIcon()
-                self.status.set_visible(True)
-            self.status.connect("toggle-visibility", lambda w, v: self.set_visibility(v))
-            self.status.connect("quit", lambda *args: gtk.main_quit())
-            def _cb(*args):
-                val = self.toggle_visibility()
-                self.status.menu.toggle_button.set_active(val)
-            self.status.connect("activate", _cb)
+    def setup_plugins(self):
+        self.plug_manager = PluginManager(CLIENT, STORE, self)
         return False
 
     def set_visibility(self, val):

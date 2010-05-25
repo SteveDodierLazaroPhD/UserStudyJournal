@@ -21,6 +21,7 @@
 #    import appindicator
 #except ImportError:
 appindicator = None
+
 import gobject
 import gtk
 import pango
@@ -28,9 +29,10 @@ import time
 
 from zeitgeist.datamodel import Event, Interpretation, Manifestation, ResultType
 
-from config import settings, get_icon_path, SUPPORTED_SOURCES
-from store import STORE, CLIENT
+#from config import get_icon_path
 
+# These are given by the plugin manager as globals
+# CLIENT, STORE, JOURNAL_WINDOW
 
 class LabelSeparatorMenuItem(gtk.MenuItem):
     def __init__(self, label_text=""):
@@ -210,5 +212,25 @@ if appindicator:
             self.menu.connect("set", lambda *args: self.set_menu(self.menu))
 
 
+def main(client, store, window):
+    """ Called by the PluginManager """
+    print "Status Icon started"
+    # Imports
+    config = __import__("src.config", fromlist='config')
+    global get_icon_path
+    get_icon_path = config.get_icon_path
+
+    # Setup
+    if appindicator:
+        status = IndicatorIcon()
+    else:
+        status = StatusIcon()
+        status.set_visible(True)
+    status.connect("toggle-visibility", lambda w, v: window.set_visibility(v))
+    status.connect("quit", lambda *args: gtk.main_quit())
+    def _cb(*args):
+        val = window.toggle_visibility()
+        status.menu.toggle_button.set_active(val)
+    status.connect("activate", _cb)
 
 

@@ -152,3 +152,20 @@ SUPPORTED_SOURCES = {
     Interpretation.EMAIL.uri: Source(Interpretation.EMAIL, "applications-internet", _("Email"), _("Emails")),
     Interpretation.UNKNOWN.uri: Source(Interpretation.UNKNOWN, "applications-other", _("Other Activity"), _("Other Activities")),
 }
+
+
+class PluginManager(object):
+    plugins = []
+    if settings.get("show_status_icon", False):
+        plugins.append('indicator')
+
+    def __init__(self, client, store, window):
+        self.store = store
+        self.window = window
+        globs = {"CLIENT":client, "STORE":store, "JOURNAL_WINDOW":window}
+        for plugin_name in self.plugins:
+            print "Importing %s" % plugin_name
+            plug_module = __import__('src.plugins.' + plugin_name, level=-1, fromlist=[plugin_name])
+            plug_module.__dict__.update(globs)
+            plug_module.main(client, store, window)
+
