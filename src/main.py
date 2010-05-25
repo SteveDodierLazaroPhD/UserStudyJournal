@@ -188,9 +188,9 @@ class PortalWindow(gtk.Window):
                 "hicolor/32x32/apps/gnome-activity-journal.png",
                 "hicolor/48x48/apps/gnome-activity-journal.png",
                 "hicolor/256x256/apps/gnome-activity-journal.png")])
-        gobject.idle_add(self.setup_plugins)
+        gobject.idle_add(self.load_plugins)
 
-    def setup_plugins(self):
+    def load_plugins(self):
         self.plug_manager = PluginManager(CLIENT, STORE, self)
         return False
 

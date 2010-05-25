@@ -7,6 +7,7 @@
 # Copyright © 2009-2010 Siegfried Gevatter <siegfried@gevatter.com>
 # Copyright © 2007 Alex Graveley <alex@beatniksoftware.com>
 # Copyright © 2010 Markus Korn <thekorn@gmx.de>
+# Copyright © 2010 Randal Barlow <email.tehk@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -26,6 +27,7 @@ import cPickle
 import gettext
 import gobject
 import os
+import sys
 import urllib
 from xdg import BaseDirectory
 
@@ -34,15 +36,18 @@ try:
 except:
     from quickconf import QuickConf
 
-
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
     ResultType
+
 
 # Installation details
 BASE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 DATA_PATH = os.path.join(BASE_PATH, "data")
 VERSION = "0.3.4.1"
 GETTEXT_PATH = None
+
+USER_DATA_PATH = BaseDirectory.save_data_path("gnome-activity-journal")
+settings = QuickConf("/apps/gnome-activity-journal")
 
 def _get_path(path):
     return os.path.join(BASE_PATH, path)
@@ -62,20 +67,6 @@ def get_icon_path(path):
 if os.path.isdir(_get_path("build/mo")):
     GETTEXT_PATH = _get_path("build/mo")
 
-# Configuration and user data
-USER_DATA_PATH = BaseDirectory.save_data_path("gnome-activity-journal")
-
-# GConf
-settings = QuickConf("/apps/gnome-activity-journal")
-
-# GConf keys only updated at startup and globally useful
-# (TODO: shouldn't we always connect to changes?)
-
-def event_exists(uri):
-        # TODO: Move this into Zeitgeist's datamodel.py
-        return not uri.startswith("file://") or os.path.exists(
-            urllib.unquote(str(uri[7:])))
-
 
 class Bookmarker(gobject.GObject):
 
@@ -87,6 +78,12 @@ class Bookmarker(gobject.GObject):
 
     # PUBLIC!
     bookmarks = []
+
+    @staticmethod
+    def event_exists(uri):
+        # TODO: Move this into Zeitgeist's datamodel.py
+        return not uri.startswith("file://") or os.path.exists(
+            urllib.unquote(str(uri[7:])))
 
     def __init__(self):
         gobject.GObject.__init__(self)
@@ -100,7 +97,7 @@ class Bookmarker(gobject.GObject):
                     self.bookmarks = cPickle.load(f)
                     removable = []
                     for bookmark in self.bookmarks:
-                        if not event_exists(bookmark):
+                        if not self.event_exists(bookmark):
                             removable.append(bookmark)
                     for uri in removable:
                         self.bookmarks.remove(uri)
@@ -112,7 +109,7 @@ class Bookmarker(gobject.GObject):
             cPickle.dump(self.bookmarks, f)
 
     def bookmark(self, uri):
-        if not uri in self.bookmarks and event_exists(uri):
+        if not uri in self.bookmarks and self.event_exists(uri):
             self.bookmarks.append(uri)
         self._save()
         self.emit("reload", self.bookmarks)
@@ -126,11 +123,9 @@ class Bookmarker(gobject.GObject):
     def is_bookmarked(self, uri):
         return uri in self.bookmarks
 
-bookmarker = Bookmarker()
 
-# Sources
-
-class Source:
+class Source(object):
+    """A source which is used for category creation and verb/description storage for a given interpretation"""
     def __init__(self, interpretation, icon, desc_sing, desc_pl):
         self.name = interpretation.name
         self.icon = icon
@@ -140,19 +135,6 @@ class Source:
     def group_label(self, num):
         return gettext.ngettext(self._desc_sing, self._desc_pl, num)
 
-SUPPORTED_SOURCES = {
-    # TODO: Move this into Zeitgeist's library, implemented properly
-    Interpretation.VIDEO.uri: Source(Interpretation.VIDEO, "gnome-mime-video", _("Worked with a Video"), _("Worked with Videos")),
-    Interpretation.MUSIC.uri: Source(Interpretation.MUSIC, "gnome-mime-audio", _("Worked with Audio"), _("Worked with Audio")),
-    Interpretation.IMAGE.uri: Source(Interpretation.IMAGE, "image", _("Worked with an Image"), _("Worked with Images")),
-    Interpretation.DOCUMENT.uri: Source(Interpretation.DOCUMENT, "stock_new-presentation", _("Edited or Read Document"), _("Edited or Read Documents")),
-    Interpretation.SOURCECODE.uri: Source(Interpretation.SOURCECODE, "applications-development", _("Edited or Read Code"), _("Edited or Read Code")),
-    Interpretation.IM_MESSAGE.uri: Source(Interpretation.IM_MESSAGE, "applications-internet", _("Conversation"), _("Conversations")),
-    Interpretation.EMAIL.uri: Source(Interpretation.EMAIL, "applications-internet", _("Email"), _("Emails")),
-    Interpretation.UNKNOWN.uri: Source(Interpretation.UNKNOWN, "applications-other", _("Other Activity"), _("Other Activities")),
-}
-
-# Plugin manager
 
 class PluginManager(object):
     """
@@ -171,14 +153,19 @@ class PluginManager(object):
     if settings.get("show_status_icon", False):
         standard_plugins.append("status_icon_plugin")
 
-    user_plugs = []
-
     def __init__(self, client, store, window):
         self.client = client
         self.store = store
         self.window = window
         self.load_plugs(self.standard_plugins, prefix="src.plugins.")
-        self.load_plugs(self.user_plugs, level=0)
+        plug_path = os.path.join(USER_DATA_PATH, "plugins")
+        if os.path.exists(plug_path) and os.path.isdir(plug_path):
+            sys.path.append(plug_path)
+            user_plugs = []
+            for module_file in os.listdir(plug_path):
+                if module_file.endswith(".py"):
+                    user_plugs.append(module_file.replace(".py", "").replace("-", "_"))
+            self.load_plugs(user_plugs, level=0)
 
     def load_plugs(self, plugs, prefix="", level=-1):
         for plugin_name in plugs:
@@ -187,6 +174,21 @@ class PluginManager(object):
                 plug_module = __import__(prefix + plugin_name, level=level, fromlist=[plugin_name])
                 plug_module.main(self.client, self.store, self.window)
                 print  plug_module.__plugin_name__ + " has been loaded"
-            except ImportError:
-                print " Importing %s failed" % plugin_name
+            except Exception as e:
+                print " Importing %s failed." % plugin_name, e
 
+
+# Singletons and constants
+bookmarker = Bookmarker()
+
+SUPPORTED_SOURCES = {
+    # TODO: Move this into Zeitgeist's library, implemented properly
+    Interpretation.VIDEO.uri: Source(Interpretation.VIDEO, "gnome-mime-video", _("Worked with a Video"), _("Worked with Videos")),
+    Interpretation.MUSIC.uri: Source(Interpretation.MUSIC, "gnome-mime-audio", _("Worked with Audio"), _("Worked with Audio")),
+    Interpretation.IMAGE.uri: Source(Interpretation.IMAGE, "image", _("Worked with an Image"), _("Worked with Images")),
+    Interpretation.DOCUMENT.uri: Source(Interpretation.DOCUMENT, "stock_new-presentation", _("Edited or Read Document"), _("Edited or Read Documents")),
+    Interpretation.SOURCECODE.uri: Source(Interpretation.SOURCECODE, "applications-development", _("Edited or Read Code"), _("Edited or Read Code")),
+    Interpretation.IM_MESSAGE.uri: Source(Interpretation.IM_MESSAGE, "applications-internet", _("Conversation"), _("Conversations")),
+    Interpretation.EMAIL.uri: Source(Interpretation.EMAIL, "applications-internet", _("Email"), _("Emails")),
+    Interpretation.UNKNOWN.uri: Source(Interpretation.UNKNOWN, "applications-other", _("Other Activity"), _("Other Activities")),
+}
