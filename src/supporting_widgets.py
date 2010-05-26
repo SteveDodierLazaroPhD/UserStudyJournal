@@ -1392,11 +1392,13 @@ class PreferencesDialog(gtk.Dialog):
 
     def __init__(self):
         super(PreferencesDialog, self).__init__()
+        self.set_has_separator(False)
         self.set_title(_("Preferences"))
         self.set_size_request(400, 500)
         area = self.get_content_area()
         notebook = gtk.Notebook()
         area.pack_start(notebook)
+        notebook.set_border_width(10)
         plugbox = gtk.VBox()
         plugbox.set_border_width(10)
         self.plug_tree = self._PluginTreeView()
@@ -1410,7 +1412,7 @@ class PreferencesDialog(gtk.Dialog):
         plugbox.add(scroll_win)
         notebook.append_page(plugbox, gtk.Label( _("Plugins")))
         self.connect("delete-event", lambda *args: (True, self.hide())[0])
-
+        self.add_buttons(gtk.STOCK_CLOSE, gtk.RESPONSE_DELETE_EVENT)
 
 ###
 
