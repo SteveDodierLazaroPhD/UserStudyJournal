@@ -170,7 +170,7 @@ class PluginManager(object):
             sys.path.append(PLUGIN_PATH)
             user_plugs = []
             for module_file in os.listdir(PLUGIN_PATH):
-                if module_file.endswith(".py"):
+                if module_file.endswith(".py") and module_file != "__init__.py":
                     modname = module_file.replace(".py", "").replace("-", "_")
                     #if modname in PLUGIN_LIST:
                     user_plugs.append(modname)
@@ -198,15 +198,25 @@ class PluginManager(object):
                 state = self.plugin_settings.get(plugin_name, False)
                 if not state: continue # If the plugin is not True it will not be loaded
                 self.activate(plugin_module)
-                print  plugin_module.__plugin_name__ + " has been loaded"
             except Exception as e:
                 print "Loading %s failed." % plugin_name, e
 
-    def activate(self, plugin):
-        plugin.activate(self.client, self.store, self.window)
+    def __get_plugin_from_name(self, plugin=None, name=None):
+        if not plugin:
+            plugin = self.plugins[name]
+        elif not plugin and not name:
+            raise TypeError("You must pass either a plugin or a plugin_name")
+        return plugin
 
-    def deactivate(self, plugin):
+    def activate(self, plugin=None, name=None):
+        plugin = self.__get_plugin_from_name(plugin, name)
+        plugin.activate(self.client, self.store, self.window)
+        print "Activating %s" % plugin.__plugin_name__
+
+    def deactivate(self, plugin=None, name=None):
+        plugin = self.__get_plugin_from_name(plugin, name)
         plugin.deactivate(self.client, self.store, self.window)
+        print "Deactivating %s" % plugin.__plugin_name__
 
 
 

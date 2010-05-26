@@ -180,11 +180,8 @@ class StatusIcon(gtk.StatusIcon):
 
     def __init__(self):
         gtk.StatusIcon.__init__(self)
-        self.menu = AppletMenu()
-        self.menu.toggle_button.connect(
-            "toggled",
-            lambda *args: self.emit("toggle-visibility", self.menu.toggle_button.get_active()))
-        self.menu.quit_button.connect("activate", lambda *args: self.emit("quit"))
+        self.menu = None
+        self.activate()
         #self.set_from_file(get_icon_path("hicolor/scalable/apps/gnome-activity-journal.svg"))
         self.set_from_file(config.get_icon_path("hicolor/24x24/apps/gnome-activity-journal.png"))
         self.set_tooltip( _("Activity Journal"))
@@ -196,7 +193,12 @@ class StatusIcon(gtk.StatusIcon):
 
     def activate(self):
         if not self.menu:
-            self.menu = gtk.Menu()
+            self.menu = AppletMenu()
+            self.menu.toggle_button.connect(
+                "toggled",
+                lambda *args: self.emit("toggle-visibility", self.menu.toggle_button.get_active()))
+            self.menu.quit_button.connect("activate", lambda *args: self.emit("quit"))
+        self.set_visible(True)
 
     def deactivate(self):
         self.menu.destroy()

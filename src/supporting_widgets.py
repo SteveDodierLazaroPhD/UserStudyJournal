@@ -1361,11 +1361,11 @@ class PreferencesDialog(gtk.Dialog):
             #try:
             if True:
                 bname = os.path.basename(model[path][2].key)
-                module = self.manager.plugins[bname]
+                #module = self.manager.plugins[bname]
                 if model[path][1]:
-                    self.manager.activate(module)
+                    self.manager.activate(name=bname)
                 else:
-                    self.manager.deactivate(module)
+                    self.manager.deactivate(name=bname)
             #except: pass
 
         def set_items(self, manager):
