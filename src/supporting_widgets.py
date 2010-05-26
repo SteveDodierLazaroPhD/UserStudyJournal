@@ -1358,21 +1358,31 @@ class PreferencesDialog(gtk.Dialog):
             model = self.get_model()
             model[path][1] = not model[path][1]
             self.set_state(model[path][2], model[path][1])
+            #try:
+            if True:
+                bname = os.path.basename(model[path][2].key)
+                module = self.manager.plugins[bname]
+                if model[path][1]:
+                    self.manager.activate(module)
+                else:
+                    self.manager.deactivate(module)
+            #except: pass
 
-        def set_items(self, plugins):
-            entries = PluginManager.plugin_settings._gconf.all_entries(PluginManager.plugin_settings._root)
+        def set_items(self, manager):
+            entries = manager.plugin_settings._gconf.all_entries(PluginManager.plugin_settings._root)
             store = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_BOOLEAN, gobject.TYPE_PYOBJECT)
             for entry in entries:
                 bname = os.path.basename(entry.key)
-                if plugins.has_key(bname):
+                if manager.plugins.has_key(bname):
                     # Load the plugin if the plugin is found
-                    module = plugins[bname]
+                    module = manager.plugins[bname]
                     name = module.__plugin_name__
                     desc = "\n<span size='7000'>" + module.__description__ + "</span>"
                     store.append( [name+desc, False if entry.value is None else entry.value.get_bool(), entry])
                 else:
                     # Remove the key if no plugin is found
-                    PluginManager.plugin_settings._gconf.unset(entry.key)
+                    manager.plugin_settings._gconf.unset(entry.key)
+            self.manager = manager
             self.set_model(store)
 
     def __init__(self):

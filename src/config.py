@@ -193,14 +193,21 @@ class PluginManager(object):
         return plugins
 
     def load_plugins(self, plugins):
-        for plugin_name, plug_module in plugins:
+        for plugin_name, plugin_module in plugins:
             try:
                 state = self.plugin_settings.get(plugin_name, False)
                 if not state: continue # If the plugin is not True it will not be loaded
-                plug_module.activate(self.client, self.store, self.window)
-                print  plug_module.__plugin_name__ + " has been loaded"
+                self.activate(plugin_module)
+                print  plugin_module.__plugin_name__ + " has been loaded"
             except Exception as e:
                 print "Loading %s failed." % plugin_name, e
+
+    def activate(self, plugin):
+        plugin.activate(self.client, self.store, self.window)
+
+    def deactivate(self, plugin):
+        plugin.deactivate(self.client, self.store, self.window)
+
 
 
 # Singletons and constants

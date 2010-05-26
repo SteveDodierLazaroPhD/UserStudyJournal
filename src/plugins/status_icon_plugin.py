@@ -37,7 +37,7 @@ __description__ = "Displays a icon in the notification area which shows recent" 
                 " and most used items as collected by zeitgeist"
 
 
-CLIENT, STORE, JOURNAL_WINDOW = None, None, None
+THIS, CLIENT, STORE, JOURNAL_WINDOW = None, None, None, None
 
 
 class LabelSeparatorMenuItem(gtk.MenuItem):
@@ -172,56 +172,47 @@ class AppletMenu(gtk.Menu):
         self.emit("set")
 
 
-class StatusIconAbstract(gobject.GObject):
+class StatusIcon(gtk.StatusIcon):
+    __gsignals__ = {
+        "toggle-visibility": (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_BOOLEAN,)),
+        "quit": (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ()),
+        }
+
     def __init__(self):
+        gtk.StatusIcon.__init__(self)
         self.menu = AppletMenu()
         self.menu.toggle_button.connect(
             "toggled",
             lambda *args: self.emit("toggle-visibility", self.menu.toggle_button.get_active()))
         self.menu.quit_button.connect("activate", lambda *args: self.emit("quit"))
-
-
-gobject.signal_new(
-    "toggle-visibility", StatusIconAbstract, gobject.SIGNAL_RUN_FIRST,
-     gobject.TYPE_NONE, (gobject.TYPE_BOOLEAN,)
-)
-
-gobject.signal_new(
-    "quit", StatusIconAbstract, gobject.SIGNAL_RUN_FIRST,
-     gobject.TYPE_NONE, ()
-)
-
-
-class StatusIcon(StatusIconAbstract, gtk.StatusIcon):
-    def __init__(self):
-        gtk.StatusIcon.__init__(self)
-        StatusIconAbstract.__init__(self)
         #self.set_from_file(get_icon_path("hicolor/scalable/apps/gnome-activity-journal.svg"))
         self.set_from_file(config.get_icon_path("hicolor/24x24/apps/gnome-activity-journal.png"))
         self.set_tooltip( _("Activity Journal"))
-        self.connect("popup-menu", self.popup_menu_cb, self.menu)
+        self.connect("popup-menu", self.popup_menu_cb)
 
-    def popup_menu_cb(self, widget, button, activate_time, menu):
-        menu.popup(None, None, gtk.status_icon_position_menu,
+    def popup_menu_cb(self, widget, button, activate_time):
+        self.menu.popup(None, None, gtk.status_icon_position_menu,
                    button, activate_time, self)
 
+    def activate(self):
+        if not self.menu:
+            self.menu = gtk.Menu()
 
-if appindicator:
-    class IndicatorIcon(StatusIconAbstract, appindicator.Indicator):
-        def __init__(self):
-            appindicator.Indicator.__init__(self, "activity-journal-client", "journal-indicator", appindicator.CATEGORY_APPLICATION_STATUS)
-            StatusIconAbstract.__init__(self)
-            self.set_menu(self.menu)
-            self.set_status(appindicator.STATUS_ACTIVE)
-            self.set_icon("time")
-            self.set_attention_icon ("indicator-messages-new")
-            self.menu.connect("set", lambda *args: self.set_menu(self.menu))
+    def deactivate(self):
+        self.menu.destroy()
+        self.set_visible(False)
+        del self.menu
+        self.menu = None
 
 
 def activate(client, store, window):
-    """ Called by the PluginManager as the plugins entry point
-
-    initializes the plugin"""
+    """
+    Called by the PluginManager as the plugins entry point which initializes the plugin"""
+    # Check if the status icon was loaded
+    global THIS
+    if THIS:
+        THIS.activate()
+        return True
     # Imports and globals
     global CLIENT
     global STORE
@@ -231,9 +222,9 @@ def activate(client, store, window):
     JOURNAL_WINDOW = window
     # Plugin Setup
     if appindicator:
-        status = IndicatorIcon()
+        THIS = status = IndicatorIcon()
     else:
-        status = StatusIcon()
+        THIS = status = StatusIcon()
         status.set_visible(True)
     status.connect("toggle-visibility", lambda w, v: window.set_visibility(v))
     status.connect("quit", lambda *args: gtk.main_quit())
@@ -241,11 +232,12 @@ def activate(client, store, window):
         val = window.toggle_visibility()
         status.menu.toggle_button.set_active(val)
     status.connect("activate", _cb)
+    return True
 
 
 def deactivate(client, store, window):
     """ Tears down the plugin"""
-    pass
-
-
+    global THIS
+    if THIS:
+        THIS.deactivate()
 
