@@ -17,11 +17,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#try:
-#    import appindicator
-#except ImportError:
-appindicator = None
-
 import gobject
 import gtk
 import pango
@@ -35,6 +30,8 @@ from src import config
 __plugin_name__ = "Status Icon"
 __description__ = "Displays a icon in the notification area which shows recent" + \
                 " and most used items as collected by zeitgeist"
+
+__plugin_icon__ = ""
 
 
 THIS, CLIENT, STORE, JOURNAL_WINDOW = None, None, None, None
@@ -223,11 +220,7 @@ def activate(client, store, window):
     STORE = store
     JOURNAL_WINDOW = window
     # Plugin Setup
-    if appindicator:
-        THIS = status = IndicatorIcon()
-    else:
-        THIS = status = StatusIcon()
-        status.set_visible(True)
+    THIS = status = StatusIcon()
     status.connect("toggle-visibility", lambda w, v: window.set_visibility(v))
     status.connect("quit", lambda *args: gtk.main_quit())
     def _cb(*args):
@@ -242,4 +235,6 @@ def deactivate(client, store, window):
     global THIS
     if THIS:
         THIS.deactivate()
+    if JOURNAL_WINDOW:
+        JOURNAL_WINDOW.show()
 

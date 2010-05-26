@@ -47,9 +47,13 @@ VERSION = "0.3.4.1"
 GETTEXT_PATH = None
 
 USER_DATA_PATH = BaseDirectory.save_data_path("gnome-activity-journal")
-PLUGIN_PATH = os.path.join(USER_DATA_PATH, "plugins")
+
+PLUGIN_PATH = os.path.join(BASE_PATH, "src/plugins")
 if not os.path.exists(PLUGIN_PATH) or not os.path.isdir(PLUGIN_PATH):
     PLUGIN_PATH = None
+USER_PLUGIN_PATH = os.path.join(USER_DATA_PATH, "plugins")
+if not os.path.exists(USER_PLUGIN_PATH) or not os.path.isdir(USER_PLUGIN_PATH):
+    USER_PLUGIN_PATH = None
 
 settings = QuickConf("/apps/gnome-activity-journal")
 
@@ -158,23 +162,24 @@ class PluginManager(object):
     """
     plugin_settings = QuickConf("/apps/gnome-activity-journal/plugins")
 
-    standard_plugins = ["status_icon_plugin"]
-
     def __init__(self, client, store, window):
         self.plugins = {}
         self.client = client
         self.store = store
         self.window = window
-        self.get_plugins(self.standard_plugins, prefix="src.plugins.")
-        if PLUGIN_PATH:
-            sys.path.append(PLUGIN_PATH)
-            user_plugs = []
-            for module_file in os.listdir(PLUGIN_PATH):
+        # Base plugins
+        self.load_path(PLUGIN_PATH)
+        self.load_path(USER_PLUGIN_PATH)
+
+    def load_path(self, path):
+        if path:
+            sys.path.append(path)
+            plugs = []
+            for module_file in os.listdir(path):
                 if module_file.endswith(".py") and module_file != "__init__.py":
                     modname = module_file.replace(".py", "").replace("-", "_")
-                    #if modname in PLUGIN_LIST:
-                    user_plugs.append(modname)
-            self.get_plugins(user_plugs, level=0)
+                    plugs.append(modname)
+            self.get_plugins(plugs, level=0)
 
     def get_plugins(self, plugin_names, prefix="", level=-1):
         plugs = self.import_plugins(plugin_names, prefix=prefix, level=level)
