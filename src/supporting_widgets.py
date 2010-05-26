@@ -1339,16 +1339,21 @@ class PreferencesDialog(gtk.Dialog):
     class _PluginTreeView(gtk.TreeView):
         def __init__(self):
             gtk.TreeView.__init__(self)
+            self.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_VERTICAL)
             self.set_headers_visible(False)
-            pcolumn = gtk.TreeViewColumn("")
+            acolumn = gtk.TreeViewColumn("")
             toggle_render = gtk.CellRendererToggle()
-            pcolumn.pack_start(toggle_render, False)
-            pcolumn.add_attribute(toggle_render, "active", 1)
+            acolumn.pack_start(toggle_render, False)
+            acolumn.add_attribute(toggle_render, "active", 1)
+            self.append_column(acolumn)
+
+            bcolumn = gtk.TreeViewColumn("")
             text_render = gtk.CellRendererText()
             text_render.set_property("ellipsize", pango.ELLIPSIZE_MIDDLE)
-            pcolumn.pack_end(text_render, True)
-            pcolumn.add_attribute(text_render, "markup", 0)
-            self.append_column(pcolumn)
+            bcolumn.pack_start(text_render, True)
+            bcolumn.add_attribute(text_render, "markup", 0)
+            self.append_column(bcolumn)
+            self.set_property("rules-hint", True)
             self.connect("row-activated" , self.on_activate)
 
         def set_state(self, entry, state):
@@ -1376,8 +1381,8 @@ class PreferencesDialog(gtk.Dialog):
                 if manager.plugins.has_key(bname):
                     # Load the plugin if the plugin is found
                     module = manager.plugins[bname]
-                    name = module.__plugin_name__
-                    desc = "\n<span size='7000'>" + module.__description__ + "</span>"
+                    name = "<b>" + module.__plugin_name__ + "</b>"
+                    desc = "\n<small>" + module.__description__ + "</small>"
                     store.append( [name+desc, False if entry.value is None else entry.value.get_bool(), entry])
                 else:
                     # Remove the key if no plugin is found
@@ -1395,12 +1400,14 @@ class PreferencesDialog(gtk.Dialog):
         plugbox = gtk.VBox()
         plugbox.set_border_width(10)
         self.plug_tree = self._PluginTreeView()
+        label = gtk.Label( _("Active Plugins:"))
+        label.set_alignment(0, 0.5)
+        plugbox.pack_start(label, False, False, 4)
         scroll_win = gtk.ScrolledWindow()
         scroll_win.set_shadow_type(gtk.SHADOW_IN)
         scroll_win.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         scroll_win.add(self.plug_tree)
         plugbox.add(scroll_win)
-        plugbox.pack_end(gtk.Label(_("Changing plugin states requires Journal to be restarted")), False, False, 5)
         notebook.append_page(plugbox, gtk.Label( _("Plugins")))
         self.connect("delete-event", lambda *args: (True, self.hide())[0])
 
