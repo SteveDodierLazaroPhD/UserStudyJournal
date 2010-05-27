@@ -1412,7 +1412,9 @@ class PreferencesDialog(gtk.Dialog):
         plugbox.add(scroll_win)
         notebook.append_page(plugbox, gtk.Label( _("Plugins")))
         self.connect("delete-event", lambda *args: (True, self.hide())[0])
-        self.add_buttons(gtk.STOCK_CLOSE, gtk.RESPONSE_DELETE_EVENT)
+        close_button = gtk.Button(stock=gtk.STOCK_CLOSE)
+        self.add_action_widget(close_button, gtk.RESPONSE_DELETE_EVENT)
+        close_button.connect("clicked", lambda *args: (True, self.hide())[0])
 
 ###
 
