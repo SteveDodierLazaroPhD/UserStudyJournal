@@ -356,13 +356,11 @@ class Store(gobject.GObject):
         content_objects.AbstractContentObject.connect_to_manager("remove", self.remove_content_objects_with_type)
 
     def add_content_object_with_new_type(self, obj):
-        print "OK"
         for day in self.days:
             for instance in day.items:
                 if instance._content_object_built:
                     cls = content_objects.ContentObject.find_best_type_from_event(instance.event)
                     if not isinstance(instance.content_object, cls) and instance.content_object:
-                        print "replacing %s with %s" % (str(type(instance.content_object)), cls)
                         del instance.content_object
                         instance.content_object = cls.create(instance.event)
             day.emit("update")
@@ -371,7 +369,7 @@ class Store(gobject.GObject):
         for day in self.days:
             for instance in day.items:
                 if instance._content_object_built:
-                    if isinstance(instance.content_object, obj):
+                    if isinstance(instance.content_object, obj) and instance.content_object:
                         instance.content_object = content_objects.ContentObject.new_from_event(instance.event)
             day.emit("update")
 
