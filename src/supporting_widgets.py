@@ -388,7 +388,7 @@ class SearchBox(gtk.ToolItem):
     def do_search_objs(text, callback, interpretation=None):
         def _search(text, callback):
             matching = []
-            for obj in content_objects.Object.instances:
+            for obj in content_objects.ContentObject.instances:
                 subject = obj.event.subjects[0]
                 if text.lower() in subject.text.lower() or text in subject.uri:
                     if interpretation:
@@ -999,7 +999,7 @@ class TagCloud(gtk.VBox):
                 files = TRACKER.get_uris_for_tag(tag)
                 if files:
                     results = []
-                    for obj in content_objects.Object.instances:
+                    for obj in content_objects.ContentObject.instances:
                         if obj.uri in files:
                             results.append(obj)
                     SearchBox.emit("search", results)
@@ -1292,7 +1292,6 @@ class InformationContainer(Pane):
         else:
             self.infopane.display_widget.show()
 
-
     def do_toggle_bookmark(self, *args):
         if bookmarker.is_bookmarked(self.obj.uri):
             bookmarker.unbookmark(self.obj.uri)
@@ -1336,6 +1335,7 @@ class InformationContainer(Pane):
 
 
 class PreferencesDialog(gtk.Dialog):
+
     class _PluginTreeView(gtk.TreeView):
         def __init__(self):
             gtk.TreeView.__init__(self)
@@ -1363,15 +1363,11 @@ class PreferencesDialog(gtk.Dialog):
             model = self.get_model()
             model[path][1] = not model[path][1]
             self.set_state(model[path][2], model[path][1])
-            #try:
-            if True:
-                bname = os.path.basename(model[path][2].key)
-                #module = self.manager.plugins[bname]
-                if model[path][1]:
-                    self.manager.activate(name=bname)
-                else:
-                    self.manager.deactivate(name=bname)
-            #except: pass
+            bname = os.path.basename(model[path][2].key)
+            if model[path][1]:
+                self.manager.activate(name=bname)
+            else:
+                self.manager.deactivate(name=bname)
 
         def set_items(self, manager):
             entries = manager.plugin_settings._gconf.all_entries(PluginManager.plugin_settings._root)
@@ -1416,8 +1412,8 @@ class PreferencesDialog(gtk.Dialog):
         self.add_action_widget(close_button, gtk.RESPONSE_DELETE_EVENT)
         close_button.connect("clicked", lambda *args: (True, self.hide())[0])
 
-###
 
+###
 if gst is not None:
     VideoPreviewTooltip = VideoPreviewTooltip()
 else:

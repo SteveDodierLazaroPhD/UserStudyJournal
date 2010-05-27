@@ -34,8 +34,6 @@ CLIENT = ZeitgeistClient()
 INTERFACE = ZeitgeistDBusInterface()
 MAXEVENTS = 999999
 
-#content_object_selector_function = (lambda x: None)
-content_object_selector_function = content_objects.choose_content_object
 
 tdelta = lambda x: datetime.timedelta(days=x)
 
@@ -114,9 +112,11 @@ class ContentStruct(object):
     id = 0
     event = None
 
+    _content_object_built = False
     @CachedAttribute
     def content_object(self):
-        return content_object_selector_function(self.event)
+        self._content_object_built = True
+        return content_objects.ContentObject.new_from_event(self.event)
 
     @CachedAttribute
     def event(self):
@@ -144,7 +144,8 @@ class ContentStruct(object):
 
     def build_struct(self):
         gtk.gdk.threads_enter()
-        content_object_selector_function(self.event)
+        self._content_object_built = True
+        self.content_object = content_objects.ContentObject.new_from_event(self.event)
         gtk.gdk.threads_leave()
 
     def do_build(self):
@@ -234,7 +235,8 @@ class Day(gobject.GObject):
             return False
         self._items[event.id] = ContentStruct(event.id, event)
         if overwrite:
-            self._items[event.id].content_object = content_object_selector_function(event)
+            self._items[event.id]._content_object_built = True
+            self._items[event.id].content_object = content_objects.ContentObject.new_from_event(event)
         return True
 
     def next(self, store=None):
@@ -350,6 +352,29 @@ class Store(gobject.GObject):
             self.add_day(date, day)
             t -= 86400
 
+        content_objects.AbstractContentObject.connect_to_manager("add", self.add_content_object_with_new_type)
+        content_objects.AbstractContentObject.connect_to_manager("remove", self.remove_content_objects_with_type)
+
+    def add_content_object_with_new_type(self, obj):
+        print "OK"
+        for day in self.days:
+            for instance in day.items:
+                if instance._content_object_built:
+                    cls = content_objects.ContentObject.find_best_type_from_event(instance.event)
+                    if not isinstance(instance.content_object, cls) and instance.content_object:
+                        print "replacing %s with %s" % (str(type(instance.content_object)), cls)
+                        del instance.content_object
+                        instance.content_object = cls.create(instance.event)
+            day.emit("update")
+
+    def remove_content_objects_with_type(self, obj):
+        for day in self.days:
+            for instance in day.items:
+                if instance._content_object_built:
+                    if isinstance(instance.content_object, obj):
+                        instance.content_object = content_objects.ContentObject.new_from_event(instance.event)
+            day.emit("update")
+
     @DoEmit("update")
     def add_day(self, key, day):
         self._days[key] = day
@@ -425,18 +450,6 @@ class Store(gobject.GObject):
             CLIENT.find_events_for_templates(
                 event_templates, callback, [start*1000, end*1000], num_events=50000)
         return False
-
-    def build_all(self):
-        self.__build_count = 0
-        self._current_day = self.today.previous(self).previous(self)
-        def _build():
-            if self.__build_count > 70:
-                return False
-            self._current_day.do_build()
-            self._current_day = self._current_day.previous(self)
-            self.__build_count += 1
-            return True
-        gobject.timeout_add_seconds(1, _build)
 
     def add_event(self, event, overwrite=True, idle=True):
 

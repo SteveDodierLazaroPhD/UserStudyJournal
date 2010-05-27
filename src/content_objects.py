@@ -61,46 +61,93 @@ class CachedAttribute(object):
         return value
 
 
-def choose_content_object(event):
-    """
-    :param event: a zeitgeist.datamodel.Event
-
-    :returns a instance of the best possible ContentObject subclass or None if
-    no correct Content Object was found or if that the correct Content object
-    rejected the given event
-    """
-    for obj in CONTENT_OBJECTS:
-        instance = obj.use_class(event)
-        if instance: return instance
-
-    if event.subjects[0].uri.startswith("file://"):
-        return FileContentObject.create(event)
-    return GenericContentObject.create(event)
-
-
-class Object(object):
+class AbstractContentObject(object):
     """
     Keeps a list of instances of this class
     """
-    matches_search = False
     instances = []
+
+    content_object_types = []
+
+    _connections = {"add":[], "remove":[]}
+
+    @classmethod
+    def connect_to_manager(cls, signal, func):
+        cls._connections[signal].append(func)
+        return signal, cls._connections[signal].index(func)
+
+    @classmethod
+    def remove_manager_connection(cls, identity):
+        del cls._connections[identity[0]][identity[1]]
+
+    @classmethod
+    def register_new_content_object_type(cls, content_object_type, index=None):
+        if index != None:
+            cls.content_object_types.insert(index, content_object_type)
+        else:
+            cls.content_object_types.append(content_object_type)
+        for func in cls._connections["add"]:
+            func(content_object_type)
+
+    @classmethod
+    def remove_content_object_type(cls, content_object_type):
+        cls.content_object_types.remove(content_object_type)
+        for func in cls._connections["remove"]:
+            func(content_object_type)
+
+    @classmethod
+    def new_from_event(cls, event):
+        """
+        :param event: a zeitgeist.datamodel.Event
+
+        :returns a instance of the best possible ContentObject subclass or None if
+        no correct Content Object was found or if that the correct Content object
+        rejected the given event
+        """
+        for obj in cls.content_object_types:
+            instance = obj.use_class(event)
+            if instance:
+                return instance.create(event)
+        if event.subjects[0].uri.startswith("file://"):
+            return FileContentObject.create(event)
+        return GenericContentObject.create(event)
+
+    @classmethod
+    def find_best_type_from_event(cls, event):
+        """
+        :param event: a zeitgeist.datamodel.Event
+
+        :returns a instance of the best possible ContentObject subclass or None if
+        no correct Content Object was found or if that the correct Content object
+        rejected the given event
+        """
+        for obj in cls.content_object_types:
+            instance = obj.use_class(event)
+            if instance:
+                return instance
+        if event.subjects[0].uri.startswith("file://"):
+            return FileContentObject
+        return GenericContentObject
+
     def __init__(self):
-        super(Object, self).__init__()
-        Object.instances.append(self)
+        super(AbstractContentObject, self).__init__()
+        self.instances.append(self)
+
+    def __del__(self):
+        self.instances.remove(self)
+        return super(AbstractContentObject, self).__del__()
+
+
+class ContentObject(AbstractContentObject):
+    """
+    Defines the required interface of a Content object. This is a abstract class.
+    """
+
+    matches_search = False
 
     @classmethod
     def clear_search_matches(cls):
         map(lambda o: setattr(o, "matches_search", False), cls.instances)
-
-    def __del__(self):
-        Object.instances.remove(self)
-        return super(Object, self).__del__()
-
-
-class ContentObject(Object):
-    """
-    Defines the required interface of a Content object. This is a abstract class.
-    """
 
     @classmethod
     def find_matching_events(cls, template):
@@ -116,7 +163,7 @@ class ContentObject(Object):
         :returns: a object instance or False if this Content Object is not correct for this item
         """
         if False:
-            return cls.create(event)
+            return cls
         return False
 
     def __init__(self, event):
@@ -218,7 +265,6 @@ class ContentObject(Object):
         timelineview_text = (t + "\n" + text).replace("%", "%%")
         return timelineview_text
 
-
     @CachedAttribute
     def thumbview_text(self):
         """
@@ -272,7 +318,7 @@ class FileContentObject(GioFile, ContentObject):
     def use_class(cls, event):
         """ Used by the content object chooser to check if the content object will work for the event"""
         if event.subjects[0].uri.startswith("file://"):
-            return cls.create(event)
+            return cls
         return False
 
     def __init__(self, event):
@@ -479,7 +525,7 @@ class BzrContentObject(BaseContentType):
     def use_class(cls, event):
         """ Used by the content object chooser to check if the content object will work for the event"""
         if event.actor == "application://bzr.desktop":
-            return cls.create(event)
+            return cls
         return False
 
     #icon_uri = "/usr/share/pixmaps/bzr-icon-64.png"
@@ -501,7 +547,7 @@ class IMContentObject(BaseContentType):
     def use_class(cls, event):
         """ Used by the content object chooser to check if the content object will work for the event"""
         if event.subjects[0].interpretation == Interpretation.IM_MESSAGE.uri:
-            return cls.create(event)
+            return cls
         return False
 
     type_color_representation = common.TANGOCOLORS[13], common.TANGOCOLORS[14]
@@ -584,7 +630,7 @@ class WebContentObject(BaseContentType):
     def use_class(cls, event):
         """ Used by the content object chooser to check if the content object will work for the event"""
         if event.subjects[0].uri.startswith("http://"):
-            return cls.create(event)
+            return cls
         return False
 
     icon_name = "$MIME $ACTOR"
@@ -602,7 +648,7 @@ class HamsterContentObject(BaseContentType):
     @classmethod
     def use_class(cls, event):
         if event.actor == "applications://hamster-standalone.desktop":
-            return cls.create(event)
+            return cls
         return False
 
     _prefix = _("Time Tracker")
@@ -620,7 +666,7 @@ class EmailContentObject(BaseContentType):
     @classmethod
     def use_class(cls, event):
         if event.subjects[0].interpretation == Interpretation.EMAIL:
-            return cls.create(event)
+            return cls
         return False
     icon_name = "$MIME $ACTOR"
 
@@ -651,7 +697,7 @@ class TomboyContentObject(BaseContentType):
     def use_class(cls, event):
         """ Used by the content object chooser to check if the content object will work for the event"""
         if event.actor == "application://tomboy.desktop":
-            return cls.create(event)
+            return cls
         return False
 
     icon_name = "$ACTOR"
@@ -674,7 +720,7 @@ class MusicPlayerContentObject(BaseContentType):
         """ Used by the content object chooser to check if the content object will work for the event"""
         if event.actor in ("application://banshee.desktop", "application://rhythmbox.desktop") \
            and not event.subjects[0].uri.startswith("file://"):
-            return cls.create(event)
+            return cls
         return False
 
     icon_name = "$MIME $ACTOR"
@@ -697,6 +743,6 @@ class MusicPlayerContentObject(BaseContentType):
 
 # Content object list used by the section function. Should use Subclasses but I like to have some order in which these should be used
 if sys.version_info >= (2,6):
-    CONTENT_OBJECTS = [MusicPlayerContentObject, BzrContentObject, WebContentObject, IMContentObject, TomboyContentObject, EmailContentObject, HamsterContentObject]
-else:
-    CONTENT_OBJECTS = []
+    map(AbstractContentObject.content_object_types.append, (MusicPlayerContentObject, BzrContentObject, WebContentObject,
+                       IMContentObject, TomboyContentObject, EmailContentObject, HamsterContentObject))
+
