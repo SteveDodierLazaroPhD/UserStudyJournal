@@ -859,22 +859,16 @@ class Toolbar(gtk.Toolbar):
         for item in (sdialog, sb, sep2, pin, sep1, tlv, tbv, mv):
             self.insert(item, 0)
         #
-        self.pref = gtk.ToolButton(gtk.STOCK_PREFERENCES)
+        self.preference_button = gtk.ToolButton(gtk.STOCK_PREFERENCES)
         separator = gtk.SeparatorToolItem()
         separator.set_expand(True)
         separator.set_draw(False)
         self.goto_today_button = today = gtk.ToolButton(gtk.STOCK_GOTO_LAST)
         today.set_label( _("Goto Today"))
         self.throbber = Throbber()
-        for item in (separator, today, self.pref, self.throbber):
+        for item in (separator, today, self.preference_button, self.throbber):
             self.insert(item, -1)
-        self.pref.connect("clicked", self.show_settings)
         self.view_buttons[0].set_sensitive(False)
-
-        self.preferences_dialog = PreferencesDialog()
-
-    def show_settings(self, *args):
-        self.preferences_dialog.show_all()
 
     def do_throb(self):
         self.throbber.image.animate_for_seconds(1)
@@ -1392,7 +1386,7 @@ class PreferencesDialog(gtk.Dialog):
         self.set_title(_("Preferences"))
         self.set_size_request(400, 500)
         area = self.get_content_area()
-        notebook = gtk.Notebook()
+        self.notebook = notebook = gtk.Notebook()
         area.pack_start(notebook)
         notebook.set_border_width(10)
         plugbox = gtk.VBox()

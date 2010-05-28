@@ -28,7 +28,7 @@ import datetime
 import os
 
 from activity_widgets import MultiViewContainer, TimelineViewContainer, ThumbViewContainer, PinnedPane
-from supporting_widgets import DayButton, DayLabel, Toolbar, ContextMenu, AboutDialog, HandleBox, SearchBox, InformationContainer
+from supporting_widgets import DayButton, DayLabel, Toolbar, ContextMenu, AboutDialog, HandleBox, SearchBox, InformationContainer, PreferencesDialog
 from histogram import HistogramWidget
 from store import Store, tdelta, STORE, CLIENT
 from config import settings, get_icon_path, PluginManager
@@ -128,6 +128,7 @@ class PortalWindow(gtk.Window):
         self.toolbar = Toolbar()
         self.view = ViewContainer(self.store)
         self.panedcontainer = PanedContainer()
+        self.preferences_dialog = PreferencesDialog()
         self.histogram = HistogramWidget()
         self.histogram.set_store(self.store)
         self.histogram.set_dates([self.day_iter.date])
@@ -192,7 +193,10 @@ class PortalWindow(gtk.Window):
 
     def load_plugins(self):
         self.plug_manager = PluginManager(CLIENT, STORE, self)
-        self.toolbar.preferences_dialog.plug_tree.set_items(self.plug_manager)
+        self.preferences_dialog.notebook.show_all()
+        self.toolbar.preference_button.connect("clicked", lambda *args: self.preferences_dialog.show())
+        self.preferences_dialog.plug_tree.set_items(self.plug_manager)
+
         return False
 
     def set_visibility(self, val):
