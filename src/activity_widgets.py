@@ -125,10 +125,10 @@ class MultiViewContainer(gtk.HBox):
 
 class DayViewContainer(gtk.VBox):
     event_templates = (
-        Event.new_for_values(interpretation=Interpretation.VISIT_EVENT.uri),
         Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri),
         Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri),
-        Event.new_for_values(interpretation=Interpretation.OPEN_EVENT.uri),
+        Event.new_for_values(interpretation=Interpretation.ACCESS_EVENT.uri),
+        Event.new_for_values(interpretation=Interpretation.SEND_EVENT.uri),
     )
     def __init__(self):
         super(DayViewContainer, self).__init__()
@@ -675,10 +675,9 @@ class ThumbView(gtk.VBox):
     A container for three image views representing periods in time
     """
     event_templates = (
-            Event.new_for_values(interpretation=Interpretation.VISIT_EVENT.uri),
             Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri),
             Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri),
-            Event.new_for_values(interpretation=Interpretation.OPEN_EVENT.uri),
+            Event.new_for_values(interpretation=Interpretation.ACCESS_EVENT.uri),
         )
     def __init__(self):
         """Woo"""

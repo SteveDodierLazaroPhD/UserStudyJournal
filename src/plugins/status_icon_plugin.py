@@ -100,24 +100,23 @@ class AppletMenu(gtk.Menu):
     }
 
     event_templates = (
-        Event.new_for_values(interpretation=Interpretation.VISIT_EVENT.uri),
         Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri),
         Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri),
-        Event.new_for_values(interpretation=Interpretation.OPEN_EVENT.uri),
+        Event.new_for_values(interpretation=Interpretation.ACCESS_EVENT.uri),
     )
     day_connection_id = None
     day = None
 
     sources = (
         (Interpretation.VIDEO, "gnome-mime-video"),
-        (Interpretation.MUSIC, "gnome-mime-audio"),
+        (Interpretation.AUDIO, "gnome-mime-audio"),
         (Interpretation.IMAGE, "gnome-mime-image"),
         (Interpretation.DOCUMENT, "x-office-document"),
-        (Interpretation.SOURCECODE, "gnome-mime-text"),
-        (Interpretation.IM_MESSAGE, "empathy"),
+        (Interpretation.SOURCE_CODE, "gnome-mime-text"),
+        (Interpretation.IMMESSAGE, "empathy"),
         (Interpretation.EMAIL, "email"),
-        (Interpretation.UNKNOWN, "gnome-other"),
-        (Manifestation.WEB_HISTORY, "text-html"),
+        ("Unknown", "gnome-other"),
+        (Interpretation.WEBSITE, "text-html"),
         )
 
     def __init__(self):
@@ -127,10 +126,12 @@ class AppletMenu(gtk.Menu):
         self.quit_button = gtk.ImageMenuItem(stock_id=gtk.STOCK_QUIT)
         self.kept_members = [LabelSeparatorMenuItem(_("Recently Used")), LabelSeparatorMenuItem(_("Most Used"))]
         for symbol, icon_name in self.sources:
-            menu = gtk.ImageMenuItem(symbol.display_name)
+            menu = gtk.ImageMenuItem(symbol.display_name if not isinstance(symbol, str) else symbol)
             image = gtk.image_new_from_icon_name(icon_name, 24)
             image.show_all()
             menu.set_image(image)
+            if isinstance(symbol, str):
+                continue
             if symbol.uri in Interpretation:
                 templates = [Event.new_for_values(subject_interpretation=symbol.uri)]
             elif symbol.uri in Manifestation:

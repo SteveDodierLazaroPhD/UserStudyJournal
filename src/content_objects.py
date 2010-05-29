@@ -395,17 +395,17 @@ class BaseContentType(ContentObject):
             "event" : event
         }
         try: wrds["interpretation"] = Interpretation[event.interpretation]
-        except KeyError: wrds["interpretation"] = Interpretation.OPEN_EVENT
+        except KeyError: wrds["interpretation"] = Interpretation.ACCESS_EVENT
         try: wrds["subject_interpretation"] = Interpretation[event.subjects[0].interpretation]
-        except KeyError: wrds["subject_interpretation"] = Interpretation.UNKNOWN
+        except KeyError: wrds["subject_interpretation"] = Interpretation
         try:
             wrds["source"] = SUPPORTED_SOURCES[self.event.subjects[0].interpretation]
         except:
-            wrds["source"] = SUPPORTED_SOURCES[Interpretation.UNKNOWN.uri]
+            wrds["source"] = SUPPORTED_SOURCES[""]
         try:
             wrds["manifestation"] = Manifestation[event.manifestation]
         except:
-            wrds["manifestation"] = Manifestation.UNKNOWN
+            wrds["manifestation"] = Manifestation
         for name in self.fields_to_format:
             val = getattr(self, name)
             setattr(self, name, val.format(**wrds))
@@ -488,13 +488,13 @@ class GenericContentObject(BaseContentType):
             self.wrds = wrds = {
             }
             try: wrds["interpretation"] = Interpretation[event.interpretation]
-            except KeyError: wrds["interpretation"] = Interpretation.OPEN_EVENT
+            except KeyError: wrds["interpretation"] = Interpretation.ACCESS_EVENT
             try: wrds["subject_interpretation"] = Interpretation[event.subjects[0].interpretation]
-            except KeyError: wrds["subject_interpretation"] = Interpretation.UNKNOWN
+            except KeyError: wrds["subject_interpretation"] = Interpretation
             try:
                 wrds["source"] = SUPPORTED_SOURCES[self.event.subjects[0].interpretation]
             except:
-                wrds["source"] = SUPPORTED_SOURCES[Interpretation.UNKNOWN.uri]
+                wrds["source"] = SUPPORTED_SOURCES[""]
 
         @CachedAttribute
         def text(self):
@@ -546,7 +546,7 @@ class IMContentObject(BaseContentType):
     @classmethod
     def use_class(cls, event):
         """ Used by the content object chooser to check if the content object will work for the event"""
-        if event.subjects[0].interpretation == Interpretation.IM_MESSAGE.uri:
+        if event.subjects[0].interpretation == Interpretation.IMMESSAGE.uri:
             return cls
         return False
 
@@ -735,7 +735,7 @@ class MusicPlayerContentObject(BaseContentType):
             interpretation = self.event.subjects[0].interpretation
             if Interpretation.VIDEO.uri == interpretation:
                 event_mime = "video/mpeg"
-            elif Interpretation.MUSIC.uri == interpretation:
+            elif Interpretation.AUDIO.uri == interpretation:
                 event_mime = "audio/x-mpeg"
             else: event_mime = "audio/x-mpeg"
         return event_mime

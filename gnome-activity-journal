@@ -33,8 +33,8 @@ our_dir = os.path.abspath(os.path.dirname(__file__))
 # this file residing in $prefix/bin, we expect to find the remaining code
 # in $prefix/share/gnome-activity-journal/.
 if os.path.basename(our_dir) == 'bin':
-	sys.path.insert(0, os.path.join(os.path.dirname(our_dir),
-		'share/gnome-activity-journal'))
+    sys.path.insert(0, os.path.join(os.path.dirname(our_dir),
+                                    'share/gnome-activity-journal'))
 
 # Check for critical modules from other repositories.
 # Support side-by-side or nested repositories during development.
@@ -79,8 +79,8 @@ gettext.install('gnome-activity-journal', config.GETTEXT_PATH, unicode=True)
 
 parser = optparse.OptionParser(version=config.VERSION)
 parser.add_option("--debug",
-    action = "store_true", default=False, dest="debug",
-    help = _("print additional debugging information"))
+                  action = "store_true", default=False, dest="debug",
+                  help = _("print additional debugging information"))
 options, arguments = parser.parse_args()
 
 try:

@@ -55,10 +55,10 @@ def get_related_events_for_uri(uri, callback):
         if len(uris) > 0:
             for i, uri in enumerate(uris):
                 templates += [
-                        Event.new_for_values(interpretation=Interpretation.VISIT_EVENT.uri, subject_uri=uri),
+                        Event.new_for_values(interpretation=Interpretation.ACCESS_EVENT.uri, subject_uri=uri),
                         Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri, subject_uri=uri),
                         Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri, subject_uri=uri),
-                        Event.new_for_values(interpretation=Interpretation.OPEN_EVENT.uri, subject_uri=uri)
+                        Event.new_for_values(interpretation=Interpretation.ACCESS_EVENT.uri, subject_uri=uri)
                     ]
             CLIENT.find_event_ids_for_templates(templates, _event_request_handler,
                                              [0, time.time()*1000], num_events=50000,
@@ -296,7 +296,7 @@ class Day(gobject.GObject):
             uri = item.event.subjects[0].uri
             if not uri in results:
                 results[uri] = []
-            if not item.event.interpretation == Interpretation.CLOSE_EVENT.uri:
+            if not item.event.interpretation == Interpretation.LEAVE_EVENT.uri:
                 results[uri].append([item, 0])
             else:
                 if not len(results[uri]) == 0:
@@ -421,10 +421,10 @@ class Store(gobject.GObject):
         Optionally calls func upon completion
         """
         event_templates = (
-            Event.new_for_values(interpretation=Interpretation.VISIT_EVENT.uri),
+            Event.new_for_values(interpretation=Interpretation.ACCESS_EVENT.uri),
             Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri),
             Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri),
-            Event.new_for_values(interpretation=Interpretation.OPEN_EVENT.uri),
+            Event.new_for_values(interpretation=Interpretation.ACCESS_EVENT.uri),
         )
         def callback(events):
             def _thread_fn(events):

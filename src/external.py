@@ -240,7 +240,7 @@ class Hamster(object):
 
         def get_events(self):
             events = []
-            events.append(self._make_event(int(self.start_time), Interpretation.OPEN_EVENT.uri))
+            events.append(self._make_event(int(self.start_time), Interpretation.ACCESS_EVENT.uri))
             if self.end_time:
                 events.append(self._make_event(int(self.end_time), Interpretation.CLOSE_EVENT.uri))
             return events

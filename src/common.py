@@ -55,7 +55,7 @@ try:
 except ImportError:
     chardet = None
 
-from config import get_data_path, get_icon_path
+from config import get_data_path, get_icon_path, INTERPRETATION_UNKNOWN, MANIFESTATION_UNKNOWN
 
 from zeitgeist.datamodel import Interpretation, Event
 
@@ -130,23 +130,23 @@ TANGOCOLORS = [
 
 FILETYPES = {
     Interpretation.VIDEO.uri : 0,
-    Interpretation.MUSIC.uri : 3,
+    Interpretation.AUDIO.uri : 3,
     Interpretation.DOCUMENT.uri : 12,
     Interpretation.IMAGE.uri : 15,
-    Interpretation.SOURCECODE.uri : 12,
-    Interpretation.UNKNOWN.uri : 21,
-    Interpretation.IM_MESSAGE.uri : 21,
+    Interpretation.SOURCE_CODE.uri : 12,
+    INTERPRETATION_UNKNOWN : 21,
+    Interpretation.IMMESSAGE.uri : 21,
     Interpretation.EMAIL.uri : 21
 }
 
 FILETYPESNAMES = {
     Interpretation.VIDEO.uri : _("Video"),
-    Interpretation.MUSIC.uri : _("Music"),
+    Interpretation.AUDIO.uri : _("Music"),
     Interpretation.DOCUMENT.uri : _("Document"),
     Interpretation.IMAGE.uri : _("Image"),
-    Interpretation.SOURCECODE.uri : _("Source Code"),
-    Interpretation.UNKNOWN.uri : _("Unknown"),
-    Interpretation.IM_MESSAGE.uri : _("IM Message"),
+    Interpretation.SOURCE_CODE.uri : _("Source Code"),
+    INTERPRETATION_UNKNOWN : _("Unknown"),
+    Interpretation.IMMESSAGE.uri : _("IM Message"),
     Interpretation.EMAIL.uri :_("Email"),
 
 }
