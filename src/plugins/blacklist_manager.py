@@ -54,6 +54,7 @@ class BlacklistManager(object):
 
 
 class BlacklistView(gtk.TreeView):
+    empty_row_text = "[Insert Path]"
     def __init__(self):
         super(BlacklistView, self).__init__()
         self.manager = BlacklistManager()
@@ -86,7 +87,7 @@ class BlacklistView(gtk.TreeView):
             del model[path]
 
     def _edited(self, renderer, path, new_text):
-        if not new_text or not new_text.startswith("/"):
+        if not new_text or new_text == self.empty_row_text:
             return
         model = self.get_model()
         template = model[path][1]
@@ -125,7 +126,7 @@ def activate(client, store, window):
     page.pack_start(bbox, False, False, 2)
     page.add(treescroll)
     bbox.pack_start(new_template_button, False, False)
-    new_template_button.connect("clicked", lambda w: tree.get_model().append(["Path..", None]))
+    new_template_button.connect("clicked", lambda w: tree.get_model().append([tree.empty_row_text, None]))
     window.preferences_dialog.notebook.append_page(page, tab_label=gtk.Label("Blacklist"))
     window.preferences_dialog.notebook.show_all()
     pass
