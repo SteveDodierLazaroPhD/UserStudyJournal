@@ -52,7 +52,6 @@ from external import TRACKER
 
 class DayLabel(gtk.DrawingArea):
 
-
     _events = (
         gtk.gdk.ENTER_NOTIFY_MASK | gtk.gdk.LEAVE_NOTIFY_MASK |
         gtk.gdk.KEY_PRESS_MASK | gtk.gdk.BUTTON_MOTION_MASK |
@@ -1013,13 +1012,20 @@ class TagCloud(gtk.VBox):
 
 
 class StockIconButton(gtk.Button):
-    def __init__(self, stock_id, size=gtk.ICON_SIZE_BUTTON):
+    def __init__(self, stock_id, label=None, size=gtk.ICON_SIZE_BUTTON):
         super(StockIconButton, self).__init__()
         self.size = size
         self.set_alignment(0, 0)
         self.set_relief(gtk.RELIEF_NONE)
         self.image = gtk.image_new_from_stock(stock_id, size)
-        self.add(self.image)
+        if not label:
+            self.add(self.image)
+        else:
+            box = gtk.HBox()
+            self.label = gtk.Label(label)
+            box.pack_start(self.image, False, False, 2)
+            box.pack_start(self.label)
+            self.add(box)
 
     def set_stock(self, stock_id):
         self.image.set_from_stock(stock_id, self.size)
@@ -1232,7 +1238,6 @@ class InformationContainer(Pane):
                     self.insert(item, 0)
 
     def __init__(self):
-        #super(InformationContainer, self).__init__()
         super(Pane, self).__init__()
         self.close_button = close_button = ToolButton()
         close_button.set_stock_id(gtk.STOCK_CLOSE)

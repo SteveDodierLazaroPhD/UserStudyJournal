@@ -23,25 +23,22 @@
 #  of events or uris.
 #
 
-
 import gio
 import glib
 import gtk
 import os
 import sys
+from urlparse import urlparse
 from xdg import DesktopEntry
 import xml.dom.minidom as dom
 
-from urlparse import urlparse
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation
 
-from config import get_icon_path, get_data_path
+from config import get_icon_path, get_data_path, SUPPORTED_SOURCES
+from external import TELEPATHY
 # Fix for merging this and giofile
 import common
 from common import GioFile, THUMBS, ICONS, SIZE_LARGE, SIZE_NORMAL, SIZE_THUMBVIEW, SIZE_TIMELINEVIEW
-#
-from config import SUPPORTED_SOURCES
-from external import TELEPATHY
 
 
 class CachedAttribute(object):

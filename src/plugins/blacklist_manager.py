@@ -52,6 +52,10 @@ class BlacklistManager(object):
                 return self.iface.SetBlacklist(templates)
         raise ValueError()
 
+    def delete_events_matching_blacklist(self):
+        raise NotImplementedError("This function is not available yet")
+        templates = self.get_templates()
+
 
 class BlacklistView(gtk.TreeView):
     empty_row_text = "[Insert Path]"
@@ -80,10 +84,7 @@ class BlacklistView(gtk.TreeView):
         if isinstance(column.get_cell_renderers()[0], gtk.CellRendererPixbuf):
             model = self.get_model()
             template = model[path][1]
-            #try:
             self.manager.remove_template(template)
-            #except ValueError:
-            #    pass
             del model[path]
 
     def _edited(self, renderer, path, new_text):
@@ -110,7 +111,8 @@ class BlacklistView(gtk.TreeView):
         for template in self.manager.get_templates():
             store.append([template.subjects[0].uri, template])
         self.set_model(store)
-##
+
+
 
 def activate(client, store, window):
     window.preferences_dialog.notebook.page = page = gtk.VBox()
@@ -123,9 +125,11 @@ def activate(client, store, window):
     bbox = gtk.HBox()
     new_template_button = StockIconButton(gtk.STOCK_NEW)
     new_template_button.set_alignment(1, 0.5)
+    # apply_black_list = StockIconButton(gtk.STOCK_APPLY, label="Apply to existing")
     page.pack_start(bbox, False, False, 2)
     page.add(treescroll)
     bbox.pack_start(new_template_button, False, False)
+    # bbox.pack_end(apply_black_list, False, False)
     new_template_button.connect("clicked", lambda w: tree.get_model().append([tree.empty_row_text, None]))
     window.preferences_dialog.notebook.append_page(page, tab_label=gtk.Label("Blacklist"))
     window.preferences_dialog.notebook.show_all()
