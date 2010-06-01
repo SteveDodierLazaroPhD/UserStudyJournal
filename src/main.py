@@ -58,7 +58,6 @@ class ViewContainer(gtk.Notebook):
         self.set_show_border(False)
         self.pages = []
         self.tool_buttons = []
-        self.show_all()
 
     def set_day(self, day, page=None):
         if page == None:

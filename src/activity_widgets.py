@@ -91,7 +91,6 @@ class MultiViewContainer(gtk.HBox):
             self.pages.append(group)
             padding = 6 if i != self.num_pages-1 and i != 0 else 0
             self.pack_start(evbox, True, True, padding)
-        self.connect("style-set", self.change_style)
 
     def set_day(self, day, store):
         if self.days:
@@ -115,12 +114,6 @@ class MultiViewContainer(gtk.HBox):
         for page, day in map(None, reversed(self.pages), self.days):
             page.set_day(day)
 
-    def change_style(self, this, old_style):
-        style = this.style
-        color = style.bg[gtk.STATE_NORMAL]
-        bgcolor = shade_gdk_color(color, 102/100.0)
-        map(lambda w: w.modify_bg(gtk.STATE_NORMAL, bgcolor), self)
-
 
 class DayViewContainer(gtk.VBox):
     event_templates = (
@@ -136,7 +129,7 @@ class DayViewContainer(gtk.VBox):
         self.dayviews = (DayView(_("Morning")), DayView(_("Afternoon")), DayView(_("Evening")))
         self.scrolled_window = gtk.ScrolledWindow()
         self.scrolled_window.set_shadow_type(gtk.SHADOW_NONE)
-        viewport = gtk.Viewport()
+        self.vp = viewport = gtk.Viewport()
         viewport.set_shadow_type(gtk.SHADOW_NONE)
         box = gtk.VBox()
         for dayview in self.dayviews:
@@ -147,6 +140,7 @@ class DayViewContainer(gtk.VBox):
         self.pack_end(self.scrolled_window, True, True)
         self.scrolled_window.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         self.show_all()
+        self.connect("style-set", self.change_style)
 
     def set_day(self, day):
         self.daylabel.set_date(day.date)
@@ -165,6 +159,12 @@ class DayViewContainer(gtk.VBox):
         self.dayviews[0].set_items(morning)
         self.dayviews[1].set_items(afternoon)
         self.dayviews[2].set_items(evening)
+
+    def change_style(self, this, old_style):
+        style = this.style
+        color = style.bg[gtk.STATE_NORMAL]
+        bgcolor = shade_gdk_color(color, 102/100.0)
+        self.vp.modify_bg(gtk.STATE_NORMAL, bgcolor)
 
 
 class DayView(gtk.VBox):
@@ -312,6 +312,14 @@ class Item(gtk.HBox):
         self.__highlight()
         SearchBox.connect("search", self.__highlight)
         SearchBox.connect("clear", self.__clear)
+        self.connect("style-set", self.change_style)
+
+    def change_style(self, widget, style):
+        rc_style = self.style
+        color = rc_style.bg[gtk.STATE_NORMAL]
+        color = shade_gdk_color(color, 102/100.0)
+        for w in self:
+            w.modify_bg(gtk.STATE_NORMAL, color)
 
     def __highlight(self, *args):
         rc_style = self.style
