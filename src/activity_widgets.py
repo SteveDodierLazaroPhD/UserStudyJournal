@@ -117,10 +117,9 @@ class MultiViewContainer(gtk.HBox):
 
     def change_style(self, this, old_style):
         style = this.style
-        for widget in self:
-            color = style.bg[gtk.STATE_NORMAL]
-            bgcolor = shade_gdk_color(color, 102/100.0)
-            widget.modify_bg(gtk.STATE_NORMAL, bgcolor)
+        color = style.bg[gtk.STATE_NORMAL]
+        bgcolor = shade_gdk_color(color, 102/100.0)
+        map(lambda w: w.modify_bg(gtk.STATE_NORMAL, bgcolor), self)
 
 
 class DayViewContainer(gtk.VBox):

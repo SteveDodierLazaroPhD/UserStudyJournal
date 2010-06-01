@@ -58,17 +58,7 @@ class ViewContainer(gtk.Notebook):
         self.set_show_border(False)
         self.pages = []
         self.tool_buttons = []
-        self.mutliview = MultiViewContainer()
-        self.thumbview = ThumbViewContainer()
-        self.timelineview = TimelineViewContainer()
-        map(self._register_new_view,
-            (self.ViewStruct(self.mutliview, Toolbar.get_toolbutton(get_data_path("multiview_icon.png"), _("Switch to MultiView"))),
-             self.ViewStruct(self.thumbview, Toolbar.get_toolbutton(get_data_path("thumbview_icon.png"), _("Switch to ThumbView"))),
-             self.ViewStruct(self.timelineview, Toolbar.get_toolbutton(get_data_path("timelineview_icon.png"), _("Switch to TimelineView")))
-             ))
         self.show_all()
-        self.set_current_page(0)
-        self.tool_buttons[0].set_sensitive(False)
 
     def set_day(self, day, page=None):
         if page == None:
@@ -77,9 +67,9 @@ class ViewContainer(gtk.Notebook):
             self.pages[page].set_day(day, self.store)
 
     def _register_new_view(self, viewstruct):
+        self.append_page(viewstruct.view)
         self.pages.append(viewstruct.view)
         self.tool_buttons.append(viewstruct.button)
-        self.append_page(viewstruct.view)
         viewstruct.button.connect("clicked", self.view_button_clicked, len(self.pages)-1)
         viewstruct.view.show_all()
         return self.pages.index(viewstruct.view)
@@ -95,6 +85,12 @@ class ViewContainer(gtk.Notebook):
 
     def view_button_clicked(self, button, i):
         self.emit("view-button-clicked", button, i)
+
+    def set_view_page(self, i):
+        self.set_current_page(i)
+        for button in self.tool_buttons:
+            button.set_sensitive(True)
+        self.tool_buttons[i].set_sensitive(False)
 
 
 class PanedContainer(gtk.HBox):
@@ -160,6 +156,12 @@ class PortalWindow(gtk.Window):
         self.day_iter = self.store.today
         self.view = ViewContainer(self.store)
         self.toolbar = Toolbar()
+        map(self.view._register_new_view,
+            (self.view.ViewStruct(MultiViewContainer(), Toolbar.get_toolbutton(get_data_path("multiview_icon.png"), _("Switch to MultiView"))),
+             self.view.ViewStruct(ThumbViewContainer(), Toolbar.get_toolbutton(get_data_path("thumbview_icon.png"), _("Switch to ThumbView"))),
+             self.view.ViewStruct(TimelineViewContainer(), Toolbar.get_toolbutton(get_data_path("timelineview_icon.png"), _("Switch to TimelineView")))
+             ))
+        self.view.set_view_page(0)
         map(self.toolbar.add_new_view_button, self.view.tool_buttons[::-1])
         self.view.connect("new-view-added", lambda w, v: self.toolbar.add_new_view_button(v.button, len(self.view.tool_buttons)))
         self.panedcontainer = PanedContainer()
@@ -248,7 +250,7 @@ class PortalWindow(gtk.Window):
         date = self.day_iter.date
         if self.view.page != 0: return [date]
         dates = []
-        for i in range(self.view.mutliview.num_pages):
+        for i in range(self.view.pages[0].num_pages):
             dates.append(date + tdelta(-i))
         dates.sort()
         return dates
@@ -284,11 +286,7 @@ class PortalWindow(gtk.Window):
         self.forward_button.set_sensitive(True)
 
     def on_view_button_click(self, w, button, i):
-        print "Yay"
-        for button in self.view.tool_buttons:
-            button.set_sensitive(True)
-        self.view.tool_buttons[i].set_sensitive(False)
-        self.view.set_current_page(i)
+        self.view.set_view_page(i)
         self.view.set_day(self.day_iter, page=i)
         self.histogram.set_dates(self.active_dates)
         self.set_title_from_date(self.day_iter.date)
@@ -326,7 +324,7 @@ class PortalWindow(gtk.Window):
         self._requested_size = size
 
     def set_title_from_date(self, date):
-        pages = self.view.mutliview.num_pages
+        pages = self.view.pages[0].num_pages
         if self.view.page == 0:
             start_date = date + tdelta(-pages+1)
         else:

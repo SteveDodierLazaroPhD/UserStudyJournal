@@ -869,7 +869,6 @@ class Toolbar(gtk.Toolbar):
             self.search_button.show()
 
     def add_new_view_button(self, button, i=0):
-        print button
         self.insert(button, i)
         button.show()
 

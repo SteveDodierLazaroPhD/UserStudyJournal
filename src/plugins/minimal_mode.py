@@ -29,27 +29,29 @@ __description__ = "reduces the size which journal takes on the screen"
 
 def activate(client, store, window):
     def f():
+        # Information Container
         info = window.panedcontainer.informationcontainer
         window.panedcontainer.h1.remove(info)
         window.panedcontainer.h1.destroy()
         window.panedcontainer.right_box.destroy()
         i = window.view.register_new_view(ViewContainer.ViewStruct(info,gtk.ToolButton(gtk.STOCK_INFO)))
         info.close_button.destroy()
-        window.view.pages[0].queue_draw()
+        window.view.queue_draw()
         def infomenu_cb(*args):
-            for button in window.view.tool_buttons:
-                button.set_sensitive(True)
-            window.view.tool_buttons[i].set_sensitive(False)
-            window.view.set_current_page(i)
+            window.view.set_view_page(i)
         info.connect("content-object-set", infomenu_cb)
+
+        # Pinbox
+        pin = window.panedcontainer.pinbox
+        window.panedcontainer.h2.remove(pin)
+        window.panedcontainer.h2.destroy()
+        window.panedcontainer.left_box.destroy()
+        pin.close_button.destroy()
+        pin_button = window.toolbar.pin_button
+        window.toolbar.remove(pin_button)
+        j = window.view.register_new_view(ViewContainer.ViewStruct(pin,pin_button))
         return False
     gobject.timeout_add_seconds(1, f)
-    #window.view.register_new_view(
-    #    ViewContainer.ViewStruct(window.panedcontainer.informationcontainer,
-    #                             gtk.ToolButton(gtk.STOCK_INFO)))
-
-    #window.panedcontainer.informationcontainer
-    #window.panedcontainer.pinbox
 
 def deactivate(client, store, window):
     pass
