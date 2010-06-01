@@ -31,36 +31,70 @@ from activity_widgets import MultiViewContainer, TimelineViewContainer, ThumbVie
 from supporting_widgets import DayButton, DayLabel, Toolbar, ContextMenu, AboutDialog, HandleBox, SearchBox, InformationContainer, PreferencesDialog
 from histogram import HistogramWidget
 from store import Store, tdelta, STORE, CLIENT
-from config import settings, get_icon_path, PluginManager
+from config import settings, get_icon_path, get_data_path, PluginManager
 
 
 AUTOLOAD = True # Should the store request events in the background?
 
 
 class ViewContainer(gtk.Notebook):
+    __gsignals__ = {
+        "new-view-added" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,(gobject.TYPE_PYOBJECT,)),
+        "view-button-clicked" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,(gobject.TYPE_PYOBJECT,gobject.TYPE_INT)),
+    }
+
+    class ViewStruct(object):
+        view = None
+        button = None
+
+        def __init__(self, view, button):
+            self.view = view
+            self.button = button
 
     def __init__(self, store):
         super(ViewContainer, self).__init__()
         self.store = store
         self.set_show_tabs(False)
         self.set_show_border(False)
-        self.pages = {}
-        self.mutliview = self.pages[0] = MultiViewContainer()
-        self.thumbview = self.pages[1] = ThumbViewContainer()
-        self.timelineview = self.pages[2] = TimelineViewContainer()
-        for widget in (self.mutliview, self.thumbview, self.timelineview):
-            self.append_page(widget)
+        self.pages = []
+        self.tool_buttons = []
+        self.mutliview = MultiViewContainer()
+        self.thumbview = ThumbViewContainer()
+        self.timelineview = TimelineViewContainer()
+        map(self._register_new_view,
+            (self.ViewStruct(self.mutliview, Toolbar.get_toolbutton(get_data_path("multiview_icon.png"), _("Switch to MultiView"))),
+             self.ViewStruct(self.thumbview, Toolbar.get_toolbutton(get_data_path("thumbview_icon.png"), _("Switch to ThumbView"))),
+             self.ViewStruct(self.timelineview, Toolbar.get_toolbutton(get_data_path("timelineview_icon.png"), _("Switch to TimelineView")))
+             ))
         self.show_all()
         self.set_current_page(0)
+        self.tool_buttons[0].set_sensitive(False)
 
     def set_day(self, day, page=None):
         if page == None:
             page = self.page
-        self.pages[page].set_day(day, self.store)
+        if page < 3:
+            self.pages[page].set_day(day, self.store)
+
+    def _register_new_view(self, viewstruct):
+        self.pages.append(viewstruct.view)
+        self.tool_buttons.append(viewstruct.button)
+        self.append_page(viewstruct.view)
+        viewstruct.button.connect("clicked", self.view_button_clicked, len(self.pages)-1)
+        viewstruct.view.show_all()
+        return self.pages.index(viewstruct.view)
+
+    def register_new_view(self, viewstruct):
+        i = self._register_new_view(viewstruct)
+        self.emit("new-view-added", viewstruct)
+        return i
 
     @property
     def page(self):
         return self.get_current_page()
+
+    def view_button_clicked(self, button, i):
+        self.emit("view-button-clicked", button, i)
 
 
 class PanedContainer(gtk.HBox):
@@ -103,7 +137,6 @@ class PanedContainer(gtk.HBox):
         elif w == self.pinbox:
             self.left_box.show()
 
-
     def on_hide(self, w, *args):
         self.pane1.set_position(-1)
         self.pane2.set_position(-1)
@@ -125,8 +158,10 @@ class PortalWindow(gtk.Window):
         self._request_size()
         self.store = STORE
         self.day_iter = self.store.today
-        self.toolbar = Toolbar()
         self.view = ViewContainer(self.store)
+        self.toolbar = Toolbar()
+        map(self.toolbar.add_new_view_button, self.view.tool_buttons[::-1])
+        self.view.connect("new-view-added", lambda w, v: self.toolbar.add_new_view_button(v.button, len(self.view.tool_buttons)))
         self.panedcontainer = PanedContainer()
         self.preferences_dialog = PreferencesDialog()
         self.histogram = HistogramWidget()
@@ -160,9 +195,7 @@ class PortalWindow(gtk.Window):
         self.backward_button.connect("clicked", self.previous)
         self.forward_button.connect("clicked", self.next)
         self.histogram.connect("date-changed", lambda w, date: self.set_date(date))
-        self.toolbar.multiview_button.connect("clicked", self.on_view_button_click, 0)
-        self.toolbar.thumbview_button.connect("clicked", self.on_view_button_click, 1)
-        self.toolbar.timelineview_button.connect("clicked", self.on_view_button_click, 2)
+        self.view.connect("view-button-clicked", self.on_view_button_click)
         self.toolbar.throbber.connect("clicked", self.show_about_window)
         self.toolbar.goto_today_button.connect("clicked", lambda w: self.set_date(datetime.date.today()))
         self.toolbar.pin_button.connect("clicked", lambda w: self.panedcontainer.pinbox.show_all())
@@ -250,10 +283,11 @@ class PortalWindow(gtk.Window):
             self.forward_button.set_leading(False)
         self.forward_button.set_sensitive(True)
 
-    def on_view_button_click(self, button, i):
-        for button in self.toolbar.view_buttons:
+    def on_view_button_click(self, w, button, i):
+        print "Yay"
+        for button in self.view.tool_buttons:
             button.set_sensitive(True)
-        self.toolbar.view_buttons[i].set_sensitive(False)
+        self.view.tool_buttons[i].set_sensitive(False)
         self.view.set_current_page(i)
         self.view.set_day(self.day_iter, page=i)
         self.histogram.set_dates(self.active_dates)

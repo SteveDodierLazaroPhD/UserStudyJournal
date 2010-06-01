@@ -833,17 +833,7 @@ class Toolbar(gtk.Toolbar):
     def __init__(self):
         super(Toolbar, self).__init__()
         #self.set_style(gtk.TOOLBAR_BOTH)
-        self.multiview_button = mv = self.get_toolbutton(
-            get_data_path("multiview_icon.png"),
-            _("Switch to MultiView"))
-        self.thumbview_button = tbv = self.get_toolbutton(
-            get_data_path("thumbview_icon.png"),
-            _("Switch to ThumbView"))
-        self.timelineview_button = tlv = self.get_toolbutton(
-            get_data_path("timelineview_icon.png"),
-            _("Switch to TimelineView"))
         #
-        self.view_buttons = [mv, tbv, tlv]
         #self.append_space()
         self.pin_button = pin = self.get_toolbutton(
             get_icon_path("hicolor/24x24/status/pin.png"),
@@ -855,7 +845,7 @@ class Toolbar(gtk.Toolbar):
 
         sep1 = gtk.SeparatorToolItem()
         sep2 = gtk.SeparatorToolItem()
-        for item in (sdialog, sb, sep2, pin, sep1, tlv, tbv, mv):
+        for item in (sdialog, sb, sep2, pin, sep1):
             self.insert(item, 0)
         #
         self.preference_button = gtk.ToolButton(gtk.STOCK_PREFERENCES)
@@ -867,7 +857,6 @@ class Toolbar(gtk.Toolbar):
         self.throbber = Throbber()
         for item in (separator, today, self.preference_button, self.throbber):
             self.insert(item, -1)
-        self.view_buttons[0].set_sensitive(False)
 
     def do_throb(self):
         self.throbber.image.animate_for_seconds(1)
@@ -878,6 +867,11 @@ class Toolbar(gtk.Toolbar):
             self.search_button.hide()
         else:
             self.search_button.show()
+
+    def add_new_view_button(self, button, i=0):
+        print button
+        self.insert(button, i)
+        button.show()
 
 
 class TagCloud(gtk.VBox):
@@ -1220,6 +1214,9 @@ class InformationContainer(Pane):
 
     A pane which holds the information pane and related pane
     """
+    __gsignals__ = {
+        "content-object-set":  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,()),
+        }
 
     class _InformationToolbar(gtk.Toolbar):
         def __init__(self):
@@ -1322,6 +1319,7 @@ class InformationContainer(Pane):
         if TRACKER:
             self.set_tags(obj)
         self.show()
+        self.emit("content-object-set")
 
     def set_tags(self, obj):
         tag_dict = {}
