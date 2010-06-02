@@ -47,9 +47,14 @@ def activate(client, store, window):
         window.panedcontainer.h2.destroy()
         window.panedcontainer.left_box.destroy()
         pin.close_button.destroy()
-        pin_button = window.toolbar.pin_button
-        window.toolbar.remove(pin_button)
-        j = window.view.register_new_view(ViewContainer.ViewStruct(pin,pin_button))
+        pin.set_shadow_type(gtk.SHADOW_NONE)
+        mv = window.view.pages[0]
+        today_box = mv.pages[len(mv)-1].box
+        pin.pinbox.label.show()
+        today_box.pack_start(pin, False, False)
+        today_box.reorder_child(pin, 0)
+
+
         return False
     gobject.timeout_add_seconds(1, f)
 

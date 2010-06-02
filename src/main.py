@@ -144,6 +144,10 @@ class PanedContainer(gtk.HBox):
 
 
 class PortalWindow(gtk.Window):
+    __gsignals__ = {
+        "day-set" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,(gobject.TYPE_PYOBJECT,)),
+    }
+
 
     def __init__(self):
         super(PortalWindow, self).__init__()
@@ -199,7 +203,7 @@ class PortalWindow(gtk.Window):
         self.view.connect("view-button-clicked", self.on_view_button_click)
         self.toolbar.throbber.connect("clicked", self.show_about_window)
         self.toolbar.goto_today_button.connect("clicked", lambda w: self.set_date(datetime.date.today()))
-        self.toolbar.pin_button.connect("clicked", lambda w: self.panedcontainer.pinbox.show_all())
+        self.toolbar.pin_button.connect("clicked", lambda w: self.panedcontainer.pinbox.toggle_visibility())
         self.store.connect("update", self.histogram.histogram.set_store)
         self.searchbox.connect("search", self._on_search)
         self.searchbox.connect("clear", self._on_search_clear)
@@ -262,6 +266,7 @@ class PortalWindow(gtk.Window):
         self.histogram.set_dates(self.active_dates)
         # Set title
         self.set_title_from_date(day.date)
+        self.emit("day-set", day)
 
     def set_date(self, date):
         self.set_day(self.store[date])

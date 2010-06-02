@@ -131,10 +131,10 @@ class DayViewContainer(gtk.VBox):
         self.scrolled_window.set_shadow_type(gtk.SHADOW_NONE)
         self.vp = viewport = gtk.Viewport()
         viewport.set_shadow_type(gtk.SHADOW_NONE)
-        box = gtk.VBox()
+        self.box = gtk.VBox()
         for dayview in self.dayviews:
-            box.pack_start(dayview, False, False)
-        viewport.add(box)
+            self.box.pack_start(dayview, False, False)
+        viewport.add(self.box)
         self.scrolled_window.add(viewport)
 
         self.pack_end(self.scrolled_window, True, True)
@@ -288,7 +288,7 @@ class CategoryBox(gtk.HBox):
 
 class Item(gtk.HBox):
 
-    def __init__(self, content_struct, allow_pin = False):
+    def __init__(self, content_struct, allow_pin = False, do_style=True):
         event = content_struct.event
         gtk.HBox.__init__(self)
         self.set_border_width(2)
@@ -312,7 +312,8 @@ class Item(gtk.HBox):
         self.__highlight()
         SearchBox.connect("search", self.__highlight)
         SearchBox.connect("clear", self.__clear)
-        self.connect("style-set", self.change_style)
+        if do_style:
+            self.connect("style-set", self.change_style)
 
     def change_style(self, widget, style):
         rc_style = self.style
@@ -402,10 +403,8 @@ class Item(gtk.HBox):
 
     def set_bookmarked(self, bool_):
         uri = unicode(self.subject.uri)
-        if bool_:
-            bookmarker.bookmark(uri)
-        else:
-            bookmarker.unbookmark(uri)
+        bookmarker.bookmark(uri) if bool_ else bookmarker.unbookmark(uri)
+        if not bool_: self.destroy()
 
     def launch(self, *discard):
         if self.content_obj is not None:
@@ -1096,7 +1095,7 @@ class PinBox(DayView):
 
     def __init__(self):
         self.event_timerange = TimeRange.until_now()
-        super(PinBox, self).__init__()#_("Pinned items"))
+        super(PinBox, self).__init__(title=_("Pinned Items"))#_("Pinned items"))
         bookmarker.connect("reload", self.set_from_templates)
         self.set_from_templates()
 
@@ -1138,11 +1137,16 @@ class PinnedPane(Pane):
         super(PinnedPane, self).__init__()
         vbox = gtk.VBox()
         self.pinbox = PinBox()
+        self.pinbox.label.hide()
         vbox.pack_start(self.pinbox, False, False)
         self.add(vbox)
         self.set_size_request(200, -1)
         self.set_label_align(1,0)
         bookmarker.connect("reload", lambda *args: self.show())
+
+    def toggle_visibility(self):
+        vis = not self.get_property("visible")
+        self.show() if vis else self.hide()
 
 
 ## gobject registration
