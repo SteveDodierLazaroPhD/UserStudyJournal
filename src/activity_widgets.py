@@ -86,11 +86,9 @@ class MultiViewContainer(gtk.HBox):
         self.pages = []
         for i in range(self.num_pages):
             group = DayViewContainer()
-            evbox = gtk.EventBox()
-            evbox.add(group)
             self.pages.append(group)
             padding = 6 if i != self.num_pages-1 and i != 0 else 0
-            self.pack_start(evbox, True, True, padding)
+            self.pack_start(group, True, True, padding)
 
     def set_day(self, day, store):
         if self.days:
@@ -1135,14 +1133,25 @@ class PinBox(DayView):
 class PinnedPane(Pane):
     def __init__(self):
         super(PinnedPane, self).__init__()
+        ev = gtk.EventBox()
         vbox = gtk.VBox()
+        ev.add(vbox)
+        self.set_shadow_type(gtk.SHADOW_NONE)
         self.pinbox = PinBox()
         self.pinbox.label.hide()
         vbox.pack_start(self.pinbox, False, False)
-        self.add(vbox)
+        self.add(ev)
         self.set_size_request(200, -1)
-        self.set_label_align(1,0)
+        self.set_label_align(1, 0)
+        self.connect("style-set", self.on_style_change)
         bookmarker.connect("reload", lambda *args: self.show())
+
+    def on_style_change(self, widget, style):
+        rc_style = self.style
+        color = rc_style.bg[gtk.STATE_NORMAL]
+        color = shade_gdk_color(color, 102/100.0)
+        child = self.get_child()
+        child.modify_bg(gtk.STATE_NORMAL, color)
 
     def toggle_visibility(self):
         vis = not self.get_property("visible")

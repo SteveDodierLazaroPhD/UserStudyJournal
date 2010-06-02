@@ -21,18 +21,15 @@ import gobject
 import gtk
 import pango
 import time
-
 from zeitgeist.datamodel import Event, Interpretation, Manifestation, ResultType
 
-# Import from journal by using 'from src'
 from src import config
 
 __plugin_name__ = _("Status Icon")
 __description__ = _("Displays a icon in the notification area which shows recent\nand most used items as collected by zeitgeist")
 
-__plugin_icon__ = ""
 
-
+# Storage used for this plugin rather then setting globals
 STORAGE = type(
     "Storage", (object,),
     {"this":None,
@@ -212,7 +209,7 @@ class StatusIcon(gtk.StatusIcon):
 
 def on_delete(window, event):
     global THIS
-    if THIS.first_run:
+    if STORAGE.this.first_run:
         md = gtk.MessageDialog(
             window,
             gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_INFO,
@@ -220,7 +217,7 @@ def on_delete(window, event):
             _("Journal was closed to your notification area. Use the Quit option to end your session"))
         md.run()
         md.destroy()
-        THIS.first_run = False
+        STORAGE.this.first_run = False
     window.hide()
     return True
 
