@@ -234,9 +234,7 @@ def activate(client, store, window):
         STORAGE.this.activate()
         return True
     # Imports and globals
-    STORAGE.client = client
-    STORAGE.store = store
-    STORAGE.window = window
+    STORAGE.__dict__.update(locals())
     # Plugin Setup
     STORAGE.this = status = StatusIcon()
     status.connect("toggle-visibility", lambda w, v: window.set_visibility(v))
