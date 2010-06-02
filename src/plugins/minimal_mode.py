@@ -23,8 +23,8 @@ import gtk
 from src.main import ViewContainer
 from src.supporting_widgets import ContextMenu
 
-__plugin_name__ = "Minimal Mode"
-__description__ = "reduces the size which journal takes on the screen"
+__plugin_name__ = _("Minimal Mode")
+__description__ = _("reduces the size which journal takes on the screen")
 
 
 def activate(client, store, window):
@@ -64,11 +64,19 @@ def activate(client, store, window):
         return False
     gobject.timeout_add_seconds(1, f)
 
+
 def deactivate(client, store, window):
+    """
+    This function is called to deactivate the plugin.
+
+    :param client: the zeitgeist client used by journal
+    :param store: the date based store which is used by journal to handle event and content object request
+    :param window: the activity journal primary window
+    """
     md = gtk.MessageDialog(
         window,
         gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_WARNING,
-        gtk.BUTTONS_CLOSE, "This plugin requires a restart to be disabled.")
+        gtk.BUTTONS_OK, _("This plugin requires a restart to be disabled."))
     md.run()
     md.destroy()
 

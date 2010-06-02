@@ -22,8 +22,8 @@ import gobject
 import gtk
 import pango
 
-__plugin_name__ = "Blacklist Manager"
-__description__ = "Add and remove items from the zeitgeist blacklist"
+__plugin_name__ = _("Blacklist Manager")
+__description__ = _("Add and remove items from the zeitgeist blacklist")
 
 from zeitgeist.datamodel import Event
 
@@ -58,7 +58,7 @@ class BlacklistManager(object):
 
 
 class BlacklistView(gtk.TreeView):
-    empty_row_text = "[Insert Path]"
+    empty_row_text = _("[Insert Path]")
     def __init__(self):
         super(BlacklistView, self).__init__()
         self.manager = BlacklistManager()
@@ -138,7 +138,7 @@ def activate(client, store, window):
     bbox.pack_start(new_template_button, False, False)
     # bbox.pack_end(apply_black_list, False, False)
     new_template_button.connect("clicked", lambda w: tree.get_model().append([tree.empty_row_text, None]))
-    window.preferences_dialog.notebook.append_page(page, tab_label=gtk.Label("Blacklist"))
+    window.preferences_dialog.notebook.append_page(page, tab_label=gtk.Label(_("Blacklist")))
     window.preferences_dialog.notebook.show_all()
     pass
 

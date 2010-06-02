@@ -27,9 +27,8 @@ from zeitgeist.datamodel import Event, Interpretation, Manifestation, ResultType
 # Import from journal by using 'from src'
 from src import config
 
-__plugin_name__ = "Status Icon"
-__description__ = "Displays a icon in the notification area which shows recent" + \
-                " and most used items as collected by zeitgeist"
+__plugin_name__ = _("Status Icon")
+__description__ = _("Displays a icon in the notification area which shows recent\nand most used items as collected by zeitgeist")
 
 __plugin_icon__ = ""
 
