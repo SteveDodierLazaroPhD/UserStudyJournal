@@ -227,7 +227,12 @@ def on_delete(window, event):
 
 def activate(client, store, window):
     """
-    Called by the PluginManager as the plugins entry point which initializes the plugin"""
+    This function is called to activate the plugin.
+
+    :param client: the zeitgeist client used by journal
+    :param store: the date based store which is used by journal to handle event and content object request
+    :param window: the activity journal primary window
+    """
     # Check if the status icon was loaded
     if STORAGE.this:
         STORAGE.this.activate()
@@ -249,7 +254,13 @@ def activate(client, store, window):
 
 
 def deactivate(client, store, window):
-    """ Tears down the plugin"""
+    """
+    This function is called to deactivate the plugin.
+
+    :param client: the zeitgeist client used by journal
+    :param store: the date based store which is used by journal to handle event and content object request
+    :param window: the activity journal primary window
+    """
     if STORAGE.this:
         window.disconnect(STORAGE.this.win_delete_id)
         STORAGE.this.deactivate()

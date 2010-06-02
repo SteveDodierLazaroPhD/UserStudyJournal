@@ -115,6 +115,13 @@ class BlacklistView(gtk.TreeView):
 
 
 def activate(client, store, window):
+    """
+    This function is called to activate the plugin.
+
+    :param client: the zeitgeist client used by journal
+    :param store: the date based store which is used by journal to handle event and content object request
+    :param window: the activity journal primary window
+    """
     window.preferences_dialog.notebook.page = page = gtk.VBox()
     treescroll = gtk.ScrolledWindow()
     page.set_border_width(10)
@@ -135,7 +142,15 @@ def activate(client, store, window):
     window.preferences_dialog.notebook.show_all()
     pass
 
+
 def deactivate(client, store, window):
+    """
+    This function is called to deactivate the plugin.
+
+    :param client: the zeitgeist client used by journal
+    :param store: the date based store which is used by journal to handle event and content object request
+    :param window: the activity journal primary window
+    """
     window.preferences_dialog.notebook.page.destroy()
     del window.preferences_dialog.notebook.page
     pass

@@ -28,6 +28,14 @@ __description__ = "reduces the size which journal takes on the screen"
 
 
 def activate(client, store, window):
+    """
+    This function is called to activate the plugin.
+
+    :param client: the zeitgeist client used by journal
+    :param store: the date based store which is used by journal to handle event and content object request
+    :param window: the activity journal primary window
+    """
+
     def f():
         # Information Container
         info = window.panedcontainer.informationcontainer
