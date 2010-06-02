@@ -34,7 +34,13 @@ __description__ = "Displays a icon in the notification area which shows recent" 
 __plugin_icon__ = ""
 
 
-THIS, CLIENT, STORE, JOURNAL_WINDOW = None, None, None, None
+STORAGE = type(
+    "Storage", (object,),
+    {"this":None,
+     "client":None,
+     "store":None,
+     "window":None,
+     })()
 
 
 class LabelSeparatorMenuItem(gtk.MenuItem):
@@ -81,7 +87,7 @@ class MostUsedMenu(gtk.Menu):
     def clear(self): map(self.remove, self.get_children)
 
     def ids_reply_handler(self, ids):
-        structs = map(STORE.get_event_from_id, ids)
+        structs = map(STORAGE.store.get_event_from_id, ids)
         for struct in structs:
             if struct.content_object:
                 item = IconMenuItem(struct.content_object)
@@ -89,7 +95,7 @@ class MostUsedMenu(gtk.Menu):
                 self.append(item)
 
     def request_items(self):
-        CLIENT.find_event_ids_for_templates(
+        STORAGE.client.find_event_ids_for_templates(
             self.templates, self.ids_reply_handler,
             num_events=10, result_type=ResultType.MostPopularSubjects)
 
@@ -145,7 +151,7 @@ class AppletMenu(gtk.Menu):
         for item in self.kept_members:
             self.append(item)
             item.show_all()
-        self.set_day(STORE.today)
+        self.set_day(STORAGE.store.today)
 
     def clear(self):
         for item in self:
@@ -175,7 +181,7 @@ class StatusIcon(gtk.StatusIcon):
         "toggle-visibility": (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_BOOLEAN,)),
         "quit": (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ()),
         }
-
+    first_run = True
     def __init__(self):
         gtk.StatusIcon.__init__(self)
         self.menu = None
@@ -205,37 +211,48 @@ class StatusIcon(gtk.StatusIcon):
         self.menu = None
 
 
+def on_delete(window, event):
+    global THIS
+    if THIS.first_run:
+        md = gtk.MessageDialog(
+            window,
+            gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_INFO,
+            gtk.BUTTONS_OK,
+            _("Journal was closed to your notification area. Use the Quit option to end your session"))
+        md.run()
+        md.destroy()
+        THIS.first_run = False
+    window.hide()
+    return True
+
 def activate(client, store, window):
     """
     Called by the PluginManager as the plugins entry point which initializes the plugin"""
     # Check if the status icon was loaded
-    global THIS
-    if THIS:
-        THIS.activate()
+    if STORAGE.this:
+        STORAGE.this.activate()
         return True
     # Imports and globals
-    global CLIENT
-    global STORE
-    global JOURNAL_WINDOW
-    CLIENT = client
-    STORE = store
-    JOURNAL_WINDOW = window
+    STORAGE.client = client
+    STORAGE.store = store
+    STORAGE.window = window
     # Plugin Setup
-    THIS = status = StatusIcon()
+    STORAGE.this = status = StatusIcon()
     status.connect("toggle-visibility", lambda w, v: window.set_visibility(v))
     status.connect("quit", lambda *args: gtk.main_quit())
     def _cb(*args):
         val = window.toggle_visibility()
         status.menu.toggle_button.set_active(val)
     status.connect("activate", _cb)
+    status.win_delete_id = window.connect("delete-event", on_delete)
     return True
 
 
 def deactivate(client, store, window):
     """ Tears down the plugin"""
-    global THIS
-    if THIS:
-        THIS.deactivate()
-    if JOURNAL_WINDOW:
-        JOURNAL_WINDOW.show()
+    if STORAGE.this:
+        window.disconnect(STORAGE.this.win_delete_id)
+        STORAGE.this.deactivate()
+    if STORAGE.window:
+        STORAGE.window.show()
 
