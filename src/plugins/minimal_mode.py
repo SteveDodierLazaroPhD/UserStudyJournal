@@ -53,10 +53,14 @@ def activate(client, store, window):
         pin.pinbox.label.show()
         today_box.pack_start(pin, False, False)
         today_box.reorder_child(pin, 0)
-
-
         return False
     gobject.timeout_add_seconds(1, f)
 
 def deactivate(client, store, window):
-    pass
+    md = gtk.MessageDialog(
+        window,
+        gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_WARNING,
+        gtk.BUTTONS_CLOSE, "This plugin requires a restart to be disabled.")
+    md.run()
+    md.destroy()
+
