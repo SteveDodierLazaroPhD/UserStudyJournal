@@ -62,7 +62,7 @@ class ViewContainer(gtk.Notebook):
     def set_day(self, day, page=None):
         if page == None:
             page = self.page
-        if page < 3:
+        if hasattr(self.pages[page], "set_day"):
             self.pages[page].set_day(day, self.store)
 
     def _register_new_view(self, viewstruct):
@@ -77,6 +77,20 @@ class ViewContainer(gtk.Notebook):
         i = self._register_new_view(viewstruct)
         self.emit("new-view-added", viewstruct)
         return i
+
+    def remove_view(self, i, destroy=False):
+        """
+        :param i: a page number index starting at zero
+        """
+        tb = self.tool_buttons[i]
+        page = self.pages[i]
+        del self.pages[i]
+        del self.tool_buttons[i]
+        self.remove_page(i)
+        tb.parent.remove(tb)
+        if destroy:
+            page.destroy()
+            tb.destroy()
 
     @property
     def page(self):
