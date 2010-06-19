@@ -149,7 +149,7 @@ class TrackerBackend:
                 urn = tag[0]
                 tag_dict[name] = random.randint(1, 100)
             return tag_dict
-        except dbus.exceptions.DBusException as e:
+        except dbus.exceptions.DBusException, e:
             print "TAG SEARCH FAILURE", e
             return tag_dict
 

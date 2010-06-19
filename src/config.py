@@ -199,7 +199,7 @@ class PluginManager(object):
                 plugins.append((plugin_name, plugin_module))
                 self.plugins[plugin_name] = plugin_module
                 # print  plugin_module.__plugin_name__ + " has been imported"
-            except Exception as e:
+            except Exception, e:
                 print " Importing %s failed." % plugin_name, e
         return plugins
 
@@ -209,7 +209,7 @@ class PluginManager(object):
                 state = self.plugin_settings.get(plugin_name, False)
                 if not state: continue # If the plugin is not True it will not be loaded
                 self.activate(plugin_module)
-            except Exception as e:
+            except Exception, e:
                 print "Loading %s failed." % plugin_name, e
 
     def __get_plugin_from_name(self, plugin=None, name=None):
