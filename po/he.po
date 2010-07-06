@@ -1,0 +1,313 @@
+# Hebrew translation for gnome-activity-journal
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gnome-activity-journal package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-activity-journal\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-22 16:05+0200\n"
+"PO-Revision-Date: 2010-07-05 05:44+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Hebrew <he@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Launchpad-Export-Date: 2010-07-06 03:45+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: ../gnome-activity-journal:76
+msgid "print additional debugging information"
+msgstr ""
+
+#: ../gnome-activity-journal:83
+msgid "ERROR"
+msgstr ""
+
+#: ../gnome-activity-journal:83
+msgid "Unable to connect to Zeitgeist:"
+msgstr ""
+
+#: ../src/content_objects.py:452 ../src/content_objects.py:454
+msgid "{source._desc_sing} with {event.subjects[0].text}"
+msgstr ""
+
+#: ../src/content_objects.py:453
+msgid ""
+"{source._desc_sing} with {event.subjects[0].text}\n"
+"{event.subjects[0].uri}"
+msgstr ""
+
+#: ../src/content_objects.py:474 ../src/content_objects.py:479
+#: ../src/content_objects.py:484
+msgid "with"
+msgstr ""
+
+#: ../src/content_objects.py:522
+msgid "{source._desc_sing} {event.subjects[0].text}"
+msgstr ""
+
+#: ../src/content_objects.py:523 ../src/content_objects.py:524
+msgid ""
+"Tomboy\n"
+"{source._desc_sing} {event.subjects[0].text}"
+msgstr ""
+
+#: ../src/histogram.py:476 ../src/main.py:189 ../src/daywidgets.py:61
+#: ../src/daywidgets.py:242 ../src/daywidgets.py:429
+msgid "Today"
+msgstr ""
+
+#: ../src/histogram.py:531
+msgid "item"
+msgid_plural "items"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../src/histogram.py:533
+msgid "Click today to return to today"
+msgstr ""
+
+#: ../src/main.py:87
+msgid "Powered by Zeitgeist"
+msgstr ""
+
+#: ../src/main.py:150 ../src/main.py:174 ../src/main.py:203
+#: ../extra/gnome-activity-journal.desktop.in.h:1
+msgid "Activity Journal"
+msgstr ""
+
+#: ../src/main.py:174
+#, python-format
+msgid "%s to today"
+msgstr ""
+
+#: ../src/main.py:192 ../src/daywidgets.py:63 ../src/daywidgets.py:244
+msgid "Yesterday"
+msgstr ""
+
+#: ../src/main.py:203
+#, python-format
+msgid "%s to %s"
+msgstr ""
+
+#. TODO: Move this into Zeitgeist's library, implemented properly
+#: ../src/sources.py:40
+msgid "Worked with a Video"
+msgstr ""
+
+#: ../src/sources.py:40
+msgid "Worked with Videos"
+msgstr ""
+
+#: ../src/sources.py:41
+msgid "Worked with Audio"
+msgstr ""
+
+#: ../src/sources.py:42
+msgid "Worked with an Image"
+msgstr ""
+
+#: ../src/sources.py:42
+msgid "Worked with Images"
+msgstr ""
+
+#: ../src/sources.py:43
+msgid "Edited or Read Document"
+msgstr ""
+
+#: ../src/sources.py:43
+msgid "Edited or Read Documents"
+msgstr ""
+
+#: ../src/sources.py:44
+msgid "Edited or Read Code"
+msgstr ""
+
+#: ../src/sources.py:45
+msgid "Conversation"
+msgstr ""
+
+#: ../src/sources.py:45
+msgid "Conversations"
+msgstr ""
+
+#: ../src/sources.py:46
+msgid "Other Activity"
+msgstr ""
+
+#: ../src/sources.py:46
+msgid "Other Activities"
+msgstr ""
+
+#: ../src/infopane.py:242
+msgid "Actor"
+msgstr ""
+
+#. 0
+#: ../src/infopane.py:243
+msgid "Time"
+msgstr ""
+
+#. 2
+#: ../src/infopane.py:245
+msgid "Interpretation"
+msgstr ""
+
+#. 3
+#: ../src/infopane.py:246
+msgid "Subject Interpretation"
+msgstr ""
+
+#. 4
+#: ../src/infopane.py:247
+msgid "Manifestation"
+msgstr ""
+
+#: ../src/infopane.py:392
+msgid "Related Items"
+msgstr ""
+
+#: ../src/daywidgets.py:111 ../src/daywidgets.py:191
+msgid "Click to return to multiday view"
+msgstr ""
+
+#: ../src/daywidgets.py:221 ../src/common.py:124
+msgid "Morning"
+msgstr ""
+
+#: ../src/daywidgets.py:222 ../src/common.py:124
+msgid "Afternoon"
+msgstr ""
+
+#: ../src/daywidgets.py:223 ../src/common.py:124
+msgid "Evening"
+msgstr ""
+
+#: ../src/daywidgets.py:304
+msgid "Left click for a detailed timeline view"
+msgstr ""
+
+#: ../src/daywidgets.py:306
+msgid "Right click for a thumbnail view"
+msgstr ""
+
+#. Initialize the widget
+#: ../src/daywidgets.py:768
+msgid "Pinned items"
+msgstr ""
+
+#: ../src/common.py:108
+msgid "Video"
+msgstr ""
+
+#: ../src/common.py:109
+msgid "Music"
+msgstr ""
+
+#: ../src/common.py:110
+msgid "Document"
+msgstr ""
+
+#: ../src/common.py:111
+msgid "Image"
+msgstr ""
+
+#: ../src/common.py:112
+msgid "Source Code"
+msgstr ""
+
+#: ../src/common.py:113
+msgid "Unknown"
+msgstr ""
+
+#: ../src/common.py:114
+msgid "IM Message"
+msgstr ""
+
+#: ../src/common.py:115
+msgid "Email"
+msgstr ""
+
+#: ../src/widgets.py:172
+msgid "Type here to search..."
+msgstr ""
+
+#: ../src/widgets.py:407 ../src/widgets.py:583
+msgid "Remove Pin"
+msgstr ""
+
+#: ../src/widgets.py:584
+msgid "Pin to Today"
+msgstr ""
+
+#: ../src/widgets.py:585
+msgid "Delete item from Journal"
+msgstr ""
+
+#: ../src/widgets.py:586
+msgid "Delete all events with this URI"
+msgstr ""
+
+#: ../src/widgets.py:587
+msgid "More Information"
+msgstr ""
+
+#: ../src/widgets.py:599
+msgid "Send To..."
+msgstr ""
+
+#: ../extra/gnome-activity-journal.desktop.in.h:2
+msgid ""
+"Browse a chronological log of your activities and easily find files, "
+"contacts, etc."
+msgstr ""
+
+#: ../extra/gnome-activity-journal.schemas.in.h:1
+msgid "Accessibility"
+msgstr ""
+
+#: ../extra/gnome-activity-journal.schemas.in.h:2
+msgid "Allow thumbnails as icons"
+msgstr ""
+
+#: ../extra/gnome-activity-journal.schemas.in.h:3
+msgid "Amount of visible days"
+msgstr ""
+
+#: ../extra/gnome-activity-journal.schemas.in.h:4
+msgid ""
+"Customized height for the main window, in pixels (requires restart). Can't "
+"be bigger than the desktop's size."
+msgstr ""
+
+#: ../extra/gnome-activity-journal.schemas.in.h:5
+msgid ""
+"Customized width for the main window, in pixels (requires restart). Can't be "
+"bigger than the desktop's size."
+msgstr ""
+
+#: ../extra/gnome-activity-journal.schemas.in.h:6
+msgid "The amount of days to show at once."
+msgstr ""
+
+#: ../extra/gnome-activity-journal.schemas.in.h:7
+msgid ""
+"Whether special accessibility options should be enabled (requires restart)."
+msgstr ""
+
+#: ../extra/gnome-activity-journal.schemas.in.h:8
+msgid ""
+"Whether to allow showing little thumbnails next to each activity (requires "
+"restart). If False, only generic mime-type icons will be used."
+msgstr ""
+
+#: ../extra/gnome-activity-journal.schemas.in.h:9
+msgid "Window height"
+msgstr ""
+
+#: ../extra/gnome-activity-journal.schemas.in.h:10
+msgid "Window width"
+msgstr ""
