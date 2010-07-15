@@ -1,0 +1,329 @@
+# Malayalam translation for gnome-activity-journal
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gnome-activity-journal package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-activity-journal\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-22 16:05+0200\n"
+"PO-Revision-Date: 2010-07-14 21:18+0000\n"
+"Last-Translator: Arun Mohan <Unknown>\n"
+"Language-Team: Malayalam <ml@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Launchpad-Export-Date: 2010-07-15 03:48+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: ../gnome-activity-journal:76
+msgid "print additional debugging information"
+msgstr "കൂടുതല്‍ ഡീബഗ്ഗിംഗ് വിവരങ്ങള്‍ അച്ചടിക്കുക"
+
+#: ../gnome-activity-journal:83
+msgid "ERROR"
+msgstr "തെറ്റ്‌"
+
+#: ../gnome-activity-journal:83
+msgid "Unable to connect to Zeitgeist:"
+msgstr "Zeitgeist-ആയി ബന്ധപ്പെടാന്‍ കഴിഞ്ഞില്ല:"
+
+#: ../src/content_objects.py:452 ../src/content_objects.py:454
+msgid "{source._desc_sing} with {event.subjects[0].text}"
+msgstr "{source._desc_sing} കൂടെ {event.subjects[0].text}"
+
+#: ../src/content_objects.py:453
+msgid ""
+"{source._desc_sing} with {event.subjects[0].text}\n"
+"{event.subjects[0].uri}"
+msgstr ""
+"{source._desc_sing} കൂടെ {event.subjects[0].text}\n"
+"{event.subjects[0].uri}"
+
+#: ../src/content_objects.py:474 ../src/content_objects.py:479
+#: ../src/content_objects.py:484
+msgid "with"
+msgstr "കൂടെ"
+
+#: ../src/content_objects.py:522
+msgid "{source._desc_sing} {event.subjects[0].text}"
+msgstr "{source._desc_sing} {event.subjects[0].text}"
+
+#: ../src/content_objects.py:523 ../src/content_objects.py:524
+msgid ""
+"Tomboy\n"
+"{source._desc_sing} {event.subjects[0].text}"
+msgstr ""
+"ടോംബോയ്\n"
+"{source._desc_sing} {event.subjects[0].text}"
+
+#: ../src/histogram.py:476 ../src/main.py:189 ../src/daywidgets.py:61
+#: ../src/daywidgets.py:242 ../src/daywidgets.py:429
+msgid "Today"
+msgstr "ഇന്ന്"
+
+#: ../src/histogram.py:531
+msgid "item"
+msgid_plural "items"
+msgstr[0] "ഇനം"
+msgstr[1] "ഇനങ്ങള്‍"
+
+#: ../src/histogram.py:533
+msgid "Click today to return to today"
+msgstr "ഇന്നു-ലേക്ക് തിരിച്ചു വരാന്‍ ഇന്നു-ല്‍ അമര്‍ത്തുക"
+
+#: ../src/main.py:87
+msgid "Powered by Zeitgeist"
+msgstr "Zeitgeist വഴി പ്രാപ്തമാക്കിയിരിക്കുന്നു"
+
+#: ../src/main.py:150 ../src/main.py:174 ../src/main.py:203
+#: ../extra/gnome-activity-journal.desktop.in.h:1
+msgid "Activity Journal"
+msgstr "ആക്ടിവിറ്റി ജേര്‍ണല്‍"
+
+#: ../src/main.py:174
+#, python-format
+msgid "%s to today"
+msgstr "ഇന്നിലേക്ക്‌ %s"
+
+#: ../src/main.py:192 ../src/daywidgets.py:63 ../src/daywidgets.py:244
+msgid "Yesterday"
+msgstr "ഇന്നലെ"
+
+#: ../src/main.py:203
+#, python-format
+msgid "%s to %s"
+msgstr "%s മുതല്‍ %s വരെ"
+
+#. TODO: Move this into Zeitgeist's library, implemented properly
+#: ../src/sources.py:40
+msgid "Worked with a Video"
+msgstr "ചലച്ചിത്രവുമായി പ്രവര്‍ത്തിച്ചു"
+
+#: ../src/sources.py:40
+msgid "Worked with Videos"
+msgstr "ചലച്ചിത്രങ്ങളുമായി പ്രവര്‍ത്തിച്ചു"
+
+#: ../src/sources.py:41
+msgid "Worked with Audio"
+msgstr "ശബ്ദവുമായി പ്രവര്‍ത്തിച്ചു"
+
+#: ../src/sources.py:42
+msgid "Worked with an Image"
+msgstr "ചിത്രവുമായി പ്രവര്‍ത്തിച്ചു"
+
+#: ../src/sources.py:42
+msgid "Worked with Images"
+msgstr "ചിത്രങ്ങളുമായി പ്രവര്‍ത്തിച്ചു"
+
+#: ../src/sources.py:43
+msgid "Edited or Read Document"
+msgstr "ചിട്ടപ്പെടുത്തിയിരിക്കുന്ന അല്ലെങ്കില്‍ വായിച്ചിരിക്കുന്ന പ്രമാണം"
+
+#: ../src/sources.py:43
+msgid "Edited or Read Documents"
+msgstr ""
+"ചിട്ടപ്പെടുത്തിയിരിക്കുന്ന അല്ലെങ്കില്‍ വായിച്ചിരിക്കുന്ന പ്രമാണങ്ങള്‍"
+
+#: ../src/sources.py:44
+msgid "Edited or Read Code"
+msgstr "ചിട്ടപ്പെടുത്തിയിരിക്കുന്ന അല്ലെങ്കില്‍ വായിച്ചിരിക്കുന്ന കോഡ്"
+
+#: ../src/sources.py:45
+msgid "Conversation"
+msgstr "സംഭാഷണം"
+
+#: ../src/sources.py:45
+msgid "Conversations"
+msgstr "സംഭാഷണങ്ങള്‍"
+
+#: ../src/sources.py:46
+msgid "Other Activity"
+msgstr "മറ്റു പ്രവര്‍ത്തനം"
+
+#: ../src/sources.py:46
+msgid "Other Activities"
+msgstr "മറ്റു പ്രവര്‍ത്തനങ്ങള്‍"
+
+#: ../src/infopane.py:242
+msgid "Actor"
+msgstr "അഭിനേതാവ്"
+
+#. 0
+#: ../src/infopane.py:243
+msgid "Time"
+msgstr "സമയം"
+
+#. 2
+#: ../src/infopane.py:245
+msgid "Interpretation"
+msgstr "വ്യാഖ്യാനം"
+
+#. 3
+#: ../src/infopane.py:246
+msgid "Subject Interpretation"
+msgstr "വിഷയ വ്യാഖ്യാനം"
+
+#. 4
+#: ../src/infopane.py:247
+msgid "Manifestation"
+msgstr "സാക്ഷാത്കരണം"
+
+#: ../src/infopane.py:392
+msgid "Related Items"
+msgstr "ബന്ധപ്പെട്ട ഇനങ്ങള്‍"
+
+#: ../src/daywidgets.py:111 ../src/daywidgets.py:191
+msgid "Click to return to multiday view"
+msgstr "ബഹുദിവസ കാഴ്ചയിലേക്ക് തിരിച്ചു വരാന്‍ അമര്‍ത്തുക"
+
+#: ../src/daywidgets.py:221 ../src/common.py:124
+msgid "Morning"
+msgstr "പ്രഭാതം"
+
+#: ../src/daywidgets.py:222 ../src/common.py:124
+msgid "Afternoon"
+msgstr "അപരാഹ്നം"
+
+#: ../src/daywidgets.py:223 ../src/common.py:124
+msgid "Evening"
+msgstr "വൈകുന്നേരം"
+
+#: ../src/daywidgets.py:304
+msgid "Left click for a detailed timeline view"
+msgstr "വിശദമായ ഒരു കാലനില കാണുവാനായി ഇടതു-ക്ലിക്ക് ചെയ്യുക"
+
+#: ../src/daywidgets.py:306
+msgid "Right click for a thumbnail view"
+msgstr "ഒരു നഖചിത്ര വീക്ഷണത്തിനായി വലതു-ക്ലിക്ക് ചെയ്യുക"
+
+#. Initialize the widget
+#: ../src/daywidgets.py:768
+msgid "Pinned items"
+msgstr "കൂട്ടിവച്ചിരിക്കുന്ന ഇനങ്ങള്‍"
+
+#: ../src/common.py:108
+msgid "Video"
+msgstr "ചലച്ചിത്രം"
+
+#: ../src/common.py:109
+msgid "Music"
+msgstr "സംഗീതം"
+
+#: ../src/common.py:110
+msgid "Document"
+msgstr "രേഖ"
+
+#: ../src/common.py:111
+msgid "Image"
+msgstr "ചിത്രം"
+
+#: ../src/common.py:112
+msgid "Source Code"
+msgstr "മൂല പ്രമാണം"
+
+#: ../src/common.py:113
+msgid "Unknown"
+msgstr "അജ്ഞാതം"
+
+#: ../src/common.py:114
+msgid "IM Message"
+msgstr "ഐഎം സന്ദേശം"
+
+#: ../src/common.py:115
+msgid "Email"
+msgstr "ഈമെയില്‍"
+
+#: ../src/widgets.py:172
+msgid "Type here to search..."
+msgstr "തിരയുവാനായി ഇവിടെ ടൈപ്പ് ചെയ്യുക..."
+
+#: ../src/widgets.py:407 ../src/widgets.py:583
+msgid "Remove Pin"
+msgstr "പിന്‍ മാറ്റുക"
+
+#: ../src/widgets.py:584
+msgid "Pin to Today"
+msgstr "ഇന്നു-ലേക്ക് പിന്‍ ചെയ്യുക"
+
+#: ../src/widgets.py:585
+msgid "Delete item from Journal"
+msgstr "ജേര്‍ണലില്‍ നിന്നും വസ്തു നീക്കം ചെയ്യുക"
+
+#: ../src/widgets.py:586
+msgid "Delete all events with this URI"
+msgstr "ഈ URI ഉപയോഗിച്ച് എല്ലാ സംഭവങ്ങളും നീക്കം ചെയ്യുക"
+
+#: ../src/widgets.py:587
+msgid "More Information"
+msgstr "കൂടുതല്‍ വിവരങ്ങള്‍"
+
+#: ../src/widgets.py:599
+msgid "Send To..."
+msgstr "അയക്കുക..."
+
+#: ../extra/gnome-activity-journal.desktop.in.h:2
+msgid ""
+"Browse a chronological log of your activities and easily find files, "
+"contacts, etc."
+msgstr ""
+"കാലഗതി അനുസരിച്ചുള്ള നിങ്ങളുടെ പ്രവര്‍ത്തികളുടെ ഒരു ലോഗ്  പരതുകയും, "
+"എളുപ്പത്തില്‍ ഫയലുകള്‍, വിലാസങ്ങള്‍ തുടങ്ങിയവ കണ്ടെത്തുക."
+
+#: ../extra/gnome-activity-journal.schemas.in.h:1
+msgid "Accessibility"
+msgstr "ഉപയോഗക്ഷമത"
+
+#: ../extra/gnome-activity-journal.schemas.in.h:2
+msgid "Allow thumbnails as icons"
+msgstr "നഖചിത്രങ്ങള്‍ ഐക്കനുകള്‍ ആയി ഉപയോഗിക്കാന്‍ അനുവദിക്കുക"
+
+#: ../extra/gnome-activity-journal.schemas.in.h:3
+msgid "Amount of visible days"
+msgstr "ഗോചരമായ ദിവസങ്ങളുടെ എണ്ണം"
+
+#: ../extra/gnome-activity-journal.schemas.in.h:4
+msgid ""
+"Customized height for the main window, in pixels (requires restart). Can't "
+"be bigger than the desktop's size."
+msgstr ""
+"പ്രധാന ജാലകത്തിനു നിര്‍ദ്ദേശിക്കുന്ന ഉയരം, പിക്സലുകളില്‍ (റീസ്റ്റാര്‍ട്ട്‌ "
+"ആവശ്യമാണ്). ടെസ്ക്ടോപിന്റെ വലുപ്പത്തേക്കാള്‍ കൂടുതലാകാന്‍ പാടില്ല."
+
+#: ../extra/gnome-activity-journal.schemas.in.h:5
+msgid ""
+"Customized width for the main window, in pixels (requires restart). Can't be "
+"bigger than the desktop's size."
+msgstr ""
+"പ്രധാന ജാലകത്തിനു നിര്‍ദ്ദേശിക്കുന്ന വീതി, പിക്സലുകളില്‍ (റീസ്റ്റാര്‍ട്ട്‌ "
+"ആവശ്യമാണ്). ടെസ്ക്ടോപിന്റെ വലുപ്പത്തേക്കാള്‍ കൂടുതലാകാന്‍ പാടില്ല."
+
+#: ../extra/gnome-activity-journal.schemas.in.h:6
+msgid "The amount of days to show at once."
+msgstr "ഒന്നിച്ചു കാണിക്കേണ്ട ദിവസങ്ങളുടെ എണ്ണം."
+
+#: ../extra/gnome-activity-journal.schemas.in.h:7
+msgid ""
+"Whether special accessibility options should be enabled (requires restart)."
+msgstr ""
+"പ്രത്യേക സാമീപ്യതാ ഐശ്ചികങ്ങള്‍ സജീവമാക്കണോ എന്നു (റീസ്റ്റാര്‍ട്ട്‌ "
+"ആവശ്യമാണ്)."
+
+#: ../extra/gnome-activity-journal.schemas.in.h:8
+msgid ""
+"Whether to allow showing little thumbnails next to each activity (requires "
+"restart). If False, only generic mime-type icons will be used."
+msgstr ""
+"ഓരോ പ്രവര്‍ത്തനത്തിനും അരികിലായി ചെറിയ നഖചിത്രങ്ങള്‍ കാണിക്കുന്നത് "
+"അനുവദിക്കണോ എന്നു (റീസ്റ്റാര്‍ട്ട്‌ ആവശ്യമാണ്). വേണ്ട എന്നാണെങ്കില്‍, "
+"പൊതുവായ mime-തരം ഐക്കണുകള്‍ ഉപയോഗിക്കും."
+
+#: ../extra/gnome-activity-journal.schemas.in.h:9
+msgid "Window height"
+msgstr "ജാലകത്തിന്റെ ഉയരം"
+
+#: ../extra/gnome-activity-journal.schemas.in.h:10
+msgid "Window width"
+msgstr "ജാലകത്തിന്റെ വീതി"
