@@ -25,7 +25,7 @@ import sys
 import time
 import threading
 from zeitgeist.client import ZeitgeistClient, ZeitgeistDBusInterface
-from zeitgeist.datamodel import Event, ResultType, Interpretation
+from zeitgeist.datamodel import Event, ResultType, Interpretation, TimeRange
 
 import content_objects
 import external
@@ -58,10 +58,9 @@ def get_related_events_for_uri(uri, callback):
                         Event.new_for_values(interpretation=Interpretation.ACCESS_EVENT.uri, subject_uri=uri),
                         Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri, subject_uri=uri),
                         Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri, subject_uri=uri),
-                        Event.new_for_values(interpretation=Interpretation.ACCESS_EVENT.uri, subject_uri=uri)
                     ]
             CLIENT.find_event_ids_for_templates(templates, _event_request_handler,
-                                             [0, time.time()*1000], num_events=50000,
+                                             TimeRange.until_now(), num_events=len(uris),
                                              result_type=ResultType.MostRecentSubjects)
 
     end = time.time() * 1000
@@ -147,9 +146,6 @@ class ContentStruct(object):
         self._content_object_built = True
         self.content_object = content_objects.ContentObject.new_from_event(self.event)
         gtk.gdk.threads_leave()
-
-    def do_build(self):
-        CLIENT.get_events([self.id], self.set_event)
 
 
 class Day(gobject.GObject):
@@ -313,9 +309,6 @@ class Day(gobject.GObject):
                              r[0][0].event.timestamp))
         return results
 
-    def do_build(self):
-        CLIENT.get_events(self._items.keys(), self.__set_events_by_id)
-
     def __set_events_by_id(self, events):
         for event in events:
             self._items[event.id].event = event
@@ -347,13 +340,22 @@ class Store(gobject.GObject):
         self.run_build_thread = False
         self._days = {}
         self._day_connections = {}
+        global currentTimestamp, histogramLoaderCounter
         today = datetime.date.today()
-        t = time.mktime(today.timetuple())
-        for i in range(1,30*10):
-            date = datetime.date.fromtimestamp(t)
-            day = Day(date)
-            self.add_day(date, day)
-            t -= 86400
+        histogramLoaderCounter = 50
+        currentTimestamp = time.mktime(today.timetuple())
+        def load_histogram_data():
+            global currentTimestamp, histogramLoaderCounter
+            histogramLoaderCounter = histogramLoaderCounter - 1
+            if not histogramLoaderCounter:
+                return False
+            for i in xrange(6):
+                date = datetime.date.fromtimestamp(currentTimestamp)
+                day = Day(date)
+                self.add_day(date, day)
+                currentTimestamp -= 86400
+            return True
+        gobject.idle_add(load_histogram_data)
 
         content_objects.AbstractContentObject.connect_to_manager("add", self.add_content_object_with_new_type)
         content_objects.AbstractContentObject.connect_to_manager("remove", self.remove_content_objects_with_type)
