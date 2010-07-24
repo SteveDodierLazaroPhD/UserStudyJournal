@@ -25,6 +25,7 @@ import gobject
 import gst
 import gtk
 import math
+import urllib
 import pango
 import threading
 
@@ -708,29 +709,36 @@ class ThumbView(gtk.VBox):
         view = self.views[i]
         label = self.labels[i]
         if not items or len(items) == 0:
+            view.hide_all()
+            label.hide_all()
             view.set_model_from_list(None)
             return False
         view.show_all()
         label.show_all()
         view.set_model_from_list(items)
 
-        if len(items) == 0:
-            view.hide_all()
-            label.hide_all()
 
     def set_day(self, day):
         morning = []
         afternoon = []
         evening = []
+        
+        def event_exists(uri):
+            # TODO: Move this into Zeitgeist's datamodel.py
+            return not uri.startswith("file://") or os.path.exists(
+                urllib.unquote(str(uri[7:])))
+        
         for item in day.filter(self.event_templates, result_type=ResultType.MostRecentSubjects):
             #if not item.content_object:continue
-            t = time.localtime(int(item.event.timestamp)/1000)
-            if t.tm_hour < 11:
-                morning.append(item)
-            elif t.tm_hour < 17:
-                afternoon.append(item)
-            else:
-                evening.append(item)
+            if event_exists(item.event.subjects[0].uri):
+                t = time.localtime(int(item.event.timestamp)/1000)
+                if t.tm_hour < 11:
+                    morning.append(item)
+                elif t.tm_hour < 17:
+                    afternoon.append(item)
+                else:
+                    evening.append(item)
+                
         self.set_phase_items(0, morning)
         self.set_phase_items(1, afternoon)
         self.set_phase_items(2, evening)
