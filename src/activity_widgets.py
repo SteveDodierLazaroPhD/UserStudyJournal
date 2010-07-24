@@ -1146,7 +1146,7 @@ class PinBox(DayView):
 
     def set_items(self, items):
         self.clear()
-        box = CategoryBox(None, items, True, itemoff=5)
+        box = CategoryBox(None, items, True, itemoff=4)
         self.view.pack_start(box)
         
         for w in self:
@@ -1154,6 +1154,7 @@ class PinBox(DayView):
         
         notebook = gtk.Notebook()
         notebook.append_page(self.view, self.label)
+        self.label.set_alignment(0.01, 0.5)
         notebook.set_tab_label_packing(self.view, True, True, gtk.PACK_START)
         self.pack_start(notebook)
         self.set_border_width(2)
