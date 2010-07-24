@@ -725,6 +725,7 @@ class ContextMenu(gtk.Menu):
     informationwindow = None
     def __init__(self):
         super(ContextMenu, self).__init__()
+        self.infowindow = None
         self.menuitems = {
             "open" : gtk.ImageMenuItem(gtk.STOCK_OPEN),
             "unpin" : gtk.MenuItem(_("Remove Pin")),
@@ -776,8 +777,14 @@ class ContextMenu(gtk.Menu):
             obj.launch()
 
     def do_show_info(self, menuitem):
-        if self.subjects and self.informationwindow:
-            self.informationwindow.set_content_object(self.subjects[0])
+        if self.subjects:
+            if self.infowindow:
+                self.infowindow.destroy()
+            self.infowindow = InformationContainer()
+            self.infowindow.set_position(gtk.WIN_POS_CENTER)
+            self.infowindow.set_content_object(self.subjects[0])
+            self.infowindow.set_size_request(400,400)
+            self.infowindow.show_all()
 
     def do_bookmark(self, menuitem):
         for obj in self.subjects:
@@ -1195,13 +1202,8 @@ class InformationContainer(gtk.Window):
                     self.insert(item, 0)
 
     def __init__(self):
-        super(Pane, self).__init__()
-        self.close_button = close_button = ToolButton()
-        close_button.set_stock_id(gtk.STOCK_CLOSE)
-        close_button.set_label(_("Close"))
-        self.connect("delete-event", self.hide_on_delete)
-        close_button.connect("clicked", self.hide_on_delete)
-        self.set_label_align(1, 0)
+        super(gtk.Window, self).__init__()
+        self.connect("destroy", self.hide_on_delete)
         box1 = gtk.VBox()
         box2 = gtk.VBox()
         vbox = gtk.VBox()
@@ -1240,7 +1242,6 @@ class InformationContainer(gtk.Window):
         separator.set_expand(True)
         separator.set_draw(False)
         self.toolbar.insert(separator, -1)
-        self.toolbar.insert(close_button, -1)
 
     def size_allocate(self, widget, allocation):
         if allocation.height < 400:
