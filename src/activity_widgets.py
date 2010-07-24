@@ -1154,11 +1154,13 @@ class PinBox(DayView):
         
         notebook = gtk.Notebook()
         notebook.append_page(self.view, self.label)
-        self.label.set_alignment(0.01, 0.5)
+        self.label.set_alignment(0.005, 0.5)
         notebook.set_tab_label_packing(self.view, True, True, gtk.PACK_START)
-        self.pack_start(notebook)
-        self.set_border_width(2)
-
+        self.set_border_width(4)
+        print "..........", len(items)
+        if len(items) > 0:
+            self.pack_start(notebook)
+        
 pinbox = PinBox()
 ## gobject registration
 gobject.type_register(_TimelineRenderer)
