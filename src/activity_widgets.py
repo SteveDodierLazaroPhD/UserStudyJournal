@@ -262,17 +262,28 @@ class CategoryBox(gtk.HBox):
             label = gtk.Label()
             label.set_markup("<span>%s</span>" % text)
             #label.set_ellipsize(pango.ELLIPSIZE_END)
-            hbox.pack_start(label, True, True, 0)
+            hbox.pack_start(label, False, False, 0)
 
             label = gtk.Label()
             label.set_markup("<span>(%d)</span>" % len(event_structs))
             label.set_alignment(1.0,0.5)
             label.set_alignment(1.0,0.5)
+            
+            
             hbox.pack_end(label, False, False)
+            self.al = gtk.gdk.Rectangle(0,0,0,0)
+            def set_size(widget, allocation):
+                if self.al != allocation:
+                    self.al = allocation
+                    hbox.set_size_request(self.al[2]- 72, -1)
+                
+            self.i = self.connect_after("size-allocate", set_size)
+            
             hbox.set_border_width(6)
             self.expander = gtk.Expander()
             self.expander.set_label_widget(hbox)
-            self.vbox.pack_start(self.expander, False, False)
+            self.vbox.pack_start(self.expander, True, True)
+            
             self.expander.add(self.box)#
             self.pack_start(self.vbox, True, True, 24)
             self.expander.show_all()
