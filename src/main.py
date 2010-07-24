@@ -27,8 +27,8 @@ import time
 import datetime
 import os
 
-from activity_widgets import MultiViewContainer, TimelineViewContainer, ThumbViewContainer, PinnedPane
-from supporting_widgets import DayButton, DayLabel, Toolbar, ContextMenu, AboutDialog, HandleBox, SearchBox, InformationContainer, PreferencesDialog
+from activity_widgets import MultiViewContainer, TimelineViewContainer, ThumbViewContainer
+from supporting_widgets import DayButton, DayLabel, Toolbar, ContextMenu, AboutDialog, SearchBox, PreferencesDialog
 from histogram import HistogramWidget
 from store import Store, tdelta, STORE, CLIENT
 from config import settings, get_icon_path, get_data_path, PluginManager
@@ -105,58 +105,6 @@ class ViewContainer(gtk.Notebook):
             button.set_sensitive(True)
         self.tool_buttons[i].set_sensitive(False)
 
-
-class PanedContainer(gtk.HBox):
-    def __init__(self):
-        super(PanedContainer, self).__init__()
-        self.pane1 = pane1 = gtk.HPaned()
-        self.pane2 = pane2 = gtk.HPaned()
-        pane1.add2(pane2)
-        self.boxes = {}
-        box1 = self.left_box = gtk.EventBox()
-        box2 = self.center_box = gtk.EventBox()
-        box3 = self.right_box = gtk.EventBox()
-        pane1.pack1(box1, False, False)
-        pane2.pack1(box2, False, True)
-        pane2.pack2(box3, False, False)
-        self.add(pane1)
-
-        self.informationcontainer = InformationContainer()
-        ContextMenu.informationwindow = self.informationcontainer
-        self.h1 = handle = HandleBox()
-        handle.add(self.informationcontainer)
-        box3.add(handle)
-        self.informationcontainer.connect("hide", self.on_hide)
-        self.informationcontainer.connect("show", self.on_show)
-        self.informationcontainer.set_size_request(100, 100)
-        self.pinbox = PinnedPane()
-        self.pinbox.connect("hide", self.on_hide)
-        self.pinbox.connect("show", self.on_show)
-        self.h2 = handle = HandleBox()
-        handle.add(self.pinbox)
-        box1.add(handle)
-
-    def on_show(self, w, *args):
-        self.pane1.set_position(-1)
-        self.pane2.set_position(-1)
-        handle = self.h1 if w == self.informationcontainer else self.h2
-        handle.show()
-        if w == self.informationcontainer:
-            self.right_box.show()
-        elif w == self.pinbox:
-            self.left_box.show()
-
-    def on_hide(self, w, *args):
-        self.pane1.set_position(-1)
-        self.pane2.set_position(-1)
-        handle = self.h1 if w == self.informationcontainer else self.h2
-        handle.hide()
-        if w == self.informationcontainer:
-            self.right_box.hide()
-        elif w == self.pinbox:
-            self.left_box.hide()
-
-
 class PortalWindow(gtk.Window):
     __gsignals__ = {
         "day-set" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,(gobject.TYPE_PYOBJECT,)),
@@ -181,7 +129,6 @@ class PortalWindow(gtk.Window):
         self.view.set_view_page(0)
         map(self.toolbar.add_new_view_button, self.view.tool_buttons[::-1])
         self.view.connect("new-view-added", lambda w, v: self.toolbar.add_new_view_button(v.button, len(self.view.tool_buttons)))
-        self.panedcontainer = PanedContainer()
         self.preferences_dialog = PreferencesDialog()
         self.histogram = HistogramWidget()
         self.histogram.set_store(self.store)
@@ -199,14 +146,11 @@ class PortalWindow(gtk.Window):
         tvbox = gtk.VBox()
         tvbox.pack_start(hbox, True, True, 3)
         vbox.pack_start(self.toolbar, False, False)
-        self.panedcontainer.center_box.add(tvbox)
-        vbox.pack_start(self.panedcontainer, True, True, 2)
+        vbox.pack_start(tvbox, True, True, 2)
         histogramhbox.pack_end(self.histogram, True, True, 26)
         vbox.pack_end(histogramhbox, False, False)
         self.add(vbox)
         self.show_all()
-        self.panedcontainer.informationcontainer.hide()
-        self.panedcontainer.pinbox.hide()
         # Settings
         self.view.set_day(self.store.today)
         # Connections
@@ -218,7 +162,6 @@ class PortalWindow(gtk.Window):
         self.view.connect("view-button-clicked", self.on_view_button_click)
         self.toolbar.throbber.connect("clicked", self.show_about_window)
         self.toolbar.goto_today_button.connect("clicked", lambda w: self.set_date(datetime.date.today()))
-        self.toolbar.pin_button.connect("clicked", lambda w: self.panedcontainer.pinbox.toggle_visibility())
         self.store.connect("update", self.histogram.histogram.set_store)
         self.searchbox.connect("search", self._on_search)
         self.searchbox.connect("clear", self._on_search_clear)

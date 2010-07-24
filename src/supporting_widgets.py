@@ -837,9 +837,6 @@ class Toolbar(gtk.Toolbar):
         #self.set_style(gtk.TOOLBAR_BOTH)
         #
         #self.append_space()
-        self.pin_button = pin = self.get_toolbutton(
-            get_icon_path("hicolor/24x24/status/pin.png"),
-            _("Show Pinned Pane"))
         self.search_button = sb = gtk.ToolButton(gtk.STOCK_FIND)
         self.search_dialog = sdialog = SearchBox
         self.search_dialog.search.connect("close", self.toggle_searchbox_visibility)
@@ -847,7 +844,7 @@ class Toolbar(gtk.Toolbar):
 
         sep1 = gtk.SeparatorToolItem()
         sep2 = gtk.SeparatorToolItem()
-        for item in (sdialog, sb, sep2, pin, sep1):
+        for item in (sdialog, sb, sep1):
             self.insert(item, 0)
         #
         self.preference_button = gtk.ToolButton(gtk.STOCK_PREFERENCES)
@@ -1026,44 +1023,6 @@ class StockIconButton(gtk.Button):
         self.image.set_from_stock(stock_id, self.size)
 
 
-class Pane(gtk.Frame):
-    """
-    A pane container
-    """
-    def __init__(self):
-        super(Pane, self).__init__()
-        #self.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-        self.close_button = close_button = StockIconButton(gtk.STOCK_CLOSE)
-        self.set_label_widget(close_button)#, False, False)
-        self.connect("delete-event", self.hide_on_delete)
-        close_button.connect("clicked", self.hide_on_delete)
-        self.set_label_align(0,0)
-
-    def hide_on_delete(self, widget, *args):
-        self.hide()
-        return True
-
-
-class HandleBox(gtk.HandleBox):
-    def __init__(self, position=gtk.POS_TOP, snap=gtk.POS_TOP):
-        super(HandleBox, self).__init__()
-        self.set_handle_position(position)
-        self.set_snap_edge(snap)
-        self.set_shadow_type(gtk.SHADOW_NONE)
-        self.connect("child-attached", self.child_attached)
-        self.connect("child-detached", self.child_detached)
-
-    def child_attached(self, handlebox, widget):
-        self.set_size_request(-1, -1)
-
-    def child_detached(self, handlebox, widget):
-        if widget.window:
-            x, y, width, height, depth = widget.window.get_geometry()
-            child = self.get_child()
-            child.set_size_request(width, height)
-        self.set_size_request(-1,-1)
-
-
 #######################
 # More Information Pane
 ##
@@ -1199,7 +1158,7 @@ class _RelatedPane(gtk.TreeView):
                 obj.launch()
 
 
-class InformationContainer(Pane):
+class InformationContainer(gtk.Window):
     """
     . . . . .
     .  URI  .

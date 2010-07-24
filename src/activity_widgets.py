@@ -33,7 +33,7 @@ from common import *
 import content_objects
 from config import settings, bookmarker, SUPPORTED_SOURCES
 from store import ContentStruct, CLIENT
-from supporting_widgets import DayLabel, ContextMenu, StaticPreviewTooltip, VideoPreviewTooltip, Pane, SearchBox
+from supporting_widgets import DayLabel, ContextMenu, StaticPreviewTooltip, VideoPreviewTooltip, SearchBox
 
 from zeitgeist.datamodel import ResultType, StorageState, TimeRange
 
@@ -142,12 +142,13 @@ class DayViewContainer(gtk.VBox):
         self.connect("style-set", self.change_style)
 
     def set_day(self, day):
-        if len(self.box.get_children()) == 4:
-            t  =day.date - datetime.date.today()
-            if t.days == 0:
-                self.box.get_children()[0].show_all()
-            else:
-                self.box.get_children()[0].hide()
+        if pinbox in self.box.get_children():
+            self.box.remove(pinbox)
+            
+        t  = day.date - datetime.date.today()
+        if t.days == 0:
+            self.box.pack_start(pinbox, False, False)
+            self.box.reorder_child(pinbox, 0)
         
         self.daylabel.set_date(day.date)
         morning = []
@@ -202,7 +203,6 @@ class DayView(gtk.VBox):
         if self.view:
             self.remove(self.view)
             self.view.destroy()
-            del self.view
         self.view = gtk.VBox()
         self.pack_start(self.view)
 
@@ -233,15 +233,18 @@ class DayView(gtk.VBox):
 
 class CategoryBox(gtk.HBox):
 
-    def __init__(self, category, event_structs, pinnable = False):
+    def __init__(self, category, event_structs, pinnable = False, itemoff = 0):
         super(CategoryBox, self).__init__()
         self.view = gtk.VBox(True)
         self.vbox = gtk.VBox()
         for struct in event_structs:
             if not struct.content_object:continue
-            item = Item(struct, pinnable)
+            if itemoff > 0:
+                item = Item(struct, pinnable, False)
+            else:
+                item = Item(struct, pinnable, True)
             hbox = gtk.HBox ()
-            hbox.pack_start(item, True, True, 0)
+            hbox.pack_start(item, True, True, 0 )
             self.view.pack_start(hbox, False, False, 0)
             hbox.show_all()
             self.pack_end(hbox)
@@ -265,7 +268,7 @@ class CategoryBox(gtk.HBox):
             label.set_markup("<span>(%d)</span>" % len(event_structs))
             label.set_alignment(1.0,0.5)
             label.set_alignment(1.0,0.5)
-            hbox.pack_end(label, False, False, 2)
+            hbox.pack_end(label, False, False)
             hbox.set_border_width(6)
             self.expander = gtk.Expander()
             self.expander.set_label_widget(hbox)
@@ -282,7 +285,7 @@ class CategoryBox(gtk.HBox):
             self.vbox.pack_end(self.box)
             self.box.show()
             self.show()
-            self.pack_start(self.vbox, True, True, 16)
+            self.pack_start(self.vbox, True, True, 16 -itemoff)
         self.show_all()
 
     def on_toggle(self, view, bool_):
@@ -773,7 +776,7 @@ class TimelineViewContainer(_GenericViewWidget):
         self.ruler = _TimelineHeader()
         self.scrolledwindow = gtk.ScrolledWindow()
         self.scrolledwindow.set_shadow_type(gtk.SHADOW_NONE)
-        self.scrolledwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
+        self.scrolledwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         self.view = TimelineView()
         self.scrolledwindow.add(self.view)
         self.pack_end(self.scrolledwindow)
@@ -1111,6 +1114,8 @@ class PinBox(DayView):
         super(PinBox, self).__init__(title=_("Pinned Items"))#_("Pinned items"))
         bookmarker.connect("reload", self.set_from_templates)
         self.set_from_templates()
+        
+       
 
     @property
     def event_templates(self):
@@ -1141,38 +1146,19 @@ class PinBox(DayView):
 
     def set_items(self, items):
         self.clear()
-        box = CategoryBox(None, items, True)
+        box = CategoryBox(None, items, True, itemoff=5)
         self.view.pack_start(box)
+        
+        for w in self:
+            self.remove(w)
+        
+        notebook = gtk.Notebook()
+        notebook.append_page(self.view, self.label)
+        notebook.set_tab_label_packing(self.view, True, True, gtk.PACK_START)
+        self.pack_start(notebook)
+        self.set_border_width(2)
 
-
-class PinnedPane(Pane):
-    def __init__(self):
-        super(PinnedPane, self).__init__()
-        ev = gtk.EventBox()
-        vbox = gtk.VBox()
-        ev.add(vbox)
-        self.set_shadow_type(gtk.SHADOW_NONE)
-        self.pinbox = PinBox()
-        self.pinbox.label.hide()
-        vbox.pack_start(self.pinbox, False, False)
-        self.add(ev)
-        self.set_size_request(200, -1)
-        self.set_label_align(1, 0)
-        self.connect("style-set", self.on_style_change)
-        bookmarker.connect("reload", lambda *args: self.show())
-
-    def on_style_change(self, widget, style):
-        rc_style = self.style
-        color = rc_style.bg[gtk.STATE_NORMAL]
-        color = shade_gdk_color(color, 102/100.0)
-        child = self.get_child()
-        child.modify_bg(gtk.STATE_NORMAL, color)
-
-    def toggle_visibility(self):
-        vis = not self.get_property("visible")
-        self.show() if vis else self.hide()
-
-
+pinbox = PinBox()
 ## gobject registration
 gobject.type_register(_TimelineRenderer)
 gobject.type_register(_ThumbViewRenderer)
