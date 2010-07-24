@@ -258,7 +258,7 @@ class CategoryBox(gtk.HBox):
             label.set_alignment(1.0,0.5)
             label.set_alignment(1.0,0.5)
             hbox.pack_end(label, False, False, 2)
-            hbox.set_border_width(3)
+            hbox.set_border_width(6)
             self.expander = gtk.Expander()
             self.expander.set_label_widget(hbox)
             self.vbox.pack_start(self.expander, False, False)

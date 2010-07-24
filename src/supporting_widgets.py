@@ -74,7 +74,12 @@ class DayLabel(gtk.DrawingArea):
         return self.date.strftime("%x")
 
     @property
-    def weekday_string(self):
+    def weekday_string(self):        
+        if self.date == datetime.date.today():
+            return "Today"
+        timedelta = datetime.date.today() -self.date
+        if timedelta.days == 1:
+            return "Yesterday"
         return self.date.strftime("%A")
 
     @property
@@ -90,10 +95,7 @@ class DayLabel(gtk.DrawingArea):
         context = widget.window.cairo_create()
         self.context = context
 
-        bg = self.style.bg[0]
-        red, green, blue = bg.red/65535.0, bg.green/65535.0, bg.blue/65535.0
         self.font_name = self.style.font_desc.get_family()
-
         widget.style.set_background(widget.window, gtk.STATE_NORMAL)
 
         # set a clip region for the expose event
