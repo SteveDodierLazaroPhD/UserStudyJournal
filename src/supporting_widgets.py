@@ -761,7 +761,7 @@ class ContextMenu(gtk.Menu):
         """
         self.subjects = subjects
         if len(subjects) == 1:
-            uri = subjects[0]
+            uri = subjects[0].uri
             if bookmarker.is_bookmarked(uri):
                 self.menuitems["pin"].hide()
                 self.menuitems["unpin"].show()
