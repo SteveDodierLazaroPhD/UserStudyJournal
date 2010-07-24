@@ -142,6 +142,13 @@ class DayViewContainer(gtk.VBox):
         self.connect("style-set", self.change_style)
 
     def set_day(self, day):
+        if len(self.box.get_children()) == 4:
+            t  =day.date - datetime.date.today()
+            if t.days == 0:
+                self.box.get_children()[0].show_all()
+            else:
+                self.box.get_children()[0].hide()
+        
         self.daylabel.set_date(day.date)
         morning = []
         afternoon = []
