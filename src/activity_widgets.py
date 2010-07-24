@@ -291,12 +291,26 @@ class CategoryBox(gtk.HBox):
             hbox.show_all()
             label.show_all()
             self.view.show()
+            
+            def on_style_change(widget, style):
+                """ Update used colors according to the system theme. """
+                color = self.style.bg[gtk.STATE_NORMAL]
+                fcolor = self.style.fg[gtk.STATE_NORMAL]
+                color = combine_gdk_color(color, fcolor)
+                label.modify_fg(gtk.STATE_NORMAL, color)
+            
+            self.connect("style-set", on_style_change)
+            
+            
         else:
             self.box = self.view
             self.vbox.pack_end(self.box)
             self.box.show()
             self.show()
             self.pack_start(self.vbox, True, True, 16 -itemoff)
+        
+        
+            
         self.show_all()
 
     def on_toggle(self, view, bool_):
