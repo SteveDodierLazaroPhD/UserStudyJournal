@@ -3,6 +3,7 @@
 # GNOME Activity Journal
 #
 # Copyright © 2010 Randal Barlow
+# Copyright © 2010 Siegfried Gevatter <siegfried@gevatter.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -164,20 +165,36 @@ class Day(gobject.GObject):
 
     @property
     def items(self):
+        self.load_ids()
         return self._items.values()
 
     @CachedAttribute
     def templates(self):
         return [Event.new_for_values()]
 
-    def __init__(self, date):
+    def __init__(self, date, days_population=None):
         super(Day, self).__init__()
         self.date = date
         self._items = {}#id:ContentItem
+        self._loaded = False
         self.start = int(time.mktime(date.timetuple()))
         self.end = self.start+86399
-        CLIENT.find_event_ids_for_templates(self.templates, self.set_ids, self.time_range, num_events=MAXEVENTS)
-        CLIENT.install_monitor(self.time_range, self.templates, self.insert_events, self.remove_ids)
+        self._population = None
+        
+        if days_population:
+            for timestamp, count in days_population: # they are ordered descending
+                # Ugly hack to adjust for local/UTC time. Screw you timezones!
+                timestamp += (time.gmtime().tm_hour - time.localtime().tm_hour) * 3600 + \
+                    (time.gmtime().tm_min - time.localtime().tm_min) * 60
+                if timestamp >= self.start:
+                    if timestamp < self.end:
+                        self._population = count
+                        break
+                else:
+                    break
+        else:
+            self.load_ids()
+        
         if external.HAMSTER:
             try:
                 facts = external.HAMSTER.get_facts(self.start, self.end)
@@ -186,17 +203,20 @@ class Day(gobject.GObject):
             except TypeError:
                 pass #print "Hamster support disabled temporarely"
 
-    def has_id(self, id_):
-        """
-        Returns True if the this object contains an event with the given id
-        """
-        return self._items.has_key(id_)
+    def load_ids(self):
+        if not self._loaded:
+            self._loaded = True
+            CLIENT.find_event_ids_for_templates(self.templates, self.set_ids, self.time_range, num_events=MAXEVENTS)
+            CLIENT.install_monitor(self.time_range, self.templates, self.insert_events, self.remove_ids)
 
     def __getitem__(self, id_):
+        self.load_ids()
         return self._items[id_]
 
     def __len__(self):
-        return len(self._items)
+        if self._loaded:
+            return len(self._items)
+        return self._population or 0
 
     @DoEmit("update")
     def set_ids(self, event_ids):
@@ -229,7 +249,7 @@ class Day(gobject.GObject):
         """
         Insert an event into the day object without emitting a 'update' signal
         """
-        if not overwrite and self.has_id(event.id):
+        if not overwrite and event.id in self._items:
             self._items[event.id].event = event
             return False
         self._items[event.id] = ContentStruct(event.id, event)
@@ -257,6 +277,7 @@ class Day(gobject.GObject):
         return store[date]
 
     def filter(self, event_template=None, result_type=None):
+        self.load_ids()
         if event_template:
             items = self.filter_event_template(event_template)
             items = self.filter_result_type(items, result_type)
@@ -342,21 +363,17 @@ class Store(gobject.GObject):
         self._day_connections = {}
         global currentTimestamp, histogramLoaderCounter
         today = datetime.date.today()
-        histogramLoaderCounter = 50
         currentTimestamp = time.mktime(today.timetuple())
-        def load_histogram_data():
-            global currentTimestamp, histogramLoaderCounter
-            histogramLoaderCounter = histogramLoaderCounter - 1
-            if not histogramLoaderCounter:
-                return False
-            for i in xrange(6):
-                date = datetime.date.fromtimestamp(currentTimestamp)
-                day = Day(date)
-                self.add_day(date, day)
-                currentTimestamp -= 86400
-            return True
-        gobject.idle_add(load_histogram_data)
-
+        days_population = ZeitgeistDBusInterface().get_extension("Log", "journal/activity").GetHistogramData()
+        for i in xrange(50 * 6):
+            date = datetime.date.fromtimestamp(currentTimestamp)
+            day = Day(date, days_population)
+            self.add_day(date, day)
+            currentTimestamp -= 86400
+        
+        for day in self.days[-6:]:
+            day.load_ids()
+        
         content_objects.AbstractContentObject.connect_to_manager("add", self.add_content_object_with_new_type)
         content_objects.AbstractContentObject.connect_to_manager("remove", self.remove_content_objects_with_type)
 

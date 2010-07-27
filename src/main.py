@@ -169,8 +169,8 @@ class PortalWindow(gtk.Window):
         def setup(*args):
             self.histogram.set_dates(self.active_dates)
             self.histogram.scroll_to_end()
-            #if AUTOLOAD:
-            #    self.store.request_last_n_days_events(90)
+            if AUTOLOAD:
+                self.store.request_last_n_days_events(90)
             return False
         gobject.idle_add(setup)
         self.histogram.scroll_to_end()
