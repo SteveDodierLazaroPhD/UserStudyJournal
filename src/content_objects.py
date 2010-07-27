@@ -411,6 +411,7 @@ class BaseContentType(ContentObject):
         icon = False
         try:
             while not icon:
+                print self.icon_uri
                 if "$MIME" in self.icon_name:
                     icon = common.get_icon_for_name(self.mime_type.replace("/", "-"), size)
                     if icon != None: return icon
