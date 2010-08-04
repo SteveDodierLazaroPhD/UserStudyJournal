@@ -145,7 +145,8 @@ class ContentStruct(object):
     def build_struct(self):
         gtk.gdk.threads_enter()
         self._content_object_built = True
-        self.content_object = content_objects.ContentObject.new_from_event(self.event)
+        if not self.event.subjects[0].startswith("http"):
+            self.content_object = content_objects.ContentObject.new_from_event(self.event)
         gtk.gdk.threads_leave()
 
 

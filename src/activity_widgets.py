@@ -37,6 +37,7 @@ from supporting_widgets import DayLabel, ContextMenu, StaticPreviewTooltip, Vide
 
 from zeitgeist.datamodel import ResultType, StorageState, TimeRange
 
+EXPANDED = {}
 
 class _GenericViewWidget(gtk.VBox):
     day = None
@@ -237,6 +238,10 @@ class CategoryBox(gtk.HBox):
         super(CategoryBox, self).__init__()
         self.view = gtk.VBox(True)
         self.vbox = gtk.VBox()
+        if len(event_structs) > 0:
+            d = str(datetime.date.fromtimestamp(int(event_structs[0].event.timestamp)/1000)) + " " + str((time.localtime(int(event_structs[0].event.timestamp)/1000).tm_hour)/8)
+            if not EXPANDED.has_key(d):
+                EXPANDED[d] = False
         for struct in event_structs:
             if not struct.content_object:continue
             if itemoff > 0:
@@ -281,6 +286,12 @@ class CategoryBox(gtk.HBox):
             
             hbox.set_border_width(6)
             self.expander = gtk.Expander()
+            def on_expand(widget):
+                EXPANDED[d] = self.expander.get_expanded()
+                print EXPANDED[d]
+                    
+            self.expander.set_expanded(EXPANDED[d])
+            self.expander.connect_after("activate", on_expand)
             self.expander.set_label_widget(hbox)
             self.vbox.pack_start(self.expander, True, True)
             
