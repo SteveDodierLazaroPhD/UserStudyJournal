@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: gnome-activity-journal\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-04-22 16:05+0200\n"
-"PO-Revision-Date: 2010-08-03 11:07+0000\n"
-"Last-Translator: Cristiano Louro Motta <Unknown>\n"
+"PO-Revision-Date: 2010-08-05 03:07+0000\n"
+"Last-Translator: Sam Samuels <gemini_sam_samuels@hotmail.co.uk>\n"
 "Language-Team: Brazilian Portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Launchpad-Export-Date: 2010-08-04 03:58+0000\n"
+"X-Launchpad-Export-Date: 2010-08-05 03:43+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../gnome-activity-journal:76
@@ -81,7 +81,7 @@ msgstr "Provido por Zeitgeist"
 #: ../src/main.py:150 ../src/main.py:174 ../src/main.py:203
 #: ../extra/gnome-activity-journal.desktop.in.h:1
 msgid "Activity Journal"
-msgstr ""
+msgstr "Jornal de Atividades"
 
 #: ../src/main.py:174
 #, python-format
