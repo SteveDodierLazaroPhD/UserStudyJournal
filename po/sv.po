@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: gnome-activity-journal\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-04-22 16:05+0200\n"
-"PO-Revision-Date: 2010-02-22 05:36+0000\n"
-"Last-Translator: Daniel Nylander <yeager@ubuntu.com>\n"
+"PO-Revision-Date: 2010-08-07 18:35+0000\n"
+"Last-Translator: David Bengtsson <Unknown>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2010-08-05 03:43+0000\n"
+"X-Launchpad-Export-Date: 2010-08-08 04:00+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../gnome-activity-journal:76
@@ -32,18 +32,20 @@ msgstr "Kunde inte ansluta till Zeitgeist:"
 
 #: ../src/content_objects.py:452 ../src/content_objects.py:454
 msgid "{source._desc_sing} with {event.subjects[0].text}"
-msgstr ""
+msgstr "{source._desc_sing} med {event.subjects[0].text}"
 
 #: ../src/content_objects.py:453
 msgid ""
 "{source._desc_sing} with {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 msgstr ""
+"{source._desc_sing} med {event.subjects[0].text}\n"
+"{event.subjects[0].uri}"
 
 #: ../src/content_objects.py:474 ../src/content_objects.py:479
 #: ../src/content_objects.py:484
 msgid "with"
-msgstr ""
+msgstr "med"
 
 #: ../src/content_objects.py:522
 msgid "{source._desc_sing} {event.subjects[0].text}"
@@ -54,6 +56,8 @@ msgid ""
 "Tomboy\n"
 "{source._desc_sing} {event.subjects[0].text}"
 msgstr ""
+"Tomboy\n"
+"{source._desc_sing} {event.subjects[0].text}"
 
 #: ../src/histogram.py:476 ../src/main.py:189 ../src/daywidgets.py:61
 #: ../src/daywidgets.py:242 ../src/daywidgets.py:429
@@ -82,7 +86,7 @@ msgstr "Aktivitetsjournal"
 #: ../src/main.py:174
 #, python-format
 msgid "%s to today"
-msgstr ""
+msgstr "%s till idag"
 
 #: ../src/main.py:192 ../src/daywidgets.py:63 ../src/daywidgets.py:244
 msgid "Yesterday"
@@ -91,7 +95,7 @@ msgstr "Igår"
 #: ../src/main.py:203
 #, python-format
 msgid "%s to %s"
-msgstr ""
+msgstr "%s till %s"
 
 #. TODO: Move this into Zeitgeist's library, implemented properly
 #: ../src/sources.py:40
@@ -128,7 +132,7 @@ msgstr "Redigerat eller läst kod"
 
 #: ../src/sources.py:45
 msgid "Conversation"
-msgstr ""
+msgstr "Konversation"
 
 #: ../src/sources.py:45
 msgid "Conversations"
@@ -144,17 +148,17 @@ msgstr "Andra aktiviteter"
 
 #: ../src/infopane.py:242
 msgid "Actor"
-msgstr ""
+msgstr "Aktör"
 
 #. 0
 #: ../src/infopane.py:243
 msgid "Time"
-msgstr ""
+msgstr "Tid"
 
 #. 2
 #: ../src/infopane.py:245
 msgid "Interpretation"
-msgstr ""
+msgstr "Tolkning"
 
 #. 3
 #: ../src/infopane.py:246
@@ -164,7 +168,7 @@ msgstr ""
 #. 4
 #: ../src/infopane.py:247
 msgid "Manifestation"
-msgstr ""
+msgstr "Manifestation"
 
 #: ../src/infopane.py:392
 msgid "Related Items"
@@ -172,7 +176,7 @@ msgstr ""
 
 #: ../src/daywidgets.py:111 ../src/daywidgets.py:191
 msgid "Click to return to multiday view"
-msgstr ""
+msgstr "Klicka för att återgå till flerdagsvy"
 
 #: ../src/daywidgets.py:221 ../src/common.py:124
 msgid "Morning"
@@ -188,11 +192,11 @@ msgstr "Kväll"
 
 #: ../src/daywidgets.py:304
 msgid "Left click for a detailed timeline view"
-msgstr ""
+msgstr "Vänsterklicka för en detaljerad tidslinjevy"
 
 #: ../src/daywidgets.py:306
 msgid "Right click for a thumbnail view"
-msgstr ""
+msgstr "Högerklicka för en miniatyrbildsvy"
 
 #. Initialize the widget
 #: ../src/daywidgets.py:768
@@ -225,7 +229,7 @@ msgstr "Okänd"
 
 #: ../src/common.py:114
 msgid "IM Message"
-msgstr ""
+msgstr "Snabbmeddelande"
 
 #: ../src/common.py:115
 msgid "Email"
