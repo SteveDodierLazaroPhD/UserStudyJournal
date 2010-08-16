@@ -1161,7 +1161,8 @@ class PinBox(DayView):
             return None
         templates = []
         for bookmark in bookmarker.bookmarks:
-            templates.append(Event.new_for_values(subject_uri=bookmark))
+            subject = Subject.new_for_values(uri=bookmark)
+            templates.append(Event.new_for_values(subjects=[subject]))
         return templates
 
     def set_from_templates(self, *args, **kwargs):

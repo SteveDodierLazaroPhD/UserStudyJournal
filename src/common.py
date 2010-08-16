@@ -57,7 +57,7 @@ except ImportError:
 
 from config import get_data_path, get_icon_path, INTERPRETATION_UNKNOWN, MANIFESTATION_UNKNOWN
 
-from zeitgeist.datamodel import Interpretation, Event
+from zeitgeist.datamodel import Interpretation, Event, Subject
 
 
 THUMBS = collections.defaultdict(dict)
