@@ -353,6 +353,7 @@ class Item(gtk.HBox):
         self.btn.set_focus_on_click(False)
         self.__init_widget()
         self.show_all()
+        self.o_style = None
         self.markup = None
         self.__highlight()
         SearchBox.connect("search", self.__highlight)
@@ -368,10 +369,12 @@ class Item(gtk.HBox):
             w.modify_bg(gtk.STATE_NORMAL, color)
 
     def __highlight(self, *args):
-        rc_style = self.style
+        if not self.o_style:
+            self.o_style = self.style.copy()
+        rc_style = self.o_style.copy()
         text = self.content_obj.text.replace("&", "&amp;")
         if self.content_obj.matches_search:
-            self.label.set_markup("<span><b>" + text + "</b></span>")
+            self.label.set_markup("<span size='large'><b>" + text + "</b></span>")
             color = rc_style.base[gtk.STATE_SELECTED]
             self.label.modify_fg(gtk.STATE_NORMAL, color)
         else:
@@ -380,6 +383,7 @@ class Item(gtk.HBox):
             self.label.modify_fg(gtk.STATE_NORMAL, color)
 
     def __clear(self, *args):
+        self.content_obj.matches_search = False
         text = self.content_obj.text.replace("&", "&amp;")
         rc_style = self.style
         self.label.set_markup("<span>" + text + "</span>")
