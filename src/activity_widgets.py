@@ -100,8 +100,9 @@ class MultiViewContainer(gtk.HBox):
                     _day.disconnect(signal)
         self.days = self.__days(day, store)
         for i, day in enumerate(self.days):
-            self.day_signal_id[i] = day.connect("update", self.update_day)
-        self.update_day()
+            if datetime.date.today() == day.date:
+                self.day_signal_id[i] = day.connect("update", self.update_day)
+        #self.update_day()
 
     def __days(self, day, store):
         days = []
@@ -111,9 +112,11 @@ class MultiViewContainer(gtk.HBox):
         return days
 
     def update_day(self, *args):
+        
         t = time.time()
         for page, day in map(None, reversed(self.pages), self.days):
             page.set_day(day)
+            print day.date
         print "***", time.time() - t
 
 
