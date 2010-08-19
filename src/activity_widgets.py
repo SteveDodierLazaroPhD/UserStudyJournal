@@ -452,7 +452,7 @@ class Item(gtk.HBox):
             evbox.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2))
 
         self.btn.connect("realize", realize_cb)
-        self.init_multimedia_tooltip()
+        #self.init_multimedia_tooltip()
 
     def init_multimedia_tooltip(self):
         """add multimedia tooltip to multimedia files
