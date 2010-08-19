@@ -396,6 +396,8 @@ class Item(gtk.HBox):
             self.o_style = self.style.copy()
         rc_style = self.o_style.copy()
         text = self.content_obj.text.replace("&", "&amp;")
+        if text.strip() == "":
+            text = self.content_obj.uri.replace("&", "&amp;")
         if self.content_obj.matches_search:
             self.label.set_markup("<span size='large'><b>" + text + "</b></span>")
             color = rc_style.base[gtk.STATE_SELECTED]
@@ -408,6 +410,8 @@ class Item(gtk.HBox):
     def __clear(self, *args):
         self.content_obj.matches_search = False
         text = self.content_obj.text.replace("&", "&amp;")
+        if text.strip() == "":
+            text = self.content_obj.uri.replace("&", "&amp;")        
         rc_style = self.style
         self.label.set_markup("<span>" + text + "</span>")
         color = rc_style.text[gtk.STATE_NORMAL]
