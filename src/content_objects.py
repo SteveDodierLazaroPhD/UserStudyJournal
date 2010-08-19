@@ -411,6 +411,8 @@ class BaseContentType(ContentObject):
 
     def get_icon(self, size=24, *args, **kwargs):
         icon = False
+        if self.uri.startswith("http"):
+            return False
         try:
             while not icon:
                 if "$MIME" in self.icon_name:
@@ -430,6 +432,9 @@ class BaseContentType(ContentObject):
     @CachedAttribute
     def thumbview_pixbuf(self):
         """Special method which returns a pixbuf for the thumbview and a ispreview bool describing if it is a preview"""
+        print "-------------"
+        if self.uri.startswith("http"):
+            return False
         if self.thumbnail_uri:
             thumbview_pixbuf, isthumb = common.PIXBUFCACHE.get_pixbuf_from_uri(
                 self.thumbnail_uri, SIZE_LARGE, iconscale=0.1875, w=SIZE_THUMBVIEW[0], h=SIZE_THUMBVIEW[1])
@@ -440,6 +445,8 @@ class BaseContentType(ContentObject):
     @CachedAttribute
     def timelineview_pixbuf(self):
         """Special method which returns a sized pixbuf for the timeline and a ispreview bool describing if it is a preview"""
+        if self.uri.startswith("http"):
+            return False
         icon = self.get_icon(SIZE_TIMELINEVIEW[1])
         if not icon:
             icon = common.PLACEHOLDER_PIXBUFFS[24]
@@ -508,6 +515,9 @@ class GenericContentObject(BaseContentType):
             return self.wrds["subject_interpretation"].display_name + "\n" + self.event.subjects[0].text
 
     def get_icon(self, size=24, *args, **kwargs):
+        
+        if self.uri.startswith("http"):
+            return False
         icon = common.get_icon_for_name(self.mime_type.replace("/", "-"), size)
         if icon:
             return icon
