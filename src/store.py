@@ -453,7 +453,7 @@ class Store(gobject.GObject):
                 chunk = []
                 for i, event in enumerate(events):
                     chunk.append(event)
-                    if i%100 == 0:
+                    if i%20 == 0:
                         event_chunks.append(chunk)
                         chunk = []
                 map(self.add_events, event_chunks)
@@ -493,7 +493,7 @@ class Store(gobject.GObject):
             for event in events:
                 date = datetime.date.fromtimestamp(int(event.timestamp)/1000)
                 day = self[date]
-                day.insert_event(event, overwrite)
+                day._insert_event(event, overwrite)
 
 
 
