@@ -26,7 +26,7 @@ import sys
 import time
 import threading
 from zeitgeist.client import ZeitgeistClient, ZeitgeistDBusInterface
-from zeitgeist.datamodel import Event, ResultType, Interpretation, TimeRange
+from zeitgeist.datamodel import Event, ResultType, Interpretation, TimeRange, Subject
 
 import content_objects
 import external
@@ -55,10 +55,9 @@ def get_related_events_for_uri(uri, callback):
         templates = []
         if len(uris) > 0:
             for i, uri in enumerate(uris):
+                sub = Subject.new_for_values(uri=uri)
                 templates += [
-                        Event.new_for_values(interpretation=Interpretation.ACCESS_EVENT.uri, subject_uri=uri),
-                        Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri, subject_uri=uri),
-                        Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri, subject_uri=uri),
+                        Event.new_for_values(subjects=[uri]),
                     ]
             CLIENT.find_event_ids_for_templates(templates, _event_request_handler,
                                              TimeRange.until_now(), num_events=len(uris),

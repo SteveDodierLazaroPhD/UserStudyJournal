@@ -411,7 +411,6 @@ class BaseContentType(ContentObject):
         icon = False
         try:
             while not icon:
-                print self.icon_uri
                 if "$MIME" in self.icon_name:
                     icon = common.get_icon_for_name(self.mime_type.replace("/", "-"), size)
                     if icon != None: return icon
@@ -699,9 +698,9 @@ class TomboyContentObject(BaseContentType):
         return False
 
     icon_name = "$ACTOR"
-    text = _("{source._desc_sing} {event.subjects[0].text}")
-    timelineview_text = _("Tomboy\n{source._desc_sing} {event.subjects[0].text}")
-    thumbview_text = _("Tomboy\n{source._desc_sing} {event.subjects[0].text}")
+    text = _("{event.subjects[0].text}")
+    timelineview_text = _("Note\n{event.subjects[0].text}")
+    thumbview_text = _("Note\n{event.subjects[0].text}")
 
     type_color_representation = common.TANGOCOLORS[0], common.TANGOCOLORS[2]
 

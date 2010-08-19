@@ -155,15 +155,24 @@ class DayViewContainer(gtk.VBox):
         morning = []
         afternoon = []
         evening = []
-        for item in day.filter(self.event_templates, result_type=ResultType.MostRecentSubjects):
+        m_s = []
+        a_s = []
+        e_s = []
+        for item in day.filter(self.event_templates, result_type=ResultType.MostRecentEvents):
             if not item.content_object:continue
             t = time.localtime(int(item.event.timestamp)/1000)
             if t.tm_hour < 11:
-                morning.append(item)
+                if not item.event.subjects[0].uri in m_s:
+                    m_s.append(item.event.subjects[0].uri )
+                    morning.append(item)
             elif t.tm_hour < 17:
-                afternoon.append(item)
+                if not item.event.subjects[0].uri in a_s:
+                    a_s.append(item.event.subjects[0].uri )
+                    afternoon.append(item)
             else:
-                evening.append(item)
+                if not item.event.subjects[0].uri in e_s:
+                    e_s.append(item.event.subjects[0].uri )
+                    evening.append(item)
         self.dayviews[0].set_items(morning)
         self.dayviews[1].set_items(afternoon)
         self.dayviews[2].set_items(evening)
@@ -213,9 +222,18 @@ class DayView(gtk.VBox):
         for struct in items:
             if not struct.content_object: continue
             subject = struct.event.subjects[0]
-            if not categories.has_key(subject.interpretation):
-                categories[subject.interpretation] = []
-            categories[subject.interpretation].append(struct)
+            
+            def match_categories(interpretation):
+                if struct.event.actor == "application://tomboy.desktop":
+                    return "aj://note"
+                if INTERPRETATION_PARENTS.has_key(interpretation):
+                    return INTERPRETATION_PARENTS[interpretation]
+                return interpretation
+            
+            interpretation = match_categories(subject.interpretation)
+            if not categories.has_key(interpretation):
+                categories[interpretation] = []
+            categories[interpretation].append(struct)
         if not categories:
             self.hide_all()
         else:
@@ -288,7 +306,6 @@ class CategoryBox(gtk.HBox):
             self.expander = gtk.Expander()
             def on_expand(widget):
                 EXPANDED[d] = self.expander.get_expanded()
-                print EXPANDED[d]
                     
             self.expander.set_expanded(EXPANDED[d])
             self.expander.connect_after("activate", on_expand)
@@ -773,21 +790,31 @@ class ThumbView(gtk.VBox):
         afternoon = []
         evening = []
         
+        m_s = []
+        a_s = []
+        e_s = []
+        
         def event_exists(uri):
             # TODO: Move this into Zeitgeist's datamodel.py
             return not uri.startswith("file://") or os.path.exists(
                 urllib.unquote(str(uri[7:])))
         
-        for item in day.filter(self.event_templates, result_type=ResultType.MostRecentSubjects):
+        for item in day.filter(self.event_templates, result_type=ResultType.MostRecentEvents):
             #if not item.content_object:continue
             if event_exists(item.event.subjects[0].uri):
                 t = time.localtime(int(item.event.timestamp)/1000)
                 if t.tm_hour < 11:
-                    morning.append(item)
+                    if not item.event.subjects[0].uri in m_s:
+                        m_s.append(item.event.subjects[0].uri )
+                        morning.append(item)
                 elif t.tm_hour < 17:
-                    afternoon.append(item)
+                    if not item.event.subjects[0].uri in a_s:
+                        a_s.append(item.event.subjects[0].uri )
+                        afternoon.append(item)
                 else:
-                    evening.append(item)
+                    if not item.event.subjects[0].uri in e_s:
+                        e_s.append(item.event.subjects[0].uri )
+                        evening.append(item)
                 
         self.set_phase_items(0, morning)
         self.set_phase_items(1, afternoon)

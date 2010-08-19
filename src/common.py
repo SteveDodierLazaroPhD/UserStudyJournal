@@ -151,6 +151,17 @@ FILETYPESNAMES = {
 
 }
 
+INTERPRETATION_PARENTS = {
+    Interpretation.DOCUMENT.uri : Interpretation.DOCUMENT.uri,
+    Interpretation.TEXT_DOCUMENT.uri : Interpretation.DOCUMENT.uri,
+    Interpretation.PAGINATED_TEXT_DOCUMENT.uri : Interpretation.DOCUMENT.uri,
+    Interpretation.RASTER_IMAGE.uri : Interpretation.IMAGE.uri,
+    Interpretation.VECTOR_IMAGE.uri : Interpretation.IMAGE.uri,
+    Interpretation.IMAGE.uri : Interpretation.IMAGE.uri,
+    Interpretation.AUDIO.uri : Interpretation.AUDIO.uri,
+    Interpretation.MUSIC_PIECE.uri : Interpretation.MUSIC_PIECE.uri,
+}
+
 MEDIAINTERPRETATIONS = [
     Interpretation.VIDEO.uri,
     Interpretation.IMAGE.uri,

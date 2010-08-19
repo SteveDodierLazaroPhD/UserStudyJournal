@@ -42,6 +42,7 @@ from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
 # Legacy issues
 INTERPRETATION_UNKNOWN = "" # "http://zeitgeist-project.com/schema/1.0/core#UnknownInterpretation"
 MANIFESTATION_UNKNOWN = "" # "http://zeitgeist-project.com/schema/1.0/core#UnknownManifestation"
+INTERPRETATION_NOTE = "aj://note"
 
 # Installation details
 BASE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -245,4 +246,5 @@ SUPPORTED_SOURCES = {
     #Interpretation.WEBSITE.uri: Source(Interpretation.WEBSITE, "gnome-mime-html", _("Website"), _("Websites")),
     Interpretation.EMAIL.uri: Source(Interpretation.EMAIL, "applications-internet", _("Email"), _("Emails")),
     INTERPRETATION_UNKNOWN: Source("Unknown", "applications-other", _("Other Activity"), _("Other Activities")),
+    INTERPRETATION_NOTE: Source("aj://note", "tomboy", _("Edited or Read Note"), _("Edited or Read Notes"))
 }
