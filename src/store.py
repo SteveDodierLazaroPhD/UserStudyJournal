@@ -453,7 +453,7 @@ class Store(gobject.GObject):
                 chunk = []
                 for i, event in enumerate(events):
                     chunk.append(event)
-                    if i%20 == 0:
+                    if i%100 == 0:
                         event_chunks.append(chunk)
                         chunk = []
                 map(self.add_events, event_chunks)
