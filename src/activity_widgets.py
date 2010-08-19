@@ -371,8 +371,8 @@ class Item(gtk.HBox):
             if self.subject.uri.startswith("http"):
                 self.icon = self.content_obj.get_actor_pixbuf(24)
             else:
-                self.icon = self.content_obj.get_icon(
-                    can_thumb=settings.get('small_thumbnails', False), border=0)
+                self.icon = None #self.content_obj.get_icon(
+                    #can_thumb=settings.get('small_thumbnails', False), border=0)
         else:
             self.icon = None
         self.btn.set_relief(gtk.RELIEF_NONE)
@@ -436,7 +436,7 @@ class Item(gtk.HBox):
         hbox.pack_start(self.label, True, True, 4)
         if self.allow_pin:
             # TODO: get the name "pin" from theme when icons are properly installed
-            img = gtk.image_new_from_file(get_icon_path("hicolor/24x24/status/pin.png"))
+            img = gtk.Image() #gtk.image_new_from_file(get_icon_path("hicolor/24x24/status/pin.png"))
             self.pin = gtk.Button()
             self.pin.add(img)
             self.pin.set_tooltip_text(_("Remove Pin"))
