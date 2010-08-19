@@ -446,14 +446,21 @@ class Store(gobject.GObject):
             Event.new_for_values(interpretation=Interpretation.ACCESS_EVENT.uri),
             Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri),
             Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri),
-            Event.new_for_values(interpretation=Interpretation.ACCESS_EVENT.uri),
         )
         def callback(events):
             def _thread_fn(events):
-                map(self.add_event, events)
+                event_chunks = []
+                chunk = []
+                for i, event in enumerate(events):
+                    chunk.append(event)
+                    if i%20 == 0:
+                        event_chunks.append(chunk)
+                        chunk = []
+                map(self.add_events, event_chunks)
                 if func:
                     func()
                 return False
+            
             thread = threading.Thread(target=_thread_fn, args=(events,))
             thread.start()
 
@@ -471,18 +478,22 @@ class Store(gobject.GObject):
                 event_templates, callback, [start*1000, end*1000], num_events=50000)
         return False
 
-    def add_event(self, event, overwrite=True, idle=True):
+    def add_events(self, events, overwrite=True, idle=True):
 
-        date = datetime.date.fromtimestamp(int(event.timestamp)/1000)
-        day = self[date]
         if idle:
-            def _idle_add(event, overwrite):
+            def _idle_add(events, overwrite):
                 # Use _insert_event to avoid update signals
-                day._insert_event(event, overwrite)
+                for event in events:
+                    date = datetime.date.fromtimestamp(int(event.timestamp)/1000)
+                    day = self[date]
+                    day._insert_event(event, overwrite)
                 return False
-            gobject.idle_add(_idle_add, event, overwrite)
+            gobject.idle_add(_idle_add, events, overwrite)
         else:
-            day.insert_event(event, overwrite)
+            for event in events:
+                date = datetime.date.fromtimestamp(int(event.timestamp)/1000)
+                day = self[date]
+                day.insert_event(event, overwrite)
 
 
 
