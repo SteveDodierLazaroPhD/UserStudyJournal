@@ -130,9 +130,9 @@ class PortalWindow(gtk.Window):
         map(self.toolbar.add_new_view_button, self.view.tool_buttons[::-1])
         self.view.connect("new-view-added", lambda w, v: self.toolbar.add_new_view_button(v.button, len(self.view.tool_buttons)))
         self.preferences_dialog = PreferencesDialog()
-        #self.histogram = HistogramWidget()
-        #self.histogram.set_store(self.store)
-        #self.histogram.set_dates([self.day_iter.date])
+        self.histogram = HistogramWidget()
+        self.histogram.set_store(self.store)
+        self.histogram.set_dates([self.day_iter.date])
         self.backward_button = DayButton(0)
         self.forward_button = DayButton(1, sensitive=False)
         self.searchbox = SearchBox
@@ -147,7 +147,7 @@ class PortalWindow(gtk.Window):
         tvbox.pack_start(hbox, True, True, 3)
         vbox.pack_start(self.toolbar, False, False)
         vbox.pack_start(tvbox, True, True, 2)
-        #histogramhbox.pack_end(self.histogram, True, True, 26)
+        histogramhbox.pack_end(self.histogram, True, True, 26)
         vbox.pack_end(histogramhbox, False, False)
         self.add(vbox)
         self.show_all()
@@ -158,22 +158,22 @@ class PortalWindow(gtk.Window):
         self.connect("delete-event", self.on_delete)
         self.backward_button.connect("clicked", self.previous)
         self.forward_button.connect("clicked", self.next)
-        #self.histogram.connect("date-changed", lambda w, date: self.set_date(date))
+        self.histogram.connect("date-changed", lambda w, date: self.set_date(date))
         self.view.connect("view-button-clicked", self.on_view_button_click)
         self.toolbar.throbber.connect("clicked", self.show_about_window)
         self.toolbar.goto_today_button.connect("clicked", lambda w: self.set_date(datetime.date.today()))
-        #self.store.connect("update", self.histogram.histogram.set_store)
+        self.store.connect("update", self.histogram.histogram.set_store)
         self.searchbox.connect("search", self._on_search)
         self.searchbox.connect("clear", self._on_search_clear)
         self.set_title_from_date(self.day_iter.date)
         def setup(*args):
-            #self.histogram.set_dates(self.active_dates)
-            #self.histogram.scroll_to_end()
+            self.histogram.set_dates(self.active_dates)
+            self.histogram.scroll_to_end()
             if AUTOLOAD:
                 self.store.request_last_n_days_events(90)
             return False
         gobject.idle_add(setup)
-        #self.histogram.scroll_to_end()
+        self.histogram.scroll_to_end()
         # hide unused widgets
         self.searchbox.hide()
         # Window configuration
@@ -221,7 +221,7 @@ class PortalWindow(gtk.Window):
         self.day_iter = day
         self.handle_button_sensitivity(day.date)
         self.view.set_day(day)
-        #self.histogram.set_dates(self.active_dates)
+        self.histogram.set_dates(self.active_dates)
         # Set title
         self.set_title_from_date(day.date)
         self.emit("day-set", day)
@@ -250,7 +250,7 @@ class PortalWindow(gtk.Window):
     def on_view_button_click(self, w, button, i):
         self.view.set_view_page(i)
         self.view.set_day(self.day_iter, page=i)
-        #self.histogram.set_dates(self.active_dates)
+        self.histogram.set_dates(self.active_dates)
         self.set_title_from_date(self.day_iter.date)
 
     def show_about_window(self, *args):
@@ -263,11 +263,10 @@ class PortalWindow(gtk.Window):
         dates = []
         for obj in results:
             dates.append(datetime.date.fromtimestamp(int(obj.event.timestamp)/1000.0))
-        #self.histogram.histogram.set_highlighted(dates)
+        self.histogram.histogram.set_highlighted(dates)
 
     def _on_search_clear(self, *args):
-        #self.histogram.histogram.clear_highlighted()
-        pass
+        self.histogram.histogram.clear_highlighted()
 
     def _request_size(self):
         screen = self.get_screen().get_monitor_geometry(

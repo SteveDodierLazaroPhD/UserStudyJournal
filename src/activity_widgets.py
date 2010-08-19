@@ -100,9 +100,8 @@ class MultiViewContainer(gtk.HBox):
                     _day.disconnect(signal)
         self.days = self.__days(day, store)
         for i, day in enumerate(self.days):
-            if datetime.date.today() == day.date:
-                self.day_signal_id[i] = day.connect("update", self.update_day)
-        #self.update_day()
+            self.day_signal_id[i] = day.connect("update", self.update_day)
+        self.update_day()
 
     def __days(self, day, store):
         days = []
@@ -112,11 +111,9 @@ class MultiViewContainer(gtk.HBox):
         return days
 
     def update_day(self, *args):
-        
         t = time.time()
         for page, day in map(None, reversed(self.pages), self.days):
             page.set_day(day)
-            print day.date
         print "***", time.time() - t
 
 
@@ -371,8 +368,8 @@ class Item(gtk.HBox):
             if self.subject.uri.startswith("http"):
                 self.icon = self.content_obj.get_actor_pixbuf(24)
             else:
-                self.icon = None #self.content_obj.get_icon(
-                    #can_thumb=settings.get('small_thumbnails', False), border=0)
+                self.icon = self.content_obj.get_icon(
+                    can_thumb=settings.get('small_thumbnails', False), border=0)
         else:
             self.icon = None
         self.btn.set_relief(gtk.RELIEF_NONE)
@@ -436,7 +433,7 @@ class Item(gtk.HBox):
         hbox.pack_start(self.label, True, True, 4)
         if self.allow_pin:
             # TODO: get the name "pin" from theme when icons are properly installed
-            img = gtk.Image() #gtk.image_new_from_file(get_icon_path("hicolor/24x24/status/pin.png"))
+            img = gtk.image_new_from_file(get_icon_path("hicolor/24x24/status/pin.png"))
             self.pin = gtk.Button()
             self.pin.add(img)
             self.pin.set_tooltip_text(_("Remove Pin"))
