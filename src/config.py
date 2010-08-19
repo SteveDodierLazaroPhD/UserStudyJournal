@@ -243,7 +243,7 @@ SUPPORTED_SOURCES = {
     Interpretation.DOCUMENT.uri: Source(Interpretation.DOCUMENT, "stock_new-presentation", _("Edited or Read Document"), _("Edited or Read Documents")),
     Interpretation.SOURCE_CODE.uri: Source(Interpretation.SOURCE_CODE, "applications-development", _("Edited or Read Code"), _("Edited or Read Code")),
     Interpretation.IMMESSAGE.uri: Source(Interpretation.IMMESSAGE, "applications-internet", _("Conversation"), _("Conversations")),
-    #Interpretation.WEBSITE.uri: Source(Interpretation.WEBSITE, "gnome-mime-html", _("Website"), _("Websites")),
+    Interpretation.WEBSITE.uri: Source(Interpretation.WEBSITE, "gnome-mime-html", _("Visited Website"), _("Visited Websites")),
     Interpretation.EMAIL.uri: Source(Interpretation.EMAIL, "applications-internet", _("Email"), _("Emails")),
     INTERPRETATION_UNKNOWN: Source("Unknown", "applications-other", _("Other Activity"), _("Other Activities")),
     INTERPRETATION_NOTE: Source("aj://note", "tomboy", _("Edited or Read Note"), _("Edited or Read Notes"))

@@ -228,6 +228,7 @@ class DayView(gtk.VBox):
                     return "aj://note"
                 if INTERPRETATION_PARENTS.has_key(interpretation):
                     return INTERPRETATION_PARENTS[interpretation]
+                print interpretation
                 return interpretation
             
             interpretation = match_categories(subject.interpretation)

@@ -632,9 +632,9 @@ class WebContentObject(BaseContentType):
 
     icon_name = "$MIME $ACTOR"
     # thumbnail_uri = "/some/users/cache/hash(uri).png"
-    text = "{interpretation.display_name} {event.subjects[0].text}"
-    timelineview_text = "{interpretation.display_name}\n{event.subjects[0].uri}"
-    thumbview_text = "{interpretation.display_name}\n{event.subjects[0].text}"
+    text = "{event.subjects[0].text}"
+    timelineview_text = "{event.subjects[0].uri}"
+    thumbview_text = "{event.subjects[0].text}"
     #type_color_representation = (207/255.0, 77/255.0, 16/255.0), (207/255.0, 77/255.0, 16/255.0)
 
 

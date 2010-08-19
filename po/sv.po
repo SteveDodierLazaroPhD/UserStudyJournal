@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: gnome-activity-journal\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-04-22 16:05+0200\n"
-"PO-Revision-Date: 2010-08-08 04:58+0000\n"
-"Last-Translator: GNOME Zeitgeist Team <gnome-zeitgeist@lists.launchpad.net>\n"
+"PO-Revision-Date: 2010-08-12 06:42+0000\n"
+"Last-Translator: Daniel Nylander <yeager@ubuntu.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2010-08-09 03:54+0000\n"
+"X-Launchpad-Export-Date: 2010-08-13 06:11+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../gnome-activity-journal:76
@@ -49,7 +49,7 @@ msgstr "med"
 
 #: ../src/content_objects.py:522
 msgid "{source._desc_sing} {event.subjects[0].text}"
-msgstr ""
+msgstr "{source._desc_sing} {event.subjects[0].text}"
 
 #: ../src/content_objects.py:523 ../src/content_objects.py:524
 msgid ""
@@ -136,7 +136,7 @@ msgstr "Konversation"
 
 #: ../src/sources.py:45
 msgid "Conversations"
-msgstr ""
+msgstr "Konversationer"
 
 #: ../src/sources.py:46
 msgid "Other Activity"
@@ -163,7 +163,7 @@ msgstr "Tolkning"
 #. 3
 #: ../src/infopane.py:246
 msgid "Subject Interpretation"
-msgstr ""
+msgstr "Ämnestolkning"
 
 #. 4
 #: ../src/infopane.py:247
@@ -172,7 +172,7 @@ msgstr "Manifestation"
 
 #: ../src/infopane.py:392
 msgid "Related Items"
-msgstr ""
+msgstr "Relaterade objekt"
 
 #: ../src/daywidgets.py:111 ../src/daywidgets.py:191
 msgid "Click to return to multiday view"
@@ -233,7 +233,7 @@ msgstr "Snabbmeddelande"
 
 #: ../src/common.py:115
 msgid "Email"
-msgstr ""
+msgstr "E-post"
 
 #: ../src/widgets.py:172
 msgid "Type here to search..."
@@ -253,15 +253,15 @@ msgstr "Ta bort objekt från journal"
 
 #: ../src/widgets.py:586
 msgid "Delete all events with this URI"
-msgstr ""
+msgstr "Ta bort alla händelser med denna URI"
 
 #: ../src/widgets.py:587
 msgid "More Information"
-msgstr ""
+msgstr "Mer information"
 
 #: ../src/widgets.py:599
 msgid "Send To..."
-msgstr ""
+msgstr "Skicka till..."
 
 #: ../extra/gnome-activity-journal.desktop.in.h:2
 msgid ""
