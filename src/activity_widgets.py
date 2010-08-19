@@ -361,9 +361,13 @@ class Item(gtk.HBox):
         self.content_obj = content_struct.content_object
         self.time = float(event.timestamp) / 1000
         self.time =  time.strftime("%H:%M", time.localtime(self.time))
+        
         if self.content_obj is not None:
-            self.icon = self.content_obj.get_icon(
-                can_thumb=settings.get('small_thumbnails', False), border=0)
+            if self.subject.uri.startswith("http"):
+                self.icon = self.content_obj.get_actor_pixbuf(24)
+            else:
+                self.icon = self.content_obj.get_icon(
+                    can_thumb=settings.get('small_thumbnails', False), border=0)
         else:
             self.icon = None
         self.btn.set_relief(gtk.RELIEF_NONE)
@@ -410,6 +414,9 @@ class Item(gtk.HBox):
     def __init_widget(self):
         self.label = gtk.Label()
         text = self.content_obj.text.replace("&", "&amp;")
+        text.strip()
+        if self.content_obj.text.strip() == "":
+            text = self.content_obj.uri
         self.label.set_markup(text)
         self.label.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
         self.label.set_alignment(0.0, 0.5)
