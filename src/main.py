@@ -308,6 +308,7 @@ class PortalWindow(gtk.Window):
         else:
             self.set_title(_("%s to %s") % (start, end) + " - " + _("Activity Journal"))
 
+
     def on_delete(self, w, event):
         x, y = self.get_size()
         settings["window_width"] = x

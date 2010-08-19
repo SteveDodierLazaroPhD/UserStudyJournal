@@ -407,6 +407,7 @@ class BaseContentType(ContentObject):
             val = getattr(self, name)
             setattr(self, name, val.format(**wrds))
 
+
     def get_icon(self, size=24, *args, **kwargs):
         icon = False
         try:

@@ -454,6 +454,7 @@ class Item(gtk.HBox):
         self.btn.connect("realize", realize_cb)
         #self.init_multimedia_tooltip()
 
+
     def init_multimedia_tooltip(self):
         """add multimedia tooltip to multimedia files
         multimedia tooltip is shown for all images, all videos and pdfs
