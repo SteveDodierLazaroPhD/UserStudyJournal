@@ -57,7 +57,7 @@ def get_related_events_for_uri(uri, callback):
             for i, uri in enumerate(uris):
                 sub = Subject.new_for_values(uri=uri)
                 templates += [
-                        Event.new_for_values(subjects=[uri]),
+                        Event.new_for_values(subjects=[sub]),
                     ]
             CLIENT.find_event_ids_for_templates(templates, _event_request_handler,
                                              TimeRange.until_now(), num_events=len(uris),

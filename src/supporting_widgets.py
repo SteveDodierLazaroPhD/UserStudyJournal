@@ -1101,7 +1101,7 @@ class _RelatedPane(gtk.TreeView):
         self.popupmenu = ContextMenu
         self.connect("button-press-event", self.on_button_press)
         self.connect("row-activated", self.row_activated)
-        pcolumn = gtk.TreeViewColumn(_("Related Items"))
+        pcolumn = gtk.TreeViewColumn(_("Used With"))
         pixbuf_render = gtk.CellRendererPixbuf()
         pcolumn.pack_start(pixbuf_render, False)
         pcolumn.set_cell_data_func(pixbuf_render, self.celldatamethod, "pixbuf")
