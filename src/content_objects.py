@@ -333,6 +333,8 @@ class FileContentObject(GioFile, ContentObject):
     @CachedAttribute
     def thumbview_pixbuf(self):
         """Special method which returns a pixbuf for the thumbview and a ispreview bool describing if it is a preview"""
+        if self.uri.startwith("http"):
+            return None
         thumbview_pixbuf, isthumb = common.PIXBUFCACHE.get_pixbuf_from_uri(self.uri, SIZE_LARGE, iconscale=0.1875, w=SIZE_THUMBVIEW[0], h=SIZE_THUMBVIEW[1])
         return thumbview_pixbuf
 
