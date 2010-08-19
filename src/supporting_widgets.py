@@ -1128,17 +1128,11 @@ class _RelatedPane(gtk.TreeView):
         lock = threading.Lock()
         self.active_list = []
         liststore = gtk.ListStore(gobject.TYPE_PYOBJECT)
-        gtk.gdk.threads_enter()
         self.set_model(liststore)
-        gtk.gdk.threads_leave()
         for struct in structs:
             if not struct.content_object: continue
-            gtk.gdk.threads_enter()
-            lock.acquire()
             self.active_list.append(False)
             liststore.append((struct.content_object,))
-            lock.release()
-            gtk.gdk.threads_leave()
 
     def set_model_from_list(self, structs):
         self.last_active = -1

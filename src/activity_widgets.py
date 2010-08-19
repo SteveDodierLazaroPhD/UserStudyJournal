@@ -673,24 +673,16 @@ class ThumbIconView(gtk.IconView):
         A threaded which generates pixbufs and emblems for a list of events.
         It takes those properties and appends them to the view's model
         """
-        """
-        lock = threading.Lock()
         self.active_list = []
         liststore = gtk.ListStore(gobject.TYPE_PYOBJECT)
-        gtk.gdk.threads_enter()
         self.set_model(liststore)
-        gtk.gdk.threads_leave()
 
         for item in items:
             obj = item.content_object
             if not obj: continue
-            gtk.gdk.threads_enter()
-            lock.acquire()
             self.active_list.append(False)
             liststore.append((obj,))
-            lock.release()
             gtk.gdk.threads_leave()
-        """
         pass
 
     def set_model_from_list(self, items):
