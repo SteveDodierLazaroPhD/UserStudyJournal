@@ -364,7 +364,7 @@ class Item(gtk.HBox):
         
         if self.content_obj is not None:
             if self.subject.uri.startswith("http"):
-                self.icon = self.content_obj.get_actor_pixbuf(24)
+                self.icon = None #self.content_obj.get_actor_pixbuf(24)
             else:
                 self.icon = self.content_obj.get_icon(
                     can_thumb=settings.get('small_thumbnails', False), border=0)
@@ -415,7 +415,7 @@ class Item(gtk.HBox):
         self.label = gtk.Label()
         text = self.content_obj.text.replace("&", "&amp;")
         text.strip()
-        if self.content_obj.text.strip() == "":
+        if text.strip() == "" or text == "":
             text = self.content_obj.uri
         self.label.set_markup(text)
         self.label.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
@@ -673,6 +673,7 @@ class ThumbIconView(gtk.IconView):
         A threaded which generates pixbufs and emblems for a list of events.
         It takes those properties and appends them to the view's model
         """
+        """
         lock = threading.Lock()
         self.active_list = []
         liststore = gtk.ListStore(gobject.TYPE_PYOBJECT)
@@ -689,6 +690,8 @@ class ThumbIconView(gtk.IconView):
             liststore.append((obj,))
             lock.release()
             gtk.gdk.threads_leave()
+        """
+        pass
 
     def set_model_from_list(self, items):
         """
