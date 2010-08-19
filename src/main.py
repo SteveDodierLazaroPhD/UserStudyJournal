@@ -123,8 +123,8 @@ class PortalWindow(gtk.Window):
         self.toolbar = Toolbar()
         map(self.view._register_new_view,
             (self.view.ViewStruct(MultiViewContainer(), Toolbar.get_toolbutton(get_data_path("multiview_icon.png"), _("Switch to MultiView"))),
-             #self.view.ViewStruct(ThumbViewContainer(), Toolbar.get_toolbutton(get_data_path("thumbview_icon.png"), _("Switch to ThumbView"))),
-             #self.view.ViewStruct(TimelineViewContainer(), Toolbar.get_toolbutton(get_data_path("timelineview_icon.png"), _("Switch to TimelineView")))
+             self.view.ViewStruct(ThumbViewContainer(), Toolbar.get_toolbutton(get_data_path("thumbview_icon.png"), _("Switch to ThumbView"))),
+             self.view.ViewStruct(TimelineViewContainer(), Toolbar.get_toolbutton(get_data_path("timelineview_icon.png"), _("Switch to TimelineView")))
              ))
         self.view.set_view_page(0)
         map(self.toolbar.add_new_view_button, self.view.tool_buttons[::-1])
