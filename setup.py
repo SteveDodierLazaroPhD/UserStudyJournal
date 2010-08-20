@@ -87,6 +87,7 @@ setup(
         recursive_install('share/gnome-activity-journal', 'src/', ext=['.py']),
         [('share/man/man1/', ['extra/gnome-activity-journal.1'])],
         [('share/gnome-activity-journal/fungtk', glob('fungtk/*.py'))],
+        [('share/zeitgeist/_zeitgeist/engine/extensions/', glob('extension/*.py'))],
         ),
     cmdclass = {
         'build': build_extra.build_extra,
