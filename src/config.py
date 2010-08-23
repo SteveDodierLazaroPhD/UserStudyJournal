@@ -47,7 +47,7 @@ INTERPRETATION_NOTE = "aj://note"
 # Installation details
 BASE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 DATA_PATH = os.path.join(BASE_PATH, "data")
-VERSION = "0.3.4.1"
+VERSION = "0.5.0"
 GETTEXT_PATH = None
 
 USER_DATA_PATH = BaseDirectory.save_data_path("gnome-activity-journal")

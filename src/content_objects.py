@@ -38,8 +38,7 @@ from config import get_icon_path, get_data_path, SUPPORTED_SOURCES
 from external import TELEPATHY
 # Fix for merging this and giofile
 import common
-from common import GioFile, THUMBS, ICONS, SIZE_LARGE, SIZE_NORMAL, SIZE_THUMBVIEW, SIZE_TIMELINEVIEW
-
+from common import GioFile, THUMBS, ICONS, SIZE_LARGE, SIZE_NORMAL, SIZE_THUMBVIEW, SIZE_TIMELINEVIEW, INTERPRETATION_PARENTS
 
 class CachedAttribute(object):
     """
@@ -256,10 +255,13 @@ class ContentObject(AbstractContentObject):
         :returns: a string of text markup used in timeline widget and elsewhere
         """
         text = self.event.subjects[0].text
-        interpretation = self.event.subjects[0].interpretation
+        try:
+	        interpretation = INTERPRETATION_PARENTS[self.event.subjects[0].interpretation]
+	except:
+		interpretation = self.event.subjects[0].interpretation
         t = (common.FILETYPESNAMES[interpretation] if
              interpretation in common.FILETYPESNAMES.keys() else "Unknown")
-        timelineview_text = (t + "\n" + text).replace("%", "%%")
+        timelineview_text = (text+ "\n" + t).replace("%", "%%")
         return timelineview_text
 
     @CachedAttribute
@@ -487,7 +489,7 @@ class GenericContentObject(BaseContentType):
             }
             try: wrds["interpretation"] = Interpretation[event.interpretation]
             except KeyError: wrds["interpretation"] = Interpretation.ACCESS_EVENT
-            try: wrds["subject_interpretation"] = Interpretation[event.subjects[0].interpretation]
+            try: wrds["subject_interpretation"] = INTERPRETATION_PARENTS[Interpretation[event.subjects[0].interpretation]]
             except KeyError: wrds["subject_interpretation"] = Interpretation
             try:
                 wrds["source"] = SUPPORTED_SOURCES[self.event.subjects[0].interpretation]
