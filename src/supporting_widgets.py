@@ -687,6 +687,7 @@ class AboutDialog(gtk.AboutDialog):
         "Hylke Bons <hylkebons@gmail.com>",
         "Markus Korn <thekorn@gmx.de>",
         "Mikkel Kamstrup <mikkel.kamstrup@gmail.com>"
+        "Thorsten Prante <thorsten@prante.eu>"
         )
     artists = (
                "Hylke Bons <hylkebons@gmail.com>",

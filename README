@@ -3,7 +3,7 @@ GNOME Activity Journal
 Dependencies
 ------------------------------
 
-You'll need to have Zeitgeist (version 0.3.1 or later) installed.
+You'll need to have Zeitgeist (version 0.5.0 or later) installed.
 
 To get it, run inside the same directory where you have checked out the
 "gnome-activity-journal" branch:
