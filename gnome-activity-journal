@@ -91,7 +91,7 @@ except RuntimeError, e:
     print "%s" % e
     sys.exit(1)
 
-if CLIENT.get_version() < [0, 4, 9, 99]:
+if CLIENT.get_version() < [0, 3, 9, 99]:
     print "You need Zeitgeist 0.5.0 or later for the GNOME Activity Journal to work."
     print "https://launchpad.net/zeitgeist"
     sys.exit(1)
