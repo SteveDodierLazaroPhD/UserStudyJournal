@@ -38,6 +38,7 @@ MAXEVENTS = 999999
 
 tdelta = lambda x: datetime.timedelta(days=x)
 
+dbus_call = 0
 
 def get_related_events_for_uri(uri, callback):
     """
@@ -124,13 +125,16 @@ class ContentStruct(object):
             return Event(events[0])
 
     def __init__(self, id, event=None, content_object=None, build=False):
+        print "get id"
         self.id = id
         if event:
             self.event = event
         if content_object:
             self.content_object = content_object
         if build:
+            dbus_call += 1 
             CLIENT.get_events([self.id], self.set_event)
+            print dbus_call
 
     def set_event(self, value):
         if isinstance(value, dbus.Array) or isinstance(value, list) or isinstance(value, tuple) and len(value):
@@ -206,7 +210,7 @@ class Day(gobject.GObject):
     def load_ids(self):
         if not self._loaded:
             self._loaded = True
-            CLIENT.find_event_ids_for_templates(self.templates, self.set_ids, self.time_range, num_events=MAXEVENTS)
+            CLIENT.find_events_for_templates(self.templates, self.set_ids, self.time_range, num_events=MAXEVENTS)
             CLIENT.install_monitor(self.time_range, self.templates, self.insert_events, self.remove_ids)
 
     def __getitem__(self, id_):
@@ -220,8 +224,8 @@ class Day(gobject.GObject):
 
     @DoEmit("update")
     def set_ids(self, event_ids):
-        for id_ in event_ids:
-            self._items[id_] = ContentStruct(id_)
+        for event in event_ids:
+            self._items[event.id] = ContentStruct(event.id, event)
 
     @DoEmit("update")
     def remove_ids(self, time_range, ids):
