@@ -34,7 +34,7 @@ from store import Store, tdelta, STORE, CLIENT
 from config import settings, get_icon_path, get_data_path, PluginManager
 
 
-AUTOLOAD = False # Should the store request events in the background?
+AUTOLOAD = True # Should the store request events in the background?
 
 
 class ViewContainer(gtk.Notebook):
