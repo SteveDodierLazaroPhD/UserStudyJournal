@@ -731,14 +731,28 @@ def launch_string_command(command):
 ## GioFile
 ##
 
+GIO_FILES = {}
+
 class GioFile(object):
+    
+    def __new__(classtype, *args, **kwargs):
+        # Check to see if a __single exists already for this class
+        # Compare class types instead of just looking for None so
+        # that subclasses will create their own __single objects
+        subj = args[0][1][0][0]
+        print subj
+        if not GIO_FILES.has_key(subj):
+            GIO_FILES[subj] = object.__new__(classtype, *args, **kwargs)
+        return GIO_FILES[subj]
 
     @classmethod
     def create(cls, path):
         """ save method to create a GioFile object, if a file does not exist
         None is returned"""
         try:
-            return cls(path)
+            if not GIO_FILES.has_key(path):
+                GIO_FILES[path] = cls(path)
+            return GIO_FILES[path]
         except gio.Error:
             return None
 

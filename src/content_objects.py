@@ -323,7 +323,7 @@ class FileContentObject(GioFile, ContentObject):
     def __init__(self, event):
         ContentObject.__init__(self, event)
         uri = event.subjects[0].uri
-        return GioFile.__init__(self, uri)
+        GioFile.__init__(self, uri)
 
     @classmethod
     def create(cls, event):
