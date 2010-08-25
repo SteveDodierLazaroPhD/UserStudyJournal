@@ -90,8 +90,7 @@ class MultiViewContainer(gtk.HBox):
         for i in range(self.num_pages):
             group = DayViewContainer()
             self.pages.append(group)
-            padding = 6 if i != self.num_pages-1 and i != 0 else 0
-            self.pack_start(group, True, True, padding)
+            self.pack_end(group, True, True, 6)
 
     def set_day(self, day, store):
         if self.days:
@@ -113,9 +112,18 @@ class MultiViewContainer(gtk.HBox):
 
     def update_days(self, *args):
         t = time.time()
-        for page, day in map(None, reversed(self.pages), self.days):
-            page.set_day(day)
+        page_days = set([page.day for page in self.pages])
+        diff = list(set(self.days).difference(page_days))
+        i = 0
+        day_page = {}
+        for page in self.pages:
+            if not page.day in self.days:  
+                page.set_day(diff[i])
+                day_page[page.day] = page
+                i += 1
+            self.reorder_child(page, self.days.index(page.day))
         print "***", time.time() - t
+        
         
     def update_day(self, *args):
         t = time.time()
