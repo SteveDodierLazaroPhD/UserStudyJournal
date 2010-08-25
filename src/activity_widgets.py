@@ -280,23 +280,28 @@ class CategoryBox(gtk.HBox):
 
     def __init__(self, category, event_structs, pinnable = False, itemoff = 0):
         super(CategoryBox, self).__init__()
+        self.set_up_done = False;
         self.view = gtk.VBox(True)
         self.vbox = gtk.VBox()
         if len(event_structs) > 0:
             d = str(datetime.date.fromtimestamp(int(event_structs[0].event.timestamp)/1000)) + " " + str((time.localtime(int(event_structs[0].event.timestamp)/1000).tm_hour)/8)
             if not EXPANDED.has_key(d):
                 EXPANDED[d] = False
-        for struct in event_structs:
-            if not struct.content_object:continue
-            if itemoff > 0:
-                item = Item(struct, pinnable, False)
-            else:
-                item = Item(struct, pinnable, True)
-            hbox = gtk.HBox ()
-            hbox.pack_start(item, True, True, 0 )
-            self.view.pack_start(hbox, False, False, 0)
-            hbox.show_all()
-            self.pack_end(hbox)
+                
+        def _set_up_box():
+            if not self.set_up_done:
+                self.set_up_done = True
+                for struct in event_structs:
+                    if not struct.content_object:continue
+                    if itemoff > 0:
+                        item = Item(struct, pinnable, False)
+                    else:
+                        item = Item(struct, pinnable, True)
+                    hbox = gtk.HBox ()
+                    hbox.pack_start(item, True, True, 0 )
+                    self.view.pack_start(hbox, False, False, 0)
+                    hbox.show_all()
+                    self.pack_end(hbox)
         # If this isn't a set of ungrouped events, give it a label
         if category:
             # Place the items into a box and simulate left padding
@@ -332,6 +337,7 @@ class CategoryBox(gtk.HBox):
             self.expander = gtk.Expander()
             def on_expand(widget):
                 EXPANDED[d] = self.expander.get_expanded()
+                _set_up_box()
                     
             self.expander.set_expanded(EXPANDED[d])
             self.expander.connect_after("activate", on_expand)
@@ -357,6 +363,7 @@ class CategoryBox(gtk.HBox):
             
             
         else:
+            _set_up_box()
             self.box = self.view
             self.vbox.pack_end(self.box)
             self.box.show()

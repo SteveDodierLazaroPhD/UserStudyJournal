@@ -38,8 +38,6 @@ MAXEVENTS = 999999
 
 tdelta = lambda x: datetime.timedelta(days=x)
 
-dbus_call = 0
-
 def get_related_events_for_uri(uri, callback):
     """
     :param uri: A uri for which to request related uris using zetigeist
@@ -125,16 +123,14 @@ class ContentStruct(object):
             return Event(events[0])
 
     def __init__(self, id, event=None, content_object=None, build=False):
-        print "get id"
         self.id = id
         if event:
             self.event = event
         if content_object:
             self.content_object = content_object
         if build:
-            dbus_call += 1 
             CLIENT.get_events([self.id], self.set_event)
-            print dbus_call
+
 
     def set_event(self, value):
         if isinstance(value, dbus.Array) or isinstance(value, list) or isinstance(value, tuple) and len(value):
