@@ -740,7 +740,6 @@ class GioFile(object):
         # Compare class types instead of just looking for None so
         # that subclasses will create their own __single objects
         subj = args[0][1][0][0]
-        print subj
         if not GIO_FILES.has_key(subj):
             GIO_FILES[subj] = object.__new__(classtype, *args, **kwargs)
         return GIO_FILES[subj]

@@ -160,6 +160,7 @@ class DayViewContainer(gtk.VBox):
         m_s = []
         a_s = []
         e_s = []
+        print "------------------", len(day.filter(self.event_templates, result_type=ResultType.MostRecentEvents))
         for item in day.filter(self.event_templates, result_type=ResultType.MostRecentEvents):
             if not item.content_object:continue
             t = time.localtime(int(item.event.timestamp)/1000)
