@@ -82,6 +82,7 @@ class MultiViewContainer(gtk.HBox):
     days = []
     num_pages = 3
     day_signal_id = [None] * num_pages
+    day_page_map = {}
 
     def __init__(self):
         super(MultiViewContainer, self).__init__()
@@ -100,8 +101,8 @@ class MultiViewContainer(gtk.HBox):
                     _day.disconnect(signal)
         self.days = self.__days(day, store)
         for i, day in enumerate(self.days):
-            self.day_signal_id[i] = day.connect("update", self.update_day)
-        self.update_day()
+            self.day_signal_id[i] = day.connect("update", self.update_day, day)
+        self.update_days()
 
     def __days(self, day, store):
         days = []
@@ -110,12 +111,19 @@ class MultiViewContainer(gtk.HBox):
             day = day.previous(store)
         return days
 
-    def update_day(self, *args):
+    def update_days(self, *args):
         t = time.time()
         for page, day in map(None, reversed(self.pages), self.days):
             page.set_day(day)
         print "***", time.time() - t
-
+        
+    def update_day(self, *args):
+        t = time.time()
+        day = args[1]
+        for page in self.pages:
+            if page.day == day:
+                page.set_day(day)
+        print "***", time.time() - t
 
 class DayViewContainer(gtk.VBox):
     event_templates = (
@@ -141,10 +149,12 @@ class DayViewContainer(gtk.VBox):
 
         self.pack_end(self.scrolled_window, True, True)
         self.scrolled_window.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        self.show_all()
+        self.show_all() 
+        self.day = None
         self.connect("style-set", self.change_style)
 
     def set_day(self, day):
+        self.day = day
         if pinbox in self.box.get_children():
             self.box.remove(pinbox)
             
