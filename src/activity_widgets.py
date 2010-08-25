@@ -93,6 +93,7 @@ class MultiViewContainer(gtk.HBox):
             self.pack_end(group, True, True, 6)
 
     def set_day(self, day, store):
+        t = time.time()
         if self.days:
             for i, _day in enumerate(self.__days(self.days[0], store)):
                 signal = self.day_signal_id[i]
@@ -102,6 +103,8 @@ class MultiViewContainer(gtk.HBox):
         for i, day in enumerate(self.days):
             self.day_signal_id[i] = day.connect("update", self.update_day, day)
         self.update_days()
+        print "***", time.time() - t
+        
 
     def __days(self, day, store):
         days = []
@@ -111,7 +114,6 @@ class MultiViewContainer(gtk.HBox):
         return days
 
     def update_days(self, *args):
-        t = time.time()
         page_days = set([page.day for page in self.pages])
         diff = list(set(self.days).difference(page_days))   
         i = 0
@@ -119,13 +121,12 @@ class MultiViewContainer(gtk.HBox):
         for page in self.pages:    
             if self.days.count(page.day) > 0:
                 self.reorder_child(page, self.days.index(page.day))
+        for page in self.pages:
             if not page.day in self.days:  
                 page.set_day(diff[i])
                 day_page[page.day] = page
                 i += 1
-                self.reorder_child(page, self.days.index(page.day))
-        print "***", time.time() - t
-        
+            self.reorder_child(page, self.days.index(page.day))
         
     def update_day(self, *args):
         t = time.time()
@@ -180,8 +181,10 @@ class DayViewContainer(gtk.VBox):
         m_s = []
         a_s = []
         e_s = []
-        print "------------------", len(day.filter(self.event_templates, result_type=ResultType.MostRecentEvents))
-        for item in day.filter(self.event_templates, result_type=ResultType.MostRecentEvents):
+        t = time.time()
+        x = day.filter(self.event_templates, result_type=ResultType.MostRecentEvents)
+        print "------------------", time.time() - t, "---", len(x)
+        for item in x:
             if not item.content_object:continue
             t = time.localtime(int(item.event.timestamp)/1000)
             if t.tm_hour < 11:
