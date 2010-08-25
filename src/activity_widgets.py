@@ -113,15 +113,17 @@ class MultiViewContainer(gtk.HBox):
     def update_days(self, *args):
         t = time.time()
         page_days = set([page.day for page in self.pages])
-        diff = list(set(self.days).difference(page_days))
+        diff = list(set(self.days).difference(page_days))   
         i = 0
         day_page = {}
-        for page in self.pages:
+        for page in self.pages:    
+            if self.days.count(page.day) > 0:
+                self.reorder_child(page, self.days.index(page.day))
             if not page.day in self.days:  
                 page.set_day(diff[i])
                 day_page[page.day] = page
                 i += 1
-            self.reorder_child(page, self.days.index(page.day))
+                self.reorder_child(page, self.days.index(page.day))
         print "***", time.time() - t
         
         
