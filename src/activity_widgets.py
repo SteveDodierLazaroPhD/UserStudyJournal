@@ -90,7 +90,7 @@ class MultiViewContainer(gtk.HBox):
         for i in range(self.num_pages):
             group = DayViewContainer()
             self.pages.append(group)
-            self.pack_end(group, True, True, 6)
+            self.pack_end(group, True, True, 2)
 
     def set_day(self, day, store):
         t = time.time()
@@ -340,6 +340,8 @@ class CategoryBox(gtk.HBox):
                 _set_up_box()
                     
             self.expander.set_expanded(EXPANDED[d])
+            if EXPANDED[d]:
+                _set_up_box()
             self.expander.connect_after("activate", on_expand)
             self.expander.set_label_widget(hbox)
             self.vbox.pack_start(self.expander, True, True)
