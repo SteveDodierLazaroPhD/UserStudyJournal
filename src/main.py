@@ -147,7 +147,7 @@ class PortalWindow(gtk.Window):
         tvbox.pack_start(hbox, True, True, 3)
         vbox.pack_start(self.toolbar, False, False)
         vbox.pack_start(tvbox, True, True, 2)
-        histogramhbox.pack_end(self.histogram, True, True, 26)
+        histogramhbox.pack_end(self.histogram, True, True, 32)
         vbox.pack_end(histogramhbox, False, False)
         self.add(vbox)
         self.show_all()
