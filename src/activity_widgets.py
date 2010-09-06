@@ -284,7 +284,7 @@ class CategoryBox(gtk.HBox):
         self.view = gtk.VBox(True)
         self.vbox = gtk.VBox()
         if len(event_structs) > 0:
-            d = str(datetime.date.fromtimestamp(int(event_structs[0].event.timestamp)/1000)) + " " + str((time.localtime(int(event_structs[0].event.timestamp)/1000).tm_hour)/8)
+            d = str(datetime.date.fromtimestamp(int(event_structs[0].event.timestamp)/1000)) + " " + str((time.localtime(int(event_structs[0].event.timestamp)/1000).tm_hour)/8) + " " + str(category)
             if not EXPANDED.has_key(d):
                 EXPANDED[d] = False
                 
@@ -303,7 +303,7 @@ class CategoryBox(gtk.HBox):
                     hbox.show_all()
                     self.pack_end(hbox)
         # If this isn't a set of ungrouped events, give it a label
-        if category:
+        if category or category == "":
             # Place the items into a box and simulate left padding
             self.box = gtk.HBox()
             self.box.pack_start(self.view)
