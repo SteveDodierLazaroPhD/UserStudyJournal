@@ -40,6 +40,7 @@ from external import TELEPATHY
 import common
 from common import GioFile, THUMBS, ICONS, SIZE_LARGE, SIZE_NORMAL, SIZE_THUMBVIEW, SIZE_TIMELINEVIEW, INTERPRETATION_PARENTS
 
+
 class CachedAttribute(object):
     """
     runs the method once, finds the value, and replace the descriptor
@@ -256,9 +257,9 @@ class ContentObject(AbstractContentObject):
         """
         text = self.event.subjects[0].text
         try:
-	        interpretation = INTERPRETATION_PARENTS[self.event.subjects[0].interpretation]
-	except:
-		interpretation = self.event.subjects[0].interpretation
+            interpretation = INTERPRETATION_PARENTS[self.event.subjects[0].interpretation]
+        except:
+            interpretation = self.event.subjects[0].interpretation
         t = (common.FILETYPESNAMES[interpretation] if
              interpretation in common.FILETYPESNAMES.keys() else "Unknown")
         timelineview_text = (text+ "\n" + t).replace("%", "%%")
@@ -331,6 +332,10 @@ class FileContentObject(GioFile, ContentObject):
             return cls(event)
         except gio.Error:
             return None
+
+    @CachedAttribute
+    def text(self):
+        return self._file_object.get_basename()
 
     @CachedAttribute
     def thumbview_pixbuf(self):
@@ -435,7 +440,7 @@ class BaseContentType(ContentObject):
             thumbview_pixbuf, isthumb = common.PIXBUFCACHE.get_pixbuf_from_uri(
                 self.thumbnail_uri, SIZE_LARGE, iconscale=0.1875, w=SIZE_THUMBVIEW[0], h=SIZE_THUMBVIEW[1])
         else:
-           thumbview_pixbuf = None
+            thumbview_pixbuf = None
         return thumbview_pixbuf
 
     @CachedAttribute
@@ -744,5 +749,5 @@ class MusicPlayerContentObject(BaseContentType):
 # Content object list used by the section function. Should use Subclasses but I like to have some order in which these should be used
 if sys.version_info >= (2,6):
     map(AbstractContentObject.content_object_types.append, (MusicPlayerContentObject, BzrContentObject, WebContentObject,
-                       IMContentObject, TomboyContentObject, EmailContentObject, HamsterContentObject))
+                                                            IMContentObject, TomboyContentObject, EmailContentObject, HamsterContentObject))
 
