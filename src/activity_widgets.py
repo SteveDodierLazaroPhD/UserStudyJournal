@@ -103,8 +103,8 @@ class MultiViewContainer(gtk.HBox):
         for i, day in enumerate(self.days):
             self.day_signal_id[i] = day.connect("update", self.update_day, day)
         self.update_days()
-        print "***", time.time() - t
-        
+        # Enable to display time between updates
+        #print "***", time.time() - t
 
     def __days(self, day, store):
         days = []
@@ -115,26 +115,27 @@ class MultiViewContainer(gtk.HBox):
 
     def update_days(self, *args):
         page_days = set([page.day for page in self.pages])
-        diff = list(set(self.days).difference(page_days))   
+        diff = list(set(self.days).difference(page_days))
         i = 0
         day_page = {}
-        for page in self.pages:    
+        for page in self.pages:
             if self.days.count(page.day) > 0:
                 self.reorder_child(page, self.days.index(page.day))
         for page in self.pages:
-            if not page.day in self.days:  
+            if not page.day in self.days:
                 page.set_day(diff[i])
                 day_page[page.day] = page
                 i += 1
             self.reorder_child(page, self.days.index(page.day))
-        
+
     def update_day(self, *args):
         t = time.time()
         day = args[1]
         for page in self.pages:
             if page.day == day:
                 page.set_day(day)
-        print "***", time.time() - t
+        # Enable to display time between updates
+        #print "***", time.time() - t
 
 class DayViewContainer(gtk.VBox):
     event_templates = (
@@ -160,7 +161,7 @@ class DayViewContainer(gtk.VBox):
 
         self.pack_end(self.scrolled_window, True, True)
         self.scrolled_window.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        self.show_all() 
+        self.show_all()
         self.day = None
         self.connect("style-set", self.change_style)
 
@@ -168,12 +169,12 @@ class DayViewContainer(gtk.VBox):
         self.day = day
         if pinbox in self.box.get_children():
             self.box.remove(pinbox)
-            
+
         t  = day.date - datetime.date.today()
         if t.days == 0:
             self.box.pack_start(pinbox, False, False)
             self.box.reorder_child(pinbox, 0)
-        
+
         self.daylabel.set_date(day.date)
         morning = []
         afternoon = []
@@ -183,7 +184,8 @@ class DayViewContainer(gtk.VBox):
         e_s = []
         t = time.time()
         x = day.filter(self.event_templates, result_type=ResultType.MostRecentEvents)
-        print "------------------", time.time() - t, "---", len(x)
+        # Enable to display time between updates
+        #print "------------------", time.time() - t, "---", len(x)
         for item in x:
             if not item.content_object:continue
             t = time.localtime(int(item.event.timestamp)/1000)
@@ -248,14 +250,14 @@ class DayView(gtk.VBox):
         for struct in items:
             if not struct.content_object: continue
             subject = struct.event.subjects[0]
-            
+
             def match_categories(interpretation):
                 if struct.event.actor == "application://tomboy.desktop":
                     return "aj://note"
                 if INTERPRETATION_PARENTS.has_key(interpretation):
                     return INTERPRETATION_PARENTS[interpretation]
                 return interpretation
-            
+
             interpretation = match_categories(subject.interpretation)
             if not categories.has_key(interpretation):
                 categories[interpretation] = []
@@ -287,7 +289,7 @@ class CategoryBox(gtk.HBox):
             d = str(datetime.date.fromtimestamp(int(event_structs[0].event.timestamp)/1000)) + " " + str((time.localtime(int(event_structs[0].event.timestamp)/1000).tm_hour)/8) + " " + str(category)
             if not EXPANDED.has_key(d):
                 EXPANDED[d] = False
-                
+
         def _set_up_box():
             if not self.set_up_done:
                 self.set_up_done = True
@@ -322,30 +324,30 @@ class CategoryBox(gtk.HBox):
             label.set_markup("<span>(%d)</span>" % len(event_structs))
             label.set_alignment(1.0,0.5)
             label.set_alignment(1.0,0.5)
-            
-            
+
+
             hbox.pack_end(label, False, False)
             self.al = gtk.gdk.Rectangle(0,0,0,0)
             def set_size(widget, allocation):
                 if self.al != allocation:
                     self.al = allocation
                     hbox.set_size_request(self.al[2]- 72, -1)
-                
+
             self.i = self.connect_after("size-allocate", set_size)
-            
+
             hbox.set_border_width(6)
             self.expander = gtk.Expander()
             def on_expand(widget):
                 EXPANDED[d] = self.expander.get_expanded()
                 _set_up_box()
-                    
+
             self.expander.set_expanded(EXPANDED[d])
             if EXPANDED[d]:
                 _set_up_box()
             self.expander.connect_after("activate", on_expand)
             self.expander.set_label_widget(hbox)
             self.vbox.pack_start(self.expander, True, True)
-            
+
             self.expander.add(self.box)#
             self.pack_start(self.vbox, True, True, 24)
             self.expander.show_all()
@@ -353,17 +355,17 @@ class CategoryBox(gtk.HBox):
             hbox.show_all()
             label.show_all()
             self.view.show()
-            
+
             def on_style_change(widget, style):
                 """ Update used colors according to the system theme. """
                 color = self.style.bg[gtk.STATE_NORMAL]
                 fcolor = self.style.fg[gtk.STATE_NORMAL]
                 color = combine_gdk_color(color, fcolor)
                 label.modify_fg(gtk.STATE_NORMAL, color)
-            
+
             self.connect("style-set", on_style_change)
-            
-            
+
+
         else:
             _set_up_box()
             self.box = self.view
@@ -371,9 +373,9 @@ class CategoryBox(gtk.HBox):
             self.box.show()
             self.show()
             self.pack_start(self.vbox, True, True, 16 -itemoff)
-        
-        
-            
+
+
+
         self.show_all()
 
     def on_toggle(self, view, bool_):
@@ -396,7 +398,7 @@ class Item(gtk.HBox):
         self.content_obj = content_struct.content_object
         self.time = float(event.timestamp) / 1000
         self.time =  time.strftime("%H:%M", time.localtime(self.time))
-        
+
         if self.content_obj is not None:
             if self.subject.uri.startswith("http"):
                 self.icon = self.content_obj.get_actor_pixbuf(24)
@@ -444,7 +446,7 @@ class Item(gtk.HBox):
         self.content_obj.matches_search = False
         text = self.content_obj.text.replace("&", "&amp;")
         if text.strip() == "":
-            text = self.content_obj.uri.replace("&", "&amp;")        
+            text = self.content_obj.uri.replace("&", "&amp;")
         rc_style = self.style
         self.label.set_markup("<span>" + text + "</span>")
         color = rc_style.text[gtk.STATE_NORMAL]
@@ -836,16 +838,16 @@ class ThumbView(gtk.VBox):
         morning = []
         afternoon = []
         evening = []
-        
+
         m_s = []
         a_s = []
         e_s = []
-        
+
         def event_exists(uri):
             # TODO: Move this into Zeitgeist's datamodel.py
             return not uri.startswith("file://") or os.path.exists(
                 urllib.unquote(str(uri[7:])))
-        
+
         for item in day.filter(self.event_templates, result_type=ResultType.MostRecentEvents):
             #if not item.content_object:continue
             if event_exists(item.event.subjects[0].uri):
@@ -862,7 +864,7 @@ class ThumbView(gtk.VBox):
                     if not item.event.subjects[0].uri in e_s:
                         e_s.append(item.event.subjects[0].uri )
                         evening.append(item)
-                
+
         self.set_phase_items(0, morning)
         self.set_phase_items(1, afternoon)
         self.set_phase_items(2, evening)
@@ -1228,8 +1230,8 @@ class PinBox(DayView):
         super(PinBox, self).__init__(title=_("Pinned Items"))#_("Pinned items"))
         bookmarker.connect("reload", self.set_from_templates)
         self.set_from_templates()
-        
-       
+
+
 
     @property
     def event_templates(self):
@@ -1263,10 +1265,10 @@ class PinBox(DayView):
         self.clear()
         box = CategoryBox(None, items, True, itemoff=4)
         self.view.pack_start(box)
-        
+
         for w in self:
             self.remove(w)
-        
+
         notebook = gtk.Notebook()
         notebook.append_page(self.view, self.label)
         self.label.set_alignment(0.01, 0.5)
@@ -1275,7 +1277,7 @@ class PinBox(DayView):
         print "..........", len(items)
         if len(items) > 0:
             self.pack_start(notebook)
-        
+
 pinbox = PinBox()
 ## gobject registration
 gobject.type_register(_TimelineRenderer)

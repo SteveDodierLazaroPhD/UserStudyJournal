@@ -1,4 +1,4 @@
-include gnome-activity-journal AUTHORS
+include gnome-activity-journal AUTHORS COPYING
 recursive-include extra *
 recursive-include data *
 recursive-include po *

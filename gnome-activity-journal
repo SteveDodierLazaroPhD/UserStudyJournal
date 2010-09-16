@@ -45,7 +45,7 @@ if os.path.basename(our_dir) == 'bin':
 # site.USER_BASE, and site.ENABLE_USER_SITE.
 try:
     # repo/module names
-    other_repos = ['zeitgeist', 'fungtk']
+    other_repos = ['zeitgeist']
 
     # paths of potential repos next to us and below us
     repo_paths = ([os.path.join(our_dir, '..', repo) for repo in other_repos] +

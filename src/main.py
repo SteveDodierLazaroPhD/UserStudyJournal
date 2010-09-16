@@ -122,9 +122,12 @@ class PortalWindow(gtk.Window):
         self.view = ViewContainer(self.store)
         self.toolbar = Toolbar()
         map(self.view._register_new_view,
-            (self.view.ViewStruct(MultiViewContainer(), Toolbar.get_toolbutton(get_data_path("multiview_icon.png"), _("Switch to MultiView"))),
-             self.view.ViewStruct(ThumbViewContainer(), Toolbar.get_toolbutton(get_data_path("thumbview_icon.png"), _("Switch to ThumbView"))),
-             self.view.ViewStruct(TimelineViewContainer(), Toolbar.get_toolbutton(get_data_path("timelineview_icon.png"), _("Switch to TimelineView")))
+            (self.view.ViewStruct(MultiViewContainer(),
+                                  Toolbar.get_toolbutton(get_data_path("multiview_icon.png"), _("Switch to MultiView"))),
+             self.view.ViewStruct(ThumbViewContainer(),
+                                  Toolbar.get_toolbutton(get_data_path("thumbview_icon.png"), _("Switch to ThumbView"))),
+             self.view.ViewStruct(TimelineViewContainer(),
+                                  Toolbar.get_toolbutton(get_data_path("timelineview_icon.png"), _("Switch to TimelineView")))
              ))
         self.view.set_view_page(0)
         map(self.toolbar.add_new_view_button, self.view.tool_buttons[::-1])
@@ -133,16 +136,16 @@ class PortalWindow(gtk.Window):
         self.histogram = HistogramWidget()
         self.histogram.set_store(self.store)
         self.histogram.set_dates([self.day_iter.date])
-        self.backward_button = DayButton(0)
-        self.forward_button = DayButton(1, sensitive=False)
+        self.backward_button, ev_backward_button = DayButton.new(0)
+        self.forward_button, ev_forward_button = DayButton.new(1, sensitive=False)
         self.searchbox = SearchBox
         # Widget placement
         vbox = gtk.VBox()
         hbox = gtk.HBox()
         histogramhbox = gtk.HBox()
-        hbox.pack_start(self.backward_button, False, False)
+        hbox.pack_start(ev_backward_button, False, False)
         hbox.pack_start(self.view, True, True, 6)
-        hbox.pack_end(self.forward_button, False, False)
+        hbox.pack_end(ev_forward_button, False, False)
         tvbox = gtk.VBox()
         tvbox.pack_start(hbox, True, True, 3)
         vbox.pack_start(self.toolbar, False, False)
@@ -158,10 +161,9 @@ class PortalWindow(gtk.Window):
         self.connect("delete-event", self.on_delete)
         self.backward_button.connect("clicked", self.previous)
         self.forward_button.connect("clicked", self.next)
+        self.forward_button.connect("jump-to-today", lambda w: self.set_date(datetime.date.today()))
         self.histogram.connect("date-changed", lambda w, date: self.set_date(date))
         self.view.connect("view-button-clicked", self.on_view_button_click)
-        self.toolbar.throbber.connect("clicked", self.show_about_window)
-        self.toolbar.goto_today_button.connect("clicked", lambda w: self.set_date(datetime.date.today()))
         self.store.connect("update", self.histogram.histogram.set_store)
         self.searchbox.connect("search", self._on_search)
         self.searchbox.connect("clear", self._on_search_clear)
@@ -190,7 +192,7 @@ class PortalWindow(gtk.Window):
     def load_plugins(self):
         self.plug_manager = PluginManager(CLIENT, STORE, self)
         self.preferences_dialog.notebook.show_all()
-        self.toolbar.preference_button.connect("clicked", lambda *args: self.preferences_dialog.show())
+        self.toolbar.throbber.preferences.connect("activate", lambda *args: self.preferences_dialog.show())
         self.preferences_dialog.plug_tree.set_items(self.plug_manager)
 
         return False
@@ -252,12 +254,6 @@ class PortalWindow(gtk.Window):
         self.view.set_day(self.day_iter, page=i)
         self.histogram.set_dates(self.active_dates)
         self.set_title_from_date(self.day_iter.date)
-
-    def show_about_window(self, *args):
-        aboutwindow = AboutDialog()
-        aboutwindow.set_transient_for(self)
-        aboutwindow.run()
-        aboutwindow.destroy()
 
     def _on_search(self, box, results):
         dates = []

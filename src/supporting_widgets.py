@@ -44,7 +44,7 @@ from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
 
 import content_objects
 from common import shade_gdk_color, combine_gdk_color, is_command_available, \
-    launch_command, get_gtk_rgba, SIZE_NORMAL, SIZE_LARGE, GioFile
+    launch_command, get_gtk_rgba, SIZE_NORMAL, SIZE_LARGE, GioFile, get_menu_item_with_stock_id_and_text
 from config import BASE_PATH, VERSION, settings, PluginManager, get_icon_path, get_data_path, bookmarker, SUPPORTED_SOURCES
 from store import STORE, get_related_events_for_uri, CLIENT
 from external import TRACKER
@@ -74,7 +74,7 @@ class DayLabel(gtk.DrawingArea):
         return self.date.strftime("%x")
 
     @property
-    def weekday_string(self):        
+    def weekday_string(self):
         if self.date == datetime.date.today():
             return "Today"
         timedelta = datetime.date.today() -self.date
@@ -151,6 +151,7 @@ class DayButton(gtk.DrawingArea):
     leading = False
     pressed = False
     sensitive = True
+    today_hover = False
     hover = False
     header_size = 60
     bg_color = (0, 0, 0, 0)
@@ -162,12 +163,35 @@ class DayButton(gtk.DrawingArea):
 
     __gsignals__ = {
         "clicked":  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,()),
+        "jump-to-today": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,()),
         }
     _events = (
         gtk.gdk.ENTER_NOTIFY_MASK | gtk.gdk.LEAVE_NOTIFY_MASK |
         gtk.gdk.KEY_PRESS_MASK | gtk.gdk.BUTTON_RELEASE_MASK | gtk.gdk.BUTTON_PRESS_MASK |
         gtk.gdk.MOTION_NOTIFY |   gtk.gdk.POINTER_MOTION_MASK
     )
+
+    @classmethod
+    def new(cls, side = 0, sensitive=True):
+        button = DayButton(side, sensitive)
+        def query_tooltip(widget, x, y, keyboard_mode, tooltip, ebutton):
+            if not ebutton.sensitive:
+                return False
+            elif y < ebutton.header_size and ebutton.side == 1:
+                text = _("Go to Today")
+            elif y >= ebutton.header_size:
+                text = _("Go to the previous day ") if ebutton.side == 0 else _("Go to the next day")
+            else:
+                return False
+            tooltip.set_text(text)
+            return True
+        evbox = gtk.EventBox()
+        evbox.connect("query-tooltip", query_tooltip, button)
+        evbox.set_property("has-tooltip", True)
+        evbox.add(button)
+
+        return button, evbox
+
     def __init__(self, side = 0, sensitive=True):
         super(DayButton, self).__init__()
         self.set_events(self._events)
@@ -192,17 +216,21 @@ class DayButton(gtk.DrawingArea):
 
     def _enter_leave_notify(self, widget, event, bol):
         self.hover = bol
+        self.today_hover = bol
         self.queue_draw()
 
     def on_hover(self, widget, event):
         if event.y > self.header_size:
             if not self.hover:
                 self.hover = True
-                self.queue_draw()
+            else:
+                self.today_hover = False
         else:
             if self.hover:
                 self.hover = False
-                self.queue_draw()
+            else:
+                self.today_hover = True
+        self.queue_draw()
         return False
 
     def on_press(self, widget, event):
@@ -223,6 +251,8 @@ class DayButton(gtk.DrawingArea):
         if event.y > self.header_size:
             if self.sensitive:
                 self.emit("clicked")
+        elif event.y < self.header_size:
+            self.emit("jump-to-today")
         self.pressed = False
         self.queue_draw()
         return True
@@ -273,6 +303,11 @@ class DayButton(gtk.DrawingArea):
                                          event.area, widget, "button",
                                          event.area.x, self.header_size,
                                          w, h-self.header_size)
+            if self.side > 0 and self.today_hover:
+                widget.style.paint_box(widget.window, gtk.STATE_PRELIGHT, gtk.SHADOW_OUT,
+                                         event.area, widget, "button",
+                                         event.area.x, 0,
+                                         w, self.header_size)
         size = 10
         if not self.sensitive:
             state = gtk.STATE_INSENSITIVE
@@ -287,6 +322,15 @@ class DayButton(gtk.DrawingArea):
         self.style.paint_arrow(widget.window, state, gtk.SHADOW_NONE, None,
                                self, "arrow", arrow, True,
                                w/2-size/2, h/2 + size/2, size, size)
+        size = 7
+        if self.sensitive and self.side > 0:
+            self.style.paint_arrow(widget.window, state, gtk.SHADOW_NONE, None,
+                                   self, "arrow", arrow, True,
+                                   w/2, self.header_size/2 - size/2, size, size)
+            self.style.paint_arrow(widget.window, state, gtk.SHADOW_OUT, None,
+                                   self, "arrow", arrow, True,
+                                   w/2-size/2, self.header_size/2 - size/2, size, size)
+        return
 
 
 class SearchBox(gtk.ToolItem):
@@ -668,13 +712,51 @@ class AnimatedImage(gtk.Image):
         gobject.timeout_add_seconds(seconds, self.stop)
 
 
-class Throbber(gtk.ToolButton):
+class Throbber(gtk.ToolItem):
+
     def __init__(self):
         super(Throbber, self).__init__()
-        self.image = AnimatedImage(get_data_path("zlogo/zg%d.png"), 150)
-        self.image.set_tooltip_text(_("Powered by Zeitgeist"))
-        #self.image.set_alignment(0.9, 0.98)
-        self.set_icon_widget(self.image)
+        box = gtk.HBox()
+        self.button = button = gtk.ToggleButton()
+        button.set_relief(gtk.RELIEF_NONE)
+        self.image = image = AnimatedImage(get_data_path("zlogo/zg%d.png"), 150)
+        image.set_tooltip_text(_("Click for options"))
+        arrow = gtk.Arrow(gtk.ARROW_DOWN, gtk.SHADOW_NONE)
+        arrow.set_size_request(10, 10)
+        box.pack_start(image, True, True, 1)
+        box.pack_start(arrow, True, True, 1)
+        button.add(box)
+        self.add(button)
+
+        self.menu = gtk.Menu()
+        self.about = get_menu_item_with_stock_id_and_text(gtk.STOCK_ABOUT, _("About"))
+        self.preferences = get_menu_item_with_stock_id_and_text(gtk.STOCK_PREFERENCES, _("Preferences"))
+        for item in (self.about, self.preferences): self.menu.insert(item, 0)
+        self.about.connect("activate", self.show_about_window)
+        self.menu.show_all()
+        button.connect("toggled", self.on_toggle)
+        self.preferences.connect("activate", lambda *args: self.preferences.toggle())
+        self.menu.connect("hide", self.on_hide)
+
+    def on_hide(self, *args):
+        self.button.set_active(False)
+        self.menu.popdown()
+        return False
+
+    def on_toggle(self, widget):
+        alloc = self.get_allocation()
+        x, y = self.window.get_position()
+        func = lambda a:(x+alloc.x, y+alloc.y+alloc.height, True)
+        #print func(1,2)
+        self.menu.popup(None, None, func, 0, 0)
+
+    def show_about_window(self, *etc):
+        aboutwindow = AboutDialog()
+        window = self.get_toplevel()
+        aboutwindow.set_transient_for(window)
+        aboutwindow.run()
+        aboutwindow.destroy()
+        self.preferences.toggle()
 
 
 class AboutDialog(gtk.AboutDialog):
@@ -731,9 +813,9 @@ class ContextMenu(gtk.Menu):
             "open" : gtk.ImageMenuItem(gtk.STOCK_OPEN),
             "unpin" : gtk.MenuItem(_("Remove Pin")),
             "pin" : gtk.MenuItem(_("Add Pin")),
-            "delete" : gtk.MenuItem(_("Delete item from Journal")),
+            "delete" : get_menu_item_with_stock_id_and_text(gtk.STOCK_DELETE, _("Delete item from Journal")),
             "delete_uri" : gtk.MenuItem(_("Delete all events with this URI")),
-            "info" : gtk.MenuItem(_("More Information")),
+            "info" : get_menu_item_with_stock_id_and_text(gtk.STOCK_INFO, _("More Information")),
             }
         callbacks = {
             "open" : self.do_open,
@@ -745,7 +827,7 @@ class ContextMenu(gtk.Menu):
             }
         names = ["open", "unpin", "pin", "delete", "delete_uri", "info"]
         if is_command_available("nautilus-sendto"):
-            self.menuitems["sendto"] = gtk.MenuItem(_("Send To..."))
+            self.menuitems["sendto"] = get_menu_item_with_stock_id_and_text(gtk.STOCK_CONNECT, _("Send To..."))
             callbacks["sendto"] = self.do_send_to
             names.append("sendto")
         for name in names:
@@ -855,14 +937,11 @@ class Toolbar(gtk.Toolbar):
         for item in (sdialog, sb, sep1):
             self.insert(item, 0)
         #
-        self.preference_button = gtk.ToolButton(gtk.STOCK_PREFERENCES)
         separator = gtk.SeparatorToolItem()
         separator.set_expand(True)
         separator.set_draw(False)
-        self.goto_today_button = today = gtk.ToolButton(gtk.STOCK_GOTO_LAST)
-        today.set_label( _("Goto Today"))
         self.throbber = Throbber()
-        for item in (separator, today, self.preference_button, self.throbber):
+        for item in (separator, self.throbber):
             self.insert(item, -1)
 
     def do_throb(self):

@@ -458,6 +458,9 @@ def create_opendocument_thumb(path):
         f = zipfile.ZipFile(path, mode="r")
         try:
             thumb.write(f.read("Thumbnails/thumbnail.png"))
+        except KeyError:
+            thumb.close()
+            return None
         finally:
             f.close()
     except IOError:
@@ -694,6 +697,13 @@ def get_icon_from_object_at_uri(uri, size):
 ## Other useful methods
 ##
 
+def get_menu_item_with_stock_id_and_text(stock_id, text):
+    item = gtk.ImageMenuItem(stock_id)
+    label = item.get_children()[0]
+    label.set_text(text)
+    return item
+
+
 def is_command_available(command):
     """
     Checks whether the given command is available, by looking for it in
@@ -734,7 +744,7 @@ def launch_string_command(command):
 GIO_FILES = {}
 
 class GioFile(object):
-    
+
     def __new__(classtype, *args, **kwargs):
         # Check to see if a __single exists already for this class
         # Compare class types instead of just looking for None so

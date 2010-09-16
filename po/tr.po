@@ -7,267 +7,321 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-activity-journal\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-04-22 16:05+0200\n"
-"PO-Revision-Date: 2010-02-26 00:45+0000\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-08-24 13:57+0200\n"
+"PO-Revision-Date: 2010-08-28 06:35+0000\n"
+"Last-Translator: GNOME Zeitgeist Team <gnome-zeitgeist@lists.launchpad.net>\n"
 "Language-Team: Turkish <tr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Launchpad-Export-Date: 2010-08-05 03:43+0000\n"
+"X-Launchpad-Export-Date: 2010-08-29 04:02+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: ../gnome-activity-journal:76
+#: ../gnome-activity-journal:83
 msgid "print additional debugging information"
-msgstr ""
+msgstr "ilave hata ayıklama bilgilerini yardır"
 
-#: ../gnome-activity-journal:83
+#: ../gnome-activity-journal:90
 msgid "ERROR"
-msgstr ""
+msgstr "HATA"
 
-#: ../gnome-activity-journal:83
+#: ../gnome-activity-journal:90
 msgid "Unable to connect to Zeitgeist:"
-msgstr ""
+msgstr "Zeitgeist'e bağlanılamaz:"
 
-#: ../src/content_objects.py:452 ../src/content_objects.py:454
+#: ../src/activity_widgets.py:131 ../src/common.py:170
+msgid "Morning"
+msgstr "Sabah"
+
+#: ../src/activity_widgets.py:131 ../src/common.py:170
+msgid "Afternoon"
+msgstr "Öğleden sonra"
+
+#: ../src/activity_widgets.py:131 ../src/common.py:170
+msgid "Evening"
+msgstr "Akşam"
+
+#: ../src/activity_widgets.py:439 ../src/supporting_widgets.py:732
+msgid "Remove Pin"
+msgstr "İğneleri"
+
+#: ../src/activity_widgets.py:1195
+msgid "Pinned Items"
+msgstr "İğnelenmiş ögeler"
+
+#: ../src/content_objects.py:558 ../src/content_objects.py:560
 msgid "{source._desc_sing} with {event.subjects[0].text}"
-msgstr ""
+msgstr "{source._desc_sing} ile {event.subjects[0].text}"
 
-#: ../src/content_objects.py:453
+#: ../src/content_objects.py:559
 msgid ""
 "{source._desc_sing} with {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 msgstr ""
+"{source._desc_sing} ile {event.subjects[0].text}\n"
+"{event.subjects[0].uri}"
 
-#: ../src/content_objects.py:474 ../src/content_objects.py:479
-#: ../src/content_objects.py:484
+#: ../src/content_objects.py:570
+msgid "Available"
+msgstr "Uygun"
+
+#: ../src/content_objects.py:571
+msgid "Offline"
+msgstr "Çevrimdışı"
+
+#: ../src/content_objects.py:572
+msgid "Away"
+msgstr "Uzakta"
+
+#: ../src/content_objects.py:573
+msgid "Busy"
+msgstr "Meşgul"
+
+#: ../src/content_objects.py:605 ../src/content_objects.py:610
+#: ../src/content_objects.py:615
 msgid "with"
-msgstr ""
+msgstr "ile"
 
-#: ../src/content_objects.py:522
-msgid "{source._desc_sing} {event.subjects[0].text}"
-msgstr ""
+#: ../src/content_objects.py:654
+msgid "Time Tracker"
+msgstr "Zaman İzleyici"
 
-#: ../src/content_objects.py:523 ../src/content_objects.py:524
+#: ../src/content_objects.py:675 ../src/content_objects.py:677
+msgid "{source._desc_sing} from {event.subjects[0].text}"
+msgstr "{source._desc_sing} dan {event.subjects[0].text}"
+
+#: ../src/content_objects.py:676
 msgid ""
-"Tomboy\n"
-"{source._desc_sing} {event.subjects[0].text}"
+"{source._desc_sing} from {event.subjects[0].text}\n"
+"{event.subjects[0].uri}"
 msgstr ""
+"{source._desc_sing} dan {event.subjects[0].text}\n"
+"{event.subjects[0].uri}"
 
-#: ../src/histogram.py:476 ../src/main.py:189 ../src/daywidgets.py:61
-#: ../src/daywidgets.py:242 ../src/daywidgets.py:429
-msgid "Today"
+#: ../src/content_objects.py:680
+#, python-format
+msgid " (%s Attachments)"
+msgstr " (%s Ekler)"
+
+#: ../src/content_objects.py:704
+msgid "{event.subjects[0].text}"
+msgstr "{event.subjects[0].text}"
+
+#: ../src/content_objects.py:705 ../src/content_objects.py:706
+msgid ""
+"Note\n"
+"{event.subjects[0].text}"
 msgstr ""
+"Not\n"
+"{event.subjects[0].text}"
 
-#: ../src/histogram.py:531
-msgid "item"
-msgid_plural "items"
-msgstr[0] ""
-msgstr[1] ""
+#: ../src/common.py:143
+msgid "Video"
+msgstr "Video"
 
-#: ../src/histogram.py:533
-msgid "Click today to return to today"
-msgstr ""
+#: ../src/common.py:144
+msgid "Music"
+msgstr "Müzik"
 
-#: ../src/main.py:87
+#: ../src/common.py:145
+msgid "Document"
+msgstr "Döküman"
+
+#: ../src/common.py:146
+msgid "Image"
+msgstr "Resim"
+
+#: ../src/common.py:147
+msgid "Source Code"
+msgstr "Kaynak Kodu"
+
+#: ../src/common.py:148
+msgid "Unknown"
+msgstr "Bilinmeyen"
+
+#: ../src/common.py:149
+msgid "IM Message"
+msgstr "IM Mesajı"
+
+#: ../src/common.py:150 ../src/config.py:247
+msgid "Email"
+msgstr "E-Posta"
+
+#: ../src/supporting_widgets.py:453
+msgid "Type here to search..."
+msgstr "Aramak için buraya yazın..."
+
+#: ../src/supporting_widgets.py:675
 msgid "Powered by Zeitgeist"
-msgstr ""
+msgstr "Zeitgeist tarafından Geliştirilmiştir"
 
-#: ../src/main.py:150 ../src/main.py:174 ../src/main.py:203
-#: ../extra/gnome-activity-journal.desktop.in.h:1
-msgid "Activity Journal"
-msgstr ""
+#: ../src/supporting_widgets.py:733 ../src/supporting_widgets.py:1193
+msgid "Add Pin"
+msgstr "İğne Ekle"
 
-#: ../src/main.py:174
-#, python-format
-msgid "%s to today"
-msgstr ""
+#: ../src/supporting_widgets.py:734
+msgid "Delete item from Journal"
+msgstr "Ögeyi Journal'dan Sil"
 
-#: ../src/main.py:192 ../src/daywidgets.py:63 ../src/daywidgets.py:244
-msgid "Yesterday"
-msgstr ""
+#: ../src/supporting_widgets.py:735
+msgid "Delete all events with this URI"
+msgstr "Bu URI ile tüm olayları sil"
 
-#: ../src/main.py:203
-#, python-format
-msgid "%s to %s"
-msgstr ""
+#: ../src/supporting_widgets.py:736
+msgid "More Information"
+msgstr "Daha Fazla Bilgi"
+
+#: ../src/supporting_widgets.py:748
+msgid "Send To..."
+msgstr "Gönder..."
+
+#: ../src/supporting_widgets.py:863
+msgid "Goto Today"
+msgstr "Bugüne Git"
+
+#: ../src/supporting_widgets.py:1105
+msgid "Used With"
+msgstr "İle Kullanıldı"
+
+#: ../src/supporting_widgets.py:1188
+msgid "Launch this subject"
+msgstr "Bu ögeyi çalıştır"
+
+#: ../src/supporting_widgets.py:1190
+msgid "Delete this subject"
+msgstr "Bu ögeyi sil"
+
+#: ../src/supporting_widgets.py:1209
+msgid "Tags"
+msgstr "Etiketler"
+
+#: ../src/supporting_widgets.py:1345
+msgid "Preferences"
+msgstr "Tercihler"
+
+#: ../src/supporting_widgets.py:1354
+msgid "Active Plugins:"
+msgstr "Aktif olan Eklentiler"
+
+#: ../src/supporting_widgets.py:1362
+msgid "Plugins"
+msgstr "Eklentiler"
 
 #. TODO: Move this into Zeitgeist's library, implemented properly
-#: ../src/sources.py:40
+#: ../src/config.py:240
 msgid "Worked with a Video"
-msgstr ""
+msgstr "Bir video ile çalıştı"
 
-#: ../src/sources.py:40
+#: ../src/config.py:240
 msgid "Worked with Videos"
-msgstr ""
+msgstr "Videolarla çalıştı"
 
-#: ../src/sources.py:41
+#: ../src/config.py:241
 msgid "Worked with Audio"
-msgstr ""
+msgstr "Seslerle çalıştı"
 
-#: ../src/sources.py:42
+#: ../src/config.py:242
 msgid "Worked with an Image"
-msgstr ""
+msgstr "Bir resim ile çalıştı"
 
-#: ../src/sources.py:42
+#: ../src/config.py:242
 msgid "Worked with Images"
-msgstr ""
+msgstr "Resimlerle çalıştı"
 
-#: ../src/sources.py:43
+#: ../src/config.py:243
 msgid "Edited or Read Document"
-msgstr ""
+msgstr "Döküman Düzenlendi yada Okundu"
 
-#: ../src/sources.py:43
+#: ../src/config.py:243
 msgid "Edited or Read Documents"
-msgstr ""
+msgstr "Dökümanlar Düzenlendi yada Okundu"
 
-#: ../src/sources.py:44
+#: ../src/config.py:244
 msgid "Edited or Read Code"
-msgstr ""
+msgstr "Kod Düzenlendi yada Okundu"
 
-#: ../src/sources.py:45
+#: ../src/config.py:245
 msgid "Conversation"
-msgstr ""
+msgstr "Konuşma"
 
-#: ../src/sources.py:45
+#: ../src/config.py:245
 msgid "Conversations"
-msgstr ""
+msgstr "Konuşmalar"
 
-#: ../src/sources.py:46
+#: ../src/config.py:246
+msgid "Visited Website"
+msgstr "Ziyaret edilmiş Web-Sayfası"
+
+#: ../src/config.py:246
+msgid "Visited Websites"
+msgstr "Ziyaret edilmiş Web-Sayfaları"
+
+#: ../src/config.py:247
+msgid "Emails"
+msgstr "E-postalar"
+
+#: ../src/config.py:248
 msgid "Other Activity"
-msgstr ""
+msgstr "Diğer Etkinlik"
 
-#: ../src/sources.py:46
+#: ../src/config.py:248
 msgid "Other Activities"
+msgstr "Diğer Etkinlikler"
+
+#: ../src/config.py:249
+msgid "Edited or Read Note"
+msgstr "Düzenlenmiş yada Okunmuş Not"
+
+#: ../src/config.py:249
+msgid "Edited or Read Notes"
+msgstr "Düzenlenmiş yada Okunmuş Notlar"
+
+#: ../src/main.py:125
+msgid "Switch to MultiView"
+msgstr "Çoklu Görünümü Değiştir"
+
+#: ../src/main.py:126
+msgid "Switch to ThumbView"
 msgstr ""
 
-#: ../src/infopane.py:242
-msgid "Actor"
-msgstr ""
+#: ../src/main.py:127
+msgid "Switch to TimelineView"
+msgstr "Zamançizelgesi-Görünümünü Değiştir"
 
-#. 0
-#: ../src/infopane.py:243
-msgid "Time"
-msgstr ""
+#: ../src/main.py:295
+msgid "Today"
+msgstr "Bugün"
 
-#. 2
-#: ../src/infopane.py:245
-msgid "Interpretation"
-msgstr ""
+#: ../src/main.py:298
+msgid "Yesterday"
+msgstr "Dün"
 
-#. 3
-#: ../src/infopane.py:246
-msgid "Subject Interpretation"
-msgstr ""
+#: ../src/main.py:309
+#, python-format
+msgid "%s to %s"
+msgstr "%s'den %s'e"
 
-#. 4
-#: ../src/infopane.py:247
-msgid "Manifestation"
-msgstr ""
+#: ../src/main.py:309 ../extra/gnome-activity-journal.desktop.in.h:1
+msgid "Activity Journal"
+msgstr "Etkinlik Günlüğü"
 
-#: ../src/infopane.py:392
-msgid "Related Items"
-msgstr ""
-
-#: ../src/daywidgets.py:111 ../src/daywidgets.py:191
-msgid "Click to return to multiday view"
-msgstr ""
-
-#: ../src/daywidgets.py:221 ../src/common.py:124
-msgid "Morning"
-msgstr ""
-
-#: ../src/daywidgets.py:222 ../src/common.py:124
-msgid "Afternoon"
-msgstr ""
-
-#: ../src/daywidgets.py:223 ../src/common.py:124
-msgid "Evening"
-msgstr ""
-
-#: ../src/daywidgets.py:304
-msgid "Left click for a detailed timeline view"
-msgstr ""
-
-#: ../src/daywidgets.py:306
-msgid "Right click for a thumbnail view"
-msgstr ""
-
-#. Initialize the widget
-#: ../src/daywidgets.py:768
-msgid "Pinned items"
-msgstr ""
-
-#: ../src/common.py:108
-msgid "Video"
-msgstr ""
-
-#: ../src/common.py:109
-msgid "Music"
-msgstr ""
-
-#: ../src/common.py:110
-msgid "Document"
-msgstr ""
-
-#: ../src/common.py:111
-msgid "Image"
-msgstr ""
-
-#: ../src/common.py:112
-msgid "Source Code"
-msgstr ""
-
-#: ../src/common.py:113
-msgid "Unknown"
-msgstr ""
-
-#: ../src/common.py:114
-msgid "IM Message"
-msgstr ""
-
-#: ../src/common.py:115
-msgid "Email"
-msgstr ""
-
-#: ../src/widgets.py:172
-msgid "Type here to search..."
-msgstr ""
-
-#: ../src/widgets.py:407 ../src/widgets.py:583
-msgid "Remove Pin"
-msgstr ""
-
-#: ../src/widgets.py:584
-msgid "Pin to Today"
-msgstr ""
-
-#: ../src/widgets.py:585
-msgid "Delete item from Journal"
-msgstr ""
-
-#: ../src/widgets.py:586
-msgid "Delete all events with this URI"
-msgstr ""
-
-#: ../src/widgets.py:587
-msgid "More Information"
-msgstr ""
-
-#: ../src/widgets.py:599
-msgid "Send To..."
-msgstr ""
+#: ../src/histogram.py:438
+msgid "item"
+msgid_plural "items"
+msgstr[0] "öğe"
 
 #: ../extra/gnome-activity-journal.desktop.in.h:2
 msgid ""
 "Browse a chronological log of your activities and easily find files, "
 "contacts, etc."
 msgstr ""
+"Etkinliklerinizin sürebilimsel kütüklerine göz atın ve dosyaları, kişileri "
+"vb. kolayca bulun."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:1
 msgid "Accessibility"
-msgstr ""
+msgstr "Erişebilirlik"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:2
 msgid "Allow thumbnails as icons"
@@ -275,7 +329,7 @@ msgstr ""
 
 #: ../extra/gnome-activity-journal.schemas.in.h:3
 msgid "Amount of visible days"
-msgstr ""
+msgstr "Görülebilir günlerin miktarı"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:4
 msgid ""
@@ -306,8 +360,8 @@ msgstr ""
 
 #: ../extra/gnome-activity-journal.schemas.in.h:9
 msgid "Window height"
-msgstr ""
+msgstr "Pencere yüksekliği"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:10
 msgid "Window width"
-msgstr ""
+msgstr "Pencere genişliği"
