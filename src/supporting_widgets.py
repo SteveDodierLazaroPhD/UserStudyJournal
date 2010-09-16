@@ -712,10 +712,10 @@ class AnimatedImage(gtk.Image):
         gobject.timeout_add_seconds(seconds, self.stop)
 
 
-class Throbber(gtk.ToolItem):
+class ThrobberPopupButton(gtk.ToolItem):
 
     def __init__(self):
-        super(Throbber, self).__init__()
+        super(ThrobberPopupButton, self).__init__()
         box = gtk.HBox()
         self.button = button = gtk.ToggleButton()
         button.set_relief(gtk.RELIEF_NONE)
@@ -940,12 +940,12 @@ class Toolbar(gtk.Toolbar):
         separator = gtk.SeparatorToolItem()
         separator.set_expand(True)
         separator.set_draw(False)
-        self.throbber = Throbber()
-        for item in (separator, self.throbber):
+        self.throbber_popup_button = ThrobberPopupButton()
+        for item in (separator, self.throbber_popup_button):
             self.insert(item, -1)
 
     def do_throb(self):
-        self.throbber.image.animate_for_seconds(1)
+        self.throbber_popup_button.image.animate_for_seconds(1)
 
     def toggle_searchbox_visibility(self, w):
         result = self.search_dialog.toggle_visibility()

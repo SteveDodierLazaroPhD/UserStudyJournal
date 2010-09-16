@@ -192,7 +192,7 @@ class PortalWindow(gtk.Window):
     def load_plugins(self):
         self.plug_manager = PluginManager(CLIENT, STORE, self)
         self.preferences_dialog.notebook.show_all()
-        self.toolbar.throbber.preferences.connect("activate", lambda *args: self.preferences_dialog.show())
+        self.toolbar.throbber_popup_button.preferences.connect("activate", lambda *args: self.preferences_dialog.show())
         self.preferences_dialog.plug_tree.set_items(self.plug_manager)
 
         return False
