@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-activity-journal\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-08-24 13:57+0200\n"
+"POT-Creation-Date: 2010-08-29 00:28+0200\n"
 "PO-Revision-Date: 2010-09-01 07:59+0000\n"
 "Last-Translator: GNOME Zeitgeist Team <gnome-zeitgeist@lists.launchpad.net>\n"
 "Language-Team: German <de@li.org>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2010-09-02 04:10+0000\n"
+"X-Launchpad-Export-Date: 2010-09-17 05:42+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../gnome-activity-journal:83
@@ -30,23 +30,23 @@ msgstr "FEHLER"
 msgid "Unable to connect to Zeitgeist:"
 msgstr "Keine Verbindung zu Zeitgeist möglich"
 
-#: ../src/activity_widgets.py:131 ../src/common.py:170
+#: ../src/activity_widgets.py:150 ../src/common.py:170
 msgid "Morning"
 msgstr "Morgens"
 
-#: ../src/activity_widgets.py:131 ../src/common.py:170
+#: ../src/activity_widgets.py:150 ../src/common.py:170
 msgid "Afternoon"
 msgstr "Nachmittags"
 
-#: ../src/activity_widgets.py:131 ../src/common.py:170
+#: ../src/activity_widgets.py:150 ../src/common.py:170
 msgid "Evening"
 msgstr "Abends"
 
-#: ../src/activity_widgets.py:439 ../src/supporting_widgets.py:732
+#: ../src/activity_widgets.py:472 ../src/supporting_widgets.py:732
 msgid "Remove Pin"
 msgstr "Markierung entfernen"
 
-#: ../src/activity_widgets.py:1195
+#: ../src/activity_widgets.py:1228
 msgid "Pinned Items"
 msgstr ""
 

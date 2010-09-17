@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-activity-journal\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-08-24 13:57+0200\n"
+"POT-Creation-Date: 2010-08-29 00:28+0200\n"
 "PO-Revision-Date: 2010-08-28 06:35+0000\n"
 "Last-Translator: GNOME Zeitgeist Team <gnome-zeitgeist@lists.launchpad.net>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Launchpad-Export-Date: 2010-08-29 04:02+0000\n"
+"X-Launchpad-Export-Date: 2010-09-17 05:42+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../gnome-activity-journal:83
@@ -30,23 +30,23 @@ msgstr "HATA"
 msgid "Unable to connect to Zeitgeist:"
 msgstr "Zeitgeist'e bağlanılamaz:"
 
-#: ../src/activity_widgets.py:131 ../src/common.py:170
+#: ../src/activity_widgets.py:150 ../src/common.py:170
 msgid "Morning"
 msgstr "Sabah"
 
-#: ../src/activity_widgets.py:131 ../src/common.py:170
+#: ../src/activity_widgets.py:150 ../src/common.py:170
 msgid "Afternoon"
 msgstr "Öğleden sonra"
 
-#: ../src/activity_widgets.py:131 ../src/common.py:170
+#: ../src/activity_widgets.py:150 ../src/common.py:170
 msgid "Evening"
 msgstr "Akşam"
 
-#: ../src/activity_widgets.py:439 ../src/supporting_widgets.py:732
+#: ../src/activity_widgets.py:472 ../src/supporting_widgets.py:732
 msgid "Remove Pin"
 msgstr "İğneleri"
 
-#: ../src/activity_widgets.py:1195
+#: ../src/activity_widgets.py:1228
 msgid "Pinned Items"
 msgstr "İğnelenmiş ögeler"
 

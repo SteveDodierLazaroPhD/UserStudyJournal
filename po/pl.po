@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-activity-journal\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-08-24 13:57+0200\n"
+"POT-Creation-Date: 2010-08-29 00:28+0200\n"
 "PO-Revision-Date: 2010-08-27 06:43+0000\n"
 "Last-Translator: Łukasz Jernaś <deejay1@srem.org>\n"
 "Language-Team: Polish <pl@li.org>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2010-08-28 03:57+0000\n"
+"X-Launchpad-Export-Date: 2010-09-17 05:42+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../gnome-activity-journal:83
@@ -31,23 +31,23 @@ msgstr "BŁĄD"
 msgid "Unable to connect to Zeitgeist:"
 msgstr "Nie można połączyć się z usługą Zeitgeist:"
 
-#: ../src/activity_widgets.py:131 ../src/common.py:170
+#: ../src/activity_widgets.py:150 ../src/common.py:170
 msgid "Morning"
 msgstr "Rano"
 
-#: ../src/activity_widgets.py:131 ../src/common.py:170
+#: ../src/activity_widgets.py:150 ../src/common.py:170
 msgid "Afternoon"
 msgstr "Po południu"
 
-#: ../src/activity_widgets.py:131 ../src/common.py:170
+#: ../src/activity_widgets.py:150 ../src/common.py:170
 msgid "Evening"
 msgstr "Wieczorem"
 
-#: ../src/activity_widgets.py:439 ../src/supporting_widgets.py:732
+#: ../src/activity_widgets.py:472 ../src/supporting_widgets.py:732
 msgid "Remove Pin"
 msgstr ""
 
-#: ../src/activity_widgets.py:1195
+#: ../src/activity_widgets.py:1228
 msgid "Pinned Items"
 msgstr ""
 

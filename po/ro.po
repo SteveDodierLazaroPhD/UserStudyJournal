@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-activity-journal\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-04-22 16:05+0200\n"
+"POT-Creation-Date: 2010-08-29 00:28+0200\n"
 "PO-Revision-Date: 2010-03-22 05:18+0000\n"
 "Last-Translator: Adi Roiban <adi@roiban.ro>\n"
 "Language-Team: Romanian <ro@li.org>\n"
@@ -16,250 +16,297 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n == 1 ? 0: (((n % 100 > 19) || ((n % 100 "
 "== 0) && (n != 0))) ? 2: 1));\n"
-"X-Launchpad-Export-Date: 2010-08-05 03:43+0000\n"
+"X-Launchpad-Export-Date: 2010-09-17 05:42+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: ../gnome-activity-journal:76
+#: ../gnome-activity-journal:83
 msgid "print additional debugging information"
 msgstr "afișează informații adiționale pentru depanare"
 
-#: ../gnome-activity-journal:83
+#: ../gnome-activity-journal:90
 msgid "ERROR"
 msgstr "EROARE"
 
-#: ../gnome-activity-journal:83
+#: ../gnome-activity-journal:90
 msgid "Unable to connect to Zeitgeist:"
 msgstr "Nu s-a putut conecta la Zeigeist:"
 
-#: ../src/content_objects.py:452 ../src/content_objects.py:454
+#: ../src/activity_widgets.py:150 ../src/common.py:170
+msgid "Morning"
+msgstr "Dimineață"
+
+#: ../src/activity_widgets.py:150 ../src/common.py:170
+msgid "Afternoon"
+msgstr "După-amiază"
+
+#: ../src/activity_widgets.py:150 ../src/common.py:170
+msgid "Evening"
+msgstr "Seară"
+
+#: ../src/activity_widgets.py:472 ../src/supporting_widgets.py:732
+msgid "Remove Pin"
+msgstr "Elimină fixarea"
+
+#: ../src/activity_widgets.py:1228
+msgid "Pinned Items"
+msgstr ""
+
+#: ../src/content_objects.py:558 ../src/content_objects.py:560
 msgid "{source._desc_sing} with {event.subjects[0].text}"
 msgstr ""
 
-#: ../src/content_objects.py:453
+#: ../src/content_objects.py:559
 msgid ""
 "{source._desc_sing} with {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 msgstr ""
 
-#: ../src/content_objects.py:474 ../src/content_objects.py:479
-#: ../src/content_objects.py:484
+#: ../src/content_objects.py:570
+msgid "Available"
+msgstr ""
+
+#: ../src/content_objects.py:571
+msgid "Offline"
+msgstr ""
+
+#: ../src/content_objects.py:572
+msgid "Away"
+msgstr ""
+
+#: ../src/content_objects.py:573
+msgid "Busy"
+msgstr ""
+
+#: ../src/content_objects.py:605 ../src/content_objects.py:610
+#: ../src/content_objects.py:615
 msgid "with"
 msgstr ""
 
-#: ../src/content_objects.py:522
-msgid "{source._desc_sing} {event.subjects[0].text}"
+#: ../src/content_objects.py:654
+msgid "Time Tracker"
 msgstr ""
 
-#: ../src/content_objects.py:523 ../src/content_objects.py:524
+#: ../src/content_objects.py:675 ../src/content_objects.py:677
+msgid "{source._desc_sing} from {event.subjects[0].text}"
+msgstr ""
+
+#: ../src/content_objects.py:676
 msgid ""
-"Tomboy\n"
-"{source._desc_sing} {event.subjects[0].text}"
+"{source._desc_sing} from {event.subjects[0].text}\n"
+"{event.subjects[0].uri}"
 msgstr ""
 
-#: ../src/histogram.py:476 ../src/main.py:189 ../src/daywidgets.py:61
-#: ../src/daywidgets.py:242 ../src/daywidgets.py:429
+#: ../src/content_objects.py:680
+#, python-format
+msgid " (%s Attachments)"
+msgstr ""
+
+#: ../src/content_objects.py:704
+msgid "{event.subjects[0].text}"
+msgstr ""
+
+#: ../src/content_objects.py:705 ../src/content_objects.py:706
+msgid ""
+"Note\n"
+"{event.subjects[0].text}"
+msgstr ""
+
+#: ../src/common.py:143
+msgid "Video"
+msgstr "Filme"
+
+#: ../src/common.py:144
+msgid "Music"
+msgstr "Muzică"
+
+#: ../src/common.py:145
+msgid "Document"
+msgstr "Document"
+
+#: ../src/common.py:146
+msgid "Image"
+msgstr "Imagine"
+
+#: ../src/common.py:147
+msgid "Source Code"
+msgstr "Cod sursă"
+
+#: ../src/common.py:148
+msgid "Unknown"
+msgstr "Necunoscut"
+
+#: ../src/common.py:149
+msgid "IM Message"
+msgstr ""
+
+#: ../src/common.py:150 ../src/config.py:247
+msgid "Email"
+msgstr ""
+
+#: ../src/supporting_widgets.py:453
+msgid "Type here to search..."
+msgstr "Scrie aici pentru a căuta..."
+
+#: ../src/supporting_widgets.py:675
+msgid "Powered by Zeitgeist"
+msgstr "Folosind Zeitgeist"
+
+#: ../src/supporting_widgets.py:733 ../src/supporting_widgets.py:1193
+msgid "Add Pin"
+msgstr ""
+
+#: ../src/supporting_widgets.py:734
+msgid "Delete item from Journal"
+msgstr "Șterge element din jurnal"
+
+#: ../src/supporting_widgets.py:735
+msgid "Delete all events with this URI"
+msgstr ""
+
+#: ../src/supporting_widgets.py:736
+msgid "More Information"
+msgstr ""
+
+#: ../src/supporting_widgets.py:748
+msgid "Send To..."
+msgstr ""
+
+#: ../src/supporting_widgets.py:863
+msgid "Goto Today"
+msgstr ""
+
+#: ../src/supporting_widgets.py:1105
+msgid "Used With"
+msgstr ""
+
+#: ../src/supporting_widgets.py:1188
+msgid "Launch this subject"
+msgstr ""
+
+#: ../src/supporting_widgets.py:1190
+msgid "Delete this subject"
+msgstr ""
+
+#: ../src/supporting_widgets.py:1209
+msgid "Tags"
+msgstr ""
+
+#: ../src/supporting_widgets.py:1345
+msgid "Preferences"
+msgstr ""
+
+#: ../src/supporting_widgets.py:1354
+msgid "Active Plugins:"
+msgstr ""
+
+#: ../src/supporting_widgets.py:1362
+msgid "Plugins"
+msgstr ""
+
+#. TODO: Move this into Zeitgeist's library, implemented properly
+#: ../src/config.py:240
+msgid "Worked with a Video"
+msgstr "Lucrat cu un clip video"
+
+#: ../src/config.py:240
+msgid "Worked with Videos"
+msgstr "Lucrat cu clipuri video"
+
+#: ../src/config.py:241
+msgid "Worked with Audio"
+msgstr "Lucrat cu un fișier de sunet"
+
+#: ../src/config.py:242
+msgid "Worked with an Image"
+msgstr "Lucrat cu o imagine"
+
+#: ../src/config.py:242
+msgid "Worked with Images"
+msgstr "Lucrat cu imagini"
+
+#: ../src/config.py:243
+msgid "Edited or Read Document"
+msgstr "Citit sau modificat document"
+
+#: ../src/config.py:243
+msgid "Edited or Read Documents"
+msgstr "Citit sau modificat documente"
+
+#: ../src/config.py:244
+msgid "Edited or Read Code"
+msgstr "Citit sau modificat cod sursă"
+
+#: ../src/config.py:245
+msgid "Conversation"
+msgstr ""
+
+#: ../src/config.py:245
+msgid "Conversations"
+msgstr ""
+
+#: ../src/config.py:246
+msgid "Visited Website"
+msgstr ""
+
+#: ../src/config.py:246
+msgid "Visited Websites"
+msgstr ""
+
+#: ../src/config.py:247
+msgid "Emails"
+msgstr ""
+
+#: ../src/config.py:248
+msgid "Other Activity"
+msgstr "Altă activitate"
+
+#: ../src/config.py:248
+msgid "Other Activities"
+msgstr "Alte activităţi"
+
+#: ../src/config.py:249
+msgid "Edited or Read Note"
+msgstr ""
+
+#: ../src/config.py:249
+msgid "Edited or Read Notes"
+msgstr ""
+
+#: ../src/main.py:125
+msgid "Switch to MultiView"
+msgstr ""
+
+#: ../src/main.py:126
+msgid "Switch to ThumbView"
+msgstr ""
+
+#: ../src/main.py:127
+msgid "Switch to TimelineView"
+msgstr ""
+
+#: ../src/main.py:295
 msgid "Today"
 msgstr "Astăzi"
 
-#: ../src/histogram.py:531
+#: ../src/main.py:298
+msgid "Yesterday"
+msgstr "Ieri"
+
+#: ../src/main.py:309
+#, python-format
+msgid "%s to %s"
+msgstr "%s până %s"
+
+#: ../src/main.py:309 ../extra/gnome-activity-journal.desktop.in.h:1
+msgid "Activity Journal"
+msgstr "Jurnal de activitate"
+
+#: ../src/histogram.py:438
 msgid "item"
 msgid_plural "items"
 msgstr[0] "element"
 msgstr[1] "elemente"
 msgstr[2] "de elemente"
-
-#: ../src/histogram.py:533
-msgid "Click today to return to today"
-msgstr "Clic pe astăzi pentru a te întoarce la astăzi"
-
-#: ../src/main.py:87
-msgid "Powered by Zeitgeist"
-msgstr "Folosind Zeitgeist"
-
-#: ../src/main.py:150 ../src/main.py:174 ../src/main.py:203
-#: ../extra/gnome-activity-journal.desktop.in.h:1
-msgid "Activity Journal"
-msgstr "Jurnal de activitate"
-
-#: ../src/main.py:174
-#, python-format
-msgid "%s to today"
-msgstr "%s până astăzi"
-
-#: ../src/main.py:192 ../src/daywidgets.py:63 ../src/daywidgets.py:244
-msgid "Yesterday"
-msgstr "Ieri"
-
-#: ../src/main.py:203
-#, python-format
-msgid "%s to %s"
-msgstr "%s până %s"
-
-#. TODO: Move this into Zeitgeist's library, implemented properly
-#: ../src/sources.py:40
-msgid "Worked with a Video"
-msgstr "Lucrat cu un clip video"
-
-#: ../src/sources.py:40
-msgid "Worked with Videos"
-msgstr "Lucrat cu clipuri video"
-
-#: ../src/sources.py:41
-msgid "Worked with Audio"
-msgstr "Lucrat cu un fișier de sunet"
-
-#: ../src/sources.py:42
-msgid "Worked with an Image"
-msgstr "Lucrat cu o imagine"
-
-#: ../src/sources.py:42
-msgid "Worked with Images"
-msgstr "Lucrat cu imagini"
-
-#: ../src/sources.py:43
-msgid "Edited or Read Document"
-msgstr "Citit sau modificat document"
-
-#: ../src/sources.py:43
-msgid "Edited or Read Documents"
-msgstr "Citit sau modificat documente"
-
-#: ../src/sources.py:44
-msgid "Edited or Read Code"
-msgstr "Citit sau modificat cod sursă"
-
-#: ../src/sources.py:45
-msgid "Conversation"
-msgstr ""
-
-#: ../src/sources.py:45
-msgid "Conversations"
-msgstr ""
-
-#: ../src/sources.py:46
-msgid "Other Activity"
-msgstr "Altă activitate"
-
-#: ../src/sources.py:46
-msgid "Other Activities"
-msgstr "Alte activităţi"
-
-#: ../src/infopane.py:242
-msgid "Actor"
-msgstr ""
-
-#. 0
-#: ../src/infopane.py:243
-msgid "Time"
-msgstr ""
-
-#. 2
-#: ../src/infopane.py:245
-msgid "Interpretation"
-msgstr ""
-
-#. 3
-#: ../src/infopane.py:246
-msgid "Subject Interpretation"
-msgstr ""
-
-#. 4
-#: ../src/infopane.py:247
-msgid "Manifestation"
-msgstr ""
-
-#: ../src/infopane.py:392
-msgid "Related Items"
-msgstr ""
-
-#: ../src/daywidgets.py:111 ../src/daywidgets.py:191
-msgid "Click to return to multiday view"
-msgstr ""
-
-#: ../src/daywidgets.py:221 ../src/common.py:124
-msgid "Morning"
-msgstr "Dimineață"
-
-#: ../src/daywidgets.py:222 ../src/common.py:124
-msgid "Afternoon"
-msgstr "După-amiază"
-
-#: ../src/daywidgets.py:223 ../src/common.py:124
-msgid "Evening"
-msgstr "Seară"
-
-#: ../src/daywidgets.py:304
-msgid "Left click for a detailed timeline view"
-msgstr "Clic stânga pentru afișare detaliată pe timp"
-
-#: ../src/daywidgets.py:306
-msgid "Right click for a thumbnail view"
-msgstr "Clic dreapta pentru afișarea cu miniaturi"
-
-#. Initialize the widget
-#: ../src/daywidgets.py:768
-msgid "Pinned items"
-msgstr "Elemente fixate"
-
-#: ../src/common.py:108
-msgid "Video"
-msgstr "Filme"
-
-#: ../src/common.py:109
-msgid "Music"
-msgstr "Muzică"
-
-#: ../src/common.py:110
-msgid "Document"
-msgstr "Document"
-
-#: ../src/common.py:111
-msgid "Image"
-msgstr "Imagine"
-
-#: ../src/common.py:112
-msgid "Source Code"
-msgstr "Cod sursă"
-
-#: ../src/common.py:113
-msgid "Unknown"
-msgstr "Necunoscut"
-
-#: ../src/common.py:114
-msgid "IM Message"
-msgstr ""
-
-#: ../src/common.py:115
-msgid "Email"
-msgstr ""
-
-#: ../src/widgets.py:172
-msgid "Type here to search..."
-msgstr "Scrie aici pentru a căuta..."
-
-#: ../src/widgets.py:407 ../src/widgets.py:583
-msgid "Remove Pin"
-msgstr "Elimină fixarea"
-
-#: ../src/widgets.py:584
-msgid "Pin to Today"
-msgstr "Fixează astăzi"
-
-#: ../src/widgets.py:585
-msgid "Delete item from Journal"
-msgstr "Șterge element din jurnal"
-
-#: ../src/widgets.py:586
-msgid "Delete all events with this URI"
-msgstr ""
-
-#: ../src/widgets.py:587
-msgid "More Information"
-msgstr ""
-
-#: ../src/widgets.py:599
-msgid "Send To..."
-msgstr ""
 
 #: ../extra/gnome-activity-journal.desktop.in.h:2
 msgid ""
@@ -325,8 +372,27 @@ msgstr "Înălțimea ferestrei"
 msgid "Window width"
 msgstr "Lățimea ferestrei"
 
+#, python-format
+#~ msgid "%s to today"
+#~ msgstr "%s până astăzi"
+
+#~ msgid "Pinned items"
+#~ msgstr "Elemente fixate"
+
 #~ msgid "Most used with..."
 #~ msgstr "Cel mai utilizat cu..."
 
+#~ msgid "Click today to return to today"
+#~ msgstr "Clic pe astăzi pentru a te întoarce la astăzi"
+
+#~ msgid "Right click for a thumbnail view"
+#~ msgstr "Clic dreapta pentru afișarea cu miniaturi"
+
+#~ msgid "Left click for a detailed timeline view"
+#~ msgstr "Clic stânga pentru afișare detaliată pe timp"
+
 #~ msgid "Click to return multiday view"
 #~ msgstr "Clic pentru a reveni la vizualizarea pe zile"
+
+#~ msgid "Pin to Today"
+#~ msgstr "Fixează astăzi"
