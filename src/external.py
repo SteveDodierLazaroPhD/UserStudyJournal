@@ -232,17 +232,17 @@ class Hamster(object):
                 manifestation = Manifestation.USER_ACTIVITY.uri,
                 actor = "applications://hamster-standalone.desktop",
                 timestamp = tval*1000,
-                subject_interpretation = Interpretation.COMMENT.uri,
-                subject_manifestation = Manifestation.UNKNOWN.uri,
+                subject_interpretation = Interpretation.TODO.uri,
+                subject_manifestation = Manifestation.SCHEDULED_ACTIVITY.uri,
                 subject_text = str(self.name) + ": " + str(self.description),
                 subject_uri = ("hamster://%d" % int(self.id)),
             )
 
         def get_events(self):
             events = []
-            events.append(self._make_event(int(self.start_time), Interpretation.ACCESS_EVENT.uri))
+            events.append(self._make_event(int(self.start_time+time.timezone), Interpretation.ACCESS_EVENT.uri))
             if self.end_time:
-                events.append(self._make_event(int(self.end_time), Interpretation.CLOSE_EVENT.uri))
+                events.append(self._make_event(int(self.end_time+time.timezone), Interpretation.LEAVE_EVENT.uri))
             return events
 
     def __init__(self):
