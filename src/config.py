@@ -245,6 +245,7 @@ SUPPORTED_SOURCES = {
     Interpretation.IMMESSAGE.uri: Source(Interpretation.IMMESSAGE, "applications-internet", _("Conversation"), _("Conversations")),
     Interpretation.WEBSITE.uri: Source(Interpretation.WEBSITE, "gnome-mime-html", _("Visited Website"), _("Visited Websites")),
     Interpretation.EMAIL.uri: Source(Interpretation.EMAIL, "applications-internet", _("Email"), _("Emails")),
+    Interpretation.TODO.uri: Source(Interpretation.TODO, "applications-office", _("Todo"), _("Todos")),
     INTERPRETATION_UNKNOWN: Source("Unknown", "applications-other", _("Other Activity"), _("Other Activities")),
     INTERPRETATION_NOTE: Source("aj://note", "tomboy", _("Edited or Read Note"), _("Edited or Read Notes"))
 }

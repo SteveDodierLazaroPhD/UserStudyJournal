@@ -717,6 +717,26 @@ class TomboyContentObject(BaseContentType):
             common.launch_command("tomboy", ["--open-note", self.uri])
 
 
+class GTGContentObject(BaseContentType):
+    @classmethod
+    def use_class(cls, event):
+        """ Used by the content object chooser to check if the content object will work for the event"""
+        if event.actor == "application://gtg.desktop":
+            return cls
+        return False
+
+    icon_name = "$ACTOR"
+    text = _("{source._desc_sing} {event.subjects[0].text}")
+    timelineview_text = _("GTG\n{source._desc_sing} {event.subjects[0].text}")
+    thumbview_text = _("GTG\n{source._desc_sing} {event.subjects[0].text}")
+
+    type_color_representation = common.TANGOCOLORS[0], common.TANGOCOLORS[2]
+
+    def launch(self):
+        if common.is_command_available("gtg"):
+            common.launch_command("gtg", [self.uri])
+
+
 class MusicPlayerContentObject(BaseContentType):
     """Used by music players when the backing subject is not a file"""
 
@@ -748,6 +768,7 @@ class MusicPlayerContentObject(BaseContentType):
 
 # Content object list used by the section function. Should use Subclasses but I like to have some order in which these should be used
 if sys.version_info >= (2,6):
-    map(AbstractContentObject.content_object_types.append, (MusicPlayerContentObject, BzrContentObject, WebContentObject,
-                                                            IMContentObject, TomboyContentObject, EmailContentObject, HamsterContentObject))
+    map(AbstractContentObject.content_object_types.append,
+        (MusicPlayerContentObject, BzrContentObject, WebContentObject,
+         IMContentObject, TomboyContentObject, GTGContentObject, EmailContentObject, HamsterContentObject))
 
