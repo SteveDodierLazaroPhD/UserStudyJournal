@@ -134,7 +134,7 @@ msgstr "Imágen"
 
 #: ../src/common.py:147
 msgid "Source Code"
-msgstr "Código Fuente"
+msgstr "Código fuente"
 
 #: ../src/common.py:148
 msgid "Unknown"
@@ -162,7 +162,7 @@ msgstr "Anclar"
 
 #: ../src/supporting_widgets.py:734
 msgid "Delete item from Journal"
-msgstr "Eliminar de la Bitácora"
+msgstr "Eliminar elemento del diario"
 
 #: ../src/supporting_widgets.py:735
 msgid "Delete all events with this URI"
@@ -211,19 +211,19 @@ msgstr "Complementos"
 #. TODO: Move this into Zeitgeist's library, implemented properly
 #: ../src/config.py:240
 msgid "Worked with a Video"
-msgstr ""
+msgstr "Trabajó con un vídeo"
 
 #: ../src/config.py:240
 msgid "Worked with Videos"
-msgstr ""
+msgstr "Trabajó con vídeos"
 
 #: ../src/config.py:241
 msgid "Worked with Audio"
-msgstr ""
+msgstr "Trabajó con sonido"
 
 #: ../src/config.py:242
 msgid "Worked with an Image"
-msgstr ""
+msgstr "Trabajó con una imagen"
 
 #: ../src/config.py:242
 msgid "Worked with Images"
@@ -304,13 +304,13 @@ msgstr "%s a %s"
 
 #: ../src/main.py:309 ../extra/gnome-activity-journal.desktop.in.h:1
 msgid "Activity Journal"
-msgstr "Diario de Actividades"
+msgstr "Diario de actividad"
 
 #: ../src/histogram.py:438
 msgid "item"
 msgid_plural "items"
-msgstr[0] "Elemento"
-msgstr[1] "Elementos"
+msgstr[0] "elemento"
+msgstr[1] "elementos"
 
 #: ../extra/gnome-activity-journal.desktop.in.h:2
 msgid ""
@@ -345,7 +345,7 @@ msgid ""
 "Customized width for the main window, in pixels (requires restart). Can't be "
 "bigger than the desktop's size."
 msgstr ""
-"Ancho personalizado para la ventana principal, en píxeles (requiere "
+"Anchura personalizado para la ventana principal, en píxeles (requiere "
 "reiniciar). No puede ser mayor que el tamaño del escritorio."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:6
@@ -356,7 +356,7 @@ msgstr "Cantidad de días para mostrar a la vez."
 msgid ""
 "Whether special accessibility options should be enabled (requires restart)."
 msgstr ""
-"Indica si las opciones de accesibilidad especiales deben ser activadas "
+"Indica si las opciones de accesibilidad especiales deben estar activadas "
 "(requiere reiniciar)."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:8
@@ -374,4 +374,4 @@ msgstr "Altura de la ventana"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:10
 msgid "Window width"
-msgstr "Ancho de la ventana"
+msgstr "Anchura de la ventana"
