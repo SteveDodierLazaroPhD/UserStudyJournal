@@ -484,11 +484,17 @@ class HistogramWidget(gtk.Viewport):
                            (gobject.TYPE_PYOBJECT,)),
         }
 
-    def __init__(self, histo_type=CairoHistogram, size = (600, 75)):
+    def __init__(self, histo_type=CairoHistogram):
         """
         :param histo_type: a :class:`CairoHistogram <CairoHistogram>` or a derivative
         """
         super(HistogramWidget, self).__init__()
+        screen = self.get_screen()
+        if screen.get_width() < 1280:
+            size = (600, 55)
+        else:
+            size = (600, 75)
+
         self.set_shadow_type(gtk.SHADOW_NONE)
         self.histogram = histo_type()
         self.eventbox = TooltipEventBox(self.histogram, self)
