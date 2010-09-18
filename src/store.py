@@ -47,7 +47,10 @@ def get_related_events_for_uri(uri, callback):
     def _event_request_handler(ids):
         events = []
         for id_ in ids:
-            events.append(STORE.get_event_from_id(id_))
+            try:
+                events.append(STORE.get_event_from_id(id_))
+            except KeyError as e:
+                print "%s" % e
         callback(events)
 
     def _event_id_request_handler(uris):
@@ -180,7 +183,7 @@ class Day(gobject.GObject):
         self.start = int(time.mktime(date.timetuple()))
         self.end = self.start+86399
         self._population = None
-        
+
         if days_population:
             for timestamp, count in days_population: # they are ordered descending
                 # Ugly hack to adjust for local/UTC time. Screw you timezones!
@@ -194,7 +197,7 @@ class Day(gobject.GObject):
                     break
         else:
             self.load_ids()
-        
+
         if external.HAMSTER:
             try:
                 facts = external.HAMSTER.get_facts(self.start, self.end)
@@ -370,10 +373,10 @@ class Store(gobject.GObject):
             day = Day(date, days_population)
             self.add_day(date, day)
             currentTimestamp -= 86400
-        
+
         for day in self.days[-6:]:
             day.load_ids()
-        
+
         content_objects.AbstractContentObject.connect_to_manager("add", self.add_content_object_with_new_type)
         content_objects.AbstractContentObject.connect_to_manager("remove", self.remove_content_objects_with_type)
 
@@ -460,7 +463,7 @@ class Store(gobject.GObject):
                 if func:
                     func()
                 return False
-            
+
             thread = threading.Thread(target=_thread_fn, args=(events,))
             thread.start()
 

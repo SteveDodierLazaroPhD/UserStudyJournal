@@ -1191,7 +1191,7 @@ class _RelatedPane(gtk.TreeView):
         pcolumn.pack_end(text_render, True)
         pcolumn.set_cell_data_func(text_render, self.celldatamethod, "text")
         self.append_column(pcolumn)
-        #self.set_headers_visible(False)
+        self.set_headers_visible(True)
 
     def celldatamethod(self, column, cell, model, iter_, user_data):
         if model:
@@ -1295,13 +1295,15 @@ class InformationContainer(gtk.Window):
         box1.pack_start(self.toolbar, False, False)
         box2.pack_start(self.infopane, False, False, 4)
         if TRACKER:
-            box2.pack_start(frame, False, False, 4)
+            box2.pack_start(frame, True, True, 4)
         scrolledwindow.set_shadow_type(gtk.SHADOW_IN)
         scrolledwindow.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
         scrolledwindow.add(self.relatedpane)
         vbox.pack_end(scrolledwindow, True, True)
+        scrolledwindow.set_size_request(50, 100)
+
         box2.pack_end(vbox, True, True, 10)
-        box1.add(box2)
+        box1.pack_start(box2, True, True)
         self.add(box1)
         def _launch(w):
             self.obj.launch()
@@ -1322,6 +1324,7 @@ class InformationContainer(gtk.Window):
         if allocation.height < 400:
             self.infopane.display_widget.hide()
         else:
+            print "show"
             self.infopane.display_widget.show()
 
     def do_toggle_bookmark(self, *args):
