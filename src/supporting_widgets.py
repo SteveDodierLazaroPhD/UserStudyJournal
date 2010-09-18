@@ -1138,6 +1138,7 @@ class InformationBox(gtk.VBox):
         self.box = gtk.Frame()
         self.label = gtk.Label()
         self.pathlabel = gtk.Label()
+        self.pathlabel.set_selectable(True)
         self.pathlabel.modify_font(pango.FontDescription("Monospace 7"))
         labelvbox = gtk.VBox()
         labelvbox.pack_start(self.label)
@@ -1163,7 +1164,7 @@ class InformationBox(gtk.VBox):
         self.obj = obj
         self.set_displaytype(obj)
         self.label.set_markup("<span size='10336'>" + obj.text.replace("&", "&amp;") + "</span>")
-        self.pathlabel.set_markup("<span color='#979797'>" + obj.uri.replace("&", "&amp;") + "</span>")
+        self.pathlabel.set_markup("<span color='#979797'>" + obj.uri.replace("&", "&amp;").replace("%20", " ") + "</span>")
 
 
 class _RelatedPane(gtk.TreeView):
