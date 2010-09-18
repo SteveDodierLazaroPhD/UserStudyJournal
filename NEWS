@@ -1,0 +1,46 @@
+2010-09-18: GNOME Activity Journal 0.5.0.1 "Bazaar"
+---------------------------------------------------
+
+This is a bug-fix release for GNOME Activity Journal 0.5.0.
+
+ - Updated Hamster-specific code to use the new ontology from Zeitgeist 0.5.0
+   (LP: #641148, Debian bug #591267).
+ - Catch exception trying to extract a non-existant thumbnail from an
+   OpenDocument file (LP: #535440).
+ - Fixed a possible issue with "%20" being used in filenames.
+ - Some minor changes (the "Goto Today" label has been changed to
+   "Go to Today").
+ - Removed superfluous debugging (timing) information.
+ - Updated several translations.
+
+2010-08-24: GNOME Activity Journal 0.5.0 "Defying Gravity"
+----------------------------------------------------------
+
+ - Reduced startup time and improved responsivity.
+ - Improved support for Tomboy notes and for websites.
+ - Added an (experimental) toolbar providing easier access to several options.
+ - Improved the search tool.
+ - Added a preferences dialog providing access to a Blacklist management
+   extension.
+
+2010-05-02: GNOME Activity Journal 0.3.4.1
+------------------------------------------
+
+This release avoids an error when using Python 2.5 due to its lack of new-style
+string formatting.
+
+2010-05-01: GNOME Activity Journal 0.3.4
+----------------------------------------
+
+ - Changed the timeline view to be based upon GtkTreeView and also revamped
+   the multiple day view.
+ - Improved the rendering of the thumbnail view.
+ - Improved support for dark themes, and fixed widget drawing when a theme
+   with pixbuf backgrounds is in use.
+ - Added a "More information" dialogue for events, showing information about
+   them and pointing to related subjects.
+ - The contextual menu is now available in all widgets.
+ - Added a content object system which allows users to launch, view, and
+   manipulate events with non-file subjects.
+
+...
