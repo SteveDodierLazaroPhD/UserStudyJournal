@@ -2,10 +2,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GNOME Activity Journal\n"
 "Report-Msgid-Bugs-To: zeitgeist@lists.launchpad.net\n"
-"POT-Creation-Date: 2010-08-29 00:28+0200\n"
-"PO-Revision-Date: 2010-04-22 15:06+0000\n"
-"Last-Translator: Siegfried Gevatter <rainct@ubuntu.com>\n"
+"POT-Creation-Date: 2010-09-18 21:43+0200\n"
+"PO-Revision-Date: 2010-09-18 21:53+0100\n"
+"Last-Translator: Siegfried-Angel Gevatter Pujals <rainct@ubuntu.com>\n"
 "Language-Team: Siegfried Gevatter <siegfried@gevatter.com>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -26,117 +27,75 @@ msgstr "Error"
 msgid "Unable to connect to Zeitgeist:"
 msgstr "No s'ha pogut establir connexió amb el Zeitgeist:"
 
-#: ../src/activity_widgets.py:150 ../src/common.py:170
-msgid "Morning"
-msgstr "Matí"
-
-#: ../src/activity_widgets.py:150 ../src/common.py:170
-msgid "Afternoon"
-msgstr "Tarda"
-
-#: ../src/activity_widgets.py:150 ../src/common.py:170
-msgid "Evening"
-msgstr "Vespre"
-
-#: ../src/activity_widgets.py:472 ../src/supporting_widgets.py:732
-msgid "Remove Pin"
-msgstr "Treu l'estat d'enganxós"
-
-#: ../src/activity_widgets.py:1228
-msgid "Pinned Items"
-msgstr ""
-
-#: ../src/content_objects.py:558 ../src/content_objects.py:560
+#: ../src/content_objects.py:563
+#: ../src/content_objects.py:565
 msgid "{source._desc_sing} with {event.subjects[0].text}"
-msgstr ""
+msgstr "{source._desc_sing} amb {event.subjects[0].text}"
 
-#: ../src/content_objects.py:559
+#: ../src/content_objects.py:564
 msgid ""
 "{source._desc_sing} with {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 msgstr ""
+"{source._desc_sing} amb {event.subjects[0].text}\n"
+"{event.subjects[0].uri}"
 
-#: ../src/content_objects.py:570
+#: ../src/content_objects.py:575
 msgid "Available"
-msgstr ""
+msgstr "Disponible"
 
-#: ../src/content_objects.py:571
+#: ../src/content_objects.py:576
 msgid "Offline"
-msgstr ""
+msgstr "Fora de línia"
 
-#: ../src/content_objects.py:572
+#: ../src/content_objects.py:577
 msgid "Away"
-msgstr ""
+msgstr "Absent"
 
-#: ../src/content_objects.py:573
+#: ../src/content_objects.py:578
 msgid "Busy"
-msgstr ""
+msgstr "Ocupat"
 
-#: ../src/content_objects.py:605 ../src/content_objects.py:610
+#: ../src/content_objects.py:610
 #: ../src/content_objects.py:615
+#: ../src/content_objects.py:620
 msgid "with"
 msgstr "amb"
 
-#: ../src/content_objects.py:654
+#: ../src/content_objects.py:659
 msgid "Time Tracker"
-msgstr ""
+msgstr "Comptador de temps"
 
-#: ../src/content_objects.py:675 ../src/content_objects.py:677
+#: ../src/content_objects.py:680
+#: ../src/content_objects.py:682
 msgid "{source._desc_sing} from {event.subjects[0].text}"
-msgstr ""
+msgstr "{source._desc_sing} de {event.subjects[0].text}"
 
-#: ../src/content_objects.py:676
+#: ../src/content_objects.py:681
 msgid ""
 "{source._desc_sing} from {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 msgstr ""
+"{source._desc_sing} de {event.subjects[0].text}\n"
+"{event.subjects[0].uri}"
 
-#: ../src/content_objects.py:680
+#: ../src/content_objects.py:685
 #, python-format
 msgid " (%s Attachments)"
-msgstr ""
+msgstr "(%s adjuncions)"
 
-#: ../src/content_objects.py:704
+#: ../src/content_objects.py:709
 msgid "{event.subjects[0].text}"
-msgstr ""
+msgstr "{event.subjects[0].text}"
 
-#: ../src/content_objects.py:705 ../src/content_objects.py:706
+#: ../src/content_objects.py:710
+#: ../src/content_objects.py:711
 msgid ""
 "Note\n"
 "{event.subjects[0].text}"
 msgstr ""
-
-#: ../src/common.py:143
-msgid "Video"
-msgstr "Vídeo"
-
-#: ../src/common.py:144
-msgid "Music"
-msgstr "Música"
-
-#: ../src/common.py:145
-msgid "Document"
-msgstr "Document"
-
-#: ../src/common.py:146
-msgid "Image"
-msgstr "Imatge"
-
-#: ../src/common.py:147
-msgid "Source Code"
-msgstr "Codi font"
-
-#: ../src/common.py:148
-msgid "Unknown"
-msgstr "Desconegut"
-
-#: ../src/common.py:149
-msgid "IM Message"
-msgstr "Missatge de missatgeria instantània"
-
-#: ../src/common.py:150 ../src/config.py:247
-msgid "Email"
-msgstr "Correu electrònic"
+"Nota\n"
+"{event.subjects[0].text}"
 
 #: ../src/supporting_widgets.py:453
 msgid "Type here to search..."
@@ -146,9 +105,15 @@ msgstr "Escriviu aquí per a cercar..."
 msgid "Powered by Zeitgeist"
 msgstr "Funciona amb Zeitgeist"
 
-#: ../src/supporting_widgets.py:733 ../src/supporting_widgets.py:1193
+#: ../src/supporting_widgets.py:732
+#: ../src/activity_widgets.py:469
+msgid "Remove Pin"
+msgstr "Treu l'estat d'enganxós"
+
+#: ../src/supporting_widgets.py:733
+#: ../src/supporting_widgets.py:1196
 msgid "Add Pin"
-msgstr ""
+msgstr "Fes enganxós"
 
 #: ../src/supporting_widgets.py:734
 msgid "Delete item from Journal"
@@ -166,37 +131,98 @@ msgstr "Més informació"
 msgid "Send To..."
 msgstr "Envia a..."
 
-#: ../src/supporting_widgets.py:863
-msgid "Goto Today"
-msgstr ""
+#: ../src/supporting_widgets.py:849
+msgid "Search"
+msgstr "Cerca"
 
-#: ../src/supporting_widgets.py:1105
-msgid "Used With"
-msgstr ""
-
-#: ../src/supporting_widgets.py:1188
-msgid "Launch this subject"
-msgstr ""
-
-#: ../src/supporting_widgets.py:1190
-msgid "Delete this subject"
-msgstr ""
-
-#: ../src/supporting_widgets.py:1209
-msgid "Tags"
-msgstr ""
-
-#: ../src/supporting_widgets.py:1345
+#: ../src/supporting_widgets.py:860
+#: ../src/supporting_widgets.py:1348
 msgid "Preferences"
-msgstr ""
+msgstr "Preferències"
 
-#: ../src/supporting_widgets.py:1354
+#: ../src/supporting_widgets.py:865
+#: ../src/supporting_widgets.py:866
+msgid "Go to Today"
+msgstr "Torna a avui"
+
+#: ../src/supporting_widgets.py:1108
+msgid "Used With"
+msgstr "Utilitzat amb"
+
+#: ../src/supporting_widgets.py:1191
+msgid "Launch this subject"
+msgstr "Obre aquest element"
+
+#: ../src/supporting_widgets.py:1193
+msgid "Delete this subject"
+msgstr "Esborra aquest element"
+
+#: ../src/supporting_widgets.py:1212
+msgid "Tags"
+msgstr "Etiquetes"
+
+#: ../src/supporting_widgets.py:1357
 msgid "Active Plugins:"
-msgstr ""
+msgstr "Extensions actives:"
 
-#: ../src/supporting_widgets.py:1362
+#: ../src/supporting_widgets.py:1365
 msgid "Plugins"
-msgstr ""
+msgstr "Extensions"
+
+#: ../src/activity_widgets.py:149
+#: ../src/common.py:170
+msgid "Morning"
+msgstr "Matí"
+
+#: ../src/activity_widgets.py:149
+#: ../src/common.py:170
+msgid "Afternoon"
+msgstr "Tarda"
+
+#: ../src/activity_widgets.py:149
+#: ../src/common.py:170
+msgid "Evening"
+msgstr "Vespre"
+
+#: ../src/activity_widgets.py:1225
+msgid "Pinned Items"
+msgstr "Elements enganxosos"
+
+#: ../src/histogram.py:438
+msgid "item"
+msgid_plural "items"
+msgstr[0] "element"
+msgstr[1] "elements"
+
+#: ../src/main.py:125
+msgid "Switch to MultiView"
+msgstr "Canvia a la vista estàndard"
+
+#: ../src/main.py:126
+msgid "Switch to ThumbView"
+msgstr "Canvia a la vista d'icones"
+
+#: ../src/main.py:127
+msgid "Switch to TimelineView"
+msgstr "Canvia a la línia del temps"
+
+#: ../src/main.py:295
+msgid "Today"
+msgstr "Avui"
+
+#: ../src/main.py:298
+msgid "Yesterday"
+msgstr "Ahir"
+
+#: ../src/main.py:309
+#, python-format
+msgid "%s to %s"
+msgstr "%s a %s"
+
+#: ../src/main.py:309
+#: ../extra/gnome-activity-journal.desktop.in.h:1
+msgid "Activity Journal"
+msgstr "Diari d'activitats"
 
 #. TODO: Move this into Zeitgeist's library, implemented properly
 #: ../src/config.py:240
@@ -241,15 +267,20 @@ msgstr "Converses"
 
 #: ../src/config.py:246
 msgid "Visited Website"
-msgstr ""
+msgstr "Pàgina web visitada"
 
 #: ../src/config.py:246
 msgid "Visited Websites"
-msgstr ""
+msgstr "Pàgines web visitades"
+
+#: ../src/config.py:247
+#: ../src/common.py:150
+msgid "Email"
+msgstr "Correu electrònic"
 
 #: ../src/config.py:247
 msgid "Emails"
-msgstr ""
+msgstr "Correus electrònics"
 
 #: ../src/config.py:248
 msgid "Other Activity"
@@ -261,54 +292,43 @@ msgstr "Altres actiivtats"
 
 #: ../src/config.py:249
 msgid "Edited or Read Note"
-msgstr ""
+msgstr "Nota"
 
 #: ../src/config.py:249
 msgid "Edited or Read Notes"
-msgstr ""
+msgstr "Notes"
 
-#: ../src/main.py:125
-msgid "Switch to MultiView"
-msgstr ""
+#: ../src/common.py:143
+msgid "Video"
+msgstr "Vídeo"
 
-#: ../src/main.py:126
-msgid "Switch to ThumbView"
-msgstr ""
+#: ../src/common.py:144
+msgid "Music"
+msgstr "Música"
 
-#: ../src/main.py:127
-msgid "Switch to TimelineView"
-msgstr ""
+#: ../src/common.py:145
+msgid "Document"
+msgstr "Document"
 
-#: ../src/main.py:295
-msgid "Today"
-msgstr "Avui"
+#: ../src/common.py:146
+msgid "Image"
+msgstr "Imatge"
 
-#: ../src/main.py:298
-msgid "Yesterday"
-msgstr "Ahir"
+#: ../src/common.py:147
+msgid "Source Code"
+msgstr "Codi font"
 
-#: ../src/main.py:309
-#, python-format
-msgid "%s to %s"
-msgstr "%s a %s"
+#: ../src/common.py:148
+msgid "Unknown"
+msgstr "Desconegut"
 
-#: ../src/main.py:309 ../extra/gnome-activity-journal.desktop.in.h:1
-msgid "Activity Journal"
-msgstr "Diari d'activitats"
-
-#: ../src/histogram.py:438
-msgid "item"
-msgid_plural "items"
-msgstr[0] "element"
-msgstr[1] "elements"
+#: ../src/common.py:149
+msgid "IM Message"
+msgstr "Missatge de missatgeria instantània"
 
 #: ../extra/gnome-activity-journal.desktop.in.h:2
-msgid ""
-"Browse a chronological log of your activities and easily find files, "
-"contacts, etc."
-msgstr ""
-"Vegeu un registre cronològic de les vostres activitats i trobeu fàcilment "
-"fitxers, contactes, etc."
+msgid "Browse a chronological log of your activities and easily find files, contacts, etc."
+msgstr "Vegeu un registre cronològic de les vostres activitats i trobeu fàcilment fitxers, contactes, etc."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:1
 msgid "Accessibility"
@@ -323,40 +343,24 @@ msgid "Amount of visible days"
 msgstr "Nombre de dies visibles"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:4
-msgid ""
-"Customized height for the main window, in pixels (requires restart). Can't "
-"be bigger than the desktop's size."
-msgstr ""
-"Alçada de la finestra personalitzada, en píxels (necessita reiniciar). No "
-"pot ser superior a la mida de l'escriptori."
+msgid "Customized height for the main window, in pixels (requires restart). Can't be bigger than the desktop's size."
+msgstr "Alçada de la finestra personalitzada, en píxels (necessita reiniciar). No pot ser superior a la mida de l'escriptori."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:5
-msgid ""
-"Customized width for the main window, in pixels (requires restart). Can't be "
-"bigger than the desktop's size."
-msgstr ""
-"Amplada de la finestra personalitzada, en píxels (necessita reiniciar). No "
-"pot ser superior a la mida de l'escriptori."
+msgid "Customized width for the main window, in pixels (requires restart). Can't be bigger than the desktop's size."
+msgstr "Amplada de la finestra personalitzada, en píxels (necessita reiniciar). No pot ser superior a la mida de l'escriptori."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:6
 msgid "The amount of days to show at once."
 msgstr "El nombre de dies a mostrar alhora."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:7
-msgid ""
-"Whether special accessibility options should be enabled (requires restart)."
-msgstr ""
-"Si les opcions especials d'accessibilitat s'han d'habilitar (necessita "
-"reiniciar)."
+msgid "Whether special accessibility options should be enabled (requires restart)."
+msgstr "Si les opcions especials d'accessibilitat s'han d'habilitar (necessita reiniciar)."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:8
-msgid ""
-"Whether to allow showing little thumbnails next to each activity (requires "
-"restart). If False, only generic mime-type icons will be used."
-msgstr ""
-"Si és permès mostrar petites miniaturitzacions al costat de cada activitat "
-"(necessita reiniciar). Si és Fals, només s'utilitzaran icones genèriques "
-"segons el tipus MIME."
+msgid "Whether to allow showing little thumbnails next to each activity (requires restart). If False, only generic mime-type icons will be used."
+msgstr "Si és permès mostrar petites miniaturitzacions al costat de cada activitat (necessita reiniciar). Si és Fals, només s'utilitzaran icones genèriques segons el tipus MIME."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:9
 msgid "Window height"
@@ -368,80 +372,53 @@ msgstr "Amplada de la finestra"
 
 #~ msgid "Recent Events"
 #~ msgstr "Esdeveniments recents"
-
 #~ msgid "Show Options"
 #~ msgstr "Mostra les opcions"
-
 #~ msgid "Personal Timeline"
 #~ msgstr "Línia cronològica personal"
-
 #~ msgid "Properties..."
 #~ msgstr "Propietats..."
-
-#~ msgid "Search..."
-#~ msgstr "Cerca..."
-
 #~ msgid "Days to display:"
 #~ msgstr "Dies a mostrar:"
-
 #~ msgid "3 days"
 #~ msgstr "3 dies"
-
 #~ msgid "1 week"
 #~ msgstr "1 setmana"
-
 #~ msgid "1 month"
 #~ msgstr "1 mes"
-
 #~ msgid "Go Back in Time"
 #~ msgstr "Torna endarrere en el temps"
-
 #~ msgid "Look into the Future"
 #~ msgstr "Mira al futur"
-
 #~ msgid "Journal"
 #~ msgstr "Diari"
-
 #~ msgid "Click today to return to today"
 #~ msgstr "Feu clic sobre «Avui» per a tornar a avui"
-
-#, python-format
 #~ msgid "%s to today"
 #~ msgstr "%s a avui"
-
 #~ msgid "Most used with..."
 #~ msgstr "Més utilitzat amb..."
-
 #~ msgid "Actor"
 #~ msgstr "Actor"
-
 #~ msgid "Time"
 #~ msgstr "Hora"
-
 #~ msgid "Interpretation"
 #~ msgstr "Interpretació"
-
 #~ msgid "Manifestation"
 #~ msgstr "Manifestació"
-
 #~ msgid "Related Items"
 #~ msgstr "Elements relacionats"
-
 #~ msgid "Click to return to multiday view"
 #~ msgstr "Feu clic al botó per a veure una vista de múltiples dies"
-
 #~ msgid "Left click for a detailed timeline view"
 #~ msgstr ""
-#~ "Feu clic al botó esquerra del ratolí per a veure una línia de temps detallada"
-
+#~ "Feu clic al botó esquerra del ratolí per a veure una línia de temps "
+#~ "detallada"
 #~ msgid "Right click for a thumbnail view"
-#~ msgstr "Feu clic al botó dret del ratolí per a veure una vista de miniatures"
-
+#~ msgstr ""
+#~ "Feu clic al botó dret del ratolí per a veure una vista de miniatures"
 #~ msgid "Pinned items"
 #~ msgstr "Elements enganxosos"
-
-#~ msgid "Pin to Today"
-#~ msgstr "Enganxós"
-
 #~ msgid "Click to return multiday view"
 #~ msgstr "Feu clic al botó per a veure una vista de múltiples dies"
+

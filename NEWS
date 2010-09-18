@@ -8,10 +8,12 @@ This is a bug-fix release for GNOME Activity Journal 0.5.0.
  - Catch exception trying to extract a non-existant thumbnail from an
    OpenDocument file (LP: #535440).
  - Fixed a possible issue with "%20" being used in filenames.
- - Some minor changes (the "Goto Today" label has been changed to
-   "Go to Today").
+ - Some minor changes (relabeled "Goto Today" to "Go to Today", added missing
+   tooltips to toolbar icons).
  - Removed superfluous debugging (timing) information.
  - Updated several translations.
+ - Removed Zeitgeist version check for Zeitgeist 0.5.0 compatibility (as it
+   reports a wrong version number).
 
 2010-08-24: GNOME Activity Journal 0.5.0 "Defying Gravity"
 ----------------------------------------------------------
