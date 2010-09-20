@@ -1324,7 +1324,6 @@ class InformationContainer(gtk.Window):
         if allocation.height < 400:
             self.infopane.display_widget.hide()
         else:
-            print "show"
             self.infopane.display_widget.show()
 
     def do_toggle_bookmark(self, *args):
