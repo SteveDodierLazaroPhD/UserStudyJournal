@@ -255,14 +255,13 @@ class ContentObject(AbstractContentObject):
         """
         :returns: a string of text markup used in timeline widget and elsewhere
         """
-        text = self.event.subjects[0].text
         try:
             interpretation = INTERPRETATION_PARENTS[self.event.subjects[0].interpretation]
         except:
             interpretation = self.event.subjects[0].interpretation
         t = (common.FILETYPESNAMES[interpretation] if
              interpretation in common.FILETYPESNAMES.keys() else "Unknown")
-        timelineview_text = (text+ "\n" + t).replace("%", "%%")
+        timelineview_text = (self.text+ "\n" + t).replace("%", "%%")
         return timelineview_text
 
     @CachedAttribute
@@ -270,7 +269,7 @@ class ContentObject(AbstractContentObject):
         """
         :returns: a string of text used in thumb widget and elsewhere
         """
-        return self.event.subjects[0].text
+        return self.text
 
     def get_actor_desktop_file(self):
         """
