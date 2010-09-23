@@ -34,9 +34,6 @@ from store import Store, tdelta, STORE, CLIENT
 from config import settings, get_icon_path, get_data_path, PluginManager
 
 
-AUTOLOAD = False # Should the store request events in the background?
-
-
 class ViewContainer(gtk.Notebook):
     __gsignals__ = {
         "new-view-added" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,(gobject.TYPE_PYOBJECT,)),
@@ -131,21 +128,15 @@ class PortalWindow(gtk.Window):
         self.preferences_dialog = PreferencesDialog()
         self.histogram = HistogramWidget()
         self.histogram.set_store(self.store)
-        self.histogram.set_dates([self.day_iter.date])
         self.backward_button, ev_backward_button = DayButton.new(0)
         self.forward_button, ev_forward_button = DayButton.new(1, sensitive=False)
         # Widget placement
         vbox = gtk.VBox(); hbox = gtk.HBox(); histogramhbox = gtk.HBox(); tvbox = gtk.VBox()
-        hbox.pack_start(ev_backward_button, False, False)
-        hbox.pack_start(self.view, True, True, 6)
-        hbox.pack_end(ev_forward_button, False, False)
-        tvbox.pack_start(hbox, True, True, 3)
-        vbox.pack_start(self.toolbar, False, False)
-        vbox.pack_start(tvbox, True, True, 2)
-        histogramhbox.pack_end(self.histogram, True, True, 32)
-        vbox.pack_end(histogramhbox, False, False)
-        self.add(vbox)
-        self.show_all()
+        hbox.pack_start(ev_backward_button, False, False); hbox.pack_start(self.view, True, True, 6)
+        hbox.pack_end(ev_forward_button, False, False); tvbox.pack_start(hbox, True, True, 3)
+        vbox.pack_start(self.toolbar, False, False); vbox.pack_start(tvbox, True, True, 2)
+        histogramhbox.pack_end(self.histogram, True, True, 32); vbox.pack_end(histogramhbox, False, False)
+        self.add(vbox); self.show_all()
         # Settings
         self.view.set_day(self.store.today)
         # Connections
@@ -160,10 +151,6 @@ class PortalWindow(gtk.Window):
         self.store.connect("update", self.histogram.histogram.set_store)
         SearchBox.connect("search", self._on_search)
         SearchBox.connect("clear", self._on_search_clear)
-        self.set_title_from_date(self.day_iter.date)
-        gobject.idle_add(self.setup)
-        # hide unused widgets
-        SearchBox.hide()
         # Window configuration
         self.set_icon_name("gnome-activity-journal")
         self.set_icon_list(
@@ -173,7 +160,10 @@ class PortalWindow(gtk.Window):
                 "hicolor/32x32/apps/gnome-activity-journal.png",
                 "hicolor/48x48/apps/gnome-activity-journal.png",
                 "hicolor/256x256/apps/gnome-activity-journal.png")])
+        gobject.idle_add(self.setup)
         gobject.idle_add(self.load_plugins)
+        # hide unused widgets
+        SearchBox.hide()
 
     def load_plugins(self):
         self.plug_manager = PluginManager(CLIENT, STORE, self)
@@ -183,10 +173,9 @@ class PortalWindow(gtk.Window):
         return False
 
     def setup(self, *args):
+        self.set_title_from_date(self.day_iter.date)
         self.histogram.set_dates(self.active_dates)
         self.histogram.scroll_to_end()
-        if AUTOLOAD:
-            self.store.request_last_n_days_events(90)
         return False
 
     def set_visibility(self, val):
