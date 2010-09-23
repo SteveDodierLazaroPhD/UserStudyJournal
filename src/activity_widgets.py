@@ -42,6 +42,8 @@ EXPANDED = {}
 class _GenericViewWidget(gtk.VBox):
     day = None
     day_signal_id = None
+    icon_path = ""#get_data_path("multiview_icon.png")
+    dsc_text = ""#_("Switch to MultiView")
 
     def __init__(self):
         gtk.VBox.__init__(self)
@@ -83,6 +85,8 @@ class MultiViewContainer(gtk.HBox):
     num_pages = 3
     day_signal_id = [None] * num_pages
     day_page_map = {}
+    icon_path = get_data_path("multiview_icon.png")
+    dsc_text = _("Switch to MultiView")
 
     def __init__(self):
         super(MultiViewContainer, self).__init__()
@@ -530,6 +534,8 @@ class Item(gtk.HBox):
 ## ThumbView code
 #####################
 class ThumbViewContainer(_GenericViewWidget):
+    icon_path = get_data_path("thumbview_icon.png")
+    dsc_text = _("Switch to ThumbView")
 
     def __init__(self):
         _GenericViewWidget.__init__(self)
@@ -886,6 +892,8 @@ class ThumbView(gtk.VBox):
 ## TimelineView
 ################
 class TimelineViewContainer(_GenericViewWidget):
+    icon_path = get_data_path("timelineview_icon.png")
+    dsc_text = _("Switch to TimelineView")
 
     def __init__(self):
         _GenericViewWidget.__init__(self)
