@@ -108,6 +108,7 @@ class ViewContainer(gtk.Notebook):
     def _register_default_view(self, view):
         toolbutton = Toolbar.get_toolbutton(view.icon_path, view.dsc_text)
         self._register_new_view(self.ViewStruct(view, toolbutton))
+        self.set_view_page(0)
 
 
 class PortalWindow(gtk.Window):
@@ -118,34 +119,26 @@ class PortalWindow(gtk.Window):
 
     def __init__(self):
         super(PortalWindow, self).__init__()
-        self.__initialized = False
-        self._requested_size = None
         # Important
         self._request_size()
         self.store = STORE
         self.day_iter = self.store.today
         self.view = ViewContainer(self.store)
         self.toolbar = Toolbar()
-
-        map(self.view._register_default_view, (MultiViewContainer(), ThumbViewContainer(), TimelineViewContainer()))
-        self.view.set_view_page(0)
+        default_views = (MultiViewContainer(), ThumbViewContainer(), TimelineViewContainer())
+        map(self.view._register_default_view, default_views)
         map(self.toolbar.add_new_view_button, self.view.tool_buttons[::-1])
-        self.view.connect("new-view-added", lambda w, v: self.toolbar.add_new_view_button(v.button, len(self.view.tool_buttons)))
         self.preferences_dialog = PreferencesDialog()
         self.histogram = HistogramWidget()
         self.histogram.set_store(self.store)
         self.histogram.set_dates([self.day_iter.date])
         self.backward_button, ev_backward_button = DayButton.new(0)
         self.forward_button, ev_forward_button = DayButton.new(1, sensitive=False)
-        self.searchbox = SearchBox
         # Widget placement
-        vbox = gtk.VBox()
-        hbox = gtk.HBox()
-        histogramhbox = gtk.HBox()
+        vbox = gtk.VBox(); hbox = gtk.HBox(); histogramhbox = gtk.HBox(); tvbox = gtk.VBox()
         hbox.pack_start(ev_backward_button, False, False)
         hbox.pack_start(self.view, True, True, 6)
         hbox.pack_end(ev_forward_button, False, False)
-        tvbox = gtk.VBox()
         tvbox.pack_start(hbox, True, True, 3)
         vbox.pack_start(self.toolbar, False, False)
         vbox.pack_start(tvbox, True, True, 2)
@@ -156,6 +149,7 @@ class PortalWindow(gtk.Window):
         # Settings
         self.view.set_day(self.store.today)
         # Connections
+        self.view.connect("new-view-added", lambda w, v: self.toolbar.add_new_view_button(v.button, len(self.view.tool_buttons)))
         self.connect("destroy", self.quit)
         self.connect("delete-event", self.on_delete)
         self.backward_button.connect("clicked", self.previous)
@@ -164,19 +158,12 @@ class PortalWindow(gtk.Window):
         self.histogram.connect("date-changed", lambda w, date: self.set_date(date))
         self.view.connect("view-button-clicked", self.on_view_button_click)
         self.store.connect("update", self.histogram.histogram.set_store)
-        self.searchbox.connect("search", self._on_search)
-        self.searchbox.connect("clear", self._on_search_clear)
+        SearchBox.connect("search", self._on_search)
+        SearchBox.connect("clear", self._on_search_clear)
         self.set_title_from_date(self.day_iter.date)
-        def setup(*args):
-            self.histogram.set_dates(self.active_dates)
-            self.histogram.scroll_to_end()
-            if AUTOLOAD:
-                self.store.request_last_n_days_events(90)
-            return False
-        gobject.idle_add(setup)
-        self.histogram.scroll_to_end()
+        gobject.idle_add(self.setup)
         # hide unused widgets
-        self.searchbox.hide()
+        SearchBox.hide()
         # Window configuration
         self.set_icon_name("gnome-activity-journal")
         self.set_icon_list(
@@ -193,7 +180,13 @@ class PortalWindow(gtk.Window):
         self.preferences_dialog.notebook.show_all()
         self.toolbar.throbber_popup_button.preferences.connect("activate", lambda *args: self.preferences_dialog.show())
         self.preferences_dialog.plug_tree.set_items(self.plug_manager)
+        return False
 
+    def setup(self, *args):
+        self.histogram.set_dates(self.active_dates)
+        self.histogram.scroll_to_end()
+        if AUTOLOAD:
+            self.store.request_last_n_days_events(90)
         return False
 
     def set_visibility(self, val):
@@ -302,7 +295,6 @@ class PortalWindow(gtk.Window):
             self.set_title(end + " - Activity Journal")
         else:
             self.set_title(_("%s to %s") % (start, end) + " - " + _("Activity Journal"))
-
 
     def on_delete(self, w, event):
         x, y = self.get_size()

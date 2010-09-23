@@ -141,6 +141,7 @@ class MultiViewContainer(gtk.HBox):
         # Enable to display time between updates
         #print "***", time.time() - t
 
+
 class DayViewContainer(gtk.VBox):
     event_templates = (
         Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri),
@@ -323,35 +324,28 @@ class CategoryBox(gtk.HBox):
             label.set_markup("<span>%s</span>" % text)
             #label.set_ellipsize(pango.ELLIPSIZE_END)
             hbox.pack_start(label, False, False, 0)
-
             label = gtk.Label()
             label.set_markup("<span>(%d)</span>" % len(event_structs))
             label.set_alignment(1.0,0.5)
             label.set_alignment(1.0,0.5)
-
-
             hbox.pack_end(label, False, False)
             self.al = gtk.gdk.Rectangle(0,0,0,0)
             def set_size(widget, allocation):
                 if self.al != allocation:
                     self.al = allocation
                     hbox.set_size_request(self.al[2]- 72, -1)
-
             self.i = self.connect_after("size-allocate", set_size)
-
             hbox.set_border_width(6)
             self.expander = gtk.Expander()
             def on_expand(widget):
                 EXPANDED[d] = self.expander.get_expanded()
                 _set_up_box()
-
             self.expander.set_expanded(EXPANDED[d])
             if EXPANDED[d]:
                 _set_up_box()
             self.expander.connect_after("activate", on_expand)
             self.expander.set_label_widget(hbox)
             self.vbox.pack_start(self.expander, True, True)
-
             self.expander.add(self.box)#
             self.pack_start(self.vbox, True, True, 24)
             self.expander.show_all()
@@ -359,17 +353,13 @@ class CategoryBox(gtk.HBox):
             hbox.show_all()
             label.show_all()
             self.view.show()
-
             def on_style_change(widget, style):
                 """ Update used colors according to the system theme. """
                 color = self.style.bg[gtk.STATE_NORMAL]
                 fcolor = self.style.fg[gtk.STATE_NORMAL]
                 color = combine_gdk_color(color, fcolor)
                 label.modify_fg(gtk.STATE_NORMAL, color)
-
             self.connect("style-set", on_style_change)
-
-
         else:
             _set_up_box()
             self.box = self.view
@@ -377,9 +367,6 @@ class CategoryBox(gtk.HBox):
             self.box.show()
             self.show()
             self.pack_start(self.vbox, True, True, 16 -itemoff)
-
-
-
         self.show_all()
 
     def on_toggle(self, view, bool_):
@@ -402,7 +389,6 @@ class Item(gtk.HBox):
         self.content_obj = content_struct.content_object
         self.time = float(event.timestamp) / 1000
         self.time =  time.strftime("%H:%M", time.localtime(self.time))
-
         if self.content_obj is not None:
             if self.subject.uri.startswith("http"):
                 self.icon = self.content_obj.get_actor_pixbuf(24)
@@ -891,6 +877,7 @@ class ThumbView(gtk.VBox):
 ################
 ## TimelineView
 ################
+
 class TimelineViewContainer(_GenericViewWidget):
     icon_path = get_data_path("timelineview_icon.png")
     dsc_text = _("Switch to TimelineView")
@@ -1286,8 +1273,9 @@ class PinBox(DayView):
         if len(items) > 0:
             self.pack_start(notebook)
 
-pinbox = PinBox()
 ## gobject registration
 gobject.type_register(_TimelineRenderer)
 gobject.type_register(_ThumbViewRenderer)
+
+pinbox = PinBox()
 

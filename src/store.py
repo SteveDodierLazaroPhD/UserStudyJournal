@@ -183,7 +183,6 @@ class Day(gobject.GObject):
         self.start = int(time.mktime(date.timetuple()))
         self.end = self.start+86399
         self._population = None
-
         if days_population:
             for timestamp, count in days_population: # they are ordered descending
                 # Ugly hack to adjust for local/UTC time. Screw you timezones!
@@ -197,7 +196,6 @@ class Day(gobject.GObject):
                     break
         else:
             self.load_ids()
-
         if external.HAMSTER:
             try:
                 facts = external.HAMSTER.get_facts(self.start, self.end)
@@ -373,10 +371,8 @@ class Store(gobject.GObject):
             day = Day(date, days_population)
             self.add_day(date, day)
             currentTimestamp -= 86400
-
         for day in self.days[-6:]:
             day.load_ids()
-
         content_objects.AbstractContentObject.connect_to_manager("add", self.add_content_object_with_new_type)
         content_objects.AbstractContentObject.connect_to_manager("remove", self.remove_content_objects_with_type)
 
@@ -482,7 +478,6 @@ class Store(gobject.GObject):
         return False
 
     def add_events(self, events, overwrite=True, idle=True):
-
         if idle:
             def _idle_add(events, overwrite):
                 # Use _insert_event to avoid update signals
