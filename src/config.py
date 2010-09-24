@@ -76,6 +76,11 @@ def get_icon_path(path):
             return newpath
     return None
 
+def event_exists(uri):
+    # TODO: Move this into Zeitgeist's datamodel.py
+    return not uri.startswith("file://") or os.path.exists(
+        urllib.unquote(str(uri[7:])))
+
 # When running from Bazaar, give priority to local translations
 if os.path.isdir(_get_path("build/mo")):
     GETTEXT_PATH = _get_path("build/mo")
@@ -88,16 +93,8 @@ class Bookmarker(gobject.GObject):
                     gobject.TYPE_NONE,
                     (gobject.TYPE_PYOBJECT,))
         }
-
     # PUBLIC!
     bookmarks = []
-
-    @staticmethod
-    def event_exists(uri):
-        # TODO: Move this into Zeitgeist's datamodel.py
-        return not uri.startswith("file://") or os.path.exists(
-            urllib.unquote(str(uri[7:])))
-
     def __init__(self):
         gobject.GObject.__init__(self)
         self.bookmarks_file = os.path.join(USER_DATA_PATH, "bookmarks.pickled")
@@ -110,7 +107,7 @@ class Bookmarker(gobject.GObject):
                     self.bookmarks = cPickle.load(f)
                     removable = []
                     for bookmark in self.bookmarks:
-                        if not self.event_exists(bookmark):
+                        if not event_exists(bookmark):
                             removable.append(bookmark)
                     for uri in removable:
                         self.bookmarks.remove(uri)
@@ -122,7 +119,7 @@ class Bookmarker(gobject.GObject):
             cPickle.dump(self.bookmarks, f)
 
     def bookmark(self, uri):
-        if not uri in self.bookmarks and self.event_exists(uri):
+        if not uri in self.bookmarks and event_exists(uri):
             self.bookmarks.append(uri)
         self._save()
         self.emit("reload", self.bookmarks)

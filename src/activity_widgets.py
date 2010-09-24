@@ -31,19 +31,18 @@ import threading
 
 from common import *
 import content_objects
-from config import settings, bookmarker, SUPPORTED_SOURCES
+from config import event_exists, settings, bookmarker, SUPPORTED_SOURCES
 from store import ContentStruct, CLIENT
 from supporting_widgets import DayLabel, ContextMenu, StaticPreviewTooltip, VideoPreviewTooltip, SearchBox
 
 from zeitgeist.datamodel import ResultType, StorageState, TimeRange
 
-EXPANDED = {}
 
 class _GenericViewWidget(gtk.VBox):
     day = None
     day_signal_id = None
-    icon_path = ""#get_data_path("multiview_icon.png")
-    dsc_text = ""#_("Switch to MultiView")
+    icon_path = "path to an icon"# get_data_path("relative_path")
+    dsc_text = "Description for toolbutton"# _("Switch to MultiView")
 
     def __init__(self):
         gtk.VBox.__init__(self)
@@ -75,10 +74,6 @@ class _GenericViewWidget(gtk.VBox):
         self.view.modify_base(gtk.STATE_NORMAL, color)
 
 
-#####################
-## MultiView code
-#####################
-
 class MultiViewContainer(gtk.HBox):
 
     days = []
@@ -107,8 +102,6 @@ class MultiViewContainer(gtk.HBox):
         for i, day in enumerate(self.days):
             self.day_signal_id[i] = day.connect("update", self.update_day, day)
         self.update_days()
-        # Enable to display time between updates
-        #print "***", time.time() - t
 
     def __days(self, day, store):
         days = []
@@ -138,8 +131,6 @@ class MultiViewContainer(gtk.HBox):
         for page in self.pages:
             if page.day == day:
                 page.set_day(day)
-        # Enable to display time between updates
-        #print "***", time.time() - t
 
 
 class DayViewContainer(gtk.VBox):
@@ -163,7 +154,6 @@ class DayViewContainer(gtk.VBox):
             self.box.pack_start(dayview, False, False)
         viewport.add(self.box)
         self.scrolled_window.add(viewport)
-
         self.pack_end(self.scrolled_window, True, True)
         self.scrolled_window.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         self.show_all()
@@ -174,12 +164,10 @@ class DayViewContainer(gtk.VBox):
         self.day = day
         if pinbox in self.box.get_children():
             self.box.remove(pinbox)
-
         t  = day.date - datetime.date.today()
         if t.days == 0:
             self.box.pack_start(pinbox, False, False)
             self.box.reorder_child(pinbox, 0)
-
         self.daylabel.set_date(day.date)
         morning = []
         afternoon = []
@@ -189,8 +177,6 @@ class DayViewContainer(gtk.VBox):
         e_s = []
         t = time.time()
         x = day.filter(self.event_templates, result_type=ResultType.MostRecentEvents)
-        # Enable to display time between updates
-        #print "------------------", time.time() - t, "---", len(x)
         for item in x:
             if not item.content_object:continue
             t = time.localtime(int(item.event.timestamp)/1000)
@@ -228,11 +214,9 @@ class DayView(gtk.VBox):
             self.pack_start(self.label, False, False, 6)
         # Create the main container
         self.view = None
-
         # Connect to relevant signals
         self.connect("style-set", self.on_style_change)
         self.show_all()
-        # Populate the widget with content
 
     def on_style_change(self, widget, style):
         """ Update used colors according to the system theme. """
@@ -255,15 +239,11 @@ class DayView(gtk.VBox):
         for struct in items:
             if not struct.content_object: continue
             subject = struct.event.subjects[0]
-
-            def match_categories(interpretation):
-                if struct.event.actor == "application://tomboy.desktop":
-                    return "aj://note"
-                if INTERPRETATION_PARENTS.has_key(interpretation):
-                    return INTERPRETATION_PARENTS[interpretation]
-                return interpretation
-
-            interpretation = match_categories(subject.interpretation)
+            interpretation = subject.interpretation
+            if INTERPRETATION_PARENTS.has_key(interpretation):
+                interpretation = INTERPRETATION_PARENTS[interpretation]
+            if struct.event.actor == "application://tomboy.desktop":
+                interpretation = "aj://note"
             if not categories.has_key(interpretation):
                 categories[interpretation] = []
             categories[interpretation].append(struct)
@@ -284,37 +264,42 @@ class DayView(gtk.VBox):
 
 
 class CategoryBox(gtk.HBox):
+    set_up_done = False
+    EXPANDED = {}
+
+    def _set_up_box(self, event_structs):
+        if not self.set_up_done:
+            self.set_up_done = True
+            for struct in event_structs:
+                if not struct.content_object:continue
+                if self.itemoff > 0:
+                    item = Item(struct, self.pinnable, False)
+                else:
+                    item = Item(struct, self.pinnable, True)
+                hbox = gtk.HBox ()
+                hbox.pack_start(item, True, True, 0 )
+                self.view.pack_start(hbox, False, False, 0)
+                hbox.show_all()
+                self.pack_end(hbox)
 
     def __init__(self, category, event_structs, pinnable = False, itemoff = 0):
         super(CategoryBox, self).__init__()
-        self.set_up_done = False;
+        self.event_structs = event_structs
+        self.pinnable = pinnable
+        self.itemoff = itemoff
         self.view = gtk.VBox(True)
         self.vbox = gtk.VBox()
         if len(event_structs) > 0:
-            d = str(datetime.date.fromtimestamp(int(event_structs[0].event.timestamp)/1000)) + " " + str((time.localtime(int(event_structs[0].event.timestamp)/1000).tm_hour)/8) + " " + str(category)
-            if not EXPANDED.has_key(d):
-                EXPANDED[d] = False
-
-        def _set_up_box():
-            if not self.set_up_done:
-                self.set_up_done = True
-                for struct in event_structs:
-                    if not struct.content_object:continue
-                    if itemoff > 0:
-                        item = Item(struct, pinnable, False)
-                    else:
-                        item = Item(struct, pinnable, True)
-                    hbox = gtk.HBox ()
-                    hbox.pack_start(item, True, True, 0 )
-                    self.view.pack_start(hbox, False, False, 0)
-                    hbox.show_all()
-                    self.pack_end(hbox)
+            d = str(datetime.date.fromtimestamp(int(event_structs[0].event.timestamp)/1000)) \
+              + " " + str((time.localtime(int(event_structs[0].event.timestamp)/1000).tm_hour)/8) + " " + str(category)
+            if not self.EXPANDED.has_key(d):
+                self.EXPANDED[d] = False
         # If this isn't a set of ungrouped events, give it a label
         if category or category == "":
             # Place the items into a box and simulate left padding
             self.box = gtk.HBox()
             self.box.pack_start(self.view)
-            hbox = gtk.HBox()
+            self.hbox = hbox = gtk.HBox()
             # Add the title button
             if category in SUPPORTED_SOURCES:
                 text = SUPPORTED_SOURCES[category].group_label(len(event_structs))
@@ -330,20 +315,13 @@ class CategoryBox(gtk.HBox):
             label.set_alignment(1.0,0.5)
             hbox.pack_end(label, False, False)
             self.al = gtk.gdk.Rectangle(0,0,0,0)
-            def set_size(widget, allocation):
-                if self.al != allocation:
-                    self.al = allocation
-                    hbox.set_size_request(self.al[2]- 72, -1)
-            self.i = self.connect_after("size-allocate", set_size)
+            self.i = self.connect_after("size-allocate", self.set_size)
             hbox.set_border_width(6)
             self.expander = gtk.Expander()
-            def on_expand(widget):
-                EXPANDED[d] = self.expander.get_expanded()
-                _set_up_box()
-            self.expander.set_expanded(EXPANDED[d])
-            if EXPANDED[d]:
-                _set_up_box()
-            self.expander.connect_after("activate", on_expand)
+            self.expander.set_expanded(self.EXPANDED[d])
+            if self.EXPANDED[d]:
+                self._set_up_box(event_structs)
+            self.expander.connect_after("activate", self.on_expand, d)
             self.expander.set_label_widget(hbox)
             self.vbox.pack_start(self.expander, True, True)
             self.expander.add(self.box)#
@@ -353,15 +331,9 @@ class CategoryBox(gtk.HBox):
             hbox.show_all()
             label.show_all()
             self.view.show()
-            def on_style_change(widget, style):
-                """ Update used colors according to the system theme. """
-                color = self.style.bg[gtk.STATE_NORMAL]
-                fcolor = self.style.fg[gtk.STATE_NORMAL]
-                color = combine_gdk_color(color, fcolor)
-                label.modify_fg(gtk.STATE_NORMAL, color)
-            self.connect("style-set", on_style_change)
+            self.connect("style-set", self.on_style_change, label)
         else:
-            _set_up_box()
+            self._set_up_box(event_structs)
             self.box = self.view
             self.vbox.pack_end(self.box)
             self.box.show()
@@ -369,11 +341,27 @@ class CategoryBox(gtk.HBox):
             self.pack_start(self.vbox, True, True, 16 -itemoff)
         self.show_all()
 
+    def on_style_change(self, widget, style, label):
+        """ Update used colors according to the system theme. """
+        color = self.style.bg[gtk.STATE_NORMAL]
+        fcolor = self.style.fg[gtk.STATE_NORMAL]
+        color = combine_gdk_color(color, fcolor)
+        label.modify_fg(gtk.STATE_NORMAL, color)
+
     def on_toggle(self, view, bool_):
         if bool_:
             self.box.show()
         else:
             self.box.hide()
+
+    def set_size(self, widget, allocation):
+        if self.al != allocation:
+            self.al = allocation
+            self.hbox.set_size_request(self.al[2]- 72, -1)
+
+    def on_expand(self, widget, d):
+        self.EXPANDED[d] = self.expander.get_expanded()
+        self._set_up_box(self.event_structs)
 
 
 class Item(gtk.HBox):
@@ -472,13 +460,11 @@ class Item(gtk.HBox):
         self.pack_start(evbox)
         self.btn.connect("clicked", self.launch)
         self.btn.connect("button_press_event", self._show_item_popup)
-
-        def realize_cb(widget):
-            evbox.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2))
-
-        self.btn.connect("realize", realize_cb)
+        self.btn.connect("realize", self.realize_cb, evbox)
         self.init_multimedia_tooltip()
 
+    def realize_cb(self, widget, evbox):
+        evbox.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2))
 
     def init_multimedia_tooltip(self):
         """add multimedia tooltip to multimedia files
@@ -835,11 +821,6 @@ class ThumbView(gtk.VBox):
         a_s = []
         e_s = []
 
-        def event_exists(uri):
-            # TODO: Move this into Zeitgeist's datamodel.py
-            return not uri.startswith("file://") or os.path.exists(
-                urllib.unquote(str(uri[7:])))
-
         for item in day.filter(self.event_templates, result_type=ResultType.MostRecentEvents):
             #if not item.content_object:continue
             if event_exists(item.event.subjects[0].uri):
@@ -874,9 +855,6 @@ class ThumbView(gtk.VBox):
         for label in self.labels:
             label.modify_fg(0, color)
 
-################
-## TimelineView
-################
 
 class TimelineViewContainer(_GenericViewWidget):
     icon_path = get_data_path("timelineview_icon.png")
@@ -1043,11 +1021,9 @@ class _TimelineRenderer(gtk.GenericCellRenderer):
         """
         text = text.split("\n")
         if len(text) > 1:
-            p1 = text[0]
-            p2 = text[1]
+            p1, p2 = text[0], text[1]
         else:
-            p1 = text[0]
-            p2 = " "
+            p1, p2 = text[0], " "
         t1 = "<span color='" + color1 + "'><b>" + p1 + "</b></span>"
         t2 = "<span color='" + color2 + "'>" + p2 + "</span> "
         return (str(t1) + "\n" + str(t2) + "").replace("&", "&amp;")
@@ -1081,8 +1057,6 @@ class TimelineView(gtk.TreeView):
         self.popupmenu = ContextMenu
         self.add_events(gtk.gdk.LEAVE_NOTIFY_MASK)
         self.connect("button-press-event", self.on_button_press)
-        # self.connect("motion-notify-event", self.on_motion_notify)
-        # self.connect("leave-notify-event", self.on_leave_notify)
         self.connect("row-activated" , self.on_activate)
         self.connect("style-set", self.change_style)
         pcolumn = gtk.TreeViewColumn("Timeline")
@@ -1128,12 +1102,6 @@ class TimelineView(gtk.TreeView):
                 self.popupmenu.do_popup(event.time, [obj])
                 return True
         return False
-
-    def on_leave_notify(self, widget, event):
-        return True
-
-    def on_motion_notify(self, widget, event):
-        return True
 
     def on_activate(self, widget, path, column):
         model = self.get_model()
@@ -1215,8 +1183,6 @@ class _TimelineHeader(gtk.DrawingArea):
         self.set_size_request(tw*5, th+4)
         self.line_color = get_gtk_rgba(widget.style, "bg", 0, 0.94)
 
-##
-# Pinned Pane
 
 class PinBox(DayView):
 
@@ -1225,8 +1191,6 @@ class PinBox(DayView):
         super(PinBox, self).__init__(title=_("Pinned Items"))#_("Pinned items"))
         bookmarker.connect("reload", self.set_from_templates)
         self.set_from_templates()
-
-
 
     @property
     def event_templates(self):
@@ -1260,18 +1224,15 @@ class PinBox(DayView):
         self.clear()
         box = CategoryBox(None, items, True, itemoff=4)
         self.view.pack_start(box)
-
         for w in self:
             self.remove(w)
-
         notebook = gtk.Notebook()
         notebook.append_page(self.view, self.label)
         self.label.set_alignment(0.01, 0.5)
         notebook.set_tab_label_packing(self.view, True, True, gtk.PACK_START)
         self.set_border_width(4)
-        #print "..........", len(items)
-        if len(items) > 0:
-            self.pack_start(notebook)
+        if len(items) > 0: self.pack_start(notebook)
+
 
 ## gobject registration
 gobject.type_register(_TimelineRenderer)
