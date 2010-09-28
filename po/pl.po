@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-activity-journal\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-08-29 00:28+0200\n"
-"PO-Revision-Date: 2010-08-27 06:43+0000\n"
+"POT-Creation-Date: 2010-09-18 21:43+0200\n"
+"PO-Revision-Date: 2010-09-28 03:30+0000\n"
 "Last-Translator: Łukasz Jernaś <deejay1@srem.org>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,12 +16,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2010-09-17 05:42+0000\n"
+"X-Launchpad-Export-Date: 2010-09-28 05:35+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../gnome-activity-journal:83
 msgid "print additional debugging information"
-msgstr ""
+msgstr "wyświetlanie dodatkowych komunikatów dla programistów"
 
 #: ../gnome-activity-journal:90
 msgid "ERROR"
@@ -31,84 +31,259 @@ msgstr "BŁĄD"
 msgid "Unable to connect to Zeitgeist:"
 msgstr "Nie można połączyć się z usługą Zeitgeist:"
 
-#: ../src/activity_widgets.py:150 ../src/common.py:170
-msgid "Morning"
-msgstr "Rano"
-
-#: ../src/activity_widgets.py:150 ../src/common.py:170
-msgid "Afternoon"
-msgstr "Po południu"
-
-#: ../src/activity_widgets.py:150 ../src/common.py:170
-msgid "Evening"
-msgstr "Wieczorem"
-
-#: ../src/activity_widgets.py:472 ../src/supporting_widgets.py:732
-msgid "Remove Pin"
-msgstr ""
-
-#: ../src/activity_widgets.py:1228
-msgid "Pinned Items"
-msgstr ""
-
-#: ../src/content_objects.py:558 ../src/content_objects.py:560
+#: ../src/content_objects.py:563 ../src/content_objects.py:565
 msgid "{source._desc_sing} with {event.subjects[0].text}"
 msgstr ""
 
-#: ../src/content_objects.py:559
+#: ../src/content_objects.py:564
 msgid ""
 "{source._desc_sing} with {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 msgstr ""
 
-#: ../src/content_objects.py:570
+#: ../src/content_objects.py:575
 msgid "Available"
 msgstr "Dostępny"
 
-#: ../src/content_objects.py:571
+#: ../src/content_objects.py:576
 msgid "Offline"
 msgstr "Niedostępny"
 
-#: ../src/content_objects.py:572
+#: ../src/content_objects.py:577
 msgid "Away"
 msgstr "Zaraz wracam"
 
-#: ../src/content_objects.py:573
+#: ../src/content_objects.py:578
 msgid "Busy"
 msgstr "Zajęty"
 
-#: ../src/content_objects.py:605 ../src/content_objects.py:610
-#: ../src/content_objects.py:615
+#: ../src/content_objects.py:610 ../src/content_objects.py:615
+#: ../src/content_objects.py:620
 msgid "with"
-msgstr ""
+msgstr "z"
 
-#: ../src/content_objects.py:654
+#: ../src/content_objects.py:659
 msgid "Time Tracker"
 msgstr ""
 
-#: ../src/content_objects.py:675 ../src/content_objects.py:677
+#: ../src/content_objects.py:680 ../src/content_objects.py:682
 msgid "{source._desc_sing} from {event.subjects[0].text}"
 msgstr ""
 
-#: ../src/content_objects.py:676
+#: ../src/content_objects.py:681
 msgid ""
 "{source._desc_sing} from {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 msgstr ""
 
-#: ../src/content_objects.py:680
+#: ../src/content_objects.py:685
 #, python-format
 msgid " (%s Attachments)"
-msgstr ""
+msgstr " (%s załaczników)"
 
-#: ../src/content_objects.py:704
+#: ../src/content_objects.py:709
 msgid "{event.subjects[0].text}"
 msgstr "{event.subjects[0].text}"
 
-#: ../src/content_objects.py:705 ../src/content_objects.py:706
+#: ../src/content_objects.py:710 ../src/content_objects.py:711
 msgid ""
 "Note\n"
 "{event.subjects[0].text}"
+msgstr ""
+"Notatka\n"
+"{event.subjects[0].text}"
+
+#: ../src/supporting_widgets.py:453
+msgid "Type here to search..."
+msgstr ""
+
+#: ../src/supporting_widgets.py:675
+msgid "Powered by Zeitgeist"
+msgstr ""
+
+#: ../src/supporting_widgets.py:732 ../src/activity_widgets.py:469
+msgid "Remove Pin"
+msgstr "Usuń znacznik"
+
+#: ../src/supporting_widgets.py:733 ../src/supporting_widgets.py:1196
+msgid "Add Pin"
+msgstr "Dodaj znacznik"
+
+#: ../src/supporting_widgets.py:734
+msgid "Delete item from Journal"
+msgstr "Usuń element z dziennika"
+
+#: ../src/supporting_widgets.py:735
+msgid "Delete all events with this URI"
+msgstr "usuń wszystkie zdarzenia zawierające to URI"
+
+#: ../src/supporting_widgets.py:736
+msgid "More Information"
+msgstr "Więcej informacji"
+
+#: ../src/supporting_widgets.py:748
+msgid "Send To..."
+msgstr "Wyślij do..."
+
+#: ../src/supporting_widgets.py:849
+msgid "Search"
+msgstr "Wyszukiwanie"
+
+#: ../src/supporting_widgets.py:860 ../src/supporting_widgets.py:1348
+msgid "Preferences"
+msgstr "Preferencje"
+
+#: ../src/supporting_widgets.py:865 ../src/supporting_widgets.py:866
+msgid "Go to Today"
+msgstr "Przejdź do dzisiaj"
+
+#: ../src/supporting_widgets.py:1108
+msgid "Used With"
+msgstr ""
+
+#: ../src/supporting_widgets.py:1191
+msgid "Launch this subject"
+msgstr ""
+
+#: ../src/supporting_widgets.py:1193
+msgid "Delete this subject"
+msgstr "Usuń ten temat"
+
+#: ../src/supporting_widgets.py:1212
+msgid "Tags"
+msgstr "Etykiety"
+
+#: ../src/supporting_widgets.py:1357
+msgid "Active Plugins:"
+msgstr "Aktywne rozszerzenia:"
+
+#: ../src/supporting_widgets.py:1365
+msgid "Plugins"
+msgstr "Rozszerzenia"
+
+#: ../src/activity_widgets.py:149 ../src/common.py:170
+msgid "Morning"
+msgstr "Rano"
+
+#: ../src/activity_widgets.py:149 ../src/common.py:170
+msgid "Afternoon"
+msgstr "Po południu"
+
+#: ../src/activity_widgets.py:149 ../src/common.py:170
+msgid "Evening"
+msgstr "Wieczorem"
+
+#: ../src/activity_widgets.py:1225
+msgid "Pinned Items"
+msgstr ""
+
+#: ../src/histogram.py:438
+msgid "item"
+msgid_plural "items"
+msgstr[0] "element"
+msgstr[1] "elementy"
+msgstr[2] "elementów"
+
+#: ../src/main.py:125
+msgid "Switch to MultiView"
+msgstr ""
+
+#: ../src/main.py:126
+msgid "Switch to ThumbView"
+msgstr ""
+
+#: ../src/main.py:127
+msgid "Switch to TimelineView"
+msgstr ""
+
+#: ../src/main.py:295
+msgid "Today"
+msgstr "Dzisiaj"
+
+#: ../src/main.py:298
+msgid "Yesterday"
+msgstr "Wczoraj"
+
+#: ../src/main.py:309
+#, python-format
+msgid "%s to %s"
+msgstr "%s do %s"
+
+#: ../src/main.py:309 ../extra/gnome-activity-journal.desktop.in.h:1
+msgid "Activity Journal"
+msgstr "Dziennik aktywności"
+
+#. TODO: Move this into Zeitgeist's library, implemented properly
+#: ../src/config.py:240
+msgid "Worked with a Video"
+msgstr "Pracowano z obrazem wideo"
+
+#: ../src/config.py:240
+msgid "Worked with Videos"
+msgstr "Pracowano z obrazami wideo"
+
+#: ../src/config.py:241
+msgid "Worked with Audio"
+msgstr "Pracowano z dźwiękiem"
+
+#: ../src/config.py:242
+msgid "Worked with an Image"
+msgstr "Pracowano z obrazem"
+
+#: ../src/config.py:242
+msgid "Worked with Images"
+msgstr "Pracowano z obrazami"
+
+#: ../src/config.py:243
+msgid "Edited or Read Document"
+msgstr "Edytowano lub przeglądano dokument"
+
+#: ../src/config.py:243
+msgid "Edited or Read Documents"
+msgstr "Edytowano lub przeglądano dokumenty"
+
+#: ../src/config.py:244
+msgid "Edited or Read Code"
+msgstr "Edytowano lub przeglądano kod źródłowy"
+
+#: ../src/config.py:245
+msgid "Conversation"
+msgstr "Rozmowa"
+
+#: ../src/config.py:245
+msgid "Conversations"
+msgstr "Rozmowy"
+
+#: ../src/config.py:246
+msgid "Visited Website"
+msgstr "Odwiedzono stronę internetową"
+
+#: ../src/config.py:246
+msgid "Visited Websites"
+msgstr "Odwiedzano strony internetowe"
+
+#: ../src/config.py:247 ../src/common.py:150
+msgid "Email"
+msgstr "Email"
+
+#: ../src/config.py:247
+msgid "Emails"
+msgstr ""
+
+#: ../src/config.py:248
+msgid "Other Activity"
+msgstr "Inna czynność"
+
+#: ../src/config.py:248
+msgid "Other Activities"
+msgstr "Inne czynności"
+
+#: ../src/config.py:249
+msgid "Edited or Read Note"
+msgstr ""
+
+#: ../src/config.py:249
+msgid "Edited or Read Notes"
 msgstr ""
 
 #: ../src/common.py:143
@@ -139,174 +314,6 @@ msgstr "Nieznany"
 msgid "IM Message"
 msgstr ""
 
-#: ../src/common.py:150 ../src/config.py:247
-msgid "Email"
-msgstr ""
-
-#: ../src/supporting_widgets.py:453
-msgid "Type here to search..."
-msgstr ""
-
-#: ../src/supporting_widgets.py:675
-msgid "Powered by Zeitgeist"
-msgstr ""
-
-#: ../src/supporting_widgets.py:733 ../src/supporting_widgets.py:1193
-msgid "Add Pin"
-msgstr ""
-
-#: ../src/supporting_widgets.py:734
-msgid "Delete item from Journal"
-msgstr ""
-
-#: ../src/supporting_widgets.py:735
-msgid "Delete all events with this URI"
-msgstr ""
-
-#: ../src/supporting_widgets.py:736
-msgid "More Information"
-msgstr ""
-
-#: ../src/supporting_widgets.py:748
-msgid "Send To..."
-msgstr "Wyślij do..."
-
-#: ../src/supporting_widgets.py:863
-msgid "Goto Today"
-msgstr ""
-
-#: ../src/supporting_widgets.py:1105
-msgid "Used With"
-msgstr ""
-
-#: ../src/supporting_widgets.py:1188
-msgid "Launch this subject"
-msgstr ""
-
-#: ../src/supporting_widgets.py:1190
-msgid "Delete this subject"
-msgstr ""
-
-#: ../src/supporting_widgets.py:1209
-msgid "Tags"
-msgstr "Etykiety"
-
-#: ../src/supporting_widgets.py:1345
-msgid "Preferences"
-msgstr "Preferencje"
-
-#: ../src/supporting_widgets.py:1354
-msgid "Active Plugins:"
-msgstr "Aktywne rozszerzenia:"
-
-#: ../src/supporting_widgets.py:1362
-msgid "Plugins"
-msgstr "Rozszerzenia"
-
-#. TODO: Move this into Zeitgeist's library, implemented properly
-#: ../src/config.py:240
-msgid "Worked with a Video"
-msgstr ""
-
-#: ../src/config.py:240
-msgid "Worked with Videos"
-msgstr ""
-
-#: ../src/config.py:241
-msgid "Worked with Audio"
-msgstr ""
-
-#: ../src/config.py:242
-msgid "Worked with an Image"
-msgstr ""
-
-#: ../src/config.py:242
-msgid "Worked with Images"
-msgstr ""
-
-#: ../src/config.py:243
-msgid "Edited or Read Document"
-msgstr ""
-
-#: ../src/config.py:243
-msgid "Edited or Read Documents"
-msgstr ""
-
-#: ../src/config.py:244
-msgid "Edited or Read Code"
-msgstr ""
-
-#: ../src/config.py:245
-msgid "Conversation"
-msgstr "Rozmowa"
-
-#: ../src/config.py:245
-msgid "Conversations"
-msgstr "Rozmowy"
-
-#: ../src/config.py:246
-msgid "Visited Website"
-msgstr ""
-
-#: ../src/config.py:246
-msgid "Visited Websites"
-msgstr ""
-
-#: ../src/config.py:247
-msgid "Emails"
-msgstr ""
-
-#: ../src/config.py:248
-msgid "Other Activity"
-msgstr ""
-
-#: ../src/config.py:248
-msgid "Other Activities"
-msgstr ""
-
-#: ../src/config.py:249
-msgid "Edited or Read Note"
-msgstr ""
-
-#: ../src/config.py:249
-msgid "Edited or Read Notes"
-msgstr ""
-
-#: ../src/main.py:125
-msgid "Switch to MultiView"
-msgstr ""
-
-#: ../src/main.py:126
-msgid "Switch to ThumbView"
-msgstr ""
-
-#: ../src/main.py:127
-msgid "Switch to TimelineView"
-msgstr ""
-
-#: ../src/main.py:295
-msgid "Today"
-msgstr "Dzisiaj"
-
-#: ../src/main.py:298
-msgid "Yesterday"
-msgstr "Wczoraj"
-
-#: ../src/main.py:309
-#, python-format
-msgid "%s to %s"
-msgstr ""
-
-#: ../src/main.py:309 ../extra/gnome-activity-journal.desktop.in.h:1
-msgid "Activity Journal"
-msgstr ""
-
-#: ../src/histogram.py:438
-msgid "item"
-msgid_plural "items"
-msgstr[0] ""
-msgstr[1] ""
-
 #: ../extra/gnome-activity-journal.desktop.in.h:2
 msgid ""
 "Browse a chronological log of your activities and easily find files, "
@@ -315,7 +322,7 @@ msgstr ""
 
 #: ../extra/gnome-activity-journal.schemas.in.h:1
 msgid "Accessibility"
-msgstr ""
+msgstr "Dostępność"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:2
 msgid "Allow thumbnails as icons"
@@ -354,8 +361,8 @@ msgstr ""
 
 #: ../extra/gnome-activity-journal.schemas.in.h:9
 msgid "Window height"
-msgstr ""
+msgstr "Wysokość okna"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:10
 msgid "Window width"
-msgstr ""
+msgstr "Szerokość okna"
