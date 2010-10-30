@@ -42,9 +42,8 @@ from zeitgeist.client import ZeitgeistClient
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
     ResultType
 
+from common import *
 import content_objects
-from common import shade_gdk_color, combine_gdk_color, is_command_available, \
-    launch_command, get_gtk_rgba, SIZE_NORMAL, SIZE_LARGE, GioFile, get_menu_item_with_stock_id_and_text
 from config import BASE_PATH, VERSION, settings, PluginManager, get_icon_path, get_data_path, bookmarker, SUPPORTED_SOURCES
 from store import STORE, get_related_events_for_uri, CLIENT
 from external import TRACKER
@@ -887,7 +886,10 @@ class ContextMenu(gtk.Menu):
 
     def do_delete(self, menuitem):
         for obj in self.subjects:
-            CLIENT.delete_events([obj.event.id])
+            CLIENT.find_event_ids_for_template(
+                Event.new_for_values(subject_uri=obj.uri),
+                lambda ids: CLIENT.delete_events(map(int, ids)),
+                timerange=DayParts.get_day_part_range_for_item(obj))
 
     def do_delete_events_with_shared_uri(self, menuitem):
         for uri in map(lambda obj: obj.uri, self.subjects):

@@ -924,6 +924,14 @@ class DayParts:
     # the relevant day so they can account for weekends not having "Work", etc.
 
     TIMELABELS = [_("Morning"), _("Afternoon"), _("Evening")]
+    CHANGEHOURS = [0, 11, 17]
+
+    @classmethod
+    def _local_minimum(cls, hour):
+        for i in xrange(1, len(cls.CHANGEHOURS)):
+            if hour < cls.CHANGEHOURS[i]:
+                return i - 1
+        return len(cls.CHANGEHOURS) - 1
 
     @classmethod
     def get_day_parts(cls):
@@ -932,8 +940,15 @@ class DayParts:
     @classmethod
     def get_day_part_for_item(cls, item):
         t = time.localtime(int(item.event.timestamp) / 1000)
-        if t.tm_hour < 11:
-            return 0  # Morning
-        elif t.tm_hour < 17:
-            return 1 # Afternoon
-        return 2 # Evening
+        return cls._local_minimum(t.tm_hour)
+
+    @classmethod
+    def get_day_part_range_for_item(cls, item):
+        start = list(time.localtime(int(item.event.timestamp) / 1000))
+        i = cls._local_minimum(start[3])
+        start[3] = cls.CHANGEHOURS[i] # Reset hour
+        start[4] = start[5] = 0 # Reset minutes and seconds
+        end = list(start)
+        end[3] = cls.CHANGEHOURS[i+1] if len(cls.CHANGEHOURS) > (i + 1) else 23
+        end[4] = end[5] = 59
+        return time.mktime(start) * 1000, time.mktime(end) * 1000
