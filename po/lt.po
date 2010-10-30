@@ -1,84 +1,89 @@
+# Lithuanian translation for gnome-activity-journal
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gnome-activity-journal package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: GNOME Activity Journal\n"
-"Report-Msgid-Bugs-To: zeitgeist@lists.launchpad.net\n"
+"Project-Id-Version: gnome-activity-journal\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-09-18 21:43+0200\n"
-"PO-Revision-Date: 2010-10-29 14:46+0000\n"
-"Last-Translator: Pierre Slamich <pierre.slamich@gmail.com>\n"
-"Language-Team: \n"
+"PO-Revision-Date: 2010-10-17 07:48+0000\n"
+"Last-Translator: GNOME Zeitgeist Team <gnome-zeitgeist@lists.launchpad.net>\n"
+"Language-Team: Lithuanian <lt@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Launchpad-Export-Date: 2010-10-30 06:07+0000\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"(n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Launchpad-Export-Date: 2010-10-18 05:04+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
-"X-Poedit-Language: French\n"
 
 #: ../gnome-activity-journal:83
 msgid "print additional debugging information"
-msgstr "afficher des informations de débogage supplémentaires"
+msgstr "spausdinti papildomą derinimo informaciją"
 
 #: ../gnome-activity-journal:90
 msgid "ERROR"
-msgstr "ERREUR"
+msgstr "KLAIDA"
 
 #: ../gnome-activity-journal:90
 msgid "Unable to connect to Zeitgeist:"
-msgstr "Connexion à Zeitgeist impossible :"
+msgstr "Nepavyksta prisijungti prie Zeitgeist:"
 
 #: ../src/content_objects.py:563 ../src/content_objects.py:565
 msgid "{source._desc_sing} with {event.subjects[0].text}"
-msgstr "{source._desc_sing} avec {event.subjects[0].text}"
+msgstr "{source._desc_sing} su {event.subjects[0].text}"
 
 #: ../src/content_objects.py:564
 msgid ""
 "{source._desc_sing} with {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 msgstr ""
-"{source._desc_sing} avec {event.subjects[0].text}\n"
+"{source._desc_sing} su {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 
 #: ../src/content_objects.py:575
 msgid "Available"
-msgstr "Disponible"
+msgstr "Prieinamas"
 
 #: ../src/content_objects.py:576
 msgid "Offline"
-msgstr "Déconnecté(e)"
+msgstr "Neprisijungęs (-usi)"
 
 #: ../src/content_objects.py:577
 msgid "Away"
-msgstr "Absent(e)"
+msgstr "Pasitraukęs (-usi)"
 
 #: ../src/content_objects.py:578
 msgid "Busy"
-msgstr "Occupé(e)"
+msgstr "Užsiėmęs (-usi)"
 
 #: ../src/content_objects.py:610 ../src/content_objects.py:615
 #: ../src/content_objects.py:620
 msgid "with"
-msgstr "avec"
+msgstr "su"
 
 #: ../src/content_objects.py:659
 msgid "Time Tracker"
-msgstr "Suivi du temps"
+msgstr "Laiko sekiklis"
 
 #: ../src/content_objects.py:680 ../src/content_objects.py:682
 msgid "{source._desc_sing} from {event.subjects[0].text}"
-msgstr "{source._desc_sing} depuis {event.subjects[0].text}"
+msgstr "{source._desc_sing} iš {event.subjects[0].text}"
 
 #: ../src/content_objects.py:681
 msgid ""
 "{source._desc_sing} from {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 msgstr ""
-"{source._desc_sing} depuis {event.subjects[0].text}\n"
+"{source._desc_sing} iš {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 
 #: ../src/content_objects.py:685
 #, python-format
 msgid " (%s Attachments)"
-msgstr " (%s Fichiers joints)"
+msgstr " (%s prisegtukai (-ų))"
 
 #: ../src/content_objects.py:709
 msgid "{event.subjects[0].text}"
@@ -89,305 +94,290 @@ msgid ""
 "Note\n"
 "{event.subjects[0].text}"
 msgstr ""
-"Note\n"
+"Pastaba\n"
 "{event.subjects[0].text}"
 
 #: ../src/supporting_widgets.py:453
 msgid "Type here to search..."
-msgstr "Effectuez vos recherches ici..."
+msgstr "Rašykite čia, kad ieškotumėte..."
 
 #: ../src/supporting_widgets.py:675
 msgid "Powered by Zeitgeist"
-msgstr "Fonctionne avec Zeitgeist"
+msgstr "Paremta Zeitgeist"
 
 #: ../src/supporting_widgets.py:732 ../src/activity_widgets.py:469
 msgid "Remove Pin"
-msgstr "Retirer l'épingle"
+msgstr "Pašalinti smeigtuką"
 
 #: ../src/supporting_widgets.py:733 ../src/supporting_widgets.py:1196
 msgid "Add Pin"
-msgstr "Ajouter une épingle"
+msgstr "Pridėti smeigtuką"
 
 #: ../src/supporting_widgets.py:734
 msgid "Delete item from Journal"
-msgstr "Supprimer l'élément du journal"
+msgstr "Ištrinti iš žurnalo"
 
 #: ../src/supporting_widgets.py:735
 msgid "Delete all events with this URI"
-msgstr "Supprimer tout les évenements avec cette URI"
+msgstr "Ištrinti įvykius su šiuo URI"
 
 #: ../src/supporting_widgets.py:736
 msgid "More Information"
-msgstr "En savoir plus"
+msgstr "Daugiau informacijos"
 
 #: ../src/supporting_widgets.py:748
 msgid "Send To..."
-msgstr "Envoyer à..."
+msgstr "Siųsti į..."
 
 #: ../src/supporting_widgets.py:849
 msgid "Search"
-msgstr "Rechercher"
+msgstr "Ieškoti"
 
 #: ../src/supporting_widgets.py:860 ../src/supporting_widgets.py:1348
 msgid "Preferences"
-msgstr "Préférences"
+msgstr "Nustatymai"
 
 #: ../src/supporting_widgets.py:865 ../src/supporting_widgets.py:866
 msgid "Go to Today"
-msgstr "Aller à Aujourd'Hui"
+msgstr "Eiti į šiandieną"
 
 #: ../src/supporting_widgets.py:1108
 msgid "Used With"
-msgstr "Utilisé avec"
+msgstr "Naudota su"
 
 #: ../src/supporting_widgets.py:1191
 msgid "Launch this subject"
-msgstr "Exécuter ce sujet"
+msgstr "Paleisti šią temą"
 
 #: ../src/supporting_widgets.py:1193
 msgid "Delete this subject"
-msgstr "Supprimer ce sujet"
+msgstr "Ištrinti šią temą"
 
 #: ../src/supporting_widgets.py:1212
 msgid "Tags"
-msgstr "Étiquettes"
+msgstr "Žymos"
 
 #: ../src/supporting_widgets.py:1357
 msgid "Active Plugins:"
-msgstr "Greffons actifs :"
+msgstr "Veikiantys įskiepiai:"
 
 #: ../src/supporting_widgets.py:1365
 msgid "Plugins"
-msgstr "Greffons"
+msgstr "Įskiepiai"
 
 #: ../src/activity_widgets.py:149 ../src/common.py:170
 msgid "Morning"
-msgstr "Matinée"
+msgstr "Rytas"
 
 #: ../src/activity_widgets.py:149 ../src/common.py:170
 msgid "Afternoon"
-msgstr "Après-midi"
+msgstr "Popietė"
 
 #: ../src/activity_widgets.py:149 ../src/common.py:170
 msgid "Evening"
-msgstr "Soirée"
+msgstr "Vakaras"
 
 #: ../src/activity_widgets.py:1225
 msgid "Pinned Items"
-msgstr "Éléments épinglés"
+msgstr "Prisegti elementai"
 
 #: ../src/histogram.py:438
 msgid "item"
 msgid_plural "items"
-msgstr[0] "élément"
-msgstr[1] "éléments"
+msgstr[0] "elementas"
+msgstr[1] "elementai"
+msgstr[2] "elementų"
 
 #: ../src/main.py:125
 msgid "Switch to MultiView"
-msgstr "Basculer en affichage multiple"
+msgstr "Persijungti į MultiView"
 
 #: ../src/main.py:126
 msgid "Switch to ThumbView"
-msgstr "Basculer en affichage aperçu"
+msgstr "Persijungti į ThumbView"
 
 #: ../src/main.py:127
 msgid "Switch to TimelineView"
-msgstr "Basculer en vue temporelle"
+msgstr "Persijungti į Laiko eilutės vaizdą"
 
 #: ../src/main.py:295
 msgid "Today"
-msgstr "Aujourd'hui"
+msgstr "Šiandien"
 
 #: ../src/main.py:298
 msgid "Yesterday"
-msgstr "Hier"
+msgstr "Vakar"
 
 #: ../src/main.py:309
 #, python-format
 msgid "%s to %s"
-msgstr "du %s au %s"
+msgstr "%s iki %s"
 
 #: ../src/main.py:309 ../extra/gnome-activity-journal.desktop.in.h:1
 msgid "Activity Journal"
-msgstr "Journal d'activités"
+msgstr "Veiklos žurnalas"
 
 #. TODO: Move this into Zeitgeist's library, implemented properly
 #: ../src/config.py:240
 msgid "Worked with a Video"
-msgstr "Vidéo consultée"
+msgstr "Dirbta su video"
 
 #: ../src/config.py:240
 msgid "Worked with Videos"
-msgstr "Vidéos consultées"
+msgstr "Dirbta su video"
 
 #: ../src/config.py:241
 msgid "Worked with Audio"
-msgstr "Fichiers audio consultés"
+msgstr "Dirbta su audio"
 
 #: ../src/config.py:242
 msgid "Worked with an Image"
-msgstr "Image consultée"
+msgstr "Dirbta su paveikslėliu"
 
 #: ../src/config.py:242
 msgid "Worked with Images"
-msgstr "Images consultées"
+msgstr "Dirbta su paveikslėliais"
 
 #: ../src/config.py:243
 msgid "Edited or Read Document"
-msgstr "Document lu ou édité"
+msgstr "Redaguotas arba skaitytas dokumentas"
 
 #: ../src/config.py:243
 msgid "Edited or Read Documents"
-msgstr "Documents lus ou édités"
+msgstr "Redaguoti arba skaityti dokumentai"
 
 #: ../src/config.py:244
 msgid "Edited or Read Code"
-msgstr "Code lu ou édité"
+msgstr "Redaguotas arba skaitytas kodas"
 
 #: ../src/config.py:245
 msgid "Conversation"
-msgstr "Conversation"
+msgstr "Pokalbis"
 
 #: ../src/config.py:245
 msgid "Conversations"
-msgstr "Conversations"
+msgstr "Pokalbiai"
 
 #: ../src/config.py:246
 msgid "Visited Website"
-msgstr "Site web visité"
+msgstr "Aplankyta internetinė svetainė"
 
 #: ../src/config.py:246
 msgid "Visited Websites"
-msgstr "Sites web visités"
+msgstr "Aplankytos internetinės svetainės"
 
 #: ../src/config.py:247 ../src/common.py:150
 msgid "Email"
-msgstr "E-mail"
+msgstr "Elektroninis laiškas"
 
 #: ../src/config.py:247
 msgid "Emails"
-msgstr "E-mails"
+msgstr "Elektroniniai laiškai"
 
 #: ../src/config.py:248
 msgid "Other Activity"
-msgstr "Autre activité"
+msgstr "Kita veikla"
 
 #: ../src/config.py:248
 msgid "Other Activities"
-msgstr "Autres activités"
+msgstr "Kitos veiklos"
 
 #: ../src/config.py:249
 msgid "Edited or Read Note"
-msgstr "Note lue ou éditée"
+msgstr "Redaguota arba skaityta pastaba"
 
 #: ../src/config.py:249
 msgid "Edited or Read Notes"
-msgstr "Notes lues ou éditées"
+msgstr "Redaguotos arba skaitytos pastabos"
 
 #: ../src/common.py:143
 msgid "Video"
-msgstr "Vidéo"
+msgstr "Video"
 
 #: ../src/common.py:144
 msgid "Music"
-msgstr "Musique"
+msgstr "Muzika"
 
 #: ../src/common.py:145
 msgid "Document"
-msgstr "Document"
+msgstr "Dokumentas"
 
 #: ../src/common.py:146
 msgid "Image"
-msgstr "Image"
+msgstr "Paveikslėlis"
 
 #: ../src/common.py:147
 msgid "Source Code"
-msgstr "Code source"
+msgstr "Išeities kodas"
 
 #: ../src/common.py:148
 msgid "Unknown"
-msgstr "Inconnu"
+msgstr "Nežinoma"
 
 #: ../src/common.py:149
 msgid "IM Message"
-msgstr "Message instantané"
+msgstr "Sparčioji žinutė"
 
 #: ../extra/gnome-activity-journal.desktop.in.h:2
 msgid ""
 "Browse a chronological log of your activities and easily find files, "
 "contacts, etc."
 msgstr ""
-"Parcourez un historique de vos activités et retrouvez facilement vos "
-"fichiers, contacts, etc."
+"Naršyti veiklų chronologinį žurnalą ir lengvai pasiekti failus, kontaktus ir "
+"t. t."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:1
 msgid "Accessibility"
-msgstr "Accessibilité"
+msgstr "Prieinamumas"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:2
 msgid "Allow thumbnails as icons"
-msgstr "Autoriser les miniatures comme icônes"
+msgstr "Leisti miniatiūras kaip piktogramas"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:3
 msgid "Amount of visible days"
-msgstr "Nombre de jours affichés"
+msgstr "Matomų dienų kiekis"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:4
 msgid ""
 "Customized height for the main window, in pixels (requires restart). Can't "
 "be bigger than the desktop's size."
 msgstr ""
-"Hauteur de fenêtre personnalisée, en pixels (redémarrage requis). Ne peut "
-"être plus que la résolution de l'écran."
+"Pasirinktinas pagrindinio lango aukštis, pikseliais (reikalingas "
+"perkrovimas). Negali būti didesnis nei jūsų darbastalio dydis."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:5
 msgid ""
 "Customized width for the main window, in pixels (requires restart). Can't be "
 "bigger than the desktop's size."
 msgstr ""
-"Largeur de fenêtre personnalisée, en pixels (redémarrage requis). Ne peut "
-"être plus que la résolution de l'écran."
+"Pasirinktinas pagrindinio lango plotis, pikseliais (reikalingas "
+"perkrovimas). Negali būti didesnis nei jūsų darbastalio dydis."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:6
 msgid "The amount of days to show at once."
-msgstr "Le nombre de jours à afficher en même temps."
+msgstr "Vienu metu rodomų dienų kiekis"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:7
 msgid ""
 "Whether special accessibility options should be enabled (requires restart)."
 msgstr ""
-"Si les options d'accessibilité devraient être activées (redémarrage requis)."
+"Ar turėtų specialiosios prieinamumo nuostatos būti įjungtos (reikalingas "
+"perkrovimas)."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:8
 msgid ""
 "Whether to allow showing little thumbnails next to each activity (requires "
 "restart). If False, only generic mime-type icons will be used."
 msgstr ""
-"Autoriser l'affichage de miniatures à côté des activités (redémarrage "
-"requis). Dans le cas contraire, les icônes standard seront utilisées."
+"Ar leisti rodyti miniatiūras prie kiekvienos veiklos (reikalingas "
+"perkrovimas). Jei netiesa, tik bendrinės mime-tipo piktogramos bus "
+"naudojamos."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:9
 msgid "Window height"
-msgstr "Hauteur de fenêtre"
+msgstr "Lango aukštis"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:10
 msgid "Window width"
-msgstr "Largeur de fenêtre"
-
-#~ msgid "Go Back in Time"
-#~ msgstr "Jours précedents"
-
-#~ msgid "Look into the Future"
-#~ msgstr "Jours suivants"
-
-#~ msgid "Jump to Today"
-#~ msgstr "Se déplacer vers aujourd'hui"
-
-#~ msgid "Pinned items"
-#~ msgstr "Élements épinglés"
-
-#~ msgid "Click today to return to today"
-#~ msgstr "Cliquez pour revenir vers aujourd'hui"
-
-#~ msgid "Pin to Today"
-#~ msgstr "Épingler à aujourd'hui"
+msgstr "Lango plotis"

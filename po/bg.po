@@ -1,84 +1,88 @@
+# Bulgarian translation for gnome-activity-journal
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gnome-activity-journal package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: GNOME Activity Journal\n"
-"Report-Msgid-Bugs-To: zeitgeist@lists.launchpad.net\n"
+"Project-Id-Version: gnome-activity-journal\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-09-18 21:43+0200\n"
-"PO-Revision-Date: 2010-10-29 14:46+0000\n"
-"Last-Translator: Pierre Slamich <pierre.slamich@gmail.com>\n"
-"Language-Team: \n"
+"PO-Revision-Date: 2010-10-26 07:56+0000\n"
+"Last-Translator: Svetoslav Stefanov <svetlisashkov@yahoo.com>\n"
+"Language-Team: Bulgarian <bg@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Launchpad-Export-Date: 2010-10-30 06:07+0000\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Launchpad-Export-Date: 2010-10-27 05:09+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
-"X-Poedit-Language: French\n"
 
 #: ../gnome-activity-journal:83
 msgid "print additional debugging information"
-msgstr "afficher des informations de débogage supplémentaires"
+msgstr "извеждане на допълнителна информация за изчистване на грешки"
 
 #: ../gnome-activity-journal:90
 msgid "ERROR"
-msgstr "ERREUR"
+msgstr "ГРЕШКА"
 
 #: ../gnome-activity-journal:90
 msgid "Unable to connect to Zeitgeist:"
-msgstr "Connexion à Zeitgeist impossible :"
+msgstr "Невъзможност за свързване с Zaitgeist"
 
 #: ../src/content_objects.py:563 ../src/content_objects.py:565
 msgid "{source._desc_sing} with {event.subjects[0].text}"
-msgstr "{source._desc_sing} avec {event.subjects[0].text}"
+msgstr "{source._desc_sing} с {event.subjects[0].text}"
 
 #: ../src/content_objects.py:564
 msgid ""
 "{source._desc_sing} with {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 msgstr ""
-"{source._desc_sing} avec {event.subjects[0].text}\n"
+"{source._desc_sing} с {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 
 #: ../src/content_objects.py:575
 msgid "Available"
-msgstr "Disponible"
+msgstr "Наличен"
 
 #: ../src/content_objects.py:576
 msgid "Offline"
-msgstr "Déconnecté(e)"
+msgstr "Извън мрежата"
 
 #: ../src/content_objects.py:577
 msgid "Away"
-msgstr "Absent(e)"
+msgstr "Отсъстващ"
 
 #: ../src/content_objects.py:578
 msgid "Busy"
-msgstr "Occupé(e)"
+msgstr "Зает"
 
 #: ../src/content_objects.py:610 ../src/content_objects.py:615
 #: ../src/content_objects.py:620
 msgid "with"
-msgstr "avec"
+msgstr "с"
 
 #: ../src/content_objects.py:659
 msgid "Time Tracker"
-msgstr "Suivi du temps"
+msgstr "Часова лента"
 
 #: ../src/content_objects.py:680 ../src/content_objects.py:682
 msgid "{source._desc_sing} from {event.subjects[0].text}"
-msgstr "{source._desc_sing} depuis {event.subjects[0].text}"
+msgstr "{source._desc_sing} от {event.subjects[0].text}"
 
 #: ../src/content_objects.py:681
 msgid ""
 "{source._desc_sing} from {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 msgstr ""
-"{source._desc_sing} depuis {event.subjects[0].text}\n"
+"{source._desc_sing} от {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 
 #: ../src/content_objects.py:685
 #, python-format
 msgid " (%s Attachments)"
-msgstr " (%s Fichiers joints)"
+msgstr " (%s прикачени)"
 
 #: ../src/content_objects.py:709
 msgid "{event.subjects[0].text}"
@@ -89,305 +93,288 @@ msgid ""
 "Note\n"
 "{event.subjects[0].text}"
 msgstr ""
-"Note\n"
+"Бележка\n"
 "{event.subjects[0].text}"
 
 #: ../src/supporting_widgets.py:453
 msgid "Type here to search..."
-msgstr "Effectuez vos recherches ici..."
+msgstr "Пишете тук за да търсите"
 
 #: ../src/supporting_widgets.py:675
 msgid "Powered by Zeitgeist"
-msgstr "Fonctionne avec Zeitgeist"
+msgstr "Захранвано от Zeitgeist"
 
 #: ../src/supporting_widgets.py:732 ../src/activity_widgets.py:469
 msgid "Remove Pin"
-msgstr "Retirer l'épingle"
+msgstr "Премахване на отметка"
 
 #: ../src/supporting_widgets.py:733 ../src/supporting_widgets.py:1196
 msgid "Add Pin"
-msgstr "Ajouter une épingle"
+msgstr "Добавяне на отметка"
 
 #: ../src/supporting_widgets.py:734
 msgid "Delete item from Journal"
-msgstr "Supprimer l'élément du journal"
+msgstr "Изтриване от Дневника"
 
 #: ../src/supporting_widgets.py:735
 msgid "Delete all events with this URI"
-msgstr "Supprimer tout les évenements avec cette URI"
+msgstr "Изтриване на всички събития с този адрес"
 
 #: ../src/supporting_widgets.py:736
 msgid "More Information"
-msgstr "En savoir plus"
+msgstr "Повече информация"
 
 #: ../src/supporting_widgets.py:748
 msgid "Send To..."
-msgstr "Envoyer à..."
+msgstr "Изпращане до…"
 
 #: ../src/supporting_widgets.py:849
 msgid "Search"
-msgstr "Rechercher"
+msgstr "Търсене"
 
 #: ../src/supporting_widgets.py:860 ../src/supporting_widgets.py:1348
 msgid "Preferences"
-msgstr "Préférences"
+msgstr "Предпочитания"
 
 #: ../src/supporting_widgets.py:865 ../src/supporting_widgets.py:866
 msgid "Go to Today"
-msgstr "Aller à Aujourd'Hui"
+msgstr "Отиване на днешната дата"
 
 #: ../src/supporting_widgets.py:1108
 msgid "Used With"
-msgstr "Utilisé avec"
+msgstr "Използвано с"
 
 #: ../src/supporting_widgets.py:1191
 msgid "Launch this subject"
-msgstr "Exécuter ce sujet"
+msgstr "Пускане на тази тема"
 
 #: ../src/supporting_widgets.py:1193
 msgid "Delete this subject"
-msgstr "Supprimer ce sujet"
+msgstr "Изтриване на тази тема"
 
 #: ../src/supporting_widgets.py:1212
 msgid "Tags"
-msgstr "Étiquettes"
+msgstr "Етикети"
 
 #: ../src/supporting_widgets.py:1357
 msgid "Active Plugins:"
-msgstr "Greffons actifs :"
+msgstr "Активни приставки"
 
 #: ../src/supporting_widgets.py:1365
 msgid "Plugins"
-msgstr "Greffons"
+msgstr "Приставки"
 
 #: ../src/activity_widgets.py:149 ../src/common.py:170
 msgid "Morning"
-msgstr "Matinée"
+msgstr "Сутрин"
 
 #: ../src/activity_widgets.py:149 ../src/common.py:170
 msgid "Afternoon"
-msgstr "Après-midi"
+msgstr "Следобед"
 
 #: ../src/activity_widgets.py:149 ../src/common.py:170
 msgid "Evening"
-msgstr "Soirée"
+msgstr "Вечер"
 
 #: ../src/activity_widgets.py:1225
 msgid "Pinned Items"
-msgstr "Éléments épinglés"
+msgstr "Отметки"
 
 #: ../src/histogram.py:438
 msgid "item"
 msgid_plural "items"
-msgstr[0] "élément"
-msgstr[1] "éléments"
+msgstr[0] "елемент"
+msgstr[1] "елементи"
 
 #: ../src/main.py:125
 msgid "Switch to MultiView"
-msgstr "Basculer en affichage multiple"
+msgstr "Превключване към паралелен изглед"
 
 #: ../src/main.py:126
 msgid "Switch to ThumbView"
-msgstr "Basculer en affichage aperçu"
+msgstr "Преминаване към мозаечен изглед"
 
 #: ../src/main.py:127
 msgid "Switch to TimelineView"
-msgstr "Basculer en vue temporelle"
+msgstr "Превключване към хронологичен изглед"
 
 #: ../src/main.py:295
 msgid "Today"
-msgstr "Aujourd'hui"
+msgstr "Днес"
 
 #: ../src/main.py:298
 msgid "Yesterday"
-msgstr "Hier"
+msgstr "Вчера"
 
 #: ../src/main.py:309
 #, python-format
 msgid "%s to %s"
-msgstr "du %s au %s"
+msgstr "%s до %s"
 
 #: ../src/main.py:309 ../extra/gnome-activity-journal.desktop.in.h:1
 msgid "Activity Journal"
-msgstr "Journal d'activités"
+msgstr "Дневник на действията"
 
 #. TODO: Move this into Zeitgeist's library, implemented properly
 #: ../src/config.py:240
 msgid "Worked with a Video"
-msgstr "Vidéo consultée"
+msgstr "Работа с видео"
 
 #: ../src/config.py:240
 msgid "Worked with Videos"
-msgstr "Vidéos consultées"
+msgstr "Работа с видео"
 
 #: ../src/config.py:241
 msgid "Worked with Audio"
-msgstr "Fichiers audio consultés"
+msgstr "Работа със звук"
 
 #: ../src/config.py:242
 msgid "Worked with an Image"
-msgstr "Image consultée"
+msgstr "Работа с изображение"
 
 #: ../src/config.py:242
 msgid "Worked with Images"
-msgstr "Images consultées"
+msgstr "Работа с изображения"
 
 #: ../src/config.py:243
 msgid "Edited or Read Document"
-msgstr "Document lu ou édité"
+msgstr "Редактиране или четене на документ"
 
 #: ../src/config.py:243
 msgid "Edited or Read Documents"
-msgstr "Documents lus ou édités"
+msgstr "Редактиране или четене на документи"
 
 #: ../src/config.py:244
 msgid "Edited or Read Code"
-msgstr "Code lu ou édité"
+msgstr "Редактиране или четене на код"
 
 #: ../src/config.py:245
 msgid "Conversation"
-msgstr "Conversation"
+msgstr "Разговор"
 
 #: ../src/config.py:245
 msgid "Conversations"
-msgstr "Conversations"
+msgstr "Разговори"
 
 #: ../src/config.py:246
 msgid "Visited Website"
-msgstr "Site web visité"
+msgstr "Посетена уеб страница"
 
 #: ../src/config.py:246
 msgid "Visited Websites"
-msgstr "Sites web visités"
+msgstr "Посетени уеб страници"
 
 #: ../src/config.py:247 ../src/common.py:150
 msgid "Email"
-msgstr "E-mail"
+msgstr "Е-писмо"
 
 #: ../src/config.py:247
 msgid "Emails"
-msgstr "E-mails"
+msgstr "Е-писма"
 
 #: ../src/config.py:248
 msgid "Other Activity"
-msgstr "Autre activité"
+msgstr "Друга дейност"
 
 #: ../src/config.py:248
 msgid "Other Activities"
-msgstr "Autres activités"
+msgstr "Други дейности"
 
 #: ../src/config.py:249
 msgid "Edited or Read Note"
-msgstr "Note lue ou éditée"
+msgstr "Редактиране или четене на бележка"
 
 #: ../src/config.py:249
 msgid "Edited or Read Notes"
-msgstr "Notes lues ou éditées"
+msgstr "Редактиране или четене на бележки"
 
 #: ../src/common.py:143
 msgid "Video"
-msgstr "Vidéo"
+msgstr "Видео"
 
 #: ../src/common.py:144
 msgid "Music"
-msgstr "Musique"
+msgstr "Музика"
 
 #: ../src/common.py:145
 msgid "Document"
-msgstr "Document"
+msgstr "Документ"
 
 #: ../src/common.py:146
 msgid "Image"
-msgstr "Image"
+msgstr "Изображение"
 
 #: ../src/common.py:147
 msgid "Source Code"
-msgstr "Code source"
+msgstr "Изходен код"
 
 #: ../src/common.py:148
 msgid "Unknown"
-msgstr "Inconnu"
+msgstr "Неизвестно"
 
 #: ../src/common.py:149
 msgid "IM Message"
-msgstr "Message instantané"
+msgstr "Съобщение"
 
 #: ../extra/gnome-activity-journal.desktop.in.h:2
 msgid ""
 "Browse a chronological log of your activities and easily find files, "
 "contacts, etc."
 msgstr ""
-"Parcourez un historique de vos activités et retrouvez facilement vos "
-"fichiers, contacts, etc."
+"Разглеждайте хронологичен запис на вашите дейности  и лесно откривайте "
+"файлове, контакти и т. н."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:1
 msgid "Accessibility"
-msgstr "Accessibilité"
+msgstr "Достъпност"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:2
 msgid "Allow thumbnails as icons"
-msgstr "Autoriser les miniatures comme icônes"
+msgstr "Позволяване на миниатюрите като икони"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:3
 msgid "Amount of visible days"
-msgstr "Nombre de jours affichés"
+msgstr "Брой видими дни"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:4
 msgid ""
 "Customized height for the main window, in pixels (requires restart). Can't "
 "be bigger than the desktop's size."
 msgstr ""
-"Hauteur de fenêtre personnalisée, en pixels (redémarrage requis). Ne peut "
-"être plus que la résolution de l'écran."
+"Потребителска височина на основния прозорец, в пиксели (изисква "
+"рестартиране). Не може да е по-голява от размера на работния плот."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:5
 msgid ""
 "Customized width for the main window, in pixels (requires restart). Can't be "
 "bigger than the desktop's size."
 msgstr ""
-"Largeur de fenêtre personnalisée, en pixels (redémarrage requis). Ne peut "
-"être plus que la résolution de l'écran."
+"Потребителска широчина на основния прозорец, в пиксели (изисква "
+"рестартиране). Не може да е по-голява от размера на работния плот."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:6
 msgid "The amount of days to show at once."
-msgstr "Le nombre de jours à afficher en même temps."
+msgstr "Брой едновременно показвани дни."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:7
 msgid ""
 "Whether special accessibility options should be enabled (requires restart)."
 msgstr ""
-"Si les options d'accessibilité devraient être activées (redémarrage requis)."
+"Дали да са включени специалните настройки за достъпност (изисква "
+"рестартиране)."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:8
 msgid ""
 "Whether to allow showing little thumbnails next to each activity (requires "
 "restart). If False, only generic mime-type icons will be used."
 msgstr ""
-"Autoriser l'affichage de miniatures à côté des activités (redémarrage "
-"requis). Dans le cas contraire, les icônes standard seront utilisées."
+"Дали да се показват малки миниатюри до всяка дейност (изисква рестартиране). "
+"Ако не е истина, ще се показват само общи икони на типовете файлове."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:9
 msgid "Window height"
-msgstr "Hauteur de fenêtre"
+msgstr "Височина на прозореца"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:10
 msgid "Window width"
-msgstr "Largeur de fenêtre"
-
-#~ msgid "Go Back in Time"
-#~ msgstr "Jours précedents"
-
-#~ msgid "Look into the Future"
-#~ msgstr "Jours suivants"
-
-#~ msgid "Jump to Today"
-#~ msgstr "Se déplacer vers aujourd'hui"
-
-#~ msgid "Pinned items"
-#~ msgstr "Élements épinglés"
-
-#~ msgid "Click today to return to today"
-#~ msgstr "Cliquez pour revenir vers aujourd'hui"
-
-#~ msgid "Pin to Today"
-#~ msgstr "Épingler à aujourd'hui"
+msgstr "Широчина на прозореца"

@@ -180,11 +180,11 @@ class DayViewContainer(gtk.VBox):
         for item in x:
             if not item.content_object:continue
             t = time.localtime(int(item.event.timestamp)/1000)
-            if t.tm_hour < 11:
+            if t.tm_hour < 12:
                 if not item.event.subjects[0].uri in m_s:
                     m_s.append(item.event.subjects[0].uri )
                     morning.append(item)
-            elif t.tm_hour < 17:
+            elif t.tm_hour < 18:
                 if not item.event.subjects[0].uri in a_s:
                     a_s.append(item.event.subjects[0].uri )
                     afternoon.append(item)

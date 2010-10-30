@@ -1,27 +1,28 @@
 # Polish translation for gnome-activity-journal
 # Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
 # This file is distributed under the same license as the gnome-activity-journal package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+# Piotr Drąg <piotrdrag@gmail.com>, 2010.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-activity-journal\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"Report-Msgid-Bugs-To: zeitgeist@lists.launchpad.net\n"
 "POT-Creation-Date: 2010-09-18 21:43+0200\n"
-"PO-Revision-Date: 2010-09-28 03:30+0000\n"
-"Last-Translator: Łukasz Jernaś <deejay1@srem.org>\n"
-"Language-Team: Polish <pl@li.org>\n"
+"PO-Revision-Date: 2010-10-24 07:53+0000\n"
+"Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
+"Language-Team: Polish <gnomepl@aviary.pl>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2010-09-28 05:35+0000\n"
+"X-Launchpad-Export-Date: 2010-10-25 04:48+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
+"Language: pl\n"
 
 #: ../gnome-activity-journal:83
 msgid "print additional debugging information"
-msgstr "wyświetlanie dodatkowych komunikatów dla programistów"
+msgstr "wyświetla dodatkowe informacje o debugowaniu"
 
 #: ../gnome-activity-journal:90
 msgid "ERROR"
@@ -33,13 +34,15 @@ msgstr "Nie można połączyć się z usługą Zeitgeist:"
 
 #: ../src/content_objects.py:563 ../src/content_objects.py:565
 msgid "{source._desc_sing} with {event.subjects[0].text}"
-msgstr ""
+msgstr "{source._desc_sing} za pomocą {event.subjects[0].text}"
 
 #: ../src/content_objects.py:564
 msgid ""
 "{source._desc_sing} with {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 msgstr ""
+"{source._desc_sing} za pomocą {event.subjects[0].text}\n"
+"{event.subjects[0].uri}"
 
 #: ../src/content_objects.py:575
 msgid "Available"
@@ -47,7 +50,7 @@ msgstr "Dostępny"
 
 #: ../src/content_objects.py:576
 msgid "Offline"
-msgstr "Niedostępny"
+msgstr "Offline"
 
 #: ../src/content_objects.py:577
 msgid "Away"
@@ -60,26 +63,28 @@ msgstr "Zajęty"
 #: ../src/content_objects.py:610 ../src/content_objects.py:615
 #: ../src/content_objects.py:620
 msgid "with"
-msgstr "z"
+msgstr "za pomocą"
 
 #: ../src/content_objects.py:659
 msgid "Time Tracker"
-msgstr ""
+msgstr "Mierzenie czasu"
 
 #: ../src/content_objects.py:680 ../src/content_objects.py:682
 msgid "{source._desc_sing} from {event.subjects[0].text}"
-msgstr ""
+msgstr "{source._desc_sing} z {event.subjects[0].text}"
 
 #: ../src/content_objects.py:681
 msgid ""
 "{source._desc_sing} from {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 msgstr ""
+"{source._desc_sing} z {event.subjects[0].text}\n"
+"{event.subjects[0].uri}"
 
 #: ../src/content_objects.py:685
 #, python-format
 msgid " (%s Attachments)"
-msgstr " (%s załaczników)"
+msgstr " (załączników: %s)"
 
 #: ../src/content_objects.py:709
 msgid "{event.subjects[0].text}"
@@ -90,24 +95,24 @@ msgid ""
 "Note\n"
 "{event.subjects[0].text}"
 msgstr ""
-"Notatka\n"
+"Wpis\n"
 "{event.subjects[0].text}"
 
 #: ../src/supporting_widgets.py:453
 msgid "Type here to search..."
-msgstr ""
+msgstr "Wpisanie w tym miejscu rozpocznie wyszukiwanie..."
 
 #: ../src/supporting_widgets.py:675
 msgid "Powered by Zeitgeist"
-msgstr ""
+msgstr "Korzysta z usługi Zeitgeist"
 
 #: ../src/supporting_widgets.py:732 ../src/activity_widgets.py:469
 msgid "Remove Pin"
-msgstr "Usuń znacznik"
+msgstr "Usuń przypięcie"
 
 #: ../src/supporting_widgets.py:733 ../src/supporting_widgets.py:1196
 msgid "Add Pin"
-msgstr "Dodaj znacznik"
+msgstr "Dodaj przypięcie"
 
 #: ../src/supporting_widgets.py:734
 msgid "Delete item from Journal"
@@ -115,7 +120,7 @@ msgstr "Usuń element z dziennika"
 
 #: ../src/supporting_widgets.py:735
 msgid "Delete all events with this URI"
-msgstr "usuń wszystkie zdarzenia zawierające to URI"
+msgstr "Usuń wszystkie zdarzenia z tym adresem URI"
 
 #: ../src/supporting_widgets.py:736
 msgid "More Information"
@@ -127,7 +132,7 @@ msgstr "Wyślij do..."
 
 #: ../src/supporting_widgets.py:849
 msgid "Search"
-msgstr "Wyszukiwanie"
+msgstr "Wyszukaj"
 
 #: ../src/supporting_widgets.py:860 ../src/supporting_widgets.py:1348
 msgid "Preferences"
@@ -139,11 +144,11 @@ msgstr "Przejdź do dzisiaj"
 
 #: ../src/supporting_widgets.py:1108
 msgid "Used With"
-msgstr ""
+msgstr "Użyte za pomocą"
 
 #: ../src/supporting_widgets.py:1191
 msgid "Launch this subject"
-msgstr ""
+msgstr "Uruchom ten temat"
 
 #: ../src/supporting_widgets.py:1193
 msgid "Delete this subject"
@@ -155,27 +160,27 @@ msgstr "Etykiety"
 
 #: ../src/supporting_widgets.py:1357
 msgid "Active Plugins:"
-msgstr "Aktywne rozszerzenia:"
+msgstr "Aktywne wtyczki:"
 
 #: ../src/supporting_widgets.py:1365
 msgid "Plugins"
-msgstr "Rozszerzenia"
+msgstr "Wtyczki"
 
 #: ../src/activity_widgets.py:149 ../src/common.py:170
 msgid "Morning"
-msgstr "Rano"
+msgstr "Poranek"
 
 #: ../src/activity_widgets.py:149 ../src/common.py:170
 msgid "Afternoon"
-msgstr "Po południu"
+msgstr "Popołudnie"
 
 #: ../src/activity_widgets.py:149 ../src/common.py:170
 msgid "Evening"
-msgstr "Wieczorem"
+msgstr "Wieczór"
 
 #: ../src/activity_widgets.py:1225
 msgid "Pinned Items"
-msgstr ""
+msgstr "Przypięte elementy"
 
 #: ../src/histogram.py:438
 msgid "item"
@@ -186,15 +191,15 @@ msgstr[2] "elementów"
 
 #: ../src/main.py:125
 msgid "Switch to MultiView"
-msgstr ""
+msgstr "Przełącz do widoku \"MultiView\""
 
 #: ../src/main.py:126
 msgid "Switch to ThumbView"
-msgstr ""
+msgstr "Przełącz do widoku \"ThumbView\""
 
 #: ../src/main.py:127
 msgid "Switch to TimelineView"
-msgstr ""
+msgstr "Przełącz do widoku \"TimelineView\""
 
 #: ../src/main.py:295
 msgid "Today"
@@ -216,35 +221,35 @@ msgstr "Dziennik aktywności"
 #. TODO: Move this into Zeitgeist's library, implemented properly
 #: ../src/config.py:240
 msgid "Worked with a Video"
-msgstr "Pracowano z obrazem wideo"
+msgstr "Praca z plikiem wideo"
 
 #: ../src/config.py:240
 msgid "Worked with Videos"
-msgstr "Pracowano z obrazami wideo"
+msgstr "Praca z plikami wideo"
 
 #: ../src/config.py:241
 msgid "Worked with Audio"
-msgstr "Pracowano z dźwiękiem"
+msgstr "Praca z plikiem dźwiękowym"
 
 #: ../src/config.py:242
 msgid "Worked with an Image"
-msgstr "Pracowano z obrazem"
+msgstr "Praca z plikiem obrazu"
 
 #: ../src/config.py:242
 msgid "Worked with Images"
-msgstr "Pracowano z obrazami"
+msgstr "Praca z plikami obrazów"
 
 #: ../src/config.py:243
 msgid "Edited or Read Document"
-msgstr "Edytowano lub przeglądano dokument"
+msgstr "Modyfikacja lub odczytanie dokumentu"
 
 #: ../src/config.py:243
 msgid "Edited or Read Documents"
-msgstr "Edytowano lub przeglądano dokumenty"
+msgstr "Modyfikacja lub odczytanie dokumentów"
 
 #: ../src/config.py:244
 msgid "Edited or Read Code"
-msgstr "Edytowano lub przeglądano kod źródłowy"
+msgstr "Modyfikacja lub odczytanie kodu źródłowego"
 
 #: ../src/config.py:245
 msgid "Conversation"
@@ -256,19 +261,19 @@ msgstr "Rozmowy"
 
 #: ../src/config.py:246
 msgid "Visited Website"
-msgstr "Odwiedzono stronę internetową"
+msgstr "Odwiedzono stronę WWW"
 
 #: ../src/config.py:246
 msgid "Visited Websites"
-msgstr "Odwiedzano strony internetowe"
+msgstr "Odwiedzono strony WWW"
 
 #: ../src/config.py:247 ../src/common.py:150
 msgid "Email"
-msgstr "Email"
+msgstr "Wiadomość e-mail"
 
 #: ../src/config.py:247
 msgid "Emails"
-msgstr ""
+msgstr "Wiadomości e-mail"
 
 #: ../src/config.py:248
 msgid "Other Activity"
@@ -280,11 +285,11 @@ msgstr "Inne czynności"
 
 #: ../src/config.py:249
 msgid "Edited or Read Note"
-msgstr ""
+msgstr "Modyfikacja lub odczytanie wpisu"
 
 #: ../src/config.py:249
 msgid "Edited or Read Notes"
-msgstr ""
+msgstr "Modyfikacja lub odczytanie wpisu"
 
 #: ../src/common.py:143
 msgid "Video"
@@ -312,13 +317,15 @@ msgstr "Nieznany"
 
 #: ../src/common.py:149
 msgid "IM Message"
-msgstr ""
+msgstr "Wiadomość komunikatora"
 
 #: ../extra/gnome-activity-journal.desktop.in.h:2
 msgid ""
 "Browse a chronological log of your activities and easily find files, "
 "contacts, etc."
 msgstr ""
+"Przeglądanie chronologicznego dziennika aktywności oraz łatwe wyszukiwanie "
+"plików, kontaktów itp."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:1
 msgid "Accessibility"
@@ -326,38 +333,47 @@ msgstr "Dostępność"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:2
 msgid "Allow thumbnails as icons"
-msgstr ""
+msgstr "Zezwolenie na używanie miniatur jako ikon"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:3
 msgid "Amount of visible days"
-msgstr ""
+msgstr "Liczba widocznych dni"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:4
 msgid ""
 "Customized height for the main window, in pixels (requires restart). Can't "
 "be bigger than the desktop's size."
 msgstr ""
+"Dostosowana wysokość głównego okna w pikselach (wymaga ponownego "
+"uruchomienia programu). Nie może być większe niż rozmiar pulpitu."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:5
 msgid ""
 "Customized width for the main window, in pixels (requires restart). Can't be "
 "bigger than the desktop's size."
 msgstr ""
+"Dostosowana szerokość głównego okna w pikselach (wymaga ponownego "
+"uruchomienia programu). Nie może być większe niż rozmiar pulpitu."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:6
 msgid "The amount of days to show at once."
-msgstr ""
+msgstr "Liczba dni wyświetlanych za jednym razem."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:7
 msgid ""
 "Whether special accessibility options should be enabled (requires restart)."
 msgstr ""
+"Określa, czy specjalne opcje dostępności powinny być włączone (wymaga "
+"ponownego uruchomienia programu)."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:8
 msgid ""
 "Whether to allow showing little thumbnails next to each activity (requires "
 "restart). If False, only generic mime-type icons will be used."
 msgstr ""
+"Określa, czy zezwalać na wyświetlanie miniatur obok każdej aktywności "
+"(wymaga ponownego uruchomienia programu). Jeśli ustawione na wartość "
+"\"False\", tylko ogólne ikony typów MIME będą używane."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:9
 msgid "Window height"
