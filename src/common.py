@@ -167,8 +167,6 @@ MEDIAINTERPRETATIONS = [
     Interpretation.IMAGE.uri,
 ]
 
-TIMELABELS = [_("Morning"), _("Afternoon"), _("Evening")]
-
 def get_file_color(ftype, fmime):
     """Uses hashing to choose a shade from a hue in the color tuple above
 
@@ -917,3 +915,25 @@ class GioFile(object):
             return False
         return self.uri == other.uri
 
+class DayParts:
+
+    # TODO: In a future, I'd be cool to make the day partitions configurable.
+    # This includes redefining what Morning/Afternoon/etc. are, but also
+    # changing the categories entirely (eg. "Work", "Lunch time", etc.).
+    # For this get_day_parts and other methods should take a timestamp of
+    # the relevant day so they can account for weekends not having "Work", etc.
+
+    TIMELABELS = [_("Morning"), _("Afternoon"), _("Evening")]
+
+    @classmethod
+    def get_day_parts(cls):
+        return cls.TIMELABELS
+
+    @classmethod
+    def get_day_part_for_item(cls, item):
+        t = time.localtime(int(item.event.timestamp) / 1000)
+        if t.tm_hour < 11:
+            return 0  # Morning
+        elif t.tm_hour < 17:
+            return 1 # Afternoon
+        return 2 # Evening

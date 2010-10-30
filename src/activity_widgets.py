@@ -781,16 +781,17 @@ class ThumbView(gtk.VBox):
     def __init__(self):
         """Woo"""
         gtk.VBox.__init__(self)
-        self.views = [ThumbIconView() for x in xrange(3)]
-        self.labels = [gtk.Label() for x in xrange(3)]
-        for i in xrange(3):
-            text = TIMELABELS[i]
-            self.labels[i].set_markup(
-                "\n  <span size='10336'>%s</span>" % (text))
-            self.labels[i].set_justify(gtk.JUSTIFY_RIGHT)
-            self.labels[i].set_alignment(0, 0)
-            self.pack_start(self.labels[i], False, False)
-            self.pack_start(self.views[i], False, False)
+        self.views = []
+        self.labels = []
+        for text in DayParts.get_day_parts():
+            label = gtk.Label()
+            label.set_markup("\n  <span size='10336'>%s</span>" % (text))
+            label.set_justify(gtk.JUSTIFY_RIGHT)
+            label.set_alignment(0, 0)
+            self.views.append(ThumbIconView())
+            self.labels.append(label)
+            self.pack_start(label, False, False)
+            self.pack_start(self.views[-1], False, False)
         self.connect("style-set", self.change_style)
 
     def set_phase_items(self, i, items):
@@ -813,34 +814,19 @@ class ThumbView(gtk.VBox):
 
 
     def set_day(self, day):
-        morning = []
-        afternoon = []
-        evening = []
-
-        m_s = []
-        a_s = []
-        e_s = []
+        parts = [[] for i in len(DayParts.get_day_parts())]
+        uris = list(part)
 
         for item in day.filter(self.event_templates, result_type=ResultType.MostRecentEvents):
-            #if not item.content_object:continue
             if event_exists(item.event.subjects[0].uri):
-                t = time.localtime(int(item.event.timestamp)/1000)
-                if t.tm_hour < 11:
-                    if not item.event.subjects[0].uri in m_s:
-                        m_s.append(item.event.subjects[0].uri )
-                        morning.append(item)
-                elif t.tm_hour < 17:
-                    if not item.event.subjects[0].uri in a_s:
-                        a_s.append(item.event.subjects[0].uri )
-                        afternoon.append(item)
-                else:
-                    if not item.event.subjects[0].uri in e_s:
-                        e_s.append(item.event.subjects[0].uri )
-                        evening.append(item)
+                i = DayParts.get_day_part_for_item(item)
+                uri = item.event.subjects[0].uri
+                if not uri in uris[i]:
+                    uris.append(uri)
+                    parts[i].append(item)
 
-        self.set_phase_items(0, morning)
-        self.set_phase_items(1, afternoon)
-        self.set_phase_items(2, evening)
+        for i, part in enumerate(parts):
+            self.set_phase_items(i, part)
 
     def change_style(self, widget, style):
         rc_style = self.style
