@@ -144,7 +144,7 @@ class DayViewContainer(gtk.VBox):
         super(DayViewContainer, self).__init__()
         self.daylabel = DayLabel()
         self.pack_start(self.daylabel, False, False)
-        self.dayviews = (DayView(_("Morning")), DayView(_("Afternoon")), DayView(_("Evening")))
+        self.dayviews = [DayView(title) for title in DayParts.get_day_parts()]
         self.scrolled_window = gtk.ScrolledWindow()
         self.scrolled_window.set_shadow_type(gtk.SHADOW_NONE)
         self.vp = viewport = gtk.Viewport()
@@ -161,40 +161,31 @@ class DayViewContainer(gtk.VBox):
         self.connect("style-set", self.change_style)
 
     def set_day(self, day):
+        # TODO: Don't duplicate half of the code for each view, use common
+        # base classes and shared interfaces instead!
+        
         self.day = day
         if pinbox in self.box.get_children():
             self.box.remove(pinbox)
-        t  = day.date - datetime.date.today()
-        if t.days == 0:
+        if (day.date - datetime.date.today()) == 0:
             self.box.pack_start(pinbox, False, False)
             self.box.reorder_child(pinbox, 0)
         self.daylabel.set_date(day.date)
-        morning = []
-        afternoon = []
-        evening = []
-        m_s = []
-        a_s = []
-        e_s = []
-        t = time.time()
-        x = day.filter(self.event_templates, result_type=ResultType.MostRecentEvents)
-        for item in x:
-            if not item.content_object:continue
-            t = time.localtime(int(item.event.timestamp)/1000)
-            if t.tm_hour < 12:
-                if not item.event.subjects[0].uri in m_s:
-                    m_s.append(item.event.subjects[0].uri )
-                    morning.append(item)
-            elif t.tm_hour < 18:
-                if not item.event.subjects[0].uri in a_s:
-                    a_s.append(item.event.subjects[0].uri )
-                    afternoon.append(item)
-            else:
-                if not item.event.subjects[0].uri in e_s:
-                    e_s.append(item.event.subjects[0].uri )
-                    evening.append(item)
-        self.dayviews[0].set_items(morning)
-        self.dayviews[1].set_items(afternoon)
-        self.dayviews[2].set_items(evening)
+        
+        parts = [[] for i in DayParts.get_day_parts()]
+        uris = [[] for i in parts]
+
+        for item in day.filter(self.event_templates, result_type=ResultType.MostRecentEvents):
+            if not item.content_object:
+                continue
+            i = DayParts.get_day_part_for_item(item)
+            uri = item.event.subjects[0].uri
+            if not uri in uris[i]:
+                uris[i].append(uri)
+                parts[i].append(item)
+        
+        for i, part in enumerate(parts):
+            self.dayviews[i].set_items(part)
 
     def change_style(self, this, old_style):
         style = this.style
@@ -814,15 +805,15 @@ class ThumbView(gtk.VBox):
 
 
     def set_day(self, day):
-        parts = [[] for i in len(DayParts.get_day_parts())]
-        uris = list(part)
+        parts = [[] for i in DayParts.get_day_parts()]
+        uris = [[] for i in parts]
 
         for item in day.filter(self.event_templates, result_type=ResultType.MostRecentEvents):
             if event_exists(item.event.subjects[0].uri):
                 i = DayParts.get_day_part_for_item(item)
                 uri = item.event.subjects[0].uri
                 if not uri in uris[i]:
-                    uris.append(uri)
+                    uris[i].append(uri)
                     parts[i].append(item)
 
         for i, part in enumerate(parts):
