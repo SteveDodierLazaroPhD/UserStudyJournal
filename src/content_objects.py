@@ -430,6 +430,9 @@ class BaseContentType(ContentObject):
                 break
         except glib.GError:
             if common.PLACEHOLDER_PIXBUFFS.has_key(size): return common.PLACEHOLDER_PIXBUFFS[size]
+        #if i can't find any icon for this event i use the default one
+        if not icon:
+            if common.PLACEHOLDER_PIXBUFFS.has_key(size): return common.PLACEHOLDER_PIXBUFFS[size]  
         return icon
 
     @CachedAttribute

@@ -139,6 +139,7 @@ class DayViewContainer(gtk.VBox):
         Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri),
         Event.new_for_values(interpretation=Interpretation.ACCESS_EVENT.uri),
         Event.new_for_values(interpretation=Interpretation.SEND_EVENT.uri),
+        Event.new_for_values(interpretation=Interpretation.RECEIVE_EVENT.uri)
     )
     def __init__(self):
         super(DayViewContainer, self).__init__()
@@ -373,7 +374,7 @@ class Item(gtk.HBox):
                 self.icon = self.content_obj.get_actor_pixbuf(24)
             else:
                 self.icon = self.content_obj.get_icon(
-                    can_thumb=settings.get('small_thumbnails', False), border=0)
+                    can_thumb=settings.get('small_thumbnails', False), border=0)          
         else:
             self.icon = None
         self.btn.set_relief(gtk.RELIEF_NONE)
@@ -768,6 +769,7 @@ class ThumbView(gtk.VBox):
             Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri),
             Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri),
             Event.new_for_values(interpretation=Interpretation.ACCESS_EVENT.uri),
+            Event.new_for_values(interpretation=Interpretation.RECEIVE_EVENT.uri),
         )
     def __init__(self):
         """Woo"""

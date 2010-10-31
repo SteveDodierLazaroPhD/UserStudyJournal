@@ -445,6 +445,7 @@ class Store(gobject.GObject):
             Event.new_for_values(interpretation=Interpretation.ACCESS_EVENT.uri),
             Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri),
             Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri),
+            Event.new_for_values(interpretation=Interpretation.RECEIVE_EVENT.uri),
         )
         def callback(events):
             def _thread_fn(events):
