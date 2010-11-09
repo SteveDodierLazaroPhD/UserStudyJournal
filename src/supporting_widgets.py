@@ -675,9 +675,9 @@ class AudioPreviewTooltip(PreviewTooltip):
         self.player = gst.element_factory_make("playbin2", "player")
         fakesink = gst.element_factory_make("fakesink", "fakesink")
         self.player.set_property("video-sink", fakesink)
-	bus = self.player.get_bus()
-	bus.add_signal_watch()
-	bus.connect("message", self.on_message)
+        bus = self.player.get_bus()
+        bus.add_signal_watch()
+        bus.connect("message", self.on_message)
         self.connect("hide", self._handle_hide)
         self.connect("show", self._handle_show)
 
