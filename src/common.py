@@ -635,7 +635,7 @@ class PixbufCache(dict):
         gfile = GioFile.create(uri)
         thumb = True
         if gfile:
-            if gfile.has_preview():
+            if gfile.has_preview() and "audio-x-generic" not in gfile.icon_names:
                 pb = gfile.get_thumbnail(size=size)
             else:
                 iconsize = int(size[0]*iconscale)
@@ -898,6 +898,7 @@ class GioFile(object):
         is_opendocument = filter(lambda name: "application-vnd.oasis.opendocument" in name, icon_names)
         return "video-x-generic" in icon_names \
             or "image-x-generic" in icon_names \
+            or "audio-x-generic" in icon_names \
             or "application-pdf" in icon_names \
             or (("text-x-generic" in icon_names or "text-x-script" in icon_names) and pygments is not None) \
             or is_opendocument

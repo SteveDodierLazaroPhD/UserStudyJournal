@@ -6,6 +6,7 @@
 # Copyright © 2010 Randal Barlow <email.tehk@gmail.com>
 # Copyright © 2010 Siegfried Gevatter <siegfried@gevatter.com>
 # Copyright © 2010 Markus Korn <thekorn@gmx.de>
+# Copyright © 2010 Stefano Candori <stefano.candori@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -33,8 +34,8 @@ from common import *
 import content_objects
 from config import event_exists, settings, bookmarker, SUPPORTED_SOURCES
 from store import ContentStruct, CLIENT
-from supporting_widgets import DayLabel, ContextMenu, StaticPreviewTooltip, VideoPreviewTooltip, SearchBox
-
+from supporting_widgets import DayLabel, ContextMenu, StaticPreviewTooltip, VideoPreviewTooltip, SearchBox,\
+AudioPreviewTooltip
 from zeitgeist.datamodel import ResultType, StorageState, TimeRange
 
 
@@ -454,6 +455,19 @@ class Item(gtk.HBox):
         self.btn.connect("button_press_event", self._show_item_popup)
         self.btn.connect("realize", self.realize_cb, evbox)
         self.init_multimedia_tooltip()
+        
+        self.targets = [("text/uri-list", 0, 0)]
+        self.btn.drag_source_set( gtk.gdk.BUTTON1_MASK, self.targets,
+                gtk.gdk.ACTION_COPY)
+        self.btn.connect("drag_data_get", self.on_drag_data_get)
+
+    def on_drag_data_get(self, treeview, context, selection, target_id, etime):
+            uri = self.content_obj.uri
+            #FIXME for the moment we handle only files
+            if uri.startswith("file://"):
+                uri = uri.replace("%20"," ")
+                if os.path.exists(uri[7:]):
+                    selection.set_uris([uri])
 
     def realize_cb(self, widget, evbox):
         evbox.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2))
@@ -470,12 +484,12 @@ class Item(gtk.HBox):
             self.connect("query-tooltip", self._handle_tooltip)
             if "video-x-generic" in icon_names and gst is not None:
                 self.set_tooltip_window(VideoPreviewTooltip)
+            elif "audio-x-generic" in icon_names and gst is not None:
+                self.set_tooltip_window(AudioPreviewTooltip) 
             else:
                 self.set_tooltip_window(StaticPreviewTooltip)
 
     def _handle_tooltip(self, widget, x, y, keyboard_mode, tooltip):
-        # nothing to do here, we always show the multimedia tooltip
-        # if we like video/sound preview later on we can start them here
         tooltip_window = self.get_tooltip_window()
         return tooltip_window.preview(self.content_obj)
 
@@ -649,8 +663,7 @@ class _ThumbViewRenderer(gtk.GenericCellRenderer):
         pass
 
     def on_activate(self, event, widget, path, background_area, cell_area, flags):
-        self.content_obj.launch()
-        return True
+        pass
 
 
 class ThumbIconView(gtk.IconView):
@@ -667,9 +680,10 @@ class ThumbIconView(gtk.IconView):
         self.popupmenu = ContextMenu
         self.add_events(gtk.gdk.LEAVE_NOTIFY_MASK)
         self.connect("button-press-event", self.on_button_press)
+        self.connect("button-release-event", self.on_button_release)
         self.connect("motion-notify-event", self.on_motion_notify)
         self.connect("leave-notify-event", self.on_leave_notify)
-        self.set_selection_mode(gtk.SELECTION_NONE)
+        self.set_selection_mode(gtk.SELECTION_SINGLE)
         self.set_column_spacing(6)
         self.set_row_spacing(6)
         pcolumn = gtk.TreeViewColumn("Preview")
@@ -679,6 +693,11 @@ class ThumbIconView(gtk.IconView):
         self.set_margin(10)
         SearchBox.connect("search", lambda *args: self.queue_draw())
         SearchBox.connect("clear", lambda *args: self.queue_draw())
+
+        self.targets = [("text/uri-list", 0, 0)]
+        self.drag_source_set(gtk.gdk.BUTTON1_MASK, self.targets,
+                gtk.gdk.ACTION_COPY)
+        self.connect("drag_data_get", self.on_drag_data_get)
 
     def _set_model_in_thread(self, items):
         """
@@ -714,6 +733,17 @@ class ThumbIconView(gtk.IconView):
         thread = threading.Thread(target=self._set_model_in_thread, args=(items,))
         thread.start()
 
+    def on_drag_data_get(self, iconview, context, selection, target_id, etime):
+            model = iconview.get_model()
+            selected = iconview.get_selected_items()
+            content_object = model[selected[0]][0]
+            uri = content_object.uri
+            #FIXME for the moment we handle only files
+            if uri.startswith("file://"):
+                uri = uri.replace("%20"," ")
+                if os.path.exists(uri[7:]):
+                    selection.set_uris([uri])
+
     def on_button_press(self, widget, event):
         if event.button == 3:
             val = self.get_item_at_pos(int(event.x), int(event.y))
@@ -722,7 +752,15 @@ class ThumbIconView(gtk.IconView):
                 model = self.get_model()
                 obj = model[path[0]][0]
                 self.popupmenu.do_popup(event.time, [obj])
-        return False
+    
+    def on_button_release(self, widget, event):
+        if event.button == 1:
+            val = self.get_item_at_pos(int(event.x), int(event.y))
+            if val:
+                path, cell = val
+                model = self.get_model()
+                obj = model[path[0]][0]
+                obj.launch()
 
     def on_leave_notify(self, widget, event):
         try:
@@ -740,7 +778,6 @@ class ThumbIconView(gtk.IconView):
                 self.active_list[path[0]] = True
                 self.last_active = path[0]
                 self.queue_draw()
-        return True
 
     def query_tooltip(self, widget, x, y, keyboard_mode, tooltip):
         """
@@ -1049,6 +1086,11 @@ class TimelineView(gtk.TreeView):
         SearchBox.connect("search", lambda *args: self.queue_draw())
         SearchBox.connect("clear", lambda *args: self.queue_draw())
 
+        self.targets = [("text/uri-list", 0, 0)]
+        self.drag_source_set( gtk.gdk.BUTTON1_MASK, self.targets,
+                gtk.gdk.ACTION_COPY)
+        self.connect("drag_data_get", self.on_drag_data_get)
+
     def set_model_from_list(self, items):
         """
         Sets creates/sets a model from a list of zeitgeist events
@@ -1071,6 +1113,17 @@ class TimelineView(gtk.TreeView):
     def set_day(self, day):
         items = day.get_time_map()
         self.set_model_from_list(items)
+
+    def on_drag_data_get(self, treeview, context, selection, target_id, etime):
+            tree_selection = treeview.get_selection()
+            model, iter = tree_selection.get_selected()
+            content_object = model.get_value(iter, 0)
+            uri = content_object.uri
+            #FIXME for the moment we handle only files
+            if uri.startswith("file://"):
+                uri = uri.replace("%20"," ")
+                if os.path.exists(uri[7:]):
+                    selection.set_uris([uri])
 
     def on_button_press(self, widget, event):
         if event.button == 3:

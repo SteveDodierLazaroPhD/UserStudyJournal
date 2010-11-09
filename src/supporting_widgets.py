@@ -6,6 +6,7 @@
 # Copyright © 2010 Siegfried Gevatter <siegfried@gevatter.com>
 # Copyright © 2010 Markus Korn <thekorn@gmx.de>
 # Copyright © 2010 Randal Barlow <email.tehk@gmail.com>
+# Copyright © 2010 Stefano Candori <stefano.candori@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -665,6 +666,41 @@ class VideoPreviewTooltip(PreviewTooltip):
             finally:
                 gtk.gdk.threads_leave()
 
+class AudioPreviewTooltip(PreviewTooltip):
+
+    def __init__(self):
+        PreviewTooltip.__init__(self)
+        #hack:we don't need any window for audio_preview
+        self.set_default_size(0,0)
+        self.player = gst.element_factory_make("playbin2", "player")
+        fakesink = gst.element_factory_make("fakesink", "fakesink")
+        self.player.set_property("video-sink", fakesink)
+	bus = self.player.get_bus()
+	bus.add_signal_watch()
+	bus.connect("message", self.on_message)
+        self.connect("hide", self._handle_hide)
+        self.connect("show", self._handle_show)
+
+    def _handle_hide(self, widget):
+        self.player.set_state(gst.STATE_NULL)
+
+    def _handle_show(self, widget):
+        self.player.set_state(gst.STATE_PLAYING)
+
+    def preview(self, gio_file):
+        if gio_file.uri == self.player.get_property("uri"):
+            return True
+        self.player.set_property("uri", gio_file.uri)
+        return True
+
+    def on_message(self, bus, message):
+        t = message.type
+        if t == gst.MESSAGE_EOS:
+            self.player.set_state(gst.STATE_NULL)
+        elif t == gst.MESSAGE_ERROR:
+            self.player.set_state(gst.STATE_NULL)
+            err, debug = message.parse_error()
+            print "Error: %s" % err, debug
 
 class AnimatedImage(gtk.Image):
     animating = None
@@ -1453,8 +1489,10 @@ class PreferencesDialog(gtk.Dialog):
 ###
 if gst is not None:
     VideoPreviewTooltip = VideoPreviewTooltip()
+    AudioPreviewTooltip = AudioPreviewTooltip()
 else:
     VideoPreviewTooltip = None
+    AudioPreviewTooltip = None
 StaticPreviewTooltip = StaticPreviewTooltip()
 ContextMenu = ContextMenu()
 SearchBox = SearchBox()
