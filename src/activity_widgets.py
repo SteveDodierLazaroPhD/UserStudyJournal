@@ -38,6 +38,9 @@ from supporting_widgets import DayLabel, ContextMenu, StaticPreviewTooltip, Vide
 AudioPreviewTooltip
 from zeitgeist.datamodel import ResultType, StorageState, TimeRange
 
+#DND support variables
+TYPE_TARGET_TEXT = 80
+TYPE_TARGET_URI = 81
 
 class _GenericViewWidget(gtk.VBox):
     day = None
@@ -456,17 +459,20 @@ class Item(gtk.HBox):
         self.btn.connect("realize", self.realize_cb, evbox)
         self.init_multimedia_tooltip()
         
-        self.targets = [("text/uri-list", 0, 0)]
+        self.targets = [("text/plain", 0, TYPE_TARGET_TEXT),
+                        ("text/uri-list", 0, TYPE_TARGET_URI),]
         self.btn.drag_source_set( gtk.gdk.BUTTON1_MASK, self.targets,
                 gtk.gdk.ACTION_COPY)
         self.btn.connect("drag_data_get", self.on_drag_data_get)
 
     def on_drag_data_get(self, treeview, context, selection, target_id, etime):
-            uri = self.content_obj.uri
-            #FIXME for the moment we handle only files
+        uri = self.content_obj.uri
+        if target_id == TYPE_TARGET_TEXT:
+            selection.set_text(uri, -1)
+        elif target_id == TYPE_TARGET_URI:
             if uri.startswith("file://"):
-                uri = uri.replace("%20"," ")
-                if os.path.exists(uri[7:]):
+                unquoted_uri = urllib.unquote(uri)
+                if os.path.exists(unquoted_uri[7:]):
                     selection.set_uris([uri])
 
     def realize_cb(self, widget, evbox):
@@ -694,8 +700,9 @@ class ThumbIconView(gtk.IconView):
         SearchBox.connect("search", lambda *args: self.queue_draw())
         SearchBox.connect("clear", lambda *args: self.queue_draw())
 
-        self.targets = [("text/uri-list", 0, 0)]
-        self.drag_source_set(gtk.gdk.BUTTON1_MASK, self.targets,
+        self.targets = [("text/plain", 0, TYPE_TARGET_TEXT),
+                        ("text/uri-list", 0, TYPE_TARGET_URI),]
+        self.drag_source_set( gtk.gdk.BUTTON1_MASK, self.targets,
                 gtk.gdk.ACTION_COPY)
         self.connect("drag_data_get", self.on_drag_data_get)
 
@@ -734,14 +741,16 @@ class ThumbIconView(gtk.IconView):
         thread.start()
 
     def on_drag_data_get(self, iconview, context, selection, target_id, etime):
-            model = iconview.get_model()
-            selected = iconview.get_selected_items()
-            content_object = model[selected[0]][0]
-            uri = content_object.uri
-            #FIXME for the moment we handle only files
+        model = iconview.get_model()
+        selected = iconview.get_selected_items()
+        content_object = model[selected[0]][0]
+        uri = content_object.uri
+        if target_id == TYPE_TARGET_TEXT:
+            selection.set_text(uri, -1)
+        elif target_id == TYPE_TARGET_URI:
             if uri.startswith("file://"):
-                uri = uri.replace("%20"," ")
-                if os.path.exists(uri[7:]):
+                unquoted_uri = urllib.unquote(uri)
+                if os.path.exists(unquoted_uri[7:]):
                     selection.set_uris([uri])
 
     def on_button_press(self, widget, event):
@@ -1086,7 +1095,8 @@ class TimelineView(gtk.TreeView):
         SearchBox.connect("search", lambda *args: self.queue_draw())
         SearchBox.connect("clear", lambda *args: self.queue_draw())
 
-        self.targets = [("text/uri-list", 0, 0)]
+        self.targets = [("text/plain", 0, TYPE_TARGET_TEXT),
+                        ("text/uri-list", 0, TYPE_TARGET_URI),]
         self.drag_source_set( gtk.gdk.BUTTON1_MASK, self.targets,
                 gtk.gdk.ACTION_COPY)
         self.connect("drag_data_get", self.on_drag_data_get)
@@ -1115,14 +1125,16 @@ class TimelineView(gtk.TreeView):
         self.set_model_from_list(items)
 
     def on_drag_data_get(self, treeview, context, selection, target_id, etime):
-            tree_selection = treeview.get_selection()
-            model, iter = tree_selection.get_selected()
-            content_object = model.get_value(iter, 0)
-            uri = content_object.uri
-            #FIXME for the moment we handle only files
+        tree_selection = treeview.get_selection()
+        model, iter = tree_selection.get_selected()
+        content_object = model.get_value(iter, 0)
+        uri = content_object.uri
+        if target_id == TYPE_TARGET_TEXT:
+            selection.set_text(uri, -1)
+        elif target_id == TYPE_TARGET_URI:
             if uri.startswith("file://"):
-                uri = uri.replace("%20"," ")
-                if os.path.exists(uri[7:]):
+                unquoted_uri = urllib.unquote(uri)
+                if os.path.exists(unquoted_uri[7:]):
                     selection.set_uris([uri])
 
     def on_button_press(self, widget, event):
