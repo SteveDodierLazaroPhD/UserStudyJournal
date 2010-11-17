@@ -925,7 +925,7 @@ class DayParts:
     # the relevant day so they can account for weekends not having "Work", etc.
 
     TIMELABELS = [_("Morning"), _("Afternoon"), _("Evening")]
-    CHANGEHOURS = [0, 11, 17]
+    CHANGEHOURS = [0, 12, 18]
 
     @classmethod
     def _local_minimum(cls, hour):
