@@ -1254,6 +1254,8 @@ class PinBox(DayView):
                 self.event_templates, self.do_set,
                 self.event_timerange,
                 StorageState.Any, 10000, ResultType.MostRecentSubjects)
+        else:
+            self.do_set([])
 
     def do_set(self, event_ids):
         objs = []
