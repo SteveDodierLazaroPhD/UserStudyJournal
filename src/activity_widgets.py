@@ -1233,8 +1233,16 @@ class PinBox(DayView):
     def __init__(self):
         self.event_timerange = TimeRange.until_now()
         super(PinBox, self).__init__(title=_("Pinned Items"))#_("Pinned items"))
+        self.notebook = gtk.Notebook()
         bookmarker.connect("reload", self.set_from_templates)
         self.set_from_templates()
+
+        self.targets = [("text/uri-list", 0, TYPE_TARGET_URI),]
+        self.notebook.drag_dest_set(gtk.DEST_DEFAULT_MOTION |
+  	                            gtk.DEST_DEFAULT_HIGHLIGHT |
+	                            gtk.DEST_DEFAULT_DROP, 
+                                    self.targets, gtk.gdk.ACTION_COPY)
+        self.notebook.connect("drag_data_received", self.on_drag_data_received)
 
     @property
     def event_templates(self):
@@ -1272,12 +1280,17 @@ class PinBox(DayView):
         self.view.pack_start(box)
         for w in self:
             self.remove(w)
-        notebook = gtk.Notebook()
-        notebook.append_page(self.view, self.label)
+        self.notebook.append_page(self.view, self.label)
         self.label.set_alignment(0.01, 0.5)
-        notebook.set_tab_label_packing(self.view, True, True, gtk.PACK_START)
+        self.notebook.set_tab_label_packing(self.view, True, True, gtk.PACK_START)
         self.set_border_width(4)
-        if len(items) > 0: self.pack_start(notebook)
+        if len(items) > 0: self.pack_start(self.notebook)
+
+    def on_drag_data_received(self, wid, context, x, y, selection, target_type, time):
+        uri = unicode(selection.data.strip())
+        isbookmarked = bookmarker.is_bookmarked(uri)
+        if not isbookmarked:
+            bookmarker.bookmark(uri)
 
 
 ## gobject registration
