@@ -172,7 +172,7 @@ class DayViewContainer(gtk.VBox):
         self.day = day
         if pinbox in self.box.get_children():
             self.box.remove(pinbox)
-        if (day.date - datetime.date.today()) == 0:
+        if (day.date - datetime.date.today()) == datetime.timedelta(days=0):
             self.box.pack_start(pinbox, False, False)
             self.box.reorder_child(pinbox, 0)
         self.daylabel.set_date(day.date)
