@@ -41,7 +41,27 @@ from zeitgeist.datamodel import ResultType, StorageState, TimeRange
 #DND support variables
 TYPE_TARGET_TEXT = 80
 TYPE_TARGET_URI = 81
+ 
+class Draggable():
 
+    def __init__(self, widget):
+        targets = [("text/plain", 0, TYPE_TARGET_TEXT),
+                   ("text/uri-list", 0, TYPE_TARGET_URI)]
+        widget.drag_source_set( gtk.gdk.BUTTON1_MASK, targets,
+                gtk.gdk.ACTION_COPY)
+        widget.connect("drag_data_get", self.on_drag_data_get)
+
+class Droppable():
+
+    def __init__(self, widget):
+        targets = [("text/plain", 0, TYPE_TARGET_TEXT),]
+        widget.drag_dest_set(gtk.DEST_DEFAULT_MOTION |
+  	                            gtk.DEST_DEFAULT_HIGHLIGHT |
+	                            gtk.DEST_DEFAULT_DROP, 
+                                    targets, gtk.gdk.ACTION_COPY)
+        widget.connect("drag_data_received", self.on_drag_data_received)
+
+    
 class _GenericViewWidget(gtk.VBox):
     day = None
     day_signal_id = None
@@ -360,7 +380,7 @@ class CategoryBox(gtk.HBox):
         self._set_up_box(self.event_structs)
 
 
-class Item(gtk.HBox):
+class Item(gtk.HBox, Draggable):
 
     def __init__(self, content_struct, allow_pin = False, do_style=True):
         event = content_struct.event
@@ -368,6 +388,7 @@ class Item(gtk.HBox):
         self.set_border_width(2)
         self.allow_pin = allow_pin
         self.btn = gtk.Button()
+        Draggable.__init__(self, self.btn)
         self.search_results = []
         self.subject = event.subjects[0]
         self.content_obj = content_struct.content_object
@@ -459,11 +480,6 @@ class Item(gtk.HBox):
         self.btn.connect("realize", self.realize_cb, evbox)
         self.init_multimedia_tooltip()
         
-        self.targets = [("text/plain", 0, TYPE_TARGET_TEXT),
-                        ("text/uri-list", 0, TYPE_TARGET_URI),]
-        self.btn.drag_source_set( gtk.gdk.BUTTON1_MASK, self.targets,
-                gtk.gdk.ACTION_COPY)
-        self.btn.connect("drag_data_get", self.on_drag_data_get)
 
     def on_drag_data_get(self, treeview, context, selection, target_id, etime):
         uri = self.content_obj.uri
@@ -672,7 +688,7 @@ class _ThumbViewRenderer(gtk.GenericCellRenderer):
         pass
 
 
-class ThumbIconView(gtk.IconView):
+class ThumbIconView(gtk.IconView, Draggable):
     """
     A iconview which uses a custom cellrenderer to render square pixbufs
     based on zeitgeist events
@@ -681,7 +697,8 @@ class ThumbIconView(gtk.IconView):
     child_width = _ThumbViewRenderer.width
     child_height = _ThumbViewRenderer.height
     def __init__(self):
-        super(ThumbIconView, self).__init__()
+        gtk.IconView.__init__(self)
+        Draggable.__init__(self, self)
         self.active_list = []
         self.popupmenu = ContextMenu
         self.add_events(gtk.gdk.LEAVE_NOTIFY_MASK)
@@ -699,12 +716,6 @@ class ThumbIconView(gtk.IconView):
         self.set_margin(10)
         SearchBox.connect("search", lambda *args: self.queue_draw())
         SearchBox.connect("clear", lambda *args: self.queue_draw())
-
-        self.targets = [("text/plain", 0, TYPE_TARGET_TEXT),
-                        ("text/uri-list", 0, TYPE_TARGET_URI),]
-        self.drag_source_set( gtk.gdk.BUTTON1_MASK, self.targets,
-                gtk.gdk.ACTION_COPY)
-        self.connect("drag_data_get", self.on_drag_data_get)
 
     def _set_model_in_thread(self, items):
         """
@@ -751,7 +762,7 @@ class ThumbIconView(gtk.IconView):
             if uri.startswith("file://"):
                 unquoted_uri = urllib.unquote(uri)
                 if os.path.exists(unquoted_uri[7:]):
-                    selection.set_uris([uri])
+                    selection.set_uris([uri])     
 
     def on_button_press(self, widget, event):
         if event.button == 3:
@@ -1060,7 +1071,7 @@ class _TimelineRenderer(gtk.GenericCellRenderer):
         pass
 
 
-class TimelineView(gtk.TreeView):
+class TimelineView(gtk.TreeView, Draggable):
     child_width = _TimelineRenderer.width
     child_height = _TimelineRenderer.height
 
@@ -1078,7 +1089,8 @@ class TimelineView(gtk.TreeView):
         return [x, w]
 
     def __init__(self):
-        super(TimelineView, self).__init__()
+        gtk.TreeView.__init__(self)
+        Draggable.__init__(self, self)
         self.popupmenu = ContextMenu
         self.add_events(gtk.gdk.LEAVE_NOTIFY_MASK)
         self.connect("button-press-event", self.on_button_press)
@@ -1094,12 +1106,6 @@ class TimelineView(gtk.TreeView):
         self.set_tooltip_window(StaticPreviewTooltip)
         SearchBox.connect("search", lambda *args: self.queue_draw())
         SearchBox.connect("clear", lambda *args: self.queue_draw())
-
-        self.targets = [("text/plain", 0, TYPE_TARGET_TEXT),
-                        ("text/uri-list", 0, TYPE_TARGET_URI),]
-        self.drag_source_set( gtk.gdk.BUTTON1_MASK, self.targets,
-                gtk.gdk.ACTION_COPY)
-        self.connect("drag_data_get", self.on_drag_data_get)
 
     def set_model_from_list(self, items):
         """
@@ -1228,21 +1234,16 @@ class _TimelineHeader(gtk.DrawingArea):
         self.line_color = get_gtk_rgba(widget.style, "bg", 0, 0.94)
 
 
-class PinBox(DayView):
+class PinBox(DayView, Droppable):
 
     def __init__(self):
         self.event_timerange = TimeRange.until_now()
-        super(PinBox, self).__init__(title=_("Pinned Items"))#_("Pinned items"))
+        DayView.__init__(self, title=_("Pinned Items"))#_("Pinned items"))
         self.notebook = gtk.Notebook()
+        Droppable.__init__(self, self.notebook)
+
         bookmarker.connect("reload", self.set_from_templates)
         self.set_from_templates()
-
-        self.targets = [("text/uri-list", 0, TYPE_TARGET_URI),]
-        self.notebook.drag_dest_set(gtk.DEST_DEFAULT_MOTION |
-  	                            gtk.DEST_DEFAULT_HIGHLIGHT |
-	                            gtk.DEST_DEFAULT_DROP, 
-                                    self.targets, gtk.gdk.ACTION_COPY)
-        self.notebook.connect("drag_data_received", self.on_drag_data_received)
 
     @property
     def event_templates(self):
