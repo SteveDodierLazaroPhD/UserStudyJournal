@@ -1176,11 +1176,16 @@ class InformationBox(gtk.VBox):
         self.box = gtk.Frame()
         self.label = gtk.Label()
         self.pathlabel = gtk.Label()
-        self.pathlabel.set_selectable(True)
         self.pathlabel.modify_font(pango.FontDescription("Monospace 7"))
+        self.box_label = gtk.EventBox()
+        self.box_label.add(self.pathlabel)
+        self.box_label.connect("button-press-event", self.on_path_label_clicked)
+        self.box_label.connect("enter-notify-event", self.on_path_label_enter)
+        self.box_label.connect("leave-notify-event", self.on_path_label_leave)
+        self.box_label.connect("realize", self.on_realize_event)
         labelvbox = gtk.VBox()
         labelvbox.pack_start(self.label)
-        labelvbox.pack_end(self.pathlabel)
+        labelvbox.pack_end(self.box_label)
         self.pack_start(labelvbox, True, True, 5)
         self.box.set_shadow_type(gtk.SHADOW_NONE)
         vbox.pack_start(self.box, True, True)
@@ -1189,7 +1194,7 @@ class InformationBox(gtk.VBox):
         self.add(vbox)
         self.display_widget = self._ImageDisplay()
         self.box.add(self.display_widget)
-        self.show_all()
+        self.show_all()  
 
     def set_displaytype(self, obj):
         """
@@ -1202,8 +1207,31 @@ class InformationBox(gtk.VBox):
         self.obj = obj
         self.set_displaytype(obj)
         self.label.set_markup("<span size='10336'>" + obj.text.replace("&", "&amp;") + "</span>")
-        self.pathlabel.set_markup("<span color='#979797'>" + obj.uri.replace("&", "&amp;").replace("%20", " ") + "</span>")
+        path = obj.uri.replace("&", "&amp;").replace("%20", " ")
+        self.is_file = path.startswith("file://")
+        if self.is_file:
+            self.textpath = os.path.dirname(path)
+        else:
+            self.textpath = path
 
+        self.pathlabel.set_markup("<span color='#979797'>" + self.textpath + "</span>")
+
+    def on_realize_event(self, parms):
+        if self.is_file:
+            hand = gtk.gdk.Cursor(gtk.gdk.HAND2)
+            self.box_label.window.set_cursor(hand)    
+   
+    def on_path_label_clicked(self, wid, e):
+        if self.is_file:
+            os.system('xdg-open "%s"' % self.textpath)
+
+    def on_path_label_enter(self, wid, e):
+        if self.is_file:
+            self.pathlabel.set_markup("<span color='#970000'><b>" + self.textpath+ "</b></span>")
+
+    def on_path_label_leave(self, wid, e):
+        if self.is_file:
+            self.pathlabel.set_markup("<span color='#999797'>" + self.textpath + "</span>")
 
 class _RelatedPane(gtk.TreeView):
     """
