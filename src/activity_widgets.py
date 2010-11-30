@@ -150,7 +150,6 @@ class MultiViewContainer(gtk.HBox):
             self.reorder_child(page, self.days.index(page.day))
 
     def update_day(self, *args):
-        t = time.time()
         day = args[1]
         for page in self.pages:
             if page.day == day:
@@ -205,6 +204,7 @@ class DayViewContainer(gtk.VBox):
                 continue
             i = DayParts.get_day_part_for_item(item)
             uri = item.event.subjects[0].uri
+            interpretation = item.event.interpretation
             if not uri in uris[i]:
                 uris[i].append(uri)
                 parts[i].append(item)
@@ -826,7 +826,7 @@ class ThumbView(gtk.VBox):
             Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri),
             Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri),
             Event.new_for_values(interpretation=Interpretation.ACCESS_EVENT.uri),
-            Event.new_for_values(interpretation=Interpretation.RECEIVE_EVENT.uri),
+            Event.new_for_values(interpretation=Interpretation.RECEIVE_EVENT.uri)
         )
     def __init__(self):
         """Woo"""
@@ -871,6 +871,7 @@ class ThumbView(gtk.VBox):
             if event_exists(item.event.subjects[0].uri):
                 i = DayParts.get_day_part_for_item(item)
                 uri = item.event.subjects[0].uri
+                interpretation = item.event.interpretation
                 if not uri in uris[i]:
                     uris[i].append(uri)
                     parts[i].append(item)

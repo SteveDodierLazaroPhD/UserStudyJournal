@@ -4,6 +4,7 @@
 #
 # Copyright © 2010 Randal Barlow
 # Copyright © 2010 Siegfried Gevatter <siegfried@gevatter.com>
+# Copyright © 2010 Stefano Candori <stefano.candori@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -221,8 +222,13 @@ class Day(gobject.GObject):
 
     @DoEmit("update")
     def set_ids(self, event_ids):
+        deleted_uris = STORE.list_deleted_uris
         for event in event_ids:
-            self._items[event.id] = ContentStruct(event.id, event)
+            if deleted_uris is not None:
+                if event.subjects[0].uri not in deleted_uris:
+                    self._items[event.id] = ContentStruct(event.id, event)
+            else:
+                self._items[event.id] = ContentStruct(event.id, event)    
 
     @DoEmit("update")
     def remove_ids(self, time_range, ids):
@@ -357,11 +363,23 @@ class Store(gobject.GObject):
         dates.sort()
         return dates
 
+    @property
+    def list_deleted_uris(self):
+        return self._deleted_uris
+
     def __init__(self):
         super(Store, self).__init__()
         self.run_build_thread = False
         self._days = {}
         self._day_connections = {}
+        self._deleted_uris = []
+        #Search uris that have been deleted in order to not display them.
+        #This is needed for event signaled by external data-providers
+        #Zeitgeist Datahub already control if an item really exists.
+        self._deleted_uris = []
+        template = Event.new_for_values(interpretation=Interpretation.DELETE_EVENT.uri)
+        CLIENT.find_events_for_templates((template,), self.__set_deleted_uris, 
+                                         TimeRange.until_now(), num_events=MAXEVENTS)
         global currentTimestamp, histogramLoaderCounter
         today = datetime.date.today()
         currentTimestamp = time.mktime(today.timetuple())
@@ -375,6 +393,11 @@ class Store(gobject.GObject):
             day.load_ids()
         content_objects.AbstractContentObject.connect_to_manager("add", self.add_content_object_with_new_type)
         content_objects.AbstractContentObject.connect_to_manager("remove", self.remove_content_objects_with_type)
+
+    def __set_deleted_uris(self, ids):
+        for event in ids:
+            self._deleted_uris.append(event.subjects[0].uri)
+        return self._deleted_uris
 
     def add_content_object_with_new_type(self, obj):
         for day in self.days:
