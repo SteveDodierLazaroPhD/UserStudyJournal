@@ -198,8 +198,14 @@ class DayViewContainer(gtk.VBox):
         
         parts = [[] for i in DayParts.get_day_parts()]
         uris = [[] for i in parts]
-
-        for item in day.filter(self.event_templates, result_type=ResultType.MostRecentEvents):
+        
+        #i reverse the list to make MODIFY_EVENT "more important" than CREATE ones
+        #Doing that, fx. tomboy's note names are updated
+        list = day.filter(self.event_templates, result_type=ResultType.LeastRecentEvents)
+        list.reverse()
+        if list is None:
+            return
+        for item in list:
             if not item.content_object:
                 continue
             i = DayParts.get_day_part_for_item(item)
@@ -866,8 +872,12 @@ class ThumbView(gtk.VBox):
     def set_day(self, day):
         parts = [[] for i in DayParts.get_day_parts()]
         uris = [[] for i in parts]
-
-        for item in day.filter(self.event_templates, result_type=ResultType.MostRecentEvents):
+        
+        list = day.filter(self.event_templates, result_type=ResultType.LeastRecentEvents)
+        list.reverse()
+        if list is None:
+            return
+        for item in list:
             if event_exists(item.event.subjects[0].uri):
                 i = DayParts.get_day_part_for_item(item)
                 uri = item.event.subjects[0].uri
@@ -1119,7 +1129,8 @@ class TimelineView(gtk.TreeView, Draggable):
             return
         liststore = gtk.ListStore(gobject.TYPE_PYOBJECT)
         for row in items:
-            item = row[0][0]
+            #take the last and more updated content_obj
+            item = row[len(row)-1][0]
             obj = item.content_object
             if not obj: continue
             obj.phases = [self.make_area_from_event(item.event.timestamp, stop) for (item, stop) in row]
