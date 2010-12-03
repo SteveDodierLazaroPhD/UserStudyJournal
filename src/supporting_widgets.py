@@ -383,10 +383,11 @@ class SearchBox(gtk.ToolItem):
         self.connect("search", self.__search)
 
     def clear(self, widget):
-        if self.text.strip() != "" and self.text.strip() != self.search.default_text:
+        if self.text.strip() != "" and self.text.strip() != self.search.default_text: 
             self.text = ""
-            self.results = []
-            self.emit("clear")
+            self.search.set_text("")
+            self.results = [] 
+            self.emit("clear")  
 
     def _init_combobox(self):
         self.combobox = gtk.combo_box_new_text()
@@ -469,6 +470,7 @@ class SearchBox(gtk.ToolItem):
 
     def toggle_visibility(self):
         if self.get_property("visible"):
+            self.clear(None)
             self.hide()
             return False
         self.show()

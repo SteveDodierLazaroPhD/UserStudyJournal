@@ -373,9 +373,12 @@ class Store(gobject.GObject):
         self._days = {}
         self._day_connections = {}
         self._deleted_uris = []
-        #Search uris that have been deleted in order to not display them.
+        #Search for uris that have been deleted in order to not display them.
         #This is needed for event signaled by external data-providers
         #Zeitgeist Datahub already control if an item really exists.
+        #FIXME we should add a timestamp field with the deleted uri
+        #to prevent that a recent event with same uri than an older and deleted one
+        #isn't displayed. - cando
         self._deleted_uris = []
         template = Event.new_for_values(interpretation=Interpretation.DELETE_EVENT.uri)
         CLIENT.find_events_for_templates((template,), self.__set_deleted_uris, 

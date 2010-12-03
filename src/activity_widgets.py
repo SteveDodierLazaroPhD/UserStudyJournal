@@ -97,10 +97,11 @@ class _GenericViewWidget(gtk.VBox):
         self.view.modify_bg(gtk.STATE_NORMAL, color)
         self.view.modify_base(gtk.STATE_NORMAL, color)
 
-
 class MultiViewContainer(gtk.HBox):
 
     days = []
+    #TODO Add a configuration field where the user 
+    #could choose the number of pages
     num_pages = 3
     day_signal_id = [None] * num_pages
     day_page_map = {}
@@ -199,8 +200,8 @@ class DayViewContainer(gtk.VBox):
         parts = [[] for i in DayParts.get_day_parts()]
         uris = [[] for i in parts]
         
-        #i reverse the list to make MODIFY_EVENT "more important" than CREATE ones
-        #Doing that, fx. tomboy's note names are updated
+        #I reverse the list to make MODIFY/ACCESS_EVENT "more important" than CREATE ones
+        #Doing that, fx. tomboy's note names are updated - cando
         list = day.filter(self.event_templates, result_type=ResultType.LeastRecentEvents)
         list.reverse()
         if list is None:
@@ -306,11 +307,14 @@ class CategoryBox(gtk.HBox):
 
     def __init__(self, category, event_structs, pinnable = False, itemoff = 0):
         super(CategoryBox, self).__init__()
+        self.category = category
         self.event_structs = event_structs
         self.pinnable = pinnable
         self.itemoff = itemoff
         self.view = gtk.VBox(True)
         self.vbox = gtk.VBox()
+        SearchBox.connect("search", self.__highlight)
+        SearchBox.connect("clear", self.__clear)
         if len(event_structs) > 0:
             d = str(datetime.date.fromtimestamp(int(event_structs[0].event.timestamp)/1000)) \
               + " " + str((time.localtime(int(event_structs[0].event.timestamp)/1000).tm_hour)/8) + " " + str(category)
@@ -327,15 +331,15 @@ class CategoryBox(gtk.HBox):
                 text = SUPPORTED_SOURCES[category].group_label(len(event_structs))
             else:
                 text = "Unknown"
-            label = gtk.Label()
-            label.set_markup("<span>%s</span>" % text)
+            self.label = gtk.Label()
+            self.label.set_markup("<span>%s</span>" % text)
             #label.set_ellipsize(pango.ELLIPSIZE_END)
-            hbox.pack_start(label, False, False, 0)
-            label = gtk.Label()
-            label.set_markup("<span>(%d)</span>" % len(event_structs))
-            label.set_alignment(1.0,0.5)
-            label.set_alignment(1.0,0.5)
-            hbox.pack_end(label, False, False)
+            hbox.pack_start(self.label, False, False, 0)
+            self.label_num = gtk.Label()
+            self.label_num.set_markup("<span>(%d)</span>" % len(event_structs))
+            self.label_num.set_alignment(1.0,0.5)
+            self.label_num.set_alignment(1.0,0.5)
+            hbox.pack_end(self.label_num, False, False)
             self.al = gtk.gdk.Rectangle(0,0,0,0)
             self.i = self.connect_after("size-allocate", self.set_size)
             hbox.set_border_width(6)
@@ -351,9 +355,9 @@ class CategoryBox(gtk.HBox):
             self.expander.show_all()
             self.show()
             hbox.show_all()
-            label.show_all()
+            self.label_num.show_all()
             self.view.show()
-            self.connect("style-set", self.on_style_change, label)
+            self.connect("style-set", self.on_style_change, self.label_num)
         else:
             self._set_up_box(event_structs)
             self.box = self.view
@@ -370,12 +374,6 @@ class CategoryBox(gtk.HBox):
         color = combine_gdk_color(color, fcolor)
         label.modify_fg(gtk.STATE_NORMAL, color)
 
-    def on_toggle(self, view, bool_):
-        if bool_:
-            self.box.show()
-        else:
-            self.box.hide()
-
     def set_size(self, widget, allocation):
         if self.al != allocation:
             self.al = allocation
@@ -384,6 +382,34 @@ class CategoryBox(gtk.HBox):
     def on_expand(self, widget, d):
         self.EXPANDED[d] = self.expander.get_expanded()
         self._set_up_box(self.event_structs)
+
+    def __highlight(self,*args):
+        matches = False
+        if self.category:
+            for struct in self.event_structs:
+                if struct.content_object.matches_search:
+                    text = self.label.get_text()
+                    self.label.set_markup("<span size='large'><b>" + text + "</b></span>")
+                    color = self.style.base[gtk.STATE_SELECTED]
+                    self.label.modify_fg(gtk.STATE_NORMAL, color)
+                    num = self.label_num.get_text()
+                    self.label_num.set_markup("<span size='large'><b>" + num + "</b></span>")
+                    self.label_num.modify_fg(gtk.STATE_NORMAL, color)
+                    matches = True
+                    break
+            if not matches: self.__clear()
+            
+
+    def __clear(self, *args):
+        if self.category:
+            self.label.set_markup("<span>" + self.label.get_text() + "</span>")
+            color = self.style.text[gtk.STATE_NORMAL]
+            self.label.modify_fg(gtk.STATE_NORMAL, color)
+            self.label_num.set_markup("<span>" + self.label_num.get_text() + "</span>")
+            color = self.style.bg[gtk.STATE_NORMAL]
+            fcolor = self.style.fg[gtk.STATE_NORMAL]
+            color = combine_gdk_color(color, fcolor)
+            self.label_num.modify_fg(gtk.STATE_NORMAL, color)
 
 
 class Item(gtk.HBox, Draggable):
@@ -448,7 +474,7 @@ class Item(gtk.HBox, Draggable):
         text = self.content_obj.text.replace("&", "&amp;")
         if text.strip() == "":
             text = self.content_obj.uri.replace("&", "&amp;")
-        rc_style = self.style
+        rc_style = self.o_style
         self.label.set_markup("<span>" + text + "</span>")
         color = rc_style.text[gtk.STATE_NORMAL]
         self.label.modify_fg(gtk.STATE_NORMAL, color)
