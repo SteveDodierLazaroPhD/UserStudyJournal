@@ -200,12 +200,7 @@ class DayViewContainer(gtk.VBox):
         parts = [[] for i in DayParts.get_day_parts()]
         uris = [[] for i in parts]
         
-        #I reverse the list to make MODIFY/ACCESS_EVENT "more important" than CREATE ones
-        #Doing that, fx. tomboy's note names are updated - cando
-        list = day.filter(self.event_templates, result_type=ResultType.LeastRecentEvents)
-        list.reverse()
-        if list is None:
-            return
+        list = day.filter(self.event_templates, result_type=ResultType.MostRecentEvents)
         for item in list:
             if not item.content_object:
                 continue
@@ -899,10 +894,7 @@ class ThumbView(gtk.VBox):
         parts = [[] for i in DayParts.get_day_parts()]
         uris = [[] for i in parts]
         
-        list = day.filter(self.event_templates, result_type=ResultType.LeastRecentEvents)
-        list.reverse()
-        if list is None:
-            return
+        list = day.filter(self.event_templates, result_type=ResultType.MostRecentEvents)
         for item in list:
             if event_exists(item.event.subjects[0].uri):
                 i = DayParts.get_day_part_for_item(item)

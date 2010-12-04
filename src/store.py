@@ -292,7 +292,9 @@ class Day(gobject.GObject):
             items = self.filter_result_type(self._items.values(), result_type)
         else:
             items = self._items.values()
-        items.sort(key=lambda obj: int(obj.event.timestamp))
+        #I reverse the list to make MODIFY/ACCESS_EVENT "more important" than CREATE ones
+        #Doing that, fx. tomboy's note names are updated - cando
+        items.sort(key=lambda obj: int(obj.event.timestamp),reverse=True)
         return items
 
     def filter_event_template(self, event_template):
