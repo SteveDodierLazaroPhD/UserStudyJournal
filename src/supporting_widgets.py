@@ -1213,7 +1213,7 @@ class InformationBox(gtk.VBox):
         path = obj.uri.replace("&", "&amp;").replace("%20", " ")
         self.is_file = path.startswith("file://")
         if self.is_file:
-            self.textpath = os.path.dirname(path)
+            self.textpath = os.path.dirname(path)[7:]
         else:
             self.textpath = path
 
