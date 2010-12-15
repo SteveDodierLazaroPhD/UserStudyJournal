@@ -66,7 +66,10 @@ class ViewContainer(gtk.Notebook):
         self.append_page(viewstruct.view)
         self.pages.append(viewstruct.view)
         self.tool_buttons.append(viewstruct.button)
-        viewstruct.button.connect("clicked", self.view_button_clicked, len(self.pages)-1)
+        if(len(self.tool_buttons)) > 1:
+            viewstruct.button.set_group(self.tool_buttons[0])  
+        viewstruct.button.set_flags(gtk.CAN_FOCUS) 
+        viewstruct.button.connect("toggled", self.view_button_toggled, len(self.pages)-1)
         viewstruct.view.show_all()
         return self.pages.index(viewstruct.view)
 
@@ -93,14 +96,13 @@ class ViewContainer(gtk.Notebook):
     def page(self):
         return self.get_current_page()
 
-    def view_button_clicked(self, button, i):
-        self.emit("view-button-clicked", button, i)
+    def view_button_toggled(self, button, i):
+        if not button.get_active():return
+        button.grab_focus()
+    	self.emit("view-button-clicked", button, i)
 
     def set_view_page(self, i):
         self.set_current_page(i)
-        for button in self.tool_buttons:
-            button.set_sensitive(True)
-        self.tool_buttons[i].set_sensitive(False)
 
     def _register_default_view(self, view):
         toolbutton = Toolbar.get_toolbutton(view.icon_path, view.dsc_text)
