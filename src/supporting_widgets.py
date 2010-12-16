@@ -951,11 +951,25 @@ class ToolButton(gtk.RadioToolButton):
     def set_tooltip_text(self, text):
         gtk.Widget.set_tooltip_text(self, text)
 
+class InformationToolButton(gtk.ToolButton):
+    def __init__(self, *args, **kwargs):
+        super(InformationToolButton, self).__init__(*args, **kwargs)
+
+    def set_label(self, text):
+        super(InformationToolButton, self).set_label(text)
+        self.set_tooltip_text(text)
+
+    def set_tooltip_text(self, text):
+        gtk.Widget.set_tooltip_text(self, text)
+
 
 class Toolbar(gtk.Toolbar):
     @staticmethod
-    def get_toolbutton(path, label_string):
-        button = ToolButton()
+    def get_toolbutton(path, label_string,radio=True):
+        if radio:
+            button = ToolButton()
+        else:
+            button = InformationToolButton()
         pixbuf = gtk.gdk.pixbuf_new_from_file(path)
         image = gtk.Image()
         image.set_from_pixbuf(pixbuf)
@@ -1333,13 +1347,13 @@ class InformationContainer(gtk.Window):
         def __init__(self):
             gtk.Toolbar.__init__(self)
             self.set_icon_size(gtk.ICON_SIZE_SMALL_TOOLBAR)
-            self.open_button = ob = ToolButton(gtk.STOCK_OPEN)
+            self.open_button = ob = InformationToolButton(gtk.STOCK_OPEN)
             ob.set_label(_("Launch this subject"))
-            self.delete_button = del_ = ToolButton(gtk.STOCK_DELETE)
+            self.delete_button = del_ = InformationToolButton(gtk.STOCK_DELETE)
             del_.set_label(_("Delete this subject"))
             self.pin_button = pin = Toolbar.get_toolbutton(
                 get_icon_path("hicolor/24x24/status/pin.png"),
-                _("Add Pin"))
+                _("Add Pin"),radio=False)
             sep = gtk.SeparatorToolItem()
             for item in (del_, pin, sep, ob):
                 if item:
@@ -1396,10 +1410,11 @@ class InformationContainer(gtk.Window):
             self.infopane.display_widget.show()
 
     def do_toggle_bookmark(self, *args):
-        if bookmarker.is_bookmarked(self.obj.uri):
-            bookmarker.unbookmark(self.obj.uri)
+        uri = unicode(self.obj.uri)
+        if bookmarker.is_bookmarked(uri):
+            bookmarker.unbookmark(uri)
         else:
-            bookmarker.bookmark(self.obj.uri)
+            bookmarker.bookmark(uri)
 
     def on_remove_tag(self, w, text):
         if TRACKER:
