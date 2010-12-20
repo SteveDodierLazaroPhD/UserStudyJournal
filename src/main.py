@@ -32,6 +32,7 @@ from supporting_widgets import DayButton, DayLabel, Toolbar, ContextMenu, AboutD
 from histogram import HistogramWidget
 from store import Store, tdelta, STORE, CLIENT
 from config import settings, get_icon_path, get_data_path, PluginManager
+from Indicator import TrayIconManager
 
 
 class ViewContainer(gtk.Notebook):
@@ -139,6 +140,8 @@ class PortalWindow(gtk.Window):
         vbox.pack_start(self.toolbar, False, False); vbox.pack_start(tvbox, True, True, 2)
         histogramhbox.pack_end(self.histogram, True, True, 32); vbox.pack_end(histogramhbox, False, False)
         self.add(vbox); self.show_all()
+        #Tray Icon
+        self.tray_manager = TrayIconManager(self)
         # Settings
         self.view.set_day(self.store.today)
         # Connections
@@ -291,6 +294,15 @@ class PortalWindow(gtk.Window):
         x, y = self.get_size()
         settings["window_width"] = x
         settings["window_height"] = y
+        if settings.get("tray_icon", False):
+            self.set_visibility(False)
+            return True
+
+    def quit_and_save(self, *args):
+        x, y = self.get_size()
+        settings["window_width"] = x
+        settings["window_height"] = y
+        gtk.main_quit()
 
     def quit(self, *args):
         gtk.main_quit()

@@ -1514,6 +1514,7 @@ class PreferencesDialog(gtk.Dialog):
         self.notebook = notebook = gtk.Notebook()
         area.pack_start(notebook)
         notebook.set_border_width(10)
+        #Plugin page
         plugbox = gtk.VBox()
         plugbox.set_border_width(10)
         self.plug_tree = self._PluginTreeView()
@@ -1526,10 +1527,26 @@ class PreferencesDialog(gtk.Dialog):
         scroll_win.add(self.plug_tree)
         plugbox.add(scroll_win)
         notebook.append_page(plugbox, gtk.Label( _("Plugins")))
+        #Configuration page
+        vbox = gtk.VBox()
+        vbox.set_border_width(5)
+        hbox_tray = gtk.HBox()
+        label = gtk.Label(_("Show icon in system tray"))
+        self.check_button = gtk.CheckButton()
+        self.check_button.set_active(settings.get("tray_icon", False))
+        self.check_button.connect("toggled", self.on_check_toggled)
+        hbox_tray.pack_start(self.check_button,False,False)
+        hbox_tray.pack_start(label, False,False)
+        vbox.pack_start(hbox_tray,False,False)
+        notebook.append_page(vbox, gtk.Label( _("Configuration")))
+
         self.connect("delete-event", lambda *args: (True, self.hide())[0])
         close_button = gtk.Button(stock=gtk.STOCK_CLOSE)
         self.add_action_widget(close_button, gtk.RESPONSE_DELETE_EVENT)
         close_button.connect("clicked", lambda *args: (True, self.hide())[0])
+
+    def on_check_toggled(self, button, *args):
+        settings.set("tray_icon", button.get_active())
 
 
 ###

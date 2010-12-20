@@ -61,7 +61,6 @@ if not os.path.exists(USER_PLUGIN_PATH) or not os.path.isdir(USER_PLUGIN_PATH):
 
 settings = QuickConf("/apps/gnome-activity-journal")
 
-
 def _get_path(path):
     return os.path.join(BASE_PATH, path)
 

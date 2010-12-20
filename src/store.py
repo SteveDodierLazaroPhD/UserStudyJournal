@@ -174,7 +174,9 @@ class Day(gobject.GObject):
 
     @CachedAttribute
     def templates(self):
-        return [Event.new_for_values()]
+        subject = Subject()
+        subject.uri = "!application://*"
+        return [Event.new_for_values(subjects = [subject])]
 
     def __init__(self, date, days_population=None):
         super(Day, self).__init__()
@@ -469,11 +471,13 @@ class Store(gobject.GObject):
 
         Optionally calls func upon completion
         """
+        subject = Subject()
+        subject.uri = "!application://*"
         event_templates = (
-            Event.new_for_values(interpretation=Interpretation.ACCESS_EVENT.uri),
-            Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri),
-            Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri),
-            Event.new_for_values(interpretation=Interpretation.RECEIVE_EVENT.uri),
+            Event.new_for_values(interpretation=Interpretation.ACCESS_EVENT.uri, subjects=[subject]),
+            Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri, subjects=[subject]),
+            Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri, subjects=[subject]),
+            Event.new_for_values(interpretation=Interpretation.RECEIVE_EVENT.uri, subjects=[subject])
         )
         def callback(events):
             def _thread_fn(events):
