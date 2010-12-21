@@ -150,6 +150,7 @@ class DayLabel(gtk.DrawingArea):
 class DayButton(gtk.DrawingArea):
     leading = False
     pressed = False
+    today_pressed = False
     sensitive = True
     today_hover = False
     hover = False
@@ -158,7 +159,7 @@ class DayButton(gtk.DrawingArea):
     header_color = (1, 1, 1, 1)
     leading_header_color = (1, 1, 1, 1)
     internal_color = (0, 1, 0, 1)
-    arrow_color = (1,1,1,1)
+    arrow_color = (1, 1, 1, 1)
     arrow_color_selected = (1, 1, 1, 1)
 
     __gsignals__ = {
@@ -236,7 +237,9 @@ class DayButton(gtk.DrawingArea):
     def on_press(self, widget, event):
         if event.y > self.header_size:
             self.pressed = True
-            self.queue_draw()
+        else:
+            self.today_pressed = True
+        self.queue_draw()
 
     def keyboard_clicked_sender(self, widget, event):
         if event.keyval in (gtk.keysyms.Return, gtk.keysyms.space):
@@ -254,6 +257,7 @@ class DayButton(gtk.DrawingArea):
         elif event.y < self.header_size:
             self.emit("jump-to-today")
         self.pressed = False
+        self.today_pressed = False;
         self.queue_draw()
         return True
 
@@ -291,7 +295,8 @@ class DayButton(gtk.DrawingArea):
             context.curve_to(x,y+h,x,y+h,x,y+h-r)
             context.line_to(x,y+r)
             context.curve_to(x,y,x,y,x+r,y)
-            context.set_source_rgba(*(self.leading_header_color if self.leading else self.header_color))
+            # What's this for, exactly? Appears to have been already set.
+            #context.set_source_rgba(*(self.leading_header_color if self.leading else self.header_color))
             context.close_path()
             context.rectangle(0, r, w,  self.header_size)
             context.fill()
@@ -323,14 +328,33 @@ class DayButton(gtk.DrawingArea):
                                self, "arrow", arrow, True,
                                w/2-size/2, h/2 + size/2, size, size)
         size = 7
+        
+        # Paint today button arrows.
         if self.sensitive and self.side > 0:
-            self.style.paint_arrow(widget.window, state, gtk.SHADOW_NONE, None,
-                                   self, "arrow", arrow, True,
-                                   w/2, self.header_size/2 - size/2, size, size)
-            self.style.paint_arrow(widget.window, state, gtk.SHADOW_OUT, None,
-                                   self, "arrow", arrow, True,
-                                   w/2-size/2, self.header_size/2 - size/2, size, size)
-        return
+            if self.today_hover:
+                if self.today_pressed:
+                    self.style.paint_arrow(widget.window, gtk.STATE_SELECTED, gtk.SHADOW_NONE, None,
+                                         self, "arrow", arrow, True,
+                                         w/2, self.header_size/2 - size/2, size, size)
+                    self.style.paint_arrow(widget.window, gtk.STATE_SELECTED, gtk.SHADOW_OUT, None,
+                                         self, "arrow", arrow, True,
+                                         w/2-size/2, self.header_size/2 - size/2, size, size)
+                
+                else:
+                    self.style.paint_arrow(widget.window, state, gtk.SHADOW_NONE, None,
+                                         self, "arrow", arrow, True,
+                                         w/2, self.header_size/2 - size/2, size, size)
+                    self.style.paint_arrow(widget.window, state, gtk.SHADOW_OUT, None,
+                                         self, "arrow", arrow, True,
+                                         w/2-size/2, self.header_size/2 - size/2, size, size)
+            else:
+                self.style.paint_arrow(widget.window, gtk.STATE_SELECTED, gtk.SHADOW_NONE, None,
+                                        self, "arrow", arrow, True,
+                                        w/2, self.header_size/2 - size/2, size, size)
+                self.style.paint_arrow(widget.window, gtk.STATE_SELECTED, gtk.SHADOW_OUT, None,
+                                        self, "arrow", arrow, True,
+                                        w/2-size/2, self.header_size/2 - size/2, size, size)
+        #return
 
 
 class SearchBox(gtk.ToolItem):

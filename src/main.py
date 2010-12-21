@@ -134,10 +134,10 @@ class PortalWindow(gtk.Window):
         self.backward_button, ev_backward_button = DayButton.new(0)
         self.forward_button, ev_forward_button = DayButton.new(1, sensitive=False)
         # Widget placement
-        vbox = gtk.VBox(); hbox = gtk.HBox(); histogramhbox = gtk.HBox(); tvbox = gtk.VBox()
+        vbox = gtk.VBox(); hbox = gtk.HBox(); histogramhbox = gtk.HBox();
         hbox.pack_start(ev_backward_button, False, False); hbox.pack_start(self.view, True, True, 6)
-        hbox.pack_end(ev_forward_button, False, False); tvbox.pack_start(hbox, True, True, 3)
-        vbox.pack_start(self.toolbar, False, False); vbox.pack_start(tvbox, True, True, 2)
+        hbox.pack_end(ev_forward_button, False, False);
+        vbox.pack_start(self.toolbar, False, False); vbox.pack_start(hbox, True, True, 5)
         histogramhbox.pack_end(self.histogram, True, True, 32); vbox.pack_end(histogramhbox, False, False)
         self.add(vbox); self.show_all()
         #Tray Icon
@@ -228,12 +228,10 @@ class PortalWindow(gtk.Window):
     def handle_button_sensitivity(self, date):
         today = datetime.date.today()
         if date == today:
-            return self.forward_button.set_sensitive(False)
-        elif date == today + tdelta(-1):
-            self.forward_button.set_leading(True)
+            self.forward_button.set_sensitive(False)
         else:
-            self.forward_button.set_leading(False)
-        self.forward_button.set_sensitive(True)
+            self.forward_button.set_leading(True)
+            self.forward_button.set_sensitive(True)
 
     def on_view_button_click(self, w, button, i):
         self.view.set_view_page(i)
