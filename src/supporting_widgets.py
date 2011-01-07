@@ -47,7 +47,6 @@ from common import *
 import content_objects
 from config import BASE_PATH, VERSION, settings, PluginManager, get_icon_path, get_data_path, bookmarker, SUPPORTED_SOURCES
 from store import STORE, get_related_events_for_uri, CLIENT
-from external import TRACKER
 
 
 class DayLabel(gtk.DrawingArea):
@@ -445,14 +444,7 @@ class SearchBox(gtk.ToolItem):
 
     def do_search(self, text, callback=None, interpretation=None):
         if not callback: return
-        if TRACKER and 1==2: #DISABLED FOR NOW. Causes a crash in zeitgeist
-            self.do_search_tracker(text, callback, interpretation)
-        else:
-            self.do_search_objs(text, callback, interpretation)
-
-    @staticmethod
-    def do_search_tracker(text, callback, interpretation=None):
-        TRACKER.search(text, interpretation, callback)
+        self.do_search_objs(text, callback, interpretation)
 
     @staticmethod
     def do_search_objs(text, callback, interpretation=None):
@@ -1145,18 +1137,7 @@ class TagCloud(gtk.VBox):
         return "<a href='" + tag + "'><span size='" + str(int(size)) + "'>" + tag + "</span></a>"
 
     def on_tag_activated(self, widget, tag):
-        if TRACKER:
-            def _thread():
-                files = TRACKER.get_uris_for_tag(tag)
-                if files:
-                    results = []
-                    for obj in content_objects.ContentObject.instances:
-                        if obj.uri in files:
-                            results.append(obj)
-                    SearchBox.emit("search", results)
-            thread = threading.Thread(target=_thread)
-            thread.start()
-        return True
+        pass
 
     def set_tags(self, tag_dict):
         self.tag_dict = tag_dict
@@ -1391,24 +1372,16 @@ class InformationContainer(gtk.Window):
         vbox = gtk.VBox()
         self.toolbar = self._InformationToolbar()
         self.infopane = InformationBox()
-        if TRACKER:
-            self.tag_cloud_frame = frame = gtk.Frame()
-            frame.set_label( _("Tags"))
-            self.tag_cloud = TagCloud()
-            frame.add(self.tag_cloud)
         self.relatedpane = _RelatedPane()
         scrolledwindow = gtk.ScrolledWindow()
         box2.set_border_width(5)
         box1.pack_start(self.toolbar, False, False)
         box2.pack_start(self.infopane, False, False, 4)
-        if TRACKER:
-            box2.pack_start(frame, False, True, 4)
         scrolledwindow.set_shadow_type(gtk.SHADOW_IN)
         scrolledwindow.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
         scrolledwindow.add(self.relatedpane)
         vbox.pack_end(scrolledwindow, True, True)
         scrolledwindow.set_size_request(50, 100)
-
         box2.pack_end(vbox, True, True, 10)
         box1.pack_start(box2, True, True)
         self.add(box1)
@@ -1417,9 +1390,6 @@ class InformationContainer(gtk.Window):
         self.toolbar.open_button.connect("clicked", _launch)
         self.toolbar.delete_button.connect("clicked", self.do_delete_events_with_shared_uri)
         self.toolbar.pin_button.connect("clicked", self.do_toggle_bookmark)
-        if TRACKER:
-            self.tag_cloud.connect("add-tag", self.on_add_tag)
-            self.tag_cloud.connect("remove-tag", self.on_remove_tag)
         self.connect("size-allocate", self.size_allocate)
         # Remove the close button
         separator = gtk.SeparatorToolItem()
@@ -1440,16 +1410,6 @@ class InformationContainer(gtk.Window):
         else:
             bookmarker.bookmark(uri)
 
-    def on_remove_tag(self, w, text):
-        if TRACKER:
-            TRACKER.remove_tag_from_uri(text, self.obj.uri)
-        self.set_tags(self.obj)
-
-    def on_add_tag(self, w, text):
-        if TRACKER:
-            TRACKER.add_tag_to_uri(text, self.obj.uri)
-        self.set_tags(self.obj)
-
     def do_delete_events_with_shared_uri(self, *args):
         CLIENT.find_event_ids_for_template(
             Event.new_for_values(subject_uri=self.obj.uri),
@@ -1462,15 +1422,8 @@ class InformationContainer(gtk.Window):
             self.relatedpane.set_model_from_list(events)
         get_related_events_for_uri(obj.uri, _callback)
         self.infopane.set_content_object(obj)
-        if TRACKER:
-            self.set_tags(obj)
         self.show()
         self.emit("content-object-set")
-
-    def set_tags(self, obj):
-        tag_dict = {}
-        tags = TRACKER.get_tag_dict_for_uri(obj.uri)
-        self.tag_cloud.set_tags(tags)
 
     def hide_on_delete(self, widget, *args):
         super(InformationContainer, self).hide_on_delete(widget)
