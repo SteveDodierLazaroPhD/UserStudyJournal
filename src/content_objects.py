@@ -684,7 +684,8 @@ class XChatContentObject(BaseContentType):
     
     def launch(self):
         if common.is_command_available("xchat"):
-            common.launch_command("xchat", ["-e", "--url=" + self.uri])
+            if self.uri.split("/")[-1].startswith("#"):
+                common.launch_command("xchat", ["-e", "--url=" + self.uri])
 
 
 class EmailContentObject(BaseContentType):
