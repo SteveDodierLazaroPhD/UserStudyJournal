@@ -262,6 +262,8 @@ class DayView(gtk.VBox):
                 interpretation = INTERPRETATION_PARENTS[interpretation]
             if struct.event.actor == "application://tomboy.desktop":
                 interpretation = "aj://note"
+            if struct.event.actor == "application://bzr.desktop":
+                interpretation = "aj://vcs"
             if not categories.has_key(interpretation):
                 categories[interpretation] = []
             categories[interpretation].append(struct)

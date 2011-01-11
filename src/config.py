@@ -43,6 +43,7 @@ from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
 INTERPRETATION_UNKNOWN = "" # "http://zeitgeist-project.com/schema/1.0/core#UnknownInterpretation"
 MANIFESTATION_UNKNOWN = "" # "http://zeitgeist-project.com/schema/1.0/core#UnknownManifestation"
 INTERPRETATION_NOTE = "aj://note"
+INTERPRETATION_VCS = "aj://vcs" #version control system
 
 # Installation details
 BASE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -243,5 +244,6 @@ SUPPORTED_SOURCES = {
     Interpretation.EMAIL.uri: Source(Interpretation.EMAIL, "applications-internet", _("Email"), _("Emails")),
     Interpretation.TODO.uri: Source(Interpretation.TODO, "applications-office", _("Todo"), _("Todos")),
     INTERPRETATION_UNKNOWN: Source("Unknown", "applications-other", _("Other Activity"), _("Other Activities")),
-    INTERPRETATION_NOTE: Source("aj://note", "tomboy", _("Edited or Read Note"), _("Edited or Read Notes"))
+    INTERPRETATION_NOTE: Source("aj://note", "tomboy", _("Edited or Read Note"), _("Edited or Read Notes")),
+    INTERPRETATION_VCS: Source("aj://vcs", "bzr-icon-64", _("Software Development"), _("Software Developments"))
 }
