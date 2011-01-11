@@ -3,6 +3,7 @@
 # GNOME Activity Journal
 #
 # Copyright © 2010 Randal Barlow
+# Copyright © 2011 Stefano Candori <stefano.candori@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -553,7 +554,8 @@ class IMContentObject(BaseContentType):
     @classmethod
     def use_class(cls, event):
         """ Used by the content object chooser to check if the content object will work for the event"""
-        if event.subjects[0].interpretation == Interpretation.IMMESSAGE.uri:
+        if event.subjects[0].interpretation == Interpretation.IMMESSAGE.uri \
+           and event.actor != "application://xchat.desktop":
             return cls
         return False
 
@@ -654,7 +656,7 @@ class HamsterContentObject(BaseContentType):
     """
     @classmethod
     def use_class(cls, event):
-        if event.actor == "applications://hamster-standalone.desktop":
+        if event.actor == "application://hamster-standalone.desktop":
             return cls
         return False
 
@@ -664,6 +666,25 @@ class HamsterContentObject(BaseContentType):
     text = _prefix + ": {event.subjects[0].text}"
     timelineview_text = _prefix + "\n{event.subjects[0].text}"
     thumbview_text = _prefix + "\n{event.subjects[0].text}"
+    
+class XChatContentObject(BaseContentType):
+    """
+    Used for Xchat(irc client)
+    """
+    @classmethod
+    def use_class(cls, event):
+        if event.actor == "application://xchat.desktop":
+            return cls
+        return False
+
+    icon_name = "$ACTOR"
+    text = "{event.subjects[0].text}"
+    timelineview_text = "{event.subjects[0].text}"
+    thumbview_text = "{event.subjects[0].text}"
+    
+    def launch(self):
+        if common.is_command_available("xchat"):
+            common.launch_command("xchat", ["-e", "--url=" + self.uri])
 
 
 class EmailContentObject(BaseContentType):
@@ -771,6 +792,6 @@ class MusicPlayerContentObject(BaseContentType):
 # Content object list used by the section function. Should use Subclasses but I like to have some order in which these should be used
 if sys.version_info >= (2,6):
     map(AbstractContentObject.content_object_types.append,
-        (MusicPlayerContentObject, BzrContentObject, WebContentObject,
+        (MusicPlayerContentObject, BzrContentObject, WebContentObject,XChatContentObject,
          IMContentObject, TomboyContentObject, GTGContentObject, EmailContentObject, HamsterContentObject))
 
