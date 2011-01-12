@@ -678,13 +678,35 @@ class XChatContentObject(BaseContentType):
         return False
 
     icon_name = "$ACTOR"
-    text = "{event.subjects[0].text}"
-    timelineview_text = "{event.subjects[0].text}"
-    thumbview_text = "{event.subjects[0].text}"
+    _text = "{event.subjects[0].text}"
+    _timelineview_text = "{event.subjects[0].text}"
+    _thumbview_text = "{event.subjects[0].text}"
+     
+    @CachedAttribute 
+    def is_channel(self):
+        return  self.uri.split("/")[-1].startswith("#")
+        
+    @CachedAttribute
+    def buddy(self): return self.uri.split("/")[-1]
+     
+    @CachedAttribute
+    def text(self):
+        if self.is_channel: return self._text 
+        else: return "{source._desc_sing} with " + self.buddy
+
+    @CachedAttribute
+    def timelineview_text(self):
+        if self.is_channel: return self._timelineview_text 
+        else: return "{source._desc_sing} with " + self.buddy
+
+    @CachedAttribute
+    def thumbview_text(self):
+        if self.is_channel: return self._thumbview_text 
+        else: return "{source._desc_sing} with " + self.buddy
     
     def launch(self):
         if common.is_command_available("xchat"):
-            if self.uri.split("/")[-1].startswith("#"):
+            if self.is_channel:
                 common.launch_command("xchat", ["-e", "--url=" + self.uri])
 
 
