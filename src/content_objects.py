@@ -683,26 +683,37 @@ class XChatContentObject(BaseContentType):
     _thumbview_text = "{event.subjects[0].text}"
      
     @CachedAttribute 
-    def is_channel(self):
-        return  self.uri.split("/")[-1].startswith("#")
-        
+    def is_channel(self): return self.uri.split("/")[-1].startswith("#")
+      
     @CachedAttribute
-    def buddy(self): return self.uri.split("/")[-1]
+    def buddy_or_channel(self): return self.uri.split("/")[-1]
      
     @CachedAttribute
-    def text(self):
-        if self.is_channel: return self._text 
-        else: return "{source._desc_sing} with " + self.buddy
+    def text(self):                                    
+        if self.is_channel:
+            if self.event.interpretation in \
+              [Interpretation.SEND_EVENT.uri, Interpretation.RECEIVE_EVENT.uri]:
+                return "{source._desc_sing} in " + self.buddy_or_channel    
+            else: return self._text 
+        else: return "{source._desc_sing} with " + self.buddy_or_channel
 
     @CachedAttribute
     def timelineview_text(self):
-        if self.is_channel: return self._timelineview_text 
-        else: return "{source._desc_sing} with " + self.buddy
+        if self.is_channel:
+            if self.event.interpretation in \
+              [Interpretation.SEND_EVENT.uri, Interpretation.RECEIVE_EVENT.uri]:
+                return "{source._desc_sing} in " + self.buddy_or_channel
+            else: return self._timelineview_text
+        else: return "{source._desc_sing} with " + self.buddy_or_channel
 
     @CachedAttribute
     def thumbview_text(self):
-        if self.is_channel: return self._thumbview_text 
-        else: return "{source._desc_sing} with " + self.buddy
+        if self.is_channel:
+            if self.event.interpretation in \
+              [Interpretation.SEND_EVENT.uri, Interpretation.RECEIVE_EVENT.uri]:
+                return "{source._desc_sing} in " + self.buddy_or_channel
+            else: return self._thumbview_text 
+        else: return "{source._desc_sing} with " + self.buddy_or_channel
     
     def launch(self):
         if common.is_command_available("xchat"):
