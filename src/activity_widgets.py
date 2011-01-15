@@ -541,12 +541,17 @@ class Item(gtk.HBox, Draggable):
             else:
                 self.set_tooltip_window(StaticPreviewTooltip)
         else:
-            text = self.label.get_text() + "\n\nURI: "
+            self.connect("query-tooltip", self._handle_tooltip_generic)
+            text = "<b>" + self.label.get_text() + "</b>" + "\n<u>URI:</u> "
+            uri = self.content_obj.uri.replace("&", "&amp;")
             if self.content_obj.uri.startswith("file://"):
-                text += unicode(self.content_obj.uri[7:])
+                text += unicode(uri[7:])
             else:
-                text += unicode(self.content_obj.uri)
+                text += unicode(uri)
             self.set_tooltip_markup(text)
+            
+    def _handle_tooltip_generic(self, widget, x, y, keyboard_mode, tooltip):
+        tooltip.set_icon(self.icon)
 
     def _handle_tooltip(self, widget, x, y, keyboard_mode, tooltip):
         tooltip_window = self.get_tooltip_window()
