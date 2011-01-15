@@ -484,7 +484,7 @@ class Item(gtk.HBox, Draggable):
             text = self.content_obj.uri
         self.label.set_markup(text)
         self.label.set_ellipsize(pango.ELLIPSIZE_END)
-        self.label.set_width_chars(40)   
+        self.label.set_width_chars(35)   
         self.label.set_alignment(0.0, 0.5)
         if self.icon: img = gtk.image_new_from_pixbuf(self.icon)
         else: img = None
@@ -530,9 +530,9 @@ class Item(gtk.HBox, Draggable):
 
         TODO: make loading of multimedia thumbs async
         """
+        self.set_property("has-tooltip", True)
         if isinstance(self.content_obj, GioFile) and self.content_obj.has_preview():
             icon_names = self.content_obj.icon_names
-            self.set_property("has-tooltip", True)
             self.connect("query-tooltip", self._handle_tooltip)
             if "video-x-generic" in icon_names and gst is not None:
                 self.set_tooltip_window(VideoPreviewTooltip)
@@ -540,6 +540,13 @@ class Item(gtk.HBox, Draggable):
                 self.set_tooltip_window(AudioPreviewTooltip) 
             else:
                 self.set_tooltip_window(StaticPreviewTooltip)
+        else:
+            text = self.label.get_text() + "\n\nURI: "
+            if self.content_obj.uri.startswith("file://"):
+                text += unicode(self.content_obj.uri[7:])
+            else:
+                text += unicode(self.content_obj.uri)
+            self.set_tooltip_markup(text)
 
     def _handle_tooltip(self, widget, x, y, keyboard_mode, tooltip):
         tooltip_window = self.get_tooltip_window()
