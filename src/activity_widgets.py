@@ -563,6 +563,16 @@ class Item(gtk.HBox, Draggable):
         tooltip.set_icon(self.icon)
         return True
         
+    def truncate_string(self, string, truncate_lenght):
+        """
+        Very simple recursive function that truncates strings in a nicely way
+        """
+        if len(string) <= truncate_lenght + 10 : return string
+        else:
+            t_string = string[:truncate_lenght]
+            t_string += "\n" + self.truncate_string(string[truncate_lenght:], truncate_lenght)
+            return t_string
+          
     def _handle_tooltip_static(self, widget, x, y, keyboard_mode, tooltip):
         """
         Create the tooltip for static GioFile events (documents,pdfs,...)
@@ -577,15 +587,15 @@ class Item(gtk.HBox, Draggable):
         descr = gio.content_type_get_description(descr)
         text += _("\n<b>MIMEType: </b>") + descr + "\n\n"
         if uri.startswith("file://"):
-            text += unicode(uri[7:])
+            uri = self.truncate_string(uri[7:], 40)
+            text += unicode(uri)
         else:
+            uri = self.truncate_string(uri, 40)
             text += unicode(uri)
         text = text.replace("&", "&amp;")
         
         label = gtk.Label()
         label.set_markup(text)
-        label.set_line_wrap(True)
-        label.set_width_chars(40) 
         tooltip.set_custom(label)
         tooltip.set_icon(pixbuf)
         return True
