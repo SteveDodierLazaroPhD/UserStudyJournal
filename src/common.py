@@ -749,7 +749,7 @@ class GioFile(object):
         # that subclasses will create their own __single objects
         subj = args[0][1][0][0]
         if not GIO_FILES.has_key(subj):
-            GIO_FILES[subj] = object.__new__(classtype, *args, **kwargs)
+            GIO_FILES[subj] = object.__new__(classtype)
         return GIO_FILES[subj]
 
     @classmethod
