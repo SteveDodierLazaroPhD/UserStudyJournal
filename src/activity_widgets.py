@@ -481,7 +481,7 @@ class Item(gtk.HBox, Draggable):
         text = self.content_obj.text.replace("&", "&amp;")
         text.strip()
         if self.content_obj.text.strip() == "":
-            text = self.content_obj.uri
+            text = self.content_obj.uri.replace("&", "&amp;")
         self.label.set_markup(text)
         self.label.set_ellipsize(pango.ELLIPSIZE_END)
         self.label.set_width_chars(35)   
@@ -525,35 +525,75 @@ class Item(gtk.HBox, Draggable):
         evbox.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2))
 
     def init_multimedia_tooltip(self):
-        """add multimedia tooltip to multimedia files
-        multimedia tooltip is shown for all images, all videos and pdfs
+        """
+        Add multimedia tooltip to multimedia files.
+        Multimedia tooltip is shown for all images, all videos and pdfs
+        A generic tooltip with text and uri is showed for non-GioFile
+        items. Audio files have a preview, too.
 
         TODO: make loading of multimedia thumbs async
         """
         self.set_property("has-tooltip", True)
         if isinstance(self.content_obj, GioFile) and self.content_obj.has_preview():
             icon_names = self.content_obj.icon_names
-            self.connect("query-tooltip", self._handle_tooltip)
             if "video-x-generic" in icon_names and gst is not None:
+                self.connect("query-tooltip", self._handle_tooltip_dynamic)
                 self.set_tooltip_window(VideoPreviewTooltip)
             elif "audio-x-generic" in icon_names and gst is not None:
+                self.connect("query-tooltip", self._handle_tooltip_dynamic)
                 self.set_tooltip_window(AudioPreviewTooltip)
             else:
-                self.set_tooltip_window(StaticPreviewTooltip)
+                self.connect("query-tooltip", self._handle_tooltip_static)
         else:
             self.connect("query-tooltip", self._handle_tooltip_generic)
-            text = "<b>" + self.label.get_text() + "</b>" + "\n<u>URI:</u> "
-            uri = self.content_obj.uri.replace("&", "&amp;")
-            if self.content_obj.uri.startswith("file://"):
-                text += unicode(uri[7:])
-            else:
-                text += unicode(uri)
-            self.set_tooltip_markup(text)
             
     def _handle_tooltip_generic(self, widget, x, y, keyboard_mode, tooltip):
+        """
+        Create the tooltip for non-GioFile events
+        """
+        text = "<b>" + self.label.get_text() + "</b>\n"
+        uri = self.content_obj.uri
+        if len(uri) > 70: uri = uri[:70] + "..." #ellipsize--it's ugly!
+        if uri.startswith("file://"):
+            text += unicode(uri[7:])
+        else:
+            text += unicode(uri)
+        text = text.replace("&", "&amp;")
+        tooltip.set_markup(text)
         tooltip.set_icon(self.icon)
+        return True
+        
+    def _handle_tooltip_static(self, widget, x, y, keyboard_mode, tooltip):
+        """
+        Create the tooltip for static GioFile events (documents,pdfs,...)
+        """
+        gio_file = self.content_obj
+        if not isinstance(gio_file, GioFile): return False
+        pixbuf = gio_file.get_thumbnail(size=SIZE_NORMAL, border=1)
+        
+        text = _("<b>Name: </b>") + self.label.get_text()
+        uri = self.content_obj.uri
+        descr = gio.content_type_from_mime_type(self.content_obj.mime_type)
+        descr = gio.content_type_get_description(descr)
+        text += _("\n<b>MIMEType: </b>") + descr + "\n\n"
+        if uri.startswith("file://"):
+            text += unicode(uri[7:])
+        else:
+            text += unicode(uri)
+        text = text.replace("&", "&amp;")
+        
+        label = gtk.Label()
+        label.set_markup(text)
+        label.set_line_wrap(True)
+        label.set_width_chars(40) 
+        tooltip.set_custom(label)
+        tooltip.set_icon(pixbuf)
+        return True
 
-    def _handle_tooltip(self, widget, x, y, keyboard_mode, tooltip):
+    def _handle_tooltip_dynamic(self, widget, x, y, keyboard_mode, tooltip):
+        """
+        Create the tooltip for dynamic GioFile events (audio,video)
+        """
         tooltip_window = self.get_tooltip_window()
         return tooltip_window.preview(self.content_obj)
 
