@@ -334,7 +334,7 @@ class Day(gobject.GObject):
                     #print "***", results[uri]
                     results[uri][len(results[uri])-1][1] = (int(item.event.timestamp)) -  int(results[uri][-1][0].event.timestamp)
                 else:
-                    tend = int(item.event.timestamp)
+                    tend = int(item.event.timestamp)/1000
                     item.event.timestamp = str(start)
                     results[uri].append([item, tend - start])
         results = list(sorted(results.itervalues(), key=lambda r: \
