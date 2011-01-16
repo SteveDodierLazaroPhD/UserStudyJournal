@@ -537,7 +537,7 @@ class Item(gtk.HBox, Draggable):
             if "video-x-generic" in icon_names and gst is not None:
                 self.set_tooltip_window(VideoPreviewTooltip)
             elif "audio-x-generic" in icon_names and gst is not None:
-                self.set_tooltip_window(AudioPreviewTooltip) 
+                self.set_tooltip_window(AudioPreviewTooltip)
             else:
                 self.set_tooltip_window(StaticPreviewTooltip)
         else:

@@ -687,9 +687,26 @@ class VideoPreviewTooltip(PreviewTooltip):
 class AudioPreviewTooltip(PreviewTooltip):
 
     def __init__(self):
-        PreviewTooltip.__init__(self)
-        #hack:we don't need any window for audio_preview
-        self.set_default_size(0,0)
+        PreviewTooltip.__init__(self)     
+        #Playing label stuffs
+        screen = self.get_screen()
+        rgba = screen.get_rgba_colormap()
+	self.set_colormap(rgba)
+	self.set_app_paintable(True)
+	img = gtk.image_new_from_stock(gtk.STOCK_MEDIA_PLAY,gtk.ICON_SIZE_LARGE_TOOLBAR)
+	self.image = AnimatedImage(get_data_path("zlogo/zg%d.png"), 150, size=20)
+        self.image.start()
+        label = gtk.Label()
+        label.set_markup(_("<b>Playing...</b>"))
+        hbox = gtk.HBox()
+        hal = gtk.Alignment()
+        hal.set_padding(0,0,5,0)
+        hal.add(label)
+        hbox.pack_start(self.image)
+        hbox.pack_end(hal)
+        self.resize(1,1)
+        self.add(hbox)
+        #GStreamer stuffs
         self.player = gst.element_factory_make("playbin2", "player")
         fakesink = gst.element_factory_make("fakesink", "fakesink")
         self.player.set_property("video-sink", fakesink)
@@ -698,11 +715,23 @@ class AudioPreviewTooltip(PreviewTooltip):
         bus.connect("message", self.on_message)
         self.connect("hide", self._handle_hide)
         self.connect("show", self._handle_show)
+        self.connect("expose-event", self.transparent_expose)
+        
+    def transparent_expose(self, widget, event):
+	cr = widget.window.cairo_create()
+	cr.set_operator(cairo.OPERATOR_CLEAR)
+	region = gtk.gdk.region_rectangle(event.area)
+	cr.region(region)
+	cr.fill()
+	return False
 
     def _handle_hide(self, widget):
+        self.image.stop()
         self.player.set_state(gst.STATE_NULL)
 
     def _handle_show(self, widget):
+        self.image.start()
+        self.show_all()
         self.player.set_state(gst.STATE_PLAYING)
 
     def preview(self, gio_file):
@@ -719,18 +748,27 @@ class AudioPreviewTooltip(PreviewTooltip):
             self.player.set_state(gst.STATE_NULL)
             err, debug = message.parse_error()
             print "Error: %s" % err, debug
+            
+    def replace_content(self, content):
+        children = self.get_children()
+        if children:
+            self.remove(children[0])
+            # hack to force the tooltip to have the exact same size
+            # as the child image
+            self.resize(1,1)
+        self.add(content)
 
 class AnimatedImage(gtk.Image):
     animating = None
     mod = 7
     i = 0
     speed = 100
-    def __init__(self, uri, speed = 0):
+    def __init__(self, uri, speed = 0, size = 16):
         super(AnimatedImage, self).__init__()
         if speed: self.speed = speed
         self.frames = []
         for i in (6, 5, 4, 3, 2, 1, 0):
-            self.frames.append(gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path(uri % i), 16, 16))
+            self.frames.append(gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path(uri % i), size, size))
         self.set_from_pixbuf(self.frames[0])
 
     def next(self):
