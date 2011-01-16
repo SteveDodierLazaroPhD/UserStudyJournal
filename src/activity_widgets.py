@@ -246,7 +246,8 @@ class DayView(gtk.VBox):
 
     def clear(self):
         if self.view:
-            self.remove(self.view)
+            if self.view in self.get_children():
+                self.remove(self.view)
             self.view.destroy()
         self.view = gtk.VBox()
         self.pack_start(self.view)
@@ -300,7 +301,6 @@ class CategoryBox(gtk.HBox):
                 hbox.pack_start(item, True, True, 0 )
                 self.view.pack_start(hbox, False, False, 0)
                 hbox.show_all()
-                self.pack_end(hbox)
 
     def __init__(self, category, event_structs, pinnable = False, itemoff = 0):
         super(CategoryBox, self).__init__()
