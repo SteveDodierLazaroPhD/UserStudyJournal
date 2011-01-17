@@ -552,27 +552,17 @@ class Item(gtk.HBox, Draggable):
         Create the tooltip for non-GioFile events
         """
         text = "<b>" + self.label.get_text() + "</b>\n"
-        uri = self.content_obj.uri
-        if len(uri) > 70: uri = uri[:70] + "..." #ellipsize--it's ugly!
+        uri = urllib.unquote(self.content_obj.uri)
+        if len(uri) > 90: uri = uri[:90] + "..." #ellipsize--it's ugly!
         if uri.startswith("file://"):
             text += unicode(uri[7:])
         else:
             text += unicode(uri)
         text = text.replace("&", "&amp;")
+        
         tooltip.set_markup(text)
         tooltip.set_icon(self.icon)
         return True
-        
-    def truncate_string(self, string, truncate_lenght):
-        """
-        Very simple recursive function that truncates strings in a nicely way
-        """
-        delta = 8
-        if len(string) <= truncate_lenght + delta : return string
-        else:
-            t_string = string[:truncate_lenght]
-            t_string += "\n" + self.truncate_string(string[truncate_lenght:], truncate_lenght)
-            return t_string
           
     def _handle_tooltip_static(self, widget, x, y, keyboard_mode, tooltip):
         """
@@ -583,12 +573,12 @@ class Item(gtk.HBox, Draggable):
         pixbuf = gio_file.get_thumbnail(size=SIZE_NORMAL, border=1)
         
         text = _("<b>Name: </b>") + self.label.get_text()
-        uri = self.content_obj.uri
+        uri = urllib.unquote(self.content_obj.uri)
         descr = gio.content_type_from_mime_type(self.content_obj.mime_type)
         descr = gio.content_type_get_description(descr)
         mime_text = _("\n<b>MIME Type:</b> %s (%s)")% (descr, self.content_obj.mime_type)
         text += mime_text + "\n\n"
-        truncate_lenght = max(len(mime_text), 40)
+        truncate_lenght = len(mime_text)
         if uri.startswith("file://"):
             uri = self.truncate_string(uri[7:], truncate_lenght)
             text += unicode(uri)
@@ -609,6 +599,20 @@ class Item(gtk.HBox, Draggable):
         """
         tooltip_window = self.get_tooltip_window()
         return tooltip_window.preview(self.content_obj)
+        
+    def truncate_string(self, string, truncate_lenght):
+        """
+        Very simple recursive function that truncates strings in a nicely way
+        """
+        delta = 8
+        if len(string) <= (truncate_lenght + delta) : return string
+        else:
+            i = string.find(os.path.sep, truncate_lenght - delta*2, truncate_lenght + delta*2)
+            if i > 0: truncate_lenght_new = i + 1 
+            else: truncate_lenght_new = truncate_lenght
+            t_string = string[:truncate_lenght_new]
+            t_string += "\n" + self.truncate_string(string[truncate_lenght_new:], truncate_lenght)
+            return t_string
 
     def _show_item_popup(self, widget, ev):
         if ev.button == 3:
