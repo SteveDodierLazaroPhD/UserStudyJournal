@@ -567,7 +567,8 @@ class Item(gtk.HBox, Draggable):
         """
         Very simple recursive function that truncates strings in a nicely way
         """
-        if len(string) <= truncate_lenght + 10 : return string
+        delta = 8
+        if len(string) <= truncate_lenght + delta : return string
         else:
             t_string = string[:truncate_lenght]
             t_string += "\n" + self.truncate_string(string[truncate_lenght:], truncate_lenght)
@@ -585,12 +586,14 @@ class Item(gtk.HBox, Draggable):
         uri = self.content_obj.uri
         descr = gio.content_type_from_mime_type(self.content_obj.mime_type)
         descr = gio.content_type_get_description(descr)
-        text += _("\n<b>MIMEType: </b>") + descr + "\n\n"
+        mime_text = _("\n<b>MIME Type:</b> %s (%s)")% (descr, self.content_obj.mime_type)
+        text += mime_text + "\n\n"
+        truncate_lenght = max(len(mime_text), 40)
         if uri.startswith("file://"):
-            uri = self.truncate_string(uri[7:], 40)
+            uri = self.truncate_string(uri[7:], truncate_lenght)
             text += unicode(uri)
         else:
-            uri = self.truncate_string(uri, 40)
+            uri = self.truncate_string(uri, truncate_lenght)
             text += unicode(uri)
         text = text.replace("&", "&amp;")
         
