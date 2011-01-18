@@ -355,6 +355,7 @@ class CategoryBox(gtk.HBox):
             self.label_num.show_all()
             self.view.show()
             self.connect("style-set", self.on_style_change, self.label_num)
+            self.init_multimedia_tooltip()
         else:
             self._set_up_box(event_structs)
             self.box = self.view
@@ -379,6 +380,50 @@ class CategoryBox(gtk.HBox):
     def on_expand(self, widget, d):
         self.EXPANDED[d] = self.expander.get_expanded()
         self._set_up_box(self.event_structs)
+        
+    def init_multimedia_tooltip(self):
+        """
+        Show the items cointained in the category allowing to peek into those.
+        """
+        self.set_property("has-tooltip", True)
+        self.text = ""
+        self.text_title = "<b>" + self.label.get_text() +":</b>\n\n"
+        for struct in self.event_structs[:15]:
+            text = struct.content_object.text
+            if len(text) > 50: text = text[:50] + "..." #ellipsize--it's ugly!
+            self.text += "<b>- </b>" + text + "\n"               
+        if len(self.event_structs) > 15:
+            self.text += "..."
+        self.text = self.text.replace("&", "&amp;")
+        
+        self.connect("query-tooltip", self._handle_tooltip_category)
+        
+    def _handle_tooltip_category(self, widget, x, y, keyboard_mode, tooltip):
+        """
+        Create the tooltip for the categories
+        """
+        pix = get_icon_for_name(SUPPORTED_SOURCES[self.category].icon, 32)
+        hbox = gtk.HBox()
+        label_title = gtk.Label()
+        label_title.set_markup(self.text_title)
+        label_text = gtk.Label()
+        label_text.set_markup(self.text)
+        al = gtk.Alignment() #center the label in the middle of the image
+        al.set_padding(30, 0, 10, 0)
+        al.add(label_title)
+        img = gtk.image_new_from_pixbuf(pix)
+        hbox.pack_start(img, False, False)
+        hbox.pack_start(al, False, False)
+        vbox = gtk.VBox()
+        al = gtk.Alignment(0.5, 0.5, 0, 0) #align the title in the center
+        al.add(hbox)
+        vbox.pack_start(al)
+        al = gtk.Alignment() #align to the right
+        al.add(label_text)
+        vbox.pack_start(al)
+        vbox.show_all()
+        tooltip.set_custom(vbox)
+        return not self.expander.get_expanded()
 
     def __highlight(self,*args):
         matches = False
