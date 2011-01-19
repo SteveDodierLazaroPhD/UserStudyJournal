@@ -402,6 +402,7 @@ class CategoryBox(gtk.HBox):
         """
         Create the tooltip for the categories
         """
+        if self.expander.get_expanded(): return False
         pix = get_icon_for_name(SUPPORTED_SOURCES[self.category].icon, 32)
         hbox = gtk.HBox()
         label_title = gtk.Label()
@@ -409,7 +410,7 @@ class CategoryBox(gtk.HBox):
         label_text = gtk.Label()
         label_text.set_markup(self.text)
         al = gtk.Alignment() #center the label in the middle of the image
-        al.set_padding(30, 0, 10, 0)
+        al.set_padding(32, 0, 10, 0)
         al.add(label_title)
         img = gtk.image_new_from_pixbuf(pix)
         hbox.pack_start(img, False, False)
@@ -423,7 +424,7 @@ class CategoryBox(gtk.HBox):
         vbox.pack_start(al)
         vbox.show_all()
         tooltip.set_custom(vbox)
-        return not self.expander.get_expanded()
+        return True
 
     def __highlight(self,*args):
         matches = False
