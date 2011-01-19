@@ -201,7 +201,7 @@ class CairoHistogram(gtk.DrawingArea):
         """
         x = self.start_x_padding
         months_positions = []
-        for day in self.get_store().days:
+        for day in self.get_store().days:            
             if day.date.day == 1:
                 months_positions += [(day.date, x)]
             if day.date in self._highlighted:

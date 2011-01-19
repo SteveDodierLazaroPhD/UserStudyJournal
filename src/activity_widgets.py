@@ -99,6 +99,10 @@ class _GenericViewWidget(gtk.VBox):
 
 class MultiViewContainer(gtk.HBox):
 
+    __gsignals__ = {
+        "view-ready" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,())
+    }
+
     days = []
     #TODO Add a configuration field where the user 
     #could choose the number of pages
@@ -155,7 +159,7 @@ class MultiViewContainer(gtk.HBox):
         for page in self.pages:
             if page.day == day:
                 page.set_day(day)
-
+        self.emit("view-ready")
 
 class DayViewContainer(gtk.VBox):
     event_templates = (
@@ -249,7 +253,7 @@ class DayView(gtk.VBox):
             if self.view in self.get_children():
                 self.remove(self.view)
             self.view.destroy()
-        self.view = gtk.VBox()
+        self.view = gtk.VBox() 
         self.pack_start(self.view)
 
     def set_items(self, items):

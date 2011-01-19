@@ -34,7 +34,6 @@ from store import Store, tdelta, STORE, CLIENT
 from config import settings, get_icon_path, get_data_path, PluginManager
 from Indicator import TrayIconManager
 
-
 class ViewContainer(gtk.Notebook):
     __gsignals__ = {
         "new-view-added" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,(gobject.TYPE_PYOBJECT,)),
@@ -112,20 +111,20 @@ class ViewContainer(gtk.Notebook):
 
 
 class PortalWindow(gtk.Window):
-    __gsignals__ = {
-        "day-set" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,(gobject.TYPE_PYOBJECT,)),
-    }
-
-
+    """
+    The Main Window where everything starts... :)
+    """
     def __init__(self):
         super(PortalWindow, self).__init__()
         # Important
         self._request_size()
         self.store = STORE
         self.day_iter = self.store.today
+        self.pages_loaded = 0
         self.view = ViewContainer(self.store)
         self.toolbar = Toolbar()
         default_views = (MultiViewContainer(), ThumbViewContainer(), TimelineViewContainer())
+        default_views[0].connect("view-ready", self._on_view_ready)
         map(self.view._register_default_view, default_views)
         map(self.toolbar.add_new_view_button, self.view.tool_buttons[::-1])
         self.preferences_dialog = PreferencesDialog()
@@ -133,18 +132,39 @@ class PortalWindow(gtk.Window):
         self.histogram.set_store(self.store)
         self.backward_button, ev_backward_button = DayButton.new(0)
         self.forward_button, ev_forward_button = DayButton.new(1, sensitive=False)
+        
+        # use a table for the spinner (otherwise the spinner is massive!)
+        spinner_table = gtk.Table(3, 3, False)
+        label = gtk.Label()
+        label.set_markup(_("<span size=\"larger\"><b>Loading Journal...</b></span>"))
+        vbox = gtk.VBox(False, 5)
+        pix = gtk.gdk.pixbuf_new_from_file(get_data_path("zeitgeist-logo.svg"))
+        pix = pix.scale_simple(100, 100, gtk.gdk.INTERP_BILINEAR)
+        spinner = gtk.image_new_from_pixbuf(pix)
+        vbox.pack_start(spinner,False, False)
+        vbox.pack_start(label,True)
+        spinner_table.attach(vbox, 1, 2, 1, 2, gtk.EXPAND, gtk.EXPAND)
         # Widget placement
-        vbox = gtk.VBox(); hbox = gtk.HBox(); histogramhbox = gtk.HBox();
+        vbox = gtk.VBox(); hbox = gtk.HBox(); histogramhbox = gtk.HBox(); vbox_general = gtk.VBox()
         hbox.pack_start(ev_backward_button, False, False); hbox.pack_start(self.view, True, True, 6)
         hbox.pack_end(ev_forward_button, False, False);
         vbox.pack_start(self.toolbar, False, False); vbox.pack_start(hbox, True, True, 5)
-        histogramhbox.pack_end(self.histogram, True, True, 32); vbox.pack_end(histogramhbox, False, False)
-        self.add(vbox); self.show_all()
+        histogramhbox.pack_end(self.histogram, True, True, 32);
+        self.spinner_notebook = gtk.Notebook()
+        self.spinner_notebook.set_show_tabs(False)
+        self.spinner_notebook.set_show_border(False)
+        self.spinner_notebook.append_page(spinner_table)
+        self.spinner_notebook.append_page(vbox)
+        vbox_general.pack_start(self.spinner_notebook)
+        vbox_general.pack_end(histogramhbox, False, False)
+        self.add(vbox_general)
+        vbox_general.show_all()
+        self.show()
         #Tray Icon
         self.tray_manager = TrayIconManager(self)
         # Settings
         self.view.set_day(self.store.today)
-        # Connections
+        # Signal connections
         self.view.connect("new-view-added", lambda w, v: self.toolbar.add_new_view_button(v.button, len(self.view.tool_buttons)))
         self.connect("destroy", self.quit)
         self.connect("delete-event", self.on_delete)
@@ -169,7 +189,7 @@ class PortalWindow(gtk.Window):
         gobject.idle_add(self.load_plugins)
         # hide unused widgets
         SearchBox.hide()
-
+        
     def load_plugins(self):
         self.plug_manager = PluginManager(CLIENT, STORE, self)
         self.preferences_dialog.notebook.show_all()
@@ -210,9 +230,7 @@ class PortalWindow(gtk.Window):
         self.handle_button_sensitivity(day.date)
         self.view.set_day(day)
         self.histogram.set_dates(self.active_dates)
-        # Set title
         self.set_title_from_date(day.date)
-        self.emit("day-set", day)
 
     def set_date(self, date):
         self.set_day(self.store[date])
@@ -238,6 +256,11 @@ class PortalWindow(gtk.Window):
         self.view.set_day(self.day_iter, page=i)
         self.histogram.set_dates(self.active_dates)
         self.set_title_from_date(self.day_iter.date)
+    
+    def _on_view_ready(self, view):
+        if self.pages_loaded == view.num_pages - 1 :
+            self.spinner_notebook.set_current_page(1)
+        else: self.pages_loaded += 1
 
     def _on_search(self, box, results):
         dates = []
