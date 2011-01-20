@@ -622,7 +622,7 @@ class Item(gtk.HBox, Draggable):
         """
         gio_file = self.content_obj
         if not isinstance(gio_file, GioFile): return False
-        pixbuf = gio_file.get_thumbnail(size=SIZE_NORMAL, border=1)
+        pixbuf = gio_file.get_thumbnail(size=SIZE_LARGE, border=1)
         
         text = _("<b>Name: </b>") + self.label.get_text()
         uri = urllib.unquote(self.content_obj.uri)
