@@ -646,12 +646,14 @@ class VideoPreviewTooltip(PreviewTooltip):
         bus.connect("sync-message::element", self.on_sync_message)
         self.connect("hide", self._handle_hide)
         self.connect("show", self._handle_show)
-        self.set_default_size(*self.TOOLTIP_SIZE)
+        self.set_default_size(*SIZE_LARGE)
 
     def _handle_hide(self, widget):
+        self.hide_all()
         self.player.set_state(gst.STATE_NULL)
 
     def _handle_show(self, widget):
+        self.show_all()
         self.player.set_state(gst.STATE_PLAYING)
 
     def preview(self, gio_file):
@@ -679,7 +681,6 @@ class VideoPreviewTooltip(PreviewTooltip):
             imagesink.set_property("force-aspect-ratio", True)
             gtk.gdk.threads_enter()
             try:
-                self.show_all()
                 imagesink.set_xwindow_id(self.movie_window.window.xid)
             finally:
                 gtk.gdk.threads_leave()
