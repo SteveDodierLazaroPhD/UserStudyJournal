@@ -226,6 +226,7 @@ class Day(gobject.GObject):
     def set_ids(self, event_ids):
         deleted_uris = STORE.list_deleted_uris
         for event in event_ids:
+            #let's update the GUI
             gtk.gdk.threads_enter()
             while gtk.events_pending():gtk.main_iteration(False)
             gtk.gdk.threads_leave()

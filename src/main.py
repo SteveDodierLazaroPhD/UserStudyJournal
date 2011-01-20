@@ -141,8 +141,8 @@ class PortalWindow(gtk.Window):
         pix = gtk.gdk.pixbuf_new_from_file(get_data_path("zeitgeist-logo.svg"))
         pix = pix.scale_simple(100, 100, gtk.gdk.INTERP_BILINEAR)
         zlogo = gtk.image_new_from_pixbuf(pix)
-        vbox.pack_start(zlogo,False, False)
-        vbox.pack_start(label,True)
+        vbox.pack_start(zlogo, False, False)
+        vbox.pack_start(label, True)
         spinner_table.attach(vbox, 1, 2, 1, 2, gtk.EXPAND, gtk.EXPAND)
         # Widget placement
         vbox = gtk.VBox(); hbox = gtk.HBox(); self.histogramhbox = gtk.HBox(); vbox_general = gtk.VBox()
@@ -203,7 +203,7 @@ class PortalWindow(gtk.Window):
         self.histogram.set_dates(self.active_dates)
         self.histogram.scroll_to_end()
         return False
-
+    
     def set_visibility(self, val):
         if val: self.show()
         else: self.hide()

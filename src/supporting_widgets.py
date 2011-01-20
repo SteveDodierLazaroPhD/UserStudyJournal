@@ -811,7 +811,7 @@ class ThrobberPopupButton(gtk.ToolItem):
         self.button = button = gtk.ToggleButton()
         button.set_relief(gtk.RELIEF_NONE)
         self.image = image = AnimatedImage(get_data_path("zlogo/zg%d.png"), 150)
-        image.set_tooltip_text(_("Click for options"))
+        image.set_tooltip_text(_("Preferences"))
         arrow = gtk.Arrow(gtk.ARROW_DOWN, gtk.SHADOW_NONE)
         arrow.set_size_request(10, 10)
         box.pack_start(image, True, True, 1)
@@ -867,7 +867,7 @@ class AboutDialog(gtk.AboutDialog):
                "Hylke Bons <hylkebons@gmail.com>",
                "Thorsten Prante <thorsten@prante.eu>"
                 )
-    copyright_ = "Copyright © 2009-2010 Activity Journal authors"
+    copyright_ = "Copyright © 2009-2011 Activity Journal authors"
     comment = "A viewport into the past powered by Zeitgeist"
     version = VERSION
     def __init__(self):
