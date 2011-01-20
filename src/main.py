@@ -140,23 +140,24 @@ class PortalWindow(gtk.Window):
         vbox = gtk.VBox(False, 5)
         pix = gtk.gdk.pixbuf_new_from_file(get_data_path("zeitgeist-logo.svg"))
         pix = pix.scale_simple(100, 100, gtk.gdk.INTERP_BILINEAR)
-        spinner = gtk.image_new_from_pixbuf(pix)
-        vbox.pack_start(spinner,False, False)
+        zlogo = gtk.image_new_from_pixbuf(pix)
+        vbox.pack_start(zlogo,False, False)
         vbox.pack_start(label,True)
         spinner_table.attach(vbox, 1, 2, 1, 2, gtk.EXPAND, gtk.EXPAND)
         # Widget placement
-        vbox = gtk.VBox(); hbox = gtk.HBox(); histogramhbox = gtk.HBox(); vbox_general = gtk.VBox()
+        vbox = gtk.VBox(); hbox = gtk.HBox(); self.histogramhbox = gtk.HBox(); vbox_general = gtk.VBox()
         hbox.pack_start(ev_backward_button, False, False); hbox.pack_start(self.view, True, True, 6)
         hbox.pack_end(ev_forward_button, False, False);
         vbox.pack_start(self.toolbar, False, False); vbox.pack_start(hbox, True, True, 5)
-        histogramhbox.pack_end(self.histogram, True, True, 32);
+        self.histogramhbox.pack_end(self.histogram, True, True, 32);
+        self.histogramhbox.set_sensitive(False)
         self.spinner_notebook = gtk.Notebook()
         self.spinner_notebook.set_show_tabs(False)
         self.spinner_notebook.set_show_border(False)
         self.spinner_notebook.append_page(spinner_table)
         self.spinner_notebook.append_page(vbox)
         vbox_general.pack_start(self.spinner_notebook)
-        vbox_general.pack_end(histogramhbox, False, False)
+        vbox_general.pack_end(self.histogramhbox, False, False)
         self.add(vbox_general)
         vbox_general.show_all()
         self.show()
@@ -259,6 +260,7 @@ class PortalWindow(gtk.Window):
     
     def _on_view_ready(self, view):
         if self.pages_loaded == view.num_pages - 1 :
+            self.histogramhbox.set_sensitive(True)
             self.spinner_notebook.set_current_page(1)
         else: self.pages_loaded += 1
 

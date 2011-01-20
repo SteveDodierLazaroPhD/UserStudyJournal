@@ -226,6 +226,9 @@ class Day(gobject.GObject):
     def set_ids(self, event_ids):
         deleted_uris = STORE.list_deleted_uris
         for event in event_ids:
+            gtk.gdk.threads_enter()
+            while gtk.events_pending():gtk.main_iteration(False)
+            gtk.gdk.threads_leave()
             if deleted_uris is not None:
                 if event.subjects[0].uri not in deleted_uris:
                     self._items[event.id] = ContentStruct(event.id, event)
