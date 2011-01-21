@@ -393,9 +393,9 @@ class CategoryBox(gtk.HBox):
         self.text = ""
         self.text_title = "<b>" + self.label.get_text() +":</b>\n\n"
         for struct in self.event_structs[:15]:
-            text = struct.content_object.text
+            text = unicode(struct.content_object.text)
             if text.strip() == "":
-                text = struct.content_object.uri.replace("&", "&amp;")
+                text = unicode(struct.content_object.uri.replace("&", "&amp;"))
             if len(text) > 50: text = text[:50] + "..." #ellipsize--it's ugly!
             self.text += "<b>" + u'\u2022' + " </b>" + text + "\n"               
         if len(self.event_structs) > 15:
