@@ -27,24 +27,24 @@ try:
     import appindicator
 except ImportError:
     HAS_INDICATOR = False
+else:
+    class Indicator(appindicator.Indicator):
+        """
+        A widget that implements the appindicator for ubuntu
+        """
+        def __init__(self, main_window):
+            path = get_icon_path("hicolor/scalable/apps/gnome-activity-journal.svg")
+            name = "Gnome Activity Journal"
+            appindicator.Indicator.__init__(self, name, path, \
+                appindicator.CATEGORY_APPLICATION_STATUS)
 
-class Indicator(appindicator.Indicator):
-    """
-    A widget that implements the appindicator for ubuntu
-    """
-    def __init__(self, main_window):
-        path = get_icon_path("hicolor/scalable/apps/gnome-activity-journal.svg")
-        name = "Gnome Activity Journal"
-        appindicator.Indicator.__init__(self, name, path, \
-            appindicator.CATEGORY_APPLICATION_STATUS)
+            self.main_window = main_window
+            menu = Menu(self.main_window)
+            self.set_menu(menu)
 
-        self.main_window = main_window
-        menu = Menu(self.main_window)
-        self.set_menu(menu)
-
-    def set_visible(self, bool):
-        if not bool: self.set_status(appindicator.STATUS_PASSIVE)
-        else: self.set_status(appindicator.STATUS_ACTIVE)
+        def set_visible(self, bool):
+            if not bool: self.set_status(appindicator.STATUS_PASSIVE)
+            else: self.set_status(appindicator.STATUS_ACTIVE)
 
 class TrayIcon(gtk.StatusIcon):
     """
