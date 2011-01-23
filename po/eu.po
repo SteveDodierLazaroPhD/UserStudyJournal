@@ -1,4 +1,4 @@
-# Croatian translation for gnome-activity-journal
+# Basque translation for gnome-activity-journal
 # Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
 # This file is distributed under the same license as the gnome-activity-journal package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
@@ -8,358 +8,374 @@ msgstr ""
 "Project-Id-Version: gnome-activity-journal\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-09-18 21:43+0200\n"
-"PO-Revision-Date: 2010-12-15 17:24+0000\n"
-"Last-Translator: stefina <trebelnik@gmail.com>\n"
-"Language-Team: Croatian <hr@li.org>\n"
+"PO-Revision-Date: 2010-11-12 07:38+0000\n"
+"Last-Translator: Asier Sarasua Garmendia <Unknown>\n"
+"Language-Team: Basque <eu@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2010-12-16 05:00+0000\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Launchpad-Export-Date: 2010-11-13 05:07+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../gnome-activity-journal:83
 msgid "print additional debugging information"
-msgstr ""
+msgstr "inprimatu arazketa-informazio gehigarria"
 
 #: ../gnome-activity-journal:90
 msgid "ERROR"
-msgstr "POGREŠKA"
+msgstr "ERROREA"
 
 #: ../gnome-activity-journal:90
 msgid "Unable to connect to Zeitgeist:"
-msgstr ""
+msgstr "Ezin izan da Zeitgeist-era konektatu:"
 
 #: ../src/content_objects.py:563 ../src/content_objects.py:565
 msgid "{source._desc_sing} with {event.subjects[0].text}"
-msgstr ""
+msgstr "{source._desc_sing} {event.subjects[0].text}-(e)kin"
 
 #: ../src/content_objects.py:564
 msgid ""
 "{source._desc_sing} with {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 msgstr ""
+"{source._desc_sing} {event.subjects[0].text}-(e)kin\n"
+"{event.subjects[0].uri}"
 
 #: ../src/content_objects.py:575
 msgid "Available"
-msgstr "Dostupno"
+msgstr "Eskuragarri"
 
 #: ../src/content_objects.py:576
 msgid "Offline"
-msgstr ""
+msgstr "Lineaz kanpo"
 
 #: ../src/content_objects.py:577
 msgid "Away"
-msgstr "Odsutan"
+msgstr "Kanpoan"
 
 #: ../src/content_objects.py:578
 msgid "Busy"
-msgstr "Zauzet"
+msgstr "Lanpetuta"
 
 #: ../src/content_objects.py:610 ../src/content_objects.py:615
 #: ../src/content_objects.py:620
 msgid "with"
-msgstr "sa"
+msgstr "honekin:"
 
 #: ../src/content_objects.py:659
 msgid "Time Tracker"
-msgstr ""
+msgstr "Denbora-aztarnaria"
 
 #: ../src/content_objects.py:680 ../src/content_objects.py:682
 msgid "{source._desc_sing} from {event.subjects[0].text}"
-msgstr ""
+msgstr "{source._desc_sing} {event.subjects[0].text}-(e)tik"
 
 #: ../src/content_objects.py:681
 msgid ""
 "{source._desc_sing} from {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 msgstr ""
+"{source._desc_sing} {event.subjects[0].text}-(e)tik\n"
+"{event.subjects[0].uri}"
 
 #: ../src/content_objects.py:685
 #, python-format
 msgid " (%s Attachments)"
-msgstr ""
+msgstr " (%s eranskin)"
 
 #: ../src/content_objects.py:709
 msgid "{event.subjects[0].text}"
-msgstr ""
+msgstr "{event.subjects[0].text}"
 
 #: ../src/content_objects.py:710 ../src/content_objects.py:711
 msgid ""
 "Note\n"
 "{event.subjects[0].text}"
 msgstr ""
+"Oharra\n"
+"{event.subjects[0].text}"
 
 #: ../src/supporting_widgets.py:453
 msgid "Type here to search..."
-msgstr ""
+msgstr "Idatzi hemen bilaketa egiteko..."
 
 #: ../src/supporting_widgets.py:675
 msgid "Powered by Zeitgeist"
-msgstr ""
+msgstr "Zeitgeist-ekin dabil"
 
 #: ../src/supporting_widgets.py:732 ../src/activity_widgets.py:469
 msgid "Remove Pin"
-msgstr ""
+msgstr "Kendu pin-a"
 
 #: ../src/supporting_widgets.py:733 ../src/supporting_widgets.py:1196
 msgid "Add Pin"
-msgstr ""
+msgstr "Gehitu pin-a"
 
 #: ../src/supporting_widgets.py:734
 msgid "Delete item from Journal"
-msgstr ""
+msgstr "Ezabatu elementua egunkaritik"
 
 #: ../src/supporting_widgets.py:735
 msgid "Delete all events with this URI"
-msgstr ""
+msgstr "Ezabatu URI hau daukaten elementu guztiak"
 
 #: ../src/supporting_widgets.py:736
 msgid "More Information"
-msgstr ""
+msgstr "Informazio gehiago"
 
 #: ../src/supporting_widgets.py:748
 msgid "Send To..."
-msgstr ""
+msgstr "Bidali hona..."
 
 #: ../src/supporting_widgets.py:849
 msgid "Search"
-msgstr ""
+msgstr "Bilatu"
 
 #: ../src/supporting_widgets.py:860 ../src/supporting_widgets.py:1348
 msgid "Preferences"
-msgstr ""
+msgstr "Hobespenak"
 
 #: ../src/supporting_widgets.py:865 ../src/supporting_widgets.py:866
 msgid "Go to Today"
-msgstr ""
+msgstr "Joan Gaur egunera"
 
 #: ../src/supporting_widgets.py:1108
 msgid "Used With"
-msgstr ""
+msgstr "Honekin erabilia"
 
 #: ../src/supporting_widgets.py:1191
 msgid "Launch this subject"
-msgstr ""
+msgstr "Abiarazi gai hau"
 
 #: ../src/supporting_widgets.py:1193
 msgid "Delete this subject"
-msgstr ""
+msgstr "Ezabatu gai hau"
 
 #: ../src/supporting_widgets.py:1212
 msgid "Tags"
-msgstr ""
+msgstr "Etiketak"
 
 #: ../src/supporting_widgets.py:1357
 msgid "Active Plugins:"
-msgstr ""
+msgstr "Plugin aktiboak:"
 
 #: ../src/supporting_widgets.py:1365
 msgid "Plugins"
-msgstr ""
+msgstr "Pluginak"
 
 #: ../src/activity_widgets.py:149 ../src/common.py:170
 msgid "Morning"
-msgstr ""
+msgstr "Goiza"
 
 #: ../src/activity_widgets.py:149 ../src/common.py:170
 msgid "Afternoon"
-msgstr ""
+msgstr "Arratsaldea"
 
 #: ../src/activity_widgets.py:149 ../src/common.py:170
 msgid "Evening"
-msgstr ""
+msgstr "Ilunabarra"
 
 #: ../src/activity_widgets.py:1225
 msgid "Pinned Items"
-msgstr ""
+msgstr "Finkatutako elementuak"
 
 #: ../src/histogram.py:438
 msgid "item"
 msgid_plural "items"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "elementu"
+msgstr[1] "elementu"
 
 #: ../src/main.py:125
 msgid "Switch to MultiView"
-msgstr ""
+msgstr "Aldatu bistaratze anitzera"
 
 #: ../src/main.py:126
 msgid "Switch to ThumbView"
-msgstr ""
+msgstr "Aldatu miniatura-bistaratzera"
 
 #: ../src/main.py:127
 msgid "Switch to TimelineView"
-msgstr ""
+msgstr "Aldatu denbora-lerroaren bistaratzera"
 
 #: ../src/main.py:295
 msgid "Today"
-msgstr ""
+msgstr "Gaur"
 
 #: ../src/main.py:298
 msgid "Yesterday"
-msgstr ""
+msgstr "Atzo"
 
 #: ../src/main.py:309
 #, python-format
 msgid "%s to %s"
-msgstr ""
+msgstr "%s-(e)tik %s-(e)ra"
 
 #: ../src/main.py:309 ../extra/gnome-activity-journal.desktop.in.h:1
 msgid "Activity Journal"
-msgstr ""
+msgstr "Jarduera-egunkaria"
 
 #. TODO: Move this into Zeitgeist's library, implemented properly
 #: ../src/config.py:240
 msgid "Worked with a Video"
-msgstr ""
+msgstr "Bideo batekin prestatua"
 
 #: ../src/config.py:240
 msgid "Worked with Videos"
-msgstr ""
+msgstr "Bideoekin prestatua"
 
 #: ../src/config.py:241
 msgid "Worked with Audio"
-msgstr ""
+msgstr "Audio batekin prestatua"
 
 #: ../src/config.py:242
 msgid "Worked with an Image"
-msgstr ""
+msgstr "Irudi batekin prestatua"
 
 #: ../src/config.py:242
 msgid "Worked with Images"
-msgstr ""
+msgstr "Irudiekin prestatua"
 
 #: ../src/config.py:243
 msgid "Edited or Read Document"
-msgstr ""
+msgstr "Dokumentu editatu edo irakurria"
 
 #: ../src/config.py:243
 msgid "Edited or Read Documents"
-msgstr ""
+msgstr "Dokumentu editatu edo irakurriak"
 
 #: ../src/config.py:244
 msgid "Edited or Read Code"
-msgstr ""
+msgstr "Kode editatu edo irakurria"
 
 #: ../src/config.py:245
 msgid "Conversation"
-msgstr ""
+msgstr "Berriketa"
 
 #: ../src/config.py:245
 msgid "Conversations"
-msgstr ""
+msgstr "Berriketak"
 
 #: ../src/config.py:246
 msgid "Visited Website"
-msgstr ""
+msgstr "Bisitatutako webgunea"
 
 #: ../src/config.py:246
 msgid "Visited Websites"
-msgstr ""
+msgstr "Bisitatutako webguneak"
 
 #: ../src/config.py:247 ../src/common.py:150
 msgid "Email"
-msgstr ""
+msgstr "Posta elektronikoa"
 
 #: ../src/config.py:247
 msgid "Emails"
-msgstr ""
+msgstr "Posta elektronikoak"
 
 #: ../src/config.py:248
 msgid "Other Activity"
-msgstr ""
+msgstr "Beste jarduera bat"
 
 #: ../src/config.py:248
 msgid "Other Activities"
-msgstr ""
+msgstr "Beste jarduera batzuk"
 
 #: ../src/config.py:249
 msgid "Edited or Read Note"
-msgstr ""
+msgstr "Ohar editatu edo irakurria"
 
 #: ../src/config.py:249
 msgid "Edited or Read Notes"
-msgstr ""
+msgstr "Ohar editatu edo irakurriak"
 
 #: ../src/common.py:143
 msgid "Video"
-msgstr ""
+msgstr "Bideoa"
 
 #: ../src/common.py:144
 msgid "Music"
-msgstr ""
+msgstr "Musika"
 
 #: ../src/common.py:145
 msgid "Document"
-msgstr ""
+msgstr "Dokumentua"
 
 #: ../src/common.py:146
 msgid "Image"
-msgstr ""
+msgstr "Irudia"
 
 #: ../src/common.py:147
 msgid "Source Code"
-msgstr ""
+msgstr "Iturburu-kodea"
 
 #: ../src/common.py:148
 msgid "Unknown"
-msgstr ""
+msgstr "Ezezaguna"
 
 #: ../src/common.py:149
 msgid "IM Message"
-msgstr ""
+msgstr "IM mezua"
 
 #: ../extra/gnome-activity-journal.desktop.in.h:2
 msgid ""
 "Browse a chronological log of your activities and easily find files, "
 "contacts, etc."
 msgstr ""
+"Arakatu zure jardueren egunkari kronologikoa eta bilatu fitxategiak, "
+"kontaktuak, etab. modu errazean."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:1
 msgid "Accessibility"
-msgstr ""
+msgstr "Erabilerraztasuna"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:2
 msgid "Allow thumbnails as icons"
-msgstr ""
+msgstr "Onartu miniaturak ikono modura"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:3
 msgid "Amount of visible days"
-msgstr ""
+msgstr "Ikusgarri den egun-kopurua"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:4
 msgid ""
 "Customized height for the main window, in pixels (requires restart). Can't "
 "be bigger than the desktop's size."
 msgstr ""
+"Leiho nagusiaren altuera pertsonalizatua, pixeletan (berrabiaraztea behar "
+"du). Ezin da izan mahaigainaren tamaina baino handiagoa."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:5
 msgid ""
 "Customized width for the main window, in pixels (requires restart). Can't be "
 "bigger than the desktop's size."
 msgstr ""
+"Leiho nagusiaren zabalera pertsonalizatua, pixeletan (berrabiaraztea behar "
+"du). Ezin da izan mahaigainaren tamaina baino handiagoa."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:6
 msgid "The amount of days to show at once."
-msgstr ""
+msgstr "Aldi berean erakutsiko den egun-kopurua."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:7
 msgid ""
 "Whether special accessibility options should be enabled (requires restart)."
 msgstr ""
+"Erabilerraztasun-aukera bereziak gaituko diren ala ez (berrabiaraztea behar "
+"du)."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:8
 msgid ""
 "Whether to allow showing little thumbnails next to each activity (requires "
 "restart). If False, only generic mime-type icons will be used."
 msgstr ""
+"Jarduera bakoitzaren alboan miniatura txikiak erakustea ahalbidetuko den ala "
+"ez (berrabiaraztea behar du). Gezurra bada, mime-type ikono generikoak "
+"soilik erabiliko dira."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:9
 msgid "Window height"
-msgstr ""
+msgstr "Leiho-altuera"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:10
 msgid "Window width"
-msgstr ""
+msgstr "Leiho-zabalera"

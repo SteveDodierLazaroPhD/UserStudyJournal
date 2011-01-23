@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-activity-journal\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-08-29 00:28+0200\n"
-"PO-Revision-Date: 2010-04-03 04:28+0000\n"
-"Last-Translator: GNOME Zeitgeist Team <gnome-zeitgeist@lists.launchpad.net>\n"
+"POT-Creation-Date: 2010-09-18 21:43+0200\n"
+"PO-Revision-Date: 2010-12-21 13:10+0000\n"
+"Last-Translator: dat.a1k61 <dat.a1k61@gmail.com>\n"
 "Language-Team: Vietnamese <vi@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Launchpad-Export-Date: 2010-09-17 05:42+0000\n"
+"X-Launchpad-Export-Date: 2010-12-22 05:57+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../gnome-activity-journal:83
@@ -30,116 +30,64 @@ msgstr "CÓ LỖI"
 msgid "Unable to connect to Zeitgeist:"
 msgstr "Không thể kết nối tới Zeitgeist"
 
-#: ../src/activity_widgets.py:150 ../src/common.py:170
-msgid "Morning"
-msgstr "Sáng"
-
-#: ../src/activity_widgets.py:150 ../src/common.py:170
-msgid "Afternoon"
-msgstr "Chiều"
-
-#: ../src/activity_widgets.py:150 ../src/common.py:170
-msgid "Evening"
-msgstr "Chiều/tối"
-
-#: ../src/activity_widgets.py:472 ../src/supporting_widgets.py:732
-msgid "Remove Pin"
-msgstr "Bỏ chú ý"
-
-#: ../src/activity_widgets.py:1228
-msgid "Pinned Items"
-msgstr ""
-
-#: ../src/content_objects.py:558 ../src/content_objects.py:560
+#: ../src/content_objects.py:563 ../src/content_objects.py:565
 msgid "{source._desc_sing} with {event.subjects[0].text}"
 msgstr ""
 
-#: ../src/content_objects.py:559
+#: ../src/content_objects.py:564
 msgid ""
 "{source._desc_sing} with {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 msgstr ""
 
-#: ../src/content_objects.py:570
+#: ../src/content_objects.py:575
 msgid "Available"
 msgstr ""
 
-#: ../src/content_objects.py:571
+#: ../src/content_objects.py:576
 msgid "Offline"
 msgstr ""
 
-#: ../src/content_objects.py:572
+#: ../src/content_objects.py:577
 msgid "Away"
 msgstr ""
 
-#: ../src/content_objects.py:573
+#: ../src/content_objects.py:578
 msgid "Busy"
 msgstr ""
 
-#: ../src/content_objects.py:605 ../src/content_objects.py:610
-#: ../src/content_objects.py:615
+#: ../src/content_objects.py:610 ../src/content_objects.py:615
+#: ../src/content_objects.py:620
 msgid "with"
 msgstr ""
 
-#: ../src/content_objects.py:654
+#: ../src/content_objects.py:659
 msgid "Time Tracker"
 msgstr ""
 
-#: ../src/content_objects.py:675 ../src/content_objects.py:677
+#: ../src/content_objects.py:680 ../src/content_objects.py:682
 msgid "{source._desc_sing} from {event.subjects[0].text}"
 msgstr ""
 
-#: ../src/content_objects.py:676
+#: ../src/content_objects.py:681
 msgid ""
 "{source._desc_sing} from {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 msgstr ""
 
-#: ../src/content_objects.py:680
+#: ../src/content_objects.py:685
 #, python-format
 msgid " (%s Attachments)"
 msgstr ""
 
-#: ../src/content_objects.py:704
+#: ../src/content_objects.py:709
 msgid "{event.subjects[0].text}"
 msgstr ""
 
-#: ../src/content_objects.py:705 ../src/content_objects.py:706
+#: ../src/content_objects.py:710 ../src/content_objects.py:711
 msgid ""
 "Note\n"
 "{event.subjects[0].text}"
-msgstr ""
-
-#: ../src/common.py:143
-msgid "Video"
-msgstr "Phim"
-
-#: ../src/common.py:144
-msgid "Music"
-msgstr "Nhạc"
-
-#: ../src/common.py:145
-msgid "Document"
-msgstr "Tài liệu"
-
-#: ../src/common.py:146
-msgid "Image"
-msgstr "Hình ảnh"
-
-#: ../src/common.py:147
-msgid "Source Code"
-msgstr "Mã Nguồn"
-
-#: ../src/common.py:148
-msgid "Unknown"
-msgstr "Chưa xác định."
-
-#: ../src/common.py:149
-msgid "IM Message"
-msgstr ""
-
-#: ../src/common.py:150 ../src/config.py:247
-msgid "Email"
 msgstr ""
 
 #: ../src/supporting_widgets.py:453
@@ -150,7 +98,11 @@ msgstr "Nhập vào đây để tìm kiếm..."
 msgid "Powered by Zeitgeist"
 msgstr ""
 
-#: ../src/supporting_widgets.py:733 ../src/supporting_widgets.py:1193
+#: ../src/supporting_widgets.py:732 ../src/activity_widgets.py:469
+msgid "Remove Pin"
+msgstr "Bỏ chú ý"
+
+#: ../src/supporting_widgets.py:733 ../src/supporting_widgets.py:1196
 msgid "Add Pin"
 msgstr ""
 
@@ -170,37 +122,91 @@ msgstr ""
 msgid "Send To..."
 msgstr ""
 
-#: ../src/supporting_widgets.py:863
-msgid "Goto Today"
+#: ../src/supporting_widgets.py:849
+msgid "Search"
 msgstr ""
 
-#: ../src/supporting_widgets.py:1105
-msgid "Used With"
-msgstr ""
-
-#: ../src/supporting_widgets.py:1188
-msgid "Launch this subject"
-msgstr ""
-
-#: ../src/supporting_widgets.py:1190
-msgid "Delete this subject"
-msgstr ""
-
-#: ../src/supporting_widgets.py:1209
-msgid "Tags"
-msgstr ""
-
-#: ../src/supporting_widgets.py:1345
+#: ../src/supporting_widgets.py:860 ../src/supporting_widgets.py:1348
 msgid "Preferences"
 msgstr ""
 
-#: ../src/supporting_widgets.py:1354
+#: ../src/supporting_widgets.py:865 ../src/supporting_widgets.py:866
+msgid "Go to Today"
+msgstr ""
+
+#: ../src/supporting_widgets.py:1108
+msgid "Used With"
+msgstr ""
+
+#: ../src/supporting_widgets.py:1191
+msgid "Launch this subject"
+msgstr ""
+
+#: ../src/supporting_widgets.py:1193
+msgid "Delete this subject"
+msgstr ""
+
+#: ../src/supporting_widgets.py:1212
+msgid "Tags"
+msgstr ""
+
+#: ../src/supporting_widgets.py:1357
 msgid "Active Plugins:"
 msgstr ""
 
-#: ../src/supporting_widgets.py:1362
+#: ../src/supporting_widgets.py:1365
 msgid "Plugins"
 msgstr ""
+
+#: ../src/activity_widgets.py:149 ../src/common.py:170
+msgid "Morning"
+msgstr "Sáng"
+
+#: ../src/activity_widgets.py:149 ../src/common.py:170
+msgid "Afternoon"
+msgstr "Chiều"
+
+#: ../src/activity_widgets.py:149 ../src/common.py:170
+msgid "Evening"
+msgstr "Chiều/tối"
+
+#: ../src/activity_widgets.py:1225
+msgid "Pinned Items"
+msgstr ""
+
+#: ../src/histogram.py:438
+msgid "item"
+msgid_plural "items"
+msgstr[0] "mục"
+
+#: ../src/main.py:125
+msgid "Switch to MultiView"
+msgstr ""
+
+#: ../src/main.py:126
+msgid "Switch to ThumbView"
+msgstr ""
+
+#: ../src/main.py:127
+msgid "Switch to TimelineView"
+msgstr ""
+
+#: ../src/main.py:295
+msgid "Today"
+msgstr "Hôm nay"
+
+#: ../src/main.py:298
+msgid "Yesterday"
+msgstr "Hôm qua"
+
+#: ../src/main.py:309
+#, python-format
+msgid "%s to %s"
+msgstr "%s đến %s"
+
+#: ../src/main.py:309 ../extra/gnome-activity-journal.desktop.in.h:1
+msgid "Activity Journal"
+msgstr "Nhật Ký Hoạt Động"
 
 #. TODO: Move this into Zeitgeist's library, implemented properly
 #: ../src/config.py:240
@@ -251,6 +257,10 @@ msgstr ""
 msgid "Visited Websites"
 msgstr ""
 
+#: ../src/config.py:247 ../src/common.py:150
+msgid "Email"
+msgstr ""
+
 #: ../src/config.py:247
 msgid "Emails"
 msgstr ""
@@ -271,39 +281,33 @@ msgstr ""
 msgid "Edited or Read Notes"
 msgstr ""
 
-#: ../src/main.py:125
-msgid "Switch to MultiView"
+#: ../src/common.py:143
+msgid "Video"
+msgstr "Phim"
+
+#: ../src/common.py:144
+msgid "Music"
+msgstr "Nhạc"
+
+#: ../src/common.py:145
+msgid "Document"
+msgstr "Tài liệu"
+
+#: ../src/common.py:146
+msgid "Image"
+msgstr "Hình ảnh"
+
+#: ../src/common.py:147
+msgid "Source Code"
+msgstr "Mã Nguồn"
+
+#: ../src/common.py:148
+msgid "Unknown"
+msgstr "Chưa xác định."
+
+#: ../src/common.py:149
+msgid "IM Message"
 msgstr ""
-
-#: ../src/main.py:126
-msgid "Switch to ThumbView"
-msgstr ""
-
-#: ../src/main.py:127
-msgid "Switch to TimelineView"
-msgstr ""
-
-#: ../src/main.py:295
-msgid "Today"
-msgstr "Hôm nay"
-
-#: ../src/main.py:298
-msgid "Yesterday"
-msgstr "Hôm qua"
-
-#: ../src/main.py:309
-#, python-format
-msgid "%s to %s"
-msgstr "%s đến %s"
-
-#: ../src/main.py:309 ../extra/gnome-activity-journal.desktop.in.h:1
-msgid "Activity Journal"
-msgstr "Nhật Ký Hoạt Động"
-
-#: ../src/histogram.py:438
-msgid "item"
-msgid_plural "items"
-msgstr[0] "mục"
 
 #: ../extra/gnome-activity-journal.desktop.in.h:2
 msgid ""
@@ -319,23 +323,27 @@ msgstr "Khả năng truy cập"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:2
 msgid "Allow thumbnails as icons"
-msgstr ""
+msgstr "Cho phép hình ảnh thu nhỏ như các biểu tượng"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:3
 msgid "Amount of visible days"
-msgstr ""
+msgstr "Số lượng ngày hiển thị"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:4
 msgid ""
 "Customized height for the main window, in pixels (requires restart). Can't "
 "be bigger than the desktop's size."
 msgstr ""
+"Tuỳ chọn độ cao của cửa sổ chính, theo điểm ảnh (cần phải khởi động lại). "
+"Không được phép lớn hơn kích thước của màn hình."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:5
 msgid ""
 "Customized width for the main window, in pixels (requires restart). Can't be "
 "bigger than the desktop's size."
 msgstr ""
+"Tuỳ chọn độ rộng của cửa sổ chính, theo điểm ảnh (cần phải khởi động lại). "
+"Không được phép lớn hơn kích thước của màn hình."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:6
 msgid "The amount of days to show at once."

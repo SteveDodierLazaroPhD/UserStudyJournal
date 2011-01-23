@@ -1,4 +1,4 @@
-# Croatian translation for gnome-activity-journal
+# Esperanto translation for gnome-activity-journal
 # Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
 # This file is distributed under the same license as the gnome-activity-journal package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
@@ -8,16 +8,15 @@ msgstr ""
 "Project-Id-Version: gnome-activity-journal\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-09-18 21:43+0200\n"
-"PO-Revision-Date: 2010-12-15 17:24+0000\n"
-"Last-Translator: stefina <trebelnik@gmail.com>\n"
-"Language-Team: Croatian <hr@li.org>\n"
+"PO-Revision-Date: 2011-01-16 14:06+0000\n"
+"Last-Translator: Kristjan SCHMIDT <Unknown>\n"
+"Language-Team: Esperanto <eo@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2010-12-16 05:00+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Launchpad-Export-Date: 2011-01-17 05:02+0000\n"
+"X-Generator: Launchpad (build 12177)\n"
 
 #: ../gnome-activity-journal:83
 msgid "print additional debugging information"
@@ -25,7 +24,7 @@ msgstr ""
 
 #: ../gnome-activity-journal:90
 msgid "ERROR"
-msgstr "POGREŠKA"
+msgstr "ERARO"
 
 #: ../gnome-activity-journal:90
 msgid "Unable to connect to Zeitgeist:"
@@ -33,34 +32,36 @@ msgstr ""
 
 #: ../src/content_objects.py:563 ../src/content_objects.py:565
 msgid "{source._desc_sing} with {event.subjects[0].text}"
-msgstr ""
+msgstr "{source._desc_sing} kun {event.subjects[0].text}"
 
 #: ../src/content_objects.py:564
 msgid ""
 "{source._desc_sing} with {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 msgstr ""
+"{source._desc_sing} kun {event.subjects[0].text}\n"
+"{event.subjects[0].uri}"
 
 #: ../src/content_objects.py:575
 msgid "Available"
-msgstr "Dostupno"
+msgstr "Disponebla"
 
 #: ../src/content_objects.py:576
 msgid "Offline"
-msgstr ""
+msgstr "Malkonektita"
 
 #: ../src/content_objects.py:577
 msgid "Away"
-msgstr "Odsutan"
+msgstr "Fora"
 
 #: ../src/content_objects.py:578
 msgid "Busy"
-msgstr "Zauzet"
+msgstr "Okupata"
 
 #: ../src/content_objects.py:610 ../src/content_objects.py:615
 #: ../src/content_objects.py:620
 msgid "with"
-msgstr "sa"
+msgstr "kun"
 
 #: ../src/content_objects.py:659
 msgid "Time Tracker"
@@ -68,13 +69,15 @@ msgstr ""
 
 #: ../src/content_objects.py:680 ../src/content_objects.py:682
 msgid "{source._desc_sing} from {event.subjects[0].text}"
-msgstr ""
+msgstr "{source._desc_sing} de {event.subjects[0].text}"
 
 #: ../src/content_objects.py:681
 msgid ""
 "{source._desc_sing} from {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 msgstr ""
+"{source._desc_sing} de {event.subjects[0].text}\n"
+"{event.subjects[0].uri}"
 
 #: ../src/content_objects.py:685
 #, python-format
@@ -90,6 +93,8 @@ msgid ""
 "Note\n"
 "{event.subjects[0].text}"
 msgstr ""
+"Komentario\n"
+"{event.subjects[0].text}"
 
 #: ../src/supporting_widgets.py:453
 msgid "Type here to search..."
@@ -109,7 +114,7 @@ msgstr ""
 
 #: ../src/supporting_widgets.py:734
 msgid "Delete item from Journal"
-msgstr ""
+msgstr "Forigi ero de ĵurnalo"
 
 #: ../src/supporting_widgets.py:735
 msgid "Delete all events with this URI"
@@ -121,19 +126,19 @@ msgstr ""
 
 #: ../src/supporting_widgets.py:748
 msgid "Send To..."
-msgstr ""
+msgstr "Sendi Al..."
 
 #: ../src/supporting_widgets.py:849
 msgid "Search"
-msgstr ""
+msgstr "Serĉi"
 
 #: ../src/supporting_widgets.py:860 ../src/supporting_widgets.py:1348
 msgid "Preferences"
-msgstr ""
+msgstr "Agordoj"
 
 #: ../src/supporting_widgets.py:865 ../src/supporting_widgets.py:866
 msgid "Go to Today"
-msgstr ""
+msgstr "Iri al hodiaŭ"
 
 #: ../src/supporting_widgets.py:1108
 msgid "Used With"

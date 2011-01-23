@@ -1,4 +1,4 @@
-# Croatian translation for gnome-activity-journal
+# Korean translation for gnome-activity-journal
 # Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
 # This file is distributed under the same license as the gnome-activity-journal package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
@@ -8,28 +8,27 @@ msgstr ""
 "Project-Id-Version: gnome-activity-journal\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-09-18 21:43+0200\n"
-"PO-Revision-Date: 2010-12-15 17:24+0000\n"
-"Last-Translator: stefina <trebelnik@gmail.com>\n"
-"Language-Team: Croatian <hr@li.org>\n"
+"PO-Revision-Date: 2011-01-04 05:48+0000\n"
+"Last-Translator: BlueForest <eigenjin@ku.edu>\n"
+"Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2010-12-16 05:00+0000\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Launchpad-Export-Date: 2011-01-04 14:29+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../gnome-activity-journal:83
 msgid "print additional debugging information"
-msgstr ""
+msgstr "추가적인 디버깅 정보를 출력"
 
 #: ../gnome-activity-journal:90
 msgid "ERROR"
-msgstr "POGREŠKA"
+msgstr "오류"
 
 #: ../gnome-activity-journal:90
 msgid "Unable to connect to Zeitgeist:"
-msgstr ""
+msgstr "Zeitgeist에 연결할 수 없습니다:"
 
 #: ../src/content_objects.py:563 ../src/content_objects.py:565
 msgid "{source._desc_sing} with {event.subjects[0].text}"
@@ -43,7 +42,7 @@ msgstr ""
 
 #: ../src/content_objects.py:575
 msgid "Available"
-msgstr "Dostupno"
+msgstr "온라인"
 
 #: ../src/content_objects.py:576
 msgid "Offline"
@@ -51,16 +50,16 @@ msgstr ""
 
 #: ../src/content_objects.py:577
 msgid "Away"
-msgstr "Odsutan"
+msgstr "자리비움"
 
 #: ../src/content_objects.py:578
 msgid "Busy"
-msgstr "Zauzet"
+msgstr "다른 용무중"
 
 #: ../src/content_objects.py:610 ../src/content_objects.py:615
 #: ../src/content_objects.py:620
 msgid "with"
-msgstr "sa"
+msgstr ""
 
 #: ../src/content_objects.py:659
 msgid "Time Tracker"
@@ -93,27 +92,27 @@ msgstr ""
 
 #: ../src/supporting_widgets.py:453
 msgid "Type here to search..."
-msgstr ""
+msgstr "검색을 하려면 이곳에 입력하십시오"
 
 #: ../src/supporting_widgets.py:675
 msgid "Powered by Zeitgeist"
-msgstr ""
+msgstr "Zeitgeist의 지원을 받는"
 
 #: ../src/supporting_widgets.py:732 ../src/activity_widgets.py:469
 msgid "Remove Pin"
-msgstr ""
+msgstr "\"고정(중요)표시\" 제거"
 
 #: ../src/supporting_widgets.py:733 ../src/supporting_widgets.py:1196
 msgid "Add Pin"
-msgstr ""
+msgstr "\"고정(중요)표시\" 추가"
 
 #: ../src/supporting_widgets.py:734
 msgid "Delete item from Journal"
-msgstr ""
+msgstr "저널(일지)로부터 선택한 항목을 제거합니다"
 
 #: ../src/supporting_widgets.py:735
 msgid "Delete all events with this URI"
-msgstr ""
+msgstr "이 URI와 관련된 모든 정보룰 제거합니다"
 
 #: ../src/supporting_widgets.py:736
 msgid "More Information"
@@ -125,15 +124,15 @@ msgstr ""
 
 #: ../src/supporting_widgets.py:849
 msgid "Search"
-msgstr ""
+msgstr "검색"
 
 #: ../src/supporting_widgets.py:860 ../src/supporting_widgets.py:1348
 msgid "Preferences"
-msgstr ""
+msgstr "환경설정"
 
 #: ../src/supporting_widgets.py:865 ../src/supporting_widgets.py:866
 msgid "Go to Today"
-msgstr ""
+msgstr "오늘 날짜로 이동"
 
 #: ../src/supporting_widgets.py:1108
 msgid "Used With"
@@ -149,57 +148,56 @@ msgstr ""
 
 #: ../src/supporting_widgets.py:1212
 msgid "Tags"
-msgstr ""
+msgstr "태그"
 
 #: ../src/supporting_widgets.py:1357
 msgid "Active Plugins:"
-msgstr ""
+msgstr "실행중인 부가기능:"
 
 #: ../src/supporting_widgets.py:1365
 msgid "Plugins"
-msgstr ""
+msgstr "부가 기능"
 
 #: ../src/activity_widgets.py:149 ../src/common.py:170
 msgid "Morning"
-msgstr ""
+msgstr "오전 활동 내역"
 
 #: ../src/activity_widgets.py:149 ../src/common.py:170
 msgid "Afternoon"
-msgstr ""
+msgstr "오후 활동 내역"
 
 #: ../src/activity_widgets.py:149 ../src/common.py:170
 msgid "Evening"
-msgstr ""
+msgstr "저녁 활동 내역"
 
 #: ../src/activity_widgets.py:1225
 msgid "Pinned Items"
-msgstr ""
+msgstr "\"고정(중요)\"표시된 항목"
 
 #: ../src/histogram.py:438
 msgid "item"
 msgid_plural "items"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "항목"
 
 #: ../src/main.py:125
 msgid "Switch to MultiView"
-msgstr ""
+msgstr "다중 날짜 보기로 전환"
 
 #: ../src/main.py:126
 msgid "Switch to ThumbView"
-msgstr ""
+msgstr "썸네일 보기로 전환"
 
 #: ../src/main.py:127
 msgid "Switch to TimelineView"
-msgstr ""
+msgstr "시간에 따른 보기로 전환"
 
 #: ../src/main.py:295
 msgid "Today"
-msgstr ""
+msgstr "오늘 한 일"
 
 #: ../src/main.py:298
 msgid "Yesterday"
-msgstr ""
+msgstr "어제 한 일"
 
 #: ../src/main.py:309
 #, python-format
@@ -208,100 +206,100 @@ msgstr ""
 
 #: ../src/main.py:309 ../extra/gnome-activity-journal.desktop.in.h:1
 msgid "Activity Journal"
-msgstr ""
+msgstr "활동 일지(저널)"
 
 #. TODO: Move this into Zeitgeist's library, implemented properly
 #: ../src/config.py:240
 msgid "Worked with a Video"
-msgstr ""
+msgstr "비디오 관련 작업"
 
 #: ../src/config.py:240
 msgid "Worked with Videos"
-msgstr ""
+msgstr "비디오 관련 작업"
 
 #: ../src/config.py:241
 msgid "Worked with Audio"
-msgstr ""
+msgstr "오디오 관련 작업"
 
 #: ../src/config.py:242
 msgid "Worked with an Image"
-msgstr ""
+msgstr "그림화일 관련 작업"
 
 #: ../src/config.py:242
 msgid "Worked with Images"
-msgstr ""
+msgstr "그림화일 관련 작업"
 
 #: ../src/config.py:243
 msgid "Edited or Read Document"
-msgstr ""
+msgstr "읽거나 편집한 문서"
 
 #: ../src/config.py:243
 msgid "Edited or Read Documents"
-msgstr ""
+msgstr "읽거나 편집한 문서"
 
 #: ../src/config.py:244
 msgid "Edited or Read Code"
-msgstr ""
+msgstr "읽거나 편집한 코드"
 
 #: ../src/config.py:245
 msgid "Conversation"
-msgstr ""
+msgstr "대화 기록-메신저"
 
 #: ../src/config.py:245
 msgid "Conversations"
-msgstr ""
+msgstr "대화 기록-메신저"
 
 #: ../src/config.py:246
 msgid "Visited Website"
-msgstr ""
+msgstr "방문한 웹사이트(웹페이지)"
 
 #: ../src/config.py:246
 msgid "Visited Websites"
-msgstr ""
+msgstr "방문한 웹사이트(웹페이지)"
 
 #: ../src/config.py:247 ../src/common.py:150
 msgid "Email"
-msgstr ""
+msgstr "이메일"
 
 #: ../src/config.py:247
 msgid "Emails"
-msgstr ""
+msgstr "이메일"
 
 #: ../src/config.py:248
 msgid "Other Activity"
-msgstr ""
+msgstr "기타 활동"
 
 #: ../src/config.py:248
 msgid "Other Activities"
-msgstr ""
+msgstr "기타 활동"
 
 #: ../src/config.py:249
 msgid "Edited or Read Note"
-msgstr ""
+msgstr "읽거나 편집한 노트"
 
 #: ../src/config.py:249
 msgid "Edited or Read Notes"
-msgstr ""
+msgstr "읽거나 편집한 노트"
 
 #: ../src/common.py:143
 msgid "Video"
-msgstr ""
+msgstr "비디오"
 
 #: ../src/common.py:144
 msgid "Music"
-msgstr ""
+msgstr "음악"
 
 #: ../src/common.py:145
 msgid "Document"
-msgstr ""
+msgstr "문서"
 
 #: ../src/common.py:146
 msgid "Image"
-msgstr ""
+msgstr "그림"
 
 #: ../src/common.py:147
 msgid "Source Code"
-msgstr ""
+msgstr "원본 코드"
 
 #: ../src/common.py:148
 msgid "Unknown"
@@ -315,7 +313,7 @@ msgstr ""
 msgid ""
 "Browse a chronological log of your activities and easily find files, "
 "contacts, etc."
-msgstr ""
+msgstr "시간대별로 활동기록을 검색하여, 연락처 또는 파일등을 쉽게 찾을 수 있다."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:1
 msgid "Accessibility"
@@ -323,27 +321,27 @@ msgstr ""
 
 #: ../extra/gnome-activity-journal.schemas.in.h:2
 msgid "Allow thumbnails as icons"
-msgstr ""
+msgstr "썸네일을 아이콘으로 사용함"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:3
 msgid "Amount of visible days"
-msgstr ""
+msgstr "볼 수 있는 날짜의 수"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:4
 msgid ""
 "Customized height for the main window, in pixels (requires restart). Can't "
 "be bigger than the desktop's size."
-msgstr ""
+msgstr "메인 윈도우의 높이를 픽셀 단위로 조정함.(재시작 필요). 단, 데스크탑 사이즈보다 더 크게 할 수 없음."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:5
 msgid ""
 "Customized width for the main window, in pixels (requires restart). Can't be "
 "bigger than the desktop's size."
-msgstr ""
+msgstr "메인 윈도우의 넓이를 픽셀 단위로 조정함.(재시작 필요). 단, 데스크탑 사이즈보다 더 크게 할 수 없음."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:6
 msgid "The amount of days to show at once."
-msgstr ""
+msgstr "한번에 볼 수 있는 날짜의 수"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:7
 msgid ""
@@ -358,8 +356,8 @@ msgstr ""
 
 #: ../extra/gnome-activity-journal.schemas.in.h:9
 msgid "Window height"
-msgstr ""
+msgstr "창 높이"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:10
 msgid "Window width"
-msgstr ""
+msgstr "창 너비"

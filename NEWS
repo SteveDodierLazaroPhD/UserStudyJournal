@@ -27,7 +27,7 @@
 * Misc
  - Added support for DELETE_EVENT (fx. deleted Tomboy's notes aren't showed).
  - Cleaned up code (fixed some gtk and gio warnings, remove unused code).
- - Added Italian translation.
+ - Added new translations (ast, it, el, eo, et, eu, ko, sl, zh_TW). 
 
 
 2010-09-18: GNOME Activity Journal 0.5.0.1 "Bazaar"

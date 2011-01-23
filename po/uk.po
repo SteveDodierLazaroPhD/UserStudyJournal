@@ -7,339 +7,355 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-activity-journal\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-08-29 00:28+0200\n"
-"PO-Revision-Date: 2010-05-28 22:43+0000\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-09-18 21:43+0200\n"
+"PO-Revision-Date: 2010-12-18 19:47+0000\n"
+"Last-Translator: brabadu <brabadu@gmail.com>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2010-09-17 05:42+0000\n"
+"X-Launchpad-Export-Date: 2010-12-19 04:59+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../gnome-activity-journal:83
 msgid "print additional debugging information"
-msgstr ""
+msgstr "Вивести додаткову інформацію вдлагодження"
 
 #: ../gnome-activity-journal:90
 msgid "ERROR"
-msgstr ""
+msgstr "ПОМИЛКА"
 
 #: ../gnome-activity-journal:90
 msgid "Unable to connect to Zeitgeist:"
-msgstr ""
+msgstr "Не вдалось підключитись до Zeitgeist:"
 
-#: ../src/activity_widgets.py:150 ../src/common.py:170
-msgid "Morning"
-msgstr ""
-
-#: ../src/activity_widgets.py:150 ../src/common.py:170
-msgid "Afternoon"
-msgstr ""
-
-#: ../src/activity_widgets.py:150 ../src/common.py:170
-msgid "Evening"
-msgstr ""
-
-#: ../src/activity_widgets.py:472 ../src/supporting_widgets.py:732
-msgid "Remove Pin"
-msgstr ""
-
-#: ../src/activity_widgets.py:1228
-msgid "Pinned Items"
-msgstr ""
-
-#: ../src/content_objects.py:558 ../src/content_objects.py:560
+#: ../src/content_objects.py:563 ../src/content_objects.py:565
 msgid "{source._desc_sing} with {event.subjects[0].text}"
-msgstr ""
+msgstr "{source._desc_sing} з {event.subjects[0].text}"
 
-#: ../src/content_objects.py:559
+#: ../src/content_objects.py:564
 msgid ""
 "{source._desc_sing} with {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 msgstr ""
+"{source._desc_sing} з {event.subjects[0].text}\n"
+"{event.subjects[0].uri}"
 
-#: ../src/content_objects.py:570
+#: ../src/content_objects.py:575
 msgid "Available"
-msgstr ""
+msgstr "Наявне"
 
-#: ../src/content_objects.py:571
+#: ../src/content_objects.py:576
 msgid "Offline"
-msgstr ""
+msgstr "Не в мережі"
 
-#: ../src/content_objects.py:572
+#: ../src/content_objects.py:577
 msgid "Away"
-msgstr ""
+msgstr "Відсутній"
 
-#: ../src/content_objects.py:573
+#: ../src/content_objects.py:578
 msgid "Busy"
-msgstr ""
+msgstr "Зайнятий"
 
-#: ../src/content_objects.py:605 ../src/content_objects.py:610
-#: ../src/content_objects.py:615
+#: ../src/content_objects.py:610 ../src/content_objects.py:615
+#: ../src/content_objects.py:620
 msgid "with"
-msgstr ""
+msgstr "з"
 
-#: ../src/content_objects.py:654
+#: ../src/content_objects.py:659
 msgid "Time Tracker"
-msgstr ""
+msgstr "Слідкування за часом"
 
-#: ../src/content_objects.py:675 ../src/content_objects.py:677
+#: ../src/content_objects.py:680 ../src/content_objects.py:682
 msgid "{source._desc_sing} from {event.subjects[0].text}"
-msgstr ""
+msgstr "{source._desc_sing} від {event.subjects[0].text}"
 
-#: ../src/content_objects.py:676
+#: ../src/content_objects.py:681
 msgid ""
 "{source._desc_sing} from {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 msgstr ""
+"{source._desc_sing} від {event.subjects[0].text}\n"
+"{event.subjects[0].uri}"
 
-#: ../src/content_objects.py:680
+#: ../src/content_objects.py:685
 #, python-format
 msgid " (%s Attachments)"
-msgstr ""
+msgstr " (%s Додатків)"
 
-#: ../src/content_objects.py:704
+#: ../src/content_objects.py:709
 msgid "{event.subjects[0].text}"
-msgstr ""
+msgstr "{event.subjects[0].text}"
 
-#: ../src/content_objects.py:705 ../src/content_objects.py:706
+#: ../src/content_objects.py:710 ../src/content_objects.py:711
 msgid ""
 "Note\n"
 "{event.subjects[0].text}"
 msgstr ""
-
-#: ../src/common.py:143
-msgid "Video"
-msgstr ""
-
-#: ../src/common.py:144
-msgid "Music"
-msgstr ""
-
-#: ../src/common.py:145
-msgid "Document"
-msgstr ""
-
-#: ../src/common.py:146
-msgid "Image"
-msgstr ""
-
-#: ../src/common.py:147
-msgid "Source Code"
-msgstr ""
-
-#: ../src/common.py:148
-msgid "Unknown"
-msgstr ""
-
-#: ../src/common.py:149
-msgid "IM Message"
-msgstr ""
-
-#: ../src/common.py:150 ../src/config.py:247
-msgid "Email"
-msgstr ""
+"Замітка\n"
+"{event.subjects[0].text}"
 
 #: ../src/supporting_widgets.py:453
 msgid "Type here to search..."
-msgstr ""
+msgstr "Для пошуку друкуйте тут..."
 
 #: ../src/supporting_widgets.py:675
 msgid "Powered by Zeitgeist"
-msgstr ""
+msgstr "Працює на Zeitgeist"
 
-#: ../src/supporting_widgets.py:733 ../src/supporting_widgets.py:1193
+#: ../src/supporting_widgets.py:732 ../src/activity_widgets.py:469
+msgid "Remove Pin"
+msgstr "Видалити позначку"
+
+#: ../src/supporting_widgets.py:733 ../src/supporting_widgets.py:1196
 msgid "Add Pin"
-msgstr ""
+msgstr "Додати позначку"
 
 #: ../src/supporting_widgets.py:734
 msgid "Delete item from Journal"
-msgstr ""
+msgstr "Видалити елемент з журналу"
 
 #: ../src/supporting_widgets.py:735
 msgid "Delete all events with this URI"
-msgstr ""
+msgstr "Видалити всі пов’язані події"
 
 #: ../src/supporting_widgets.py:736
 msgid "More Information"
-msgstr ""
+msgstr "Більше інформації"
 
 #: ../src/supporting_widgets.py:748
 msgid "Send To..."
-msgstr ""
+msgstr "Надіслати до..."
 
-#: ../src/supporting_widgets.py:863
-msgid "Goto Today"
-msgstr ""
+#: ../src/supporting_widgets.py:849
+msgid "Search"
+msgstr "Пошук"
 
-#: ../src/supporting_widgets.py:1105
+#: ../src/supporting_widgets.py:860 ../src/supporting_widgets.py:1348
+msgid "Preferences"
+msgstr "Налаштування"
+
+#: ../src/supporting_widgets.py:865 ../src/supporting_widgets.py:866
+msgid "Go to Today"
+msgstr "Перейти до сьогоднішнього дня"
+
+#: ../src/supporting_widgets.py:1108
 msgid "Used With"
 msgstr ""
 
-#: ../src/supporting_widgets.py:1188
+#: ../src/supporting_widgets.py:1191
 msgid "Launch this subject"
-msgstr ""
+msgstr "Відкрити цей об’єкт"
 
-#: ../src/supporting_widgets.py:1190
+#: ../src/supporting_widgets.py:1193
 msgid "Delete this subject"
-msgstr ""
+msgstr "Видалити цей об’єкт"
 
-#: ../src/supporting_widgets.py:1209
+#: ../src/supporting_widgets.py:1212
 msgid "Tags"
-msgstr ""
+msgstr "Мітки"
 
-#: ../src/supporting_widgets.py:1345
-msgid "Preferences"
-msgstr ""
-
-#: ../src/supporting_widgets.py:1354
+#: ../src/supporting_widgets.py:1357
 msgid "Active Plugins:"
-msgstr ""
+msgstr "Активні розширення:"
 
-#: ../src/supporting_widgets.py:1362
+#: ../src/supporting_widgets.py:1365
 msgid "Plugins"
-msgstr ""
+msgstr "Розширення:"
 
-#. TODO: Move this into Zeitgeist's library, implemented properly
-#: ../src/config.py:240
-msgid "Worked with a Video"
-msgstr ""
+#: ../src/activity_widgets.py:149 ../src/common.py:170
+msgid "Morning"
+msgstr "Ранок"
 
-#: ../src/config.py:240
-msgid "Worked with Videos"
-msgstr ""
+#: ../src/activity_widgets.py:149 ../src/common.py:170
+msgid "Afternoon"
+msgstr "Після обіду"
 
-#: ../src/config.py:241
-msgid "Worked with Audio"
-msgstr ""
+#: ../src/activity_widgets.py:149 ../src/common.py:170
+msgid "Evening"
+msgstr "Вечір"
 
-#: ../src/config.py:242
-msgid "Worked with an Image"
-msgstr ""
-
-#: ../src/config.py:242
-msgid "Worked with Images"
-msgstr ""
-
-#: ../src/config.py:243
-msgid "Edited or Read Document"
-msgstr ""
-
-#: ../src/config.py:243
-msgid "Edited or Read Documents"
-msgstr ""
-
-#: ../src/config.py:244
-msgid "Edited or Read Code"
-msgstr ""
-
-#: ../src/config.py:245
-msgid "Conversation"
-msgstr ""
-
-#: ../src/config.py:245
-msgid "Conversations"
-msgstr ""
-
-#: ../src/config.py:246
-msgid "Visited Website"
-msgstr ""
-
-#: ../src/config.py:246
-msgid "Visited Websites"
-msgstr ""
-
-#: ../src/config.py:247
-msgid "Emails"
-msgstr ""
-
-#: ../src/config.py:248
-msgid "Other Activity"
-msgstr ""
-
-#: ../src/config.py:248
-msgid "Other Activities"
-msgstr ""
-
-#: ../src/config.py:249
-msgid "Edited or Read Note"
-msgstr ""
-
-#: ../src/config.py:249
-msgid "Edited or Read Notes"
-msgstr ""
-
-#: ../src/main.py:125
-msgid "Switch to MultiView"
-msgstr ""
-
-#: ../src/main.py:126
-msgid "Switch to ThumbView"
-msgstr ""
-
-#: ../src/main.py:127
-msgid "Switch to TimelineView"
-msgstr ""
-
-#: ../src/main.py:295
-msgid "Today"
-msgstr ""
-
-#: ../src/main.py:298
-msgid "Yesterday"
-msgstr ""
-
-#: ../src/main.py:309
-#, python-format
-msgid "%s to %s"
-msgstr ""
-
-#: ../src/main.py:309 ../extra/gnome-activity-journal.desktop.in.h:1
-msgid "Activity Journal"
-msgstr ""
+#: ../src/activity_widgets.py:1225
+msgid "Pinned Items"
+msgstr "Позначені елементи"
 
 #: ../src/histogram.py:438
 msgid "item"
 msgid_plural "items"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "елемент"
+msgstr[1] "елемента"
+msgstr[2] "елементів"
+
+#: ../src/main.py:125
+msgid "Switch to MultiView"
+msgstr "Розширений перегляд"
+
+#: ../src/main.py:126
+msgid "Switch to ThumbView"
+msgstr "Перегляд мініатюр"
+
+#: ../src/main.py:127
+msgid "Switch to TimelineView"
+msgstr "Перегляд на шкалі часу"
+
+#: ../src/main.py:295
+msgid "Today"
+msgstr "Сьогодні"
+
+#: ../src/main.py:298
+msgid "Yesterday"
+msgstr "Вчора"
+
+#: ../src/main.py:309
+#, python-format
+msgid "%s to %s"
+msgstr "%s до %s"
+
+#: ../src/main.py:309 ../extra/gnome-activity-journal.desktop.in.h:1
+msgid "Activity Journal"
+msgstr "Журнал активності"
+
+#. TODO: Move this into Zeitgeist's library, implemented properly
+#: ../src/config.py:240
+msgid "Worked with a Video"
+msgstr "Працював(ла) з відео"
+
+#: ../src/config.py:240
+msgid "Worked with Videos"
+msgstr "Робота з відео"
+
+#: ../src/config.py:241
+msgid "Worked with Audio"
+msgstr "Робота з аудіо"
+
+#: ../src/config.py:242
+msgid "Worked with an Image"
+msgstr "Робота з зображенням"
+
+#: ../src/config.py:242
+msgid "Worked with Images"
+msgstr "Робота з зображеннями"
+
+#: ../src/config.py:243
+msgid "Edited or Read Document"
+msgstr "Редаговані чи прочитані документи"
+
+#: ../src/config.py:243
+msgid "Edited or Read Documents"
+msgstr "Редаговані чи прочитані документи"
+
+#: ../src/config.py:244
+msgid "Edited or Read Code"
+msgstr "Робота з кодом"
+
+#: ../src/config.py:245
+msgid "Conversation"
+msgstr "Розмова"
+
+#: ../src/config.py:245
+msgid "Conversations"
+msgstr "Розмови"
+
+#: ../src/config.py:246
+msgid "Visited Website"
+msgstr "Переглядали сайт"
+
+#: ../src/config.py:246
+msgid "Visited Websites"
+msgstr "Переглянуті сайти"
+
+#: ../src/config.py:247 ../src/common.py:150
+msgid "Email"
+msgstr "Email"
+
+#: ../src/config.py:247
+msgid "Emails"
+msgstr "Електронна пошта"
+
+#: ../src/config.py:248
+msgid "Other Activity"
+msgstr "Інша активінсть"
+
+#: ../src/config.py:248
+msgid "Other Activities"
+msgstr "Інша активність"
+
+#: ../src/config.py:249
+msgid "Edited or Read Note"
+msgstr "Редагування чи читання замітки"
+
+#: ../src/config.py:249
+msgid "Edited or Read Notes"
+msgstr "Редагування чи читання заміток"
+
+#: ../src/common.py:143
+msgid "Video"
+msgstr "Відео"
+
+#: ../src/common.py:144
+msgid "Music"
+msgstr "Музика"
+
+#: ../src/common.py:145
+msgid "Document"
+msgstr "Документ"
+
+#: ../src/common.py:146
+msgid "Image"
+msgstr "Зображення"
+
+#: ../src/common.py:147
+msgid "Source Code"
+msgstr "Програмний код"
+
+#: ../src/common.py:148
+msgid "Unknown"
+msgstr "Невідомо"
+
+#: ../src/common.py:149
+msgid "IM Message"
+msgstr "Повідомлення чату"
 
 #: ../extra/gnome-activity-journal.desktop.in.h:2
 msgid ""
 "Browse a chronological log of your activities and easily find files, "
 "contacts, etc."
 msgstr ""
+"Перегляд хронології Ваших дій та легкий пошук файлів, контактів та ін."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:1
 msgid "Accessibility"
-msgstr ""
+msgstr "Доступність"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:2
 msgid "Allow thumbnails as icons"
-msgstr ""
+msgstr "дозволити мініатюри у вигляді іконок"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:3
 msgid "Amount of visible days"
-msgstr ""
+msgstr "Кількість днів перегляду"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:4
 msgid ""
 "Customized height for the main window, in pixels (requires restart). Can't "
 "be bigger than the desktop's size."
 msgstr ""
+"Власна висота головного вікна в пікселях (потрібен перезапуск). Значення не "
+"може бути більшим, ніж розмір робочого столу."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:5
 msgid ""
 "Customized width for the main window, in pixels (requires restart). Can't be "
 "bigger than the desktop's size."
 msgstr ""
+"Власна висота головного вікна в пікселях (потрібен перезапуск). Значення не "
+"може бути більшим, ніж розмір робочого столу."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:6
 msgid "The amount of days to show at once."
-msgstr ""
+msgstr "Кількість днів, показаних одночасно"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:7
 msgid ""
@@ -354,8 +370,8 @@ msgstr ""
 
 #: ../extra/gnome-activity-journal.schemas.in.h:9
 msgid "Window height"
-msgstr ""
+msgstr "Висота вікна"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:10
 msgid "Window width"
-msgstr ""
+msgstr "Ширина вікна"

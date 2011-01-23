@@ -7,16 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-activity-journal\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-08-29 00:28+0200\n"
-"PO-Revision-Date: 2010-08-12 06:42+0000\n"
+"POT-Creation-Date: 2010-09-18 21:43+0200\n"
+"PO-Revision-Date: 2011-01-19 19:25+0000\n"
 "Last-Translator: Daniel Nylander <yeager@ubuntu.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2010-09-17 05:42+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
+"X-Launchpad-Export-Date: 2011-01-20 05:17+0000\n"
+"X-Generator: Launchpad (build 12177)\n"
 
 #: ../gnome-activity-journal:83
 msgid "print additional debugging information"
@@ -30,31 +30,11 @@ msgstr "FEL"
 msgid "Unable to connect to Zeitgeist:"
 msgstr "Kunde inte ansluta till Zeitgeist:"
 
-#: ../src/activity_widgets.py:150 ../src/common.py:170
-msgid "Morning"
-msgstr "Morgon"
-
-#: ../src/activity_widgets.py:150 ../src/common.py:170
-msgid "Afternoon"
-msgstr "Eftermiddag"
-
-#: ../src/activity_widgets.py:150 ../src/common.py:170
-msgid "Evening"
-msgstr "Kväll"
-
-#: ../src/activity_widgets.py:472 ../src/supporting_widgets.py:732
-msgid "Remove Pin"
-msgstr "Ta bort nål"
-
-#: ../src/activity_widgets.py:1228
-msgid "Pinned Items"
-msgstr ""
-
-#: ../src/content_objects.py:558 ../src/content_objects.py:560
+#: ../src/content_objects.py:563 ../src/content_objects.py:565
 msgid "{source._desc_sing} with {event.subjects[0].text}"
 msgstr "{source._desc_sing} med {event.subjects[0].text}"
 
-#: ../src/content_objects.py:559
+#: ../src/content_objects.py:564
 msgid ""
 "{source._desc_sing} with {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
@@ -62,87 +42,59 @@ msgstr ""
 "{source._desc_sing} med {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 
-#: ../src/content_objects.py:570
+#: ../src/content_objects.py:575
 msgid "Available"
-msgstr ""
+msgstr "Tillgänglig"
 
-#: ../src/content_objects.py:571
+#: ../src/content_objects.py:576
 msgid "Offline"
-msgstr ""
+msgstr "Frånkopplad"
 
-#: ../src/content_objects.py:572
+#: ../src/content_objects.py:577
 msgid "Away"
-msgstr ""
+msgstr "Frånvarande"
 
-#: ../src/content_objects.py:573
+#: ../src/content_objects.py:578
 msgid "Busy"
-msgstr ""
+msgstr "Upptagen"
 
-#: ../src/content_objects.py:605 ../src/content_objects.py:610
-#: ../src/content_objects.py:615
+#: ../src/content_objects.py:610 ../src/content_objects.py:615
+#: ../src/content_objects.py:620
 msgid "with"
 msgstr "med"
 
-#: ../src/content_objects.py:654
+#: ../src/content_objects.py:659
 msgid "Time Tracker"
-msgstr ""
+msgstr "Tidmätning"
 
-#: ../src/content_objects.py:675 ../src/content_objects.py:677
+#: ../src/content_objects.py:680 ../src/content_objects.py:682
 msgid "{source._desc_sing} from {event.subjects[0].text}"
-msgstr ""
+msgstr "{source._desc_sing} från {event.subjects[0].text}"
 
-#: ../src/content_objects.py:676
+#: ../src/content_objects.py:681
 msgid ""
 "{source._desc_sing} from {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 msgstr ""
+"{source._desc_sing} från {event.subjects[0].text}\n"
+"{event.subjects[0].uri}"
 
-#: ../src/content_objects.py:680
+#: ../src/content_objects.py:685
 #, python-format
 msgid " (%s Attachments)"
-msgstr ""
+msgstr " (%s bilagor)"
 
-#: ../src/content_objects.py:704
+#: ../src/content_objects.py:709
 msgid "{event.subjects[0].text}"
-msgstr ""
+msgstr "{event.subjects[0].text}"
 
-#: ../src/content_objects.py:705 ../src/content_objects.py:706
+#: ../src/content_objects.py:710 ../src/content_objects.py:711
 msgid ""
 "Note\n"
 "{event.subjects[0].text}"
 msgstr ""
-
-#: ../src/common.py:143
-msgid "Video"
-msgstr "Video"
-
-#: ../src/common.py:144
-msgid "Music"
-msgstr "Musik"
-
-#: ../src/common.py:145
-msgid "Document"
-msgstr "Dokument"
-
-#: ../src/common.py:146
-msgid "Image"
-msgstr "Bild"
-
-#: ../src/common.py:147
-msgid "Source Code"
-msgstr "Källkod"
-
-#: ../src/common.py:148
-msgid "Unknown"
-msgstr "Okänd"
-
-#: ../src/common.py:149
-msgid "IM Message"
-msgstr "Snabbmeddelande"
-
-#: ../src/common.py:150 ../src/config.py:247
-msgid "Email"
-msgstr "E-post"
+"Observera\n"
+"{event.subjects[0].text}"
 
 #: ../src/supporting_widgets.py:453
 msgid "Type here to search..."
@@ -152,7 +104,11 @@ msgstr "Skriv här för att söka..."
 msgid "Powered by Zeitgeist"
 msgstr "Drivs av Zeitgeist"
 
-#: ../src/supporting_widgets.py:733 ../src/supporting_widgets.py:1193
+#: ../src/supporting_widgets.py:732 ../src/activity_widgets.py:469
+msgid "Remove Pin"
+msgstr "Ta bort nål"
+
+#: ../src/supporting_widgets.py:733 ../src/supporting_widgets.py:1196
 msgid "Add Pin"
 msgstr ""
 
@@ -172,37 +128,92 @@ msgstr "Mer information"
 msgid "Send To..."
 msgstr "Skicka till..."
 
-#: ../src/supporting_widgets.py:863
-msgid "Goto Today"
-msgstr ""
+#: ../src/supporting_widgets.py:849
+msgid "Search"
+msgstr "Sök"
 
-#: ../src/supporting_widgets.py:1105
+#: ../src/supporting_widgets.py:860 ../src/supporting_widgets.py:1348
+msgid "Preferences"
+msgstr "Inställningar"
+
+#: ../src/supporting_widgets.py:865 ../src/supporting_widgets.py:866
+msgid "Go to Today"
+msgstr "Gå till idag"
+
+#: ../src/supporting_widgets.py:1108
 msgid "Used With"
-msgstr ""
+msgstr "Används med"
 
-#: ../src/supporting_widgets.py:1188
+#: ../src/supporting_widgets.py:1191
 msgid "Launch this subject"
 msgstr ""
 
-#: ../src/supporting_widgets.py:1190
+#: ../src/supporting_widgets.py:1193
 msgid "Delete this subject"
 msgstr ""
 
-#: ../src/supporting_widgets.py:1209
+#: ../src/supporting_widgets.py:1212
 msgid "Tags"
-msgstr ""
+msgstr "Taggar"
 
-#: ../src/supporting_widgets.py:1345
-msgid "Preferences"
-msgstr ""
-
-#: ../src/supporting_widgets.py:1354
+#: ../src/supporting_widgets.py:1357
 msgid "Active Plugins:"
+msgstr "Aktiva insticksmoduler:"
+
+#: ../src/supporting_widgets.py:1365
+msgid "Plugins"
+msgstr "Insticksmoduler"
+
+#: ../src/activity_widgets.py:149 ../src/common.py:170
+msgid "Morning"
+msgstr "Morgon"
+
+#: ../src/activity_widgets.py:149 ../src/common.py:170
+msgid "Afternoon"
+msgstr "Eftermiddag"
+
+#: ../src/activity_widgets.py:149 ../src/common.py:170
+msgid "Evening"
+msgstr "Kväll"
+
+#: ../src/activity_widgets.py:1225
+msgid "Pinned Items"
 msgstr ""
 
-#: ../src/supporting_widgets.py:1362
-msgid "Plugins"
-msgstr ""
+#: ../src/histogram.py:438
+msgid "item"
+msgid_plural "items"
+msgstr[0] "objekt"
+msgstr[1] "objekt"
+
+#: ../src/main.py:125
+msgid "Switch to MultiView"
+msgstr "Växla till multivy"
+
+#: ../src/main.py:126
+msgid "Switch to ThumbView"
+msgstr "Växla till miniatyrvy"
+
+#: ../src/main.py:127
+msgid "Switch to TimelineView"
+msgstr "Växla till tidslinjevy"
+
+#: ../src/main.py:295
+msgid "Today"
+msgstr "Idag"
+
+#: ../src/main.py:298
+msgid "Yesterday"
+msgstr "Igår"
+
+#: ../src/main.py:309
+#, python-format
+msgid "%s to %s"
+msgstr "%s till %s"
+
+#: ../src/main.py:309 ../extra/gnome-activity-journal.desktop.in.h:1
+msgid "Activity Journal"
+msgstr "Aktivitetsjournal"
 
 #. TODO: Move this into Zeitgeist's library, implemented properly
 #: ../src/config.py:240
@@ -247,15 +258,19 @@ msgstr "Konversationer"
 
 #: ../src/config.py:246
 msgid "Visited Website"
-msgstr ""
+msgstr "Besökt webbplats"
 
 #: ../src/config.py:246
 msgid "Visited Websites"
-msgstr ""
+msgstr "Besökta webbplatser"
+
+#: ../src/config.py:247 ../src/common.py:150
+msgid "Email"
+msgstr "E-post"
 
 #: ../src/config.py:247
 msgid "Emails"
-msgstr ""
+msgstr "E-post"
 
 #: ../src/config.py:248
 msgid "Other Activity"
@@ -273,40 +288,33 @@ msgstr ""
 msgid "Edited or Read Notes"
 msgstr ""
 
-#: ../src/main.py:125
-msgid "Switch to MultiView"
-msgstr ""
+#: ../src/common.py:143
+msgid "Video"
+msgstr "Video"
 
-#: ../src/main.py:126
-msgid "Switch to ThumbView"
-msgstr ""
+#: ../src/common.py:144
+msgid "Music"
+msgstr "Musik"
 
-#: ../src/main.py:127
-msgid "Switch to TimelineView"
-msgstr ""
+#: ../src/common.py:145
+msgid "Document"
+msgstr "Dokument"
 
-#: ../src/main.py:295
-msgid "Today"
-msgstr "Idag"
+#: ../src/common.py:146
+msgid "Image"
+msgstr "Bild"
 
-#: ../src/main.py:298
-msgid "Yesterday"
-msgstr "Igår"
+#: ../src/common.py:147
+msgid "Source Code"
+msgstr "Källkod"
 
-#: ../src/main.py:309
-#, python-format
-msgid "%s to %s"
-msgstr "%s till %s"
+#: ../src/common.py:148
+msgid "Unknown"
+msgstr "Okänd"
 
-#: ../src/main.py:309 ../extra/gnome-activity-journal.desktop.in.h:1
-msgid "Activity Journal"
-msgstr "Aktivitetsjournal"
-
-#: ../src/histogram.py:438
-msgid "item"
-msgid_plural "items"
-msgstr[0] "objekt"
-msgstr[1] "objekt"
+#: ../src/common.py:149
+msgid "IM Message"
+msgstr "Snabbmeddelande"
 
 #: ../extra/gnome-activity-journal.desktop.in.h:2
 msgid ""

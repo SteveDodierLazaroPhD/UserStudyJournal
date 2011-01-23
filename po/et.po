@@ -1,4 +1,4 @@
-# Croatian translation for gnome-activity-journal
+# Estonian translation for gnome-activity-journal
 # Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
 # This file is distributed under the same license as the gnome-activity-journal package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
@@ -8,28 +8,27 @@ msgstr ""
 "Project-Id-Version: gnome-activity-journal\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-09-18 21:43+0200\n"
-"PO-Revision-Date: 2010-12-15 17:24+0000\n"
-"Last-Translator: stefina <trebelnik@gmail.com>\n"
-"Language-Team: Croatian <hr@li.org>\n"
+"PO-Revision-Date: 2010-12-17 21:22+0000\n"
+"Last-Translator: olavi tohver <Unknown>\n"
+"Language-Team: Estonian <et@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2010-12-16 05:00+0000\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Launchpad-Export-Date: 2010-12-18 05:18+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../gnome-activity-journal:83
 msgid "print additional debugging information"
-msgstr ""
+msgstr "Kuva rohkem silumisteavet"
 
 #: ../gnome-activity-journal:90
 msgid "ERROR"
-msgstr "POGREŠKA"
+msgstr "TÕRGE"
 
 #: ../gnome-activity-journal:90
 msgid "Unable to connect to Zeitgeist:"
-msgstr ""
+msgstr "Zeitgeist-iga ühendamine ebaõnnestus"
 
 #: ../src/content_objects.py:563 ../src/content_objects.py:565
 msgid "{source._desc_sing} with {event.subjects[0].text}"
@@ -43,28 +42,28 @@ msgstr ""
 
 #: ../src/content_objects.py:575
 msgid "Available"
-msgstr "Dostupno"
+msgstr "Saadaolevad"
 
 #: ../src/content_objects.py:576
 msgid "Offline"
-msgstr ""
+msgstr "Ühenduseta"
 
 #: ../src/content_objects.py:577
 msgid "Away"
-msgstr "Odsutan"
+msgstr "Eemal"
 
 #: ../src/content_objects.py:578
 msgid "Busy"
-msgstr "Zauzet"
+msgstr "Hõivatud"
 
 #: ../src/content_objects.py:610 ../src/content_objects.py:615
 #: ../src/content_objects.py:620
 msgid "with"
-msgstr "sa"
+msgstr "järgnevaga"
 
 #: ../src/content_objects.py:659
 msgid "Time Tracker"
-msgstr ""
+msgstr "Ajatelg"
 
 #: ../src/content_objects.py:680 ../src/content_objects.py:682
 msgid "{source._desc_sing} from {event.subjects[0].text}"
@@ -90,10 +89,12 @@ msgid ""
 "Note\n"
 "{event.subjects[0].text}"
 msgstr ""
+"Märge\n"
+"{event.subjects[0].text}"
 
 #: ../src/supporting_widgets.py:453
 msgid "Type here to search..."
-msgstr ""
+msgstr "Otsimiseks trüki siia..."
 
 #: ../src/supporting_widgets.py:675
 msgid "Powered by Zeitgeist"
@@ -117,35 +118,35 @@ msgstr ""
 
 #: ../src/supporting_widgets.py:736
 msgid "More Information"
-msgstr ""
+msgstr "Rohkem infot"
 
 #: ../src/supporting_widgets.py:748
 msgid "Send To..."
-msgstr ""
+msgstr "Saada..."
 
 #: ../src/supporting_widgets.py:849
 msgid "Search"
-msgstr ""
+msgstr "Otsi"
 
 #: ../src/supporting_widgets.py:860 ../src/supporting_widgets.py:1348
 msgid "Preferences"
-msgstr ""
+msgstr "Eelistused"
 
 #: ../src/supporting_widgets.py:865 ../src/supporting_widgets.py:866
 msgid "Go to Today"
-msgstr ""
+msgstr "Mine tänasele päevale"
 
 #: ../src/supporting_widgets.py:1108
 msgid "Used With"
-msgstr ""
+msgstr "Kasuta koos"
 
 #: ../src/supporting_widgets.py:1191
 msgid "Launch this subject"
-msgstr ""
+msgstr "Käivita see objekt"
 
 #: ../src/supporting_widgets.py:1193
 msgid "Delete this subject"
-msgstr ""
+msgstr "Kustuta see objekt"
 
 #: ../src/supporting_widgets.py:1212
 msgid "Tags"
@@ -153,23 +154,23 @@ msgstr ""
 
 #: ../src/supporting_widgets.py:1357
 msgid "Active Plugins:"
-msgstr ""
+msgstr "Aktiivsed pluginad:"
 
 #: ../src/supporting_widgets.py:1365
 msgid "Plugins"
-msgstr ""
+msgstr "Pluginad"
 
 #: ../src/activity_widgets.py:149 ../src/common.py:170
 msgid "Morning"
-msgstr ""
+msgstr "Hommikul"
 
 #: ../src/activity_widgets.py:149 ../src/common.py:170
 msgid "Afternoon"
-msgstr ""
+msgstr "Pärastlõunal"
 
 #: ../src/activity_widgets.py:149 ../src/common.py:170
 msgid "Evening"
-msgstr ""
+msgstr "Õhtul"
 
 #: ../src/activity_widgets.py:1225
 msgid "Pinned Items"
@@ -178,8 +179,8 @@ msgstr ""
 #: ../src/histogram.py:438
 msgid "item"
 msgid_plural "items"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "kirje"
+msgstr[1] "kirjed"
 
 #: ../src/main.py:125
 msgid "Switch to MultiView"
@@ -195,16 +196,16 @@ msgstr ""
 
 #: ../src/main.py:295
 msgid "Today"
-msgstr ""
+msgstr "Täna"
 
 #: ../src/main.py:298
 msgid "Yesterday"
-msgstr ""
+msgstr "Eile"
 
 #: ../src/main.py:309
 #, python-format
 msgid "%s to %s"
-msgstr ""
+msgstr "%s kuni %s"
 
 #: ../src/main.py:309 ../extra/gnome-activity-journal.desktop.in.h:1
 msgid "Activity Journal"
@@ -245,11 +246,11 @@ msgstr ""
 
 #: ../src/config.py:245
 msgid "Conversation"
-msgstr ""
+msgstr "Vestlus"
 
 #: ../src/config.py:245
 msgid "Conversations"
-msgstr ""
+msgstr "Vestlused"
 
 #: ../src/config.py:246
 msgid "Visited Website"
@@ -261,11 +262,11 @@ msgstr ""
 
 #: ../src/config.py:247 ../src/common.py:150
 msgid "Email"
-msgstr ""
+msgstr "E-mail"
 
 #: ../src/config.py:247
 msgid "Emails"
-msgstr ""
+msgstr "E-mailid"
 
 #: ../src/config.py:248
 msgid "Other Activity"
@@ -285,31 +286,31 @@ msgstr ""
 
 #: ../src/common.py:143
 msgid "Video"
-msgstr ""
+msgstr "Video"
 
 #: ../src/common.py:144
 msgid "Music"
-msgstr ""
+msgstr "Muusika"
 
 #: ../src/common.py:145
 msgid "Document"
-msgstr ""
+msgstr "Dokumendid"
 
 #: ../src/common.py:146
 msgid "Image"
-msgstr ""
+msgstr "Pildid"
 
 #: ../src/common.py:147
 msgid "Source Code"
-msgstr ""
+msgstr "Lähtekood"
 
 #: ../src/common.py:148
 msgid "Unknown"
-msgstr ""
+msgstr "Tundmatu"
 
 #: ../src/common.py:149
 msgid "IM Message"
-msgstr ""
+msgstr "Välksõnumid"
 
 #: ../extra/gnome-activity-journal.desktop.in.h:2
 msgid ""

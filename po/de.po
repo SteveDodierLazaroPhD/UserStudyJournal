@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-activity-journal\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-08-29 00:28+0200\n"
-"PO-Revision-Date: 2010-09-01 07:59+0000\n"
-"Last-Translator: GNOME Zeitgeist Team <gnome-zeitgeist@lists.launchpad.net>\n"
+"POT-Creation-Date: 2010-09-18 21:43+0200\n"
+"PO-Revision-Date: 2010-12-27 12:33+0000\n"
+"Last-Translator: cmdrhenner <cmdrhenner@gmail.com>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2010-09-17 05:42+0000\n"
+"X-Launchpad-Export-Date: 2010-12-28 05:03+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../gnome-activity-journal:83
@@ -30,31 +30,11 @@ msgstr "FEHLER"
 msgid "Unable to connect to Zeitgeist:"
 msgstr "Keine Verbindung zu Zeitgeist möglich"
 
-#: ../src/activity_widgets.py:150 ../src/common.py:170
-msgid "Morning"
-msgstr "Morgens"
-
-#: ../src/activity_widgets.py:150 ../src/common.py:170
-msgid "Afternoon"
-msgstr "Nachmittags"
-
-#: ../src/activity_widgets.py:150 ../src/common.py:170
-msgid "Evening"
-msgstr "Abends"
-
-#: ../src/activity_widgets.py:472 ../src/supporting_widgets.py:732
-msgid "Remove Pin"
-msgstr "Markierung entfernen"
-
-#: ../src/activity_widgets.py:1228
-msgid "Pinned Items"
-msgstr ""
-
-#: ../src/content_objects.py:558 ../src/content_objects.py:560
+#: ../src/content_objects.py:563 ../src/content_objects.py:565
 msgid "{source._desc_sing} with {event.subjects[0].text}"
 msgstr "{source._desc_sing} mit {event.subjects[0].text}"
 
-#: ../src/content_objects.py:559
+#: ../src/content_objects.py:564
 msgid ""
 "{source._desc_sing} with {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
@@ -62,87 +42,55 @@ msgstr ""
 "{source._desc_sing} mit {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 
-#: ../src/content_objects.py:570
+#: ../src/content_objects.py:575
 msgid "Available"
 msgstr "Verfügbar"
 
-#: ../src/content_objects.py:571
+#: ../src/content_objects.py:576
 msgid "Offline"
 msgstr "Abgemeldet"
 
-#: ../src/content_objects.py:572
+#: ../src/content_objects.py:577
 msgid "Away"
 msgstr "Abwesend"
 
-#: ../src/content_objects.py:573
+#: ../src/content_objects.py:578
 msgid "Busy"
 msgstr "Beschäftigt"
 
-#: ../src/content_objects.py:605 ../src/content_objects.py:610
-#: ../src/content_objects.py:615
+#: ../src/content_objects.py:610 ../src/content_objects.py:615
+#: ../src/content_objects.py:620
 msgid "with"
 msgstr "mit"
 
-#: ../src/content_objects.py:654
+#: ../src/content_objects.py:659
 msgid "Time Tracker"
 msgstr "Zeiterfassung"
 
-#: ../src/content_objects.py:675 ../src/content_objects.py:677
+#: ../src/content_objects.py:680 ../src/content_objects.py:682
 msgid "{source._desc_sing} from {event.subjects[0].text}"
 msgstr ""
 
-#: ../src/content_objects.py:676
+#: ../src/content_objects.py:681
 msgid ""
 "{source._desc_sing} from {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 msgstr ""
 
-#: ../src/content_objects.py:680
+#: ../src/content_objects.py:685
 #, python-format
 msgid " (%s Attachments)"
 msgstr " (%s Anhänge)"
 
-#: ../src/content_objects.py:704
+#: ../src/content_objects.py:709
 msgid "{event.subjects[0].text}"
 msgstr "{event.subjects[0].text}"
 
-#: ../src/content_objects.py:705 ../src/content_objects.py:706
+#: ../src/content_objects.py:710 ../src/content_objects.py:711
 msgid ""
 "Note\n"
 "{event.subjects[0].text}"
-msgstr ""
-
-#: ../src/common.py:143
-msgid "Video"
-msgstr "Video"
-
-#: ../src/common.py:144
-msgid "Music"
-msgstr "Musik"
-
-#: ../src/common.py:145
-msgid "Document"
-msgstr "Dokument"
-
-#: ../src/common.py:146
-msgid "Image"
-msgstr "Bild"
-
-#: ../src/common.py:147
-msgid "Source Code"
-msgstr "Quelltext"
-
-#: ../src/common.py:148
-msgid "Unknown"
-msgstr "Unbekannt"
-
-#: ../src/common.py:149
-msgid "IM Message"
-msgstr "IM Nachricht"
-
-#: ../src/common.py:150 ../src/config.py:247
-msgid "Email"
-msgstr "E-Mail"
+msgstr "Anmerkung"
 
 #: ../src/supporting_widgets.py:453
 msgid "Type here to search..."
@@ -152,9 +100,13 @@ msgstr "Suchbegriff hier eingeben..."
 msgid "Powered by Zeitgeist"
 msgstr "Powered by Zeitgeist"
 
-#: ../src/supporting_widgets.py:733 ../src/supporting_widgets.py:1193
+#: ../src/supporting_widgets.py:732 ../src/activity_widgets.py:469
+msgid "Remove Pin"
+msgstr "Markierung entfernen"
+
+#: ../src/supporting_widgets.py:733 ../src/supporting_widgets.py:1196
 msgid "Add Pin"
-msgstr ""
+msgstr "Markierung hinzufügen"
 
 #: ../src/supporting_widgets.py:734
 msgid "Delete item from Journal"
@@ -172,37 +124,92 @@ msgstr "Weitere Informationen"
 msgid "Send To..."
 msgstr "Senden an …"
 
-#: ../src/supporting_widgets.py:863
-msgid "Goto Today"
+#: ../src/supporting_widgets.py:849
+msgid "Search"
 msgstr ""
 
-#: ../src/supporting_widgets.py:1105
-msgid "Used With"
-msgstr "Benutzt Mit"
-
-#: ../src/supporting_widgets.py:1188
-msgid "Launch this subject"
-msgstr ""
-
-#: ../src/supporting_widgets.py:1190
-msgid "Delete this subject"
-msgstr ""
-
-#: ../src/supporting_widgets.py:1209
-msgid "Tags"
-msgstr "Tags"
-
-#: ../src/supporting_widgets.py:1345
+#: ../src/supporting_widgets.py:860 ../src/supporting_widgets.py:1348
 msgid "Preferences"
 msgstr "Einstellungen"
 
-#: ../src/supporting_widgets.py:1354
-msgid "Active Plugins:"
-msgstr "Aktivierte Plugins"
+#: ../src/supporting_widgets.py:865 ../src/supporting_widgets.py:866
+msgid "Go to Today"
+msgstr "Zum heutigen Tag gehen"
 
-#: ../src/supporting_widgets.py:1362
+#: ../src/supporting_widgets.py:1108
+msgid "Used With"
+msgstr "Benutzt mit"
+
+#: ../src/supporting_widgets.py:1191
+msgid "Launch this subject"
+msgstr "Dieses Element öffnen"
+
+#: ../src/supporting_widgets.py:1193
+msgid "Delete this subject"
+msgstr "Dieses Element löschen"
+
+#: ../src/supporting_widgets.py:1212
+msgid "Tags"
+msgstr "Schlagwörter"
+
+#: ../src/supporting_widgets.py:1357
+msgid "Active Plugins:"
+msgstr "Aktivierte Erweiterungen:"
+
+#: ../src/supporting_widgets.py:1365
 msgid "Plugins"
-msgstr "Plugins"
+msgstr "Erweiterungen"
+
+#: ../src/activity_widgets.py:149 ../src/common.py:170
+msgid "Morning"
+msgstr "Vormittags"
+
+#: ../src/activity_widgets.py:149 ../src/common.py:170
+msgid "Afternoon"
+msgstr "Nachmittags"
+
+#: ../src/activity_widgets.py:149 ../src/common.py:170
+msgid "Evening"
+msgstr "Abends"
+
+#: ../src/activity_widgets.py:1225
+msgid "Pinned Items"
+msgstr "Markierte Elemente"
+
+#: ../src/histogram.py:438
+msgid "item"
+msgid_plural "items"
+msgstr[0] "Element"
+msgstr[1] "Elemente"
+
+#: ../src/main.py:125
+msgid "Switch to MultiView"
+msgstr "Zur Mehrfachansicht wechseln"
+
+#: ../src/main.py:126
+msgid "Switch to ThumbView"
+msgstr "Zur Vorschaubild-Ansicht wechseln"
+
+#: ../src/main.py:127
+msgid "Switch to TimelineView"
+msgstr "Zur Zeitstrahl-Ansicht wechseln"
+
+#: ../src/main.py:295
+msgid "Today"
+msgstr "Heute"
+
+#: ../src/main.py:298
+msgid "Yesterday"
+msgstr "Gestern"
+
+#: ../src/main.py:309
+#, python-format
+msgid "%s to %s"
+msgstr "%s bis %s"
+
+#: ../src/main.py:309 ../extra/gnome-activity-journal.desktop.in.h:1
+msgid "Activity Journal"
+msgstr "Tagebuch über Aktivitäten"
 
 #. TODO: Move this into Zeitgeist's library, implemented properly
 #: ../src/config.py:240
@@ -253,6 +260,10 @@ msgstr "Besuchte Webseite"
 msgid "Visited Websites"
 msgstr "Besuchte Webseiten"
 
+#: ../src/config.py:247 ../src/common.py:150
+msgid "Email"
+msgstr "E-Mail"
+
 #: ../src/config.py:247
 msgid "Emails"
 msgstr "E-Mails"
@@ -267,46 +278,39 @@ msgstr "Weitere Aktivitäten"
 
 #: ../src/config.py:249
 msgid "Edited or Read Note"
-msgstr ""
+msgstr "Notiz bearbeitet oder gelesen"
 
 #: ../src/config.py:249
 msgid "Edited or Read Notes"
-msgstr ""
+msgstr "Notizen bearbeitet oder gelesen"
 
-#: ../src/main.py:125
-msgid "Switch to MultiView"
-msgstr ""
+#: ../src/common.py:143
+msgid "Video"
+msgstr "Video"
 
-#: ../src/main.py:126
-msgid "Switch to ThumbView"
-msgstr ""
+#: ../src/common.py:144
+msgid "Music"
+msgstr "Musik"
 
-#: ../src/main.py:127
-msgid "Switch to TimelineView"
-msgstr ""
+#: ../src/common.py:145
+msgid "Document"
+msgstr "Dokument"
 
-#: ../src/main.py:295
-msgid "Today"
-msgstr "Heute"
+#: ../src/common.py:146
+msgid "Image"
+msgstr "Bild"
 
-#: ../src/main.py:298
-msgid "Yesterday"
-msgstr "Gestern"
+#: ../src/common.py:147
+msgid "Source Code"
+msgstr "Quelltext"
 
-#: ../src/main.py:309
-#, python-format
-msgid "%s to %s"
-msgstr "%s bis %s"
+#: ../src/common.py:148
+msgid "Unknown"
+msgstr "Unbekannt"
 
-#: ../src/main.py:309 ../extra/gnome-activity-journal.desktop.in.h:1
-msgid "Activity Journal"
-msgstr "Tagebuch über Aktivitäten"
-
-#: ../src/histogram.py:438
-msgid "item"
-msgid_plural "items"
-msgstr[0] "Element"
-msgstr[1] "Elemente"
+#: ../src/common.py:149
+msgid "IM Message"
+msgstr "IM Nachricht"
 
 #: ../extra/gnome-activity-journal.desktop.in.h:2
 msgid ""
