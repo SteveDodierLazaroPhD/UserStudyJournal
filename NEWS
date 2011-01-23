@@ -1,3 +1,35 @@
+2011-1-23: GNOME Activity Journal 0.6.0 "Pink Unicorns don't exist"
+-------------------------------------------------------------------
+* General New features
+ - Added drag and drop support to the three views (LP: #553385).
+ - Added drag and drop support to the bookmark/pin area (LP: #365048).
+ - Improved items preview adding information tooltip. (LP: #561863).
+ - Added tooltip for peeking quickly into categories.
+ - Added preview for Audio items.
+ - Added appindicator/Tray icon support.
+ - Added support for Xchat.
+ - Added support for Bazaar version control system.
+ 
+* Eye candy tweaks
+ - Added "welcome screen" showed when the Activity Journal starts and loads the items.
+ - Go to Today button always highlighted.
+ - Path's label clickable in MoreInformation window (LP: #532303).
+ - Usability tweaks to the views toolbar.
+ - Item's categories becomes coloured when containing a searched item.
+ 
+* Bug fixes
+ - Fixed bookmark/pinning feature (LP: #680653).
+ - Fixed support for RECEIVE_EVENT (LP: #667870).
+ - Fixed day's part timerange (LP: #655045).
+ - Fixed videos preview problem.
+ - Fixed visualization bug in TimeLineView.
+ 
+* Misc
+ - Added support for DELETE_EVENT (fx. deleted Tomboy's notes aren't showed).
+ - Cleaned up code (fixed some gtk and gio warnings, remove unused code).
+ - Added Italian translation.
+
+
 2010-09-18: GNOME Activity Journal 0.5.0.1 "Bazaar"
 ---------------------------------------------------
 
