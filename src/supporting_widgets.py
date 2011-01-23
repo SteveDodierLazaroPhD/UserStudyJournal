@@ -1342,8 +1342,7 @@ class InformationContainer(gtk.Window):
             self.relatedpane.set_model_from_list(events)
         get_related_events_for_uri(obj.uri, _callback)
         self.infopane.set_content_object(obj)
-        text = get_text_or_uri(obj, False)
-        self.set_title(text)
+        self.set_title(_("More Information"))
         self.show()
         self.emit("content-object-set")
 
