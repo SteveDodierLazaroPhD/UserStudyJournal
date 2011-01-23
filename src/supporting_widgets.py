@@ -1146,7 +1146,8 @@ class InformationBox(gtk.VBox):
     def set_content_object(self, obj):
         self.obj = obj
         self.set_displaytype(obj)
-        self.label.set_markup("<span size='10336'>" + obj.text.replace("&", "&amp;") + "</span>")
+        text = get_text_or_uri(obj)
+        self.label.set_markup("<span size='10336'>" + text + "</span>")
         path = obj.uri.replace("&", "&amp;").replace("%20", " ")
         self.is_file = path.startswith("file://")
         if self.is_file:
@@ -1203,7 +1204,8 @@ class _RelatedPane(gtk.TreeView):
         if model:
             obj = model.get_value(iter_, 0)
             if user_data == "text":
-                cell.set_property("text", obj.text.replace("&", "&amp;"))
+                text = get_text_or_uri(obj)
+                cell.set_property("text", text)
             elif user_data == "pixbuf":
                 cell.set_property("pixbuf", obj.icon)
 
@@ -1340,6 +1342,8 @@ class InformationContainer(gtk.Window):
             self.relatedpane.set_model_from_list(events)
         get_related_events_for_uri(obj.uri, _callback)
         self.infopane.set_content_object(obj)
+        text = get_text_or_uri(obj, False)
+        self.set_title(text)
         self.show()
         self.emit("content-object-set")
 

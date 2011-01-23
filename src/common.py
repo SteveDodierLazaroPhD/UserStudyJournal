@@ -39,6 +39,7 @@ import math
 import operator
 import subprocess
 import tempfile
+import urllib
 import zipfile
 
 try:
@@ -178,6 +179,14 @@ def get_file_color(ftype, fmime):
         l = int(math.fabs(hash(fmime))) % 3
         return TANGOCOLORS[min(i+l, len(TANGOCOLORS)-1)]
     return (136/255.0, 138/255.0, 133/255.0)
+    
+def get_text_or_uri(obj, ellipsize=True):
+    text = unicode(obj.text.replace("&", "&amp;"))
+    if text.strip() == "":
+        text = unicode(obj.uri.replace("&", "&amp;"))
+        text = urllib.unquote(text)
+    if len(text) > 50 and ellipsize: text = text[:50] + "..." #ellipsize--it's ugly!
+    return text
 
 ##
 ## Zeitgeist event helper functions
