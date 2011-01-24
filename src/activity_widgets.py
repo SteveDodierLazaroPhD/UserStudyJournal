@@ -23,12 +23,15 @@
 
 import datetime
 import gobject
-import gst
 import gtk
 import math
 import urllib
 import pango
 import threading
+try:
+    import gst
+except ImportError:
+    gst = None
 
 from common import *
 import content_objects
