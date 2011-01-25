@@ -44,7 +44,7 @@ from zeitgeist.datamodel import ResultType, StorageState, TimeRange
 #DND support variables
 TYPE_TARGET_TEXT = 80
 TYPE_TARGET_URI = 81
- 
+
 class Draggable():
 
     def __init__(self, widget):

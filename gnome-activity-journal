@@ -99,6 +99,6 @@ if CLIENT.get_version() < [0, 3, 9, 99]:
 from src.main import PortalWindow
 
 if __name__ == "__main__":
-    portal = PortalWindow()  
+    portal = PortalWindow()
     gtk.gdk.threads_init()
     gtk.main()

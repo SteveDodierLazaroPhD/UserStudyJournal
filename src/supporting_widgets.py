@@ -48,6 +48,11 @@ import content_objects
 from config import BASE_PATH, VERSION, settings, PluginManager, get_icon_path, get_data_path, bookmarker, SUPPORTED_SOURCES
 from store import STORE, get_related_events_for_uri, CLIENT
 
+#dirty hack for having a pointer to the main window
+PORTAL = None
+def set_portal(portal):
+    global PORTAL
+    PORTAL = portal
 
 class DayLabel(gtk.DrawingArea):
 
@@ -957,9 +962,7 @@ class ContextMenu(gtk.Menu):
             if self.infowindow:
                 self.infowindow.destroy()
             self.infowindow = InformationContainer()
-            self.infowindow.set_position(gtk.WIN_POS_CENTER)
             self.infowindow.set_content_object(self.subjects[0])
-            self.infowindow.set_size_request(400,400)
             self.infowindow.show_all()
 
     def do_bookmark(self, menuitem):
@@ -1248,7 +1251,7 @@ class _RelatedPane(gtk.TreeView):
                 obj.launch()
 
 
-class InformationContainer(gtk.Window):
+class InformationContainer(gtk.Dialog):
     """
     . . . . .
     .  URI  .
@@ -1286,6 +1289,9 @@ class InformationContainer(gtk.Window):
 
     def __init__(self):
         super(gtk.Window, self).__init__()
+        self.set_transient_for(PORTAL)
+        self.set_destroy_with_parent(True)
+        self.set_size_request(400, 400)
         self.connect("destroy", self.hide_on_delete)
         box1 = gtk.VBox()
         box2 = gtk.VBox()
@@ -1304,7 +1310,8 @@ class InformationContainer(gtk.Window):
         scrolledwindow.set_size_request(50, 100)
         box2.pack_end(vbox, True, True, 10)
         box1.pack_start(box2, True, True)
-        self.add(box1)
+        area = self.get_content_area()
+        area.add(box1)
         def _launch(w):
             self.obj.launch()
         self.toolbar.open_button.connect("clicked", _launch)
@@ -1405,6 +1412,8 @@ class PreferencesDialog(gtk.Dialog):
 
     def __init__(self):
         super(PreferencesDialog, self).__init__()
+        self.set_transient_for(PORTAL)
+        self.set_destroy_with_parent(True)
         self.set_has_separator(False)
         self.set_title(_("Preferences"))
         self.set_size_request(400, 500)

@@ -5,6 +5,7 @@
 # Copyright © 2009-2010 Seif Lotfy <seif@lotfy.com>
 # Copyright © 2010 Siegfried Gevatter <siegfried@gevatter.com>
 # Copyright © 2010 Randal Barlow <email.tehk@gmail.com>
+# Copyright © 2011 Stefano Candori <stefano.candori@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -28,7 +29,7 @@ import datetime
 import os
 
 from activity_widgets import MultiViewContainer, TimelineViewContainer, ThumbViewContainer
-from supporting_widgets import DayButton, DayLabel, Toolbar, ContextMenu, AboutDialog, SearchBox, PreferencesDialog
+from supporting_widgets import DayButton, DayLabel, Toolbar, SearchBox, PreferencesDialog, set_portal
 from histogram import HistogramWidget
 from store import Store, tdelta, STORE, CLIENT
 from config import settings, get_icon_path, get_data_path, PluginManager
@@ -118,6 +119,9 @@ class PortalWindow(gtk.Window):
         super(PortalWindow, self).__init__()
         # Important
         self._request_size()
+        #dirty hack for having a pointer to the mainwindow
+        #used in the supporting widgets
+        set_portal(self) 
         self.store = STORE
         self.day_iter = self.store.today
         self.pages_loaded = 0
