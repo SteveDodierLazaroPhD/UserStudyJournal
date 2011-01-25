@@ -1106,11 +1106,14 @@ class InformationBox(gtk.VBox):
         A display based on GtkImage to display a uri's thumb or icon using GioFile
         """
         def set_content_object(self, obj):
-            if obj:
+            if obj:             
                 if isinstance(obj, GioFile) and obj.has_preview():
                     pixbuf = obj.get_thumbnail(size=SIZE_NORMAL, border=3)
+                    if pixbuf is None: pixbuf = obj.get_icon(size=64)
                 else:
                     pixbuf = obj.get_icon(size=64)
+                    
+                if pixbuf is None: pixbuf = obj.get_actor_pixbuf(size=64)
                 self.set_from_pixbuf(pixbuf)
 
     def __init__(self):
