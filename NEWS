@@ -26,6 +26,7 @@
  - Fixed title of MoreInformation window(LP: #706544).
  - Fixed video previews problem.
  - Fixed visualization bug in TimeLineView.
+ - Fixed internationalization and localization problems.
  
 * Misc
  - Added support for DELETE_EVENT (fx. deleted Tomboy's notes aren't showed).

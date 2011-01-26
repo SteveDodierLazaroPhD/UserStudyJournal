@@ -80,10 +80,10 @@ class DayLabel(gtk.DrawingArea):
     @property
     def weekday_string(self):
         if self.date == datetime.date.today():
-            return "Today"
+            return _("Today")
         timedelta = datetime.date.today() -self.date
         if timedelta.days == 1:
-            return "Yesterday"
+            return _("Yesterday")
         return self.date.strftime("%A")
 
     @property
