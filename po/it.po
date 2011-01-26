@@ -113,7 +113,7 @@ msgstr "Configurazione"
 
 #: ../src/main.py:139
 msgid "<span size=\"larger\"><b>Loading Journal...</b></span>"
-msgstr "<span size=\"larger\"><b>Caricando...</b></span>"
+msgstr "<span size=\"larger\"><b>Caricando il Giornale delle attività...</b></span>"
 
 #: ../src/main.py:300
 msgid "Today"
@@ -235,7 +235,7 @@ msgstr "Lavorato con un'immagine"
 
 #: ../src/config.py:239
 msgid "Worked with Images"
-msgstr "Lavorato con delle immagini"
+msgstr "Lavorato con immagini"
 
 #: ../src/config.py:240
 msgid "Edited or Read Document"

@@ -75,6 +75,8 @@ from src import config
 # override the location we set (ie., "build/mo").
 from zeitgeist import datamodel
 
+gettext.bindtextdomain('gnome-activity-journal', config.GETTEXT_PATH)
+gettext.textdomain('gnome-activity-journal')
 gettext.install('gnome-activity-journal', config.GETTEXT_PATH, unicode=True)
 
 parser = optparse.OptionParser(version=config.VERSION)

@@ -49,7 +49,7 @@ INTERPRETATION_VCS = "aj://vcs" #version control system
 BASE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 DATA_PATH = os.path.join(BASE_PATH, "data")
 VERSION = "0.6.0"
-GETTEXT_PATH = None
+GETTEXT_PATH = os.path.join(BASE_PATH, "../locale")
 
 USER_DATA_PATH = BaseDirectory.save_data_path("gnome-activity-journal")
 
@@ -146,7 +146,8 @@ class Source(object):
         self._desc_pl = desc_pl
 
     def group_label(self, num):
-        return gettext.ngettext(self._desc_sing, self._desc_pl, num)
+        if num == 1: return gettext.gettext(self._desc_sing)
+        else: return gettext.gettext(self._desc_pl)
 
 
 class PluginManager(object):
