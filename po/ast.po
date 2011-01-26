@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-activity-journal\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-09-18 21:43+0200\n"
+"POT-Creation-Date: 2011-01-23 14:06+0100\n"
 "PO-Revision-Date: 2010-10-31 00:57+0000\n"
 "Last-Translator: Xuacu Saturio <xuacusk8@gmail.com>\n"
 "Language-Team: Asturian <ast@li.org>\n"
@@ -15,8 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2010-11-01 05:20+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
+"X-Launchpad-Export-Date: 2011-01-24 05:09+0000\n"
+"X-Generator: Launchpad (build 12177)\n"
 
 #: ../gnome-activity-journal:83
 msgid "print additional debugging information"
@@ -30,11 +30,113 @@ msgstr "ERROR"
 msgid "Unable to connect to Zeitgeist:"
 msgstr "Nun se pudo coneutar con Zeitgeist:"
 
-#: ../src/content_objects.py:563 ../src/content_objects.py:565
+#: ../src/supporting_widgets.py:181
+msgid "Go to Today"
+msgstr "Dir a güei"
+
+#: ../src/supporting_widgets.py:183
+msgid "Go to the previous day "
+msgstr ""
+
+#: ../src/supporting_widgets.py:183
+msgid "Go to the next day"
+msgstr ""
+
+#: ../src/supporting_widgets.py:515
+msgid "Type here to search..."
+msgstr "Escribe equí pa guetar..."
+
+#: ../src/supporting_widgets.py:701
+msgid "<b>Playing...</b>"
+msgstr ""
+
+#: ../src/supporting_widgets.py:815 ../src/supporting_widgets.py:825
+#: ../src/supporting_widgets.py:1406
+msgid "Preferences"
+msgstr "Preferencies"
+
+#: ../src/supporting_widgets.py:824
+msgid "About"
+msgstr ""
+
+#: ../src/supporting_widgets.py:907 ../src/activity_widgets.py:551
+msgid "Remove Pin"
+msgstr "Quitar pinchu"
+
+#: ../src/supporting_widgets.py:908 ../src/supporting_widgets.py:1279
+msgid "Add Pin"
+msgstr "Pinchar"
+
+#: ../src/supporting_widgets.py:909
+msgid "Delete item from Journal"
+msgstr "Desaniciar elementu del Diariu"
+
+#: ../src/supporting_widgets.py:910
+msgid "Delete all events with this URI"
+msgstr "Desaniciar tolos eventos con esti URI"
+
+#: ../src/supporting_widgets.py:911
+msgid "More Information"
+msgstr "Más Información"
+
+#: ../src/supporting_widgets.py:923
+msgid "Send To..."
+msgstr "Unviar a…"
+
+#: ../src/supporting_widgets.py:1191
+msgid "Used With"
+msgstr "Usáu con"
+
+#: ../src/supporting_widgets.py:1274
+msgid "Launch this subject"
+msgstr "Llanzar esti asuntu"
+
+#: ../src/supporting_widgets.py:1276
+msgid "Delete this subject"
+msgstr "Desaniciar esti asuntu"
+
+#: ../src/supporting_widgets.py:1416
+msgid "Active Plugins:"
+msgstr "Complementos activos:"
+
+#: ../src/supporting_widgets.py:1424
+msgid "Plugins"
+msgstr "Complementos"
+
+#: ../src/supporting_widgets.py:1429
+msgid "Show icon in system tray"
+msgstr ""
+
+#: ../src/supporting_widgets.py:1436
+msgid "Configuration"
+msgstr ""
+
+#: ../src/main.py:139
+msgid "<span size=\"larger\"><b>Loading Journal...</b></span>"
+msgstr ""
+
+#: ../src/main.py:300
+msgid "Today"
+msgstr "Güei"
+
+#: ../src/main.py:303
+msgid "Yesterday"
+msgstr "Ayeri"
+
+#: ../src/main.py:314
+#, python-format
+msgid "%s to %s"
+msgstr "%s a %s"
+
+#: ../src/main.py:314 ../extra/gnome-activity-journal.desktop.in.h:1
+msgid "Activity Journal"
+msgstr "Diariu d'actividá"
+
+#: ../src/content_objects.py:567 ../src/content_objects.py:569
 msgid "{source._desc_sing} with {event.subjects[0].text}"
 msgstr "{source._desc_sing} con {event.subjects[0].text}"
 
-#: ../src/content_objects.py:564
+#: ../src/content_objects.py:568
 msgid ""
 "{source._desc_sing} with {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
@@ -42,36 +144,36 @@ msgstr ""
 "{source._desc_sing} con {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 
-#: ../src/content_objects.py:575
+#: ../src/content_objects.py:579
 msgid "Available"
 msgstr "Disponible"
 
-#: ../src/content_objects.py:576
+#: ../src/content_objects.py:580
 msgid "Offline"
 msgstr "Ensin conexón"
 
-#: ../src/content_objects.py:577
+#: ../src/content_objects.py:581
 msgid "Away"
 msgstr "Ausente"
 
-#: ../src/content_objects.py:578
+#: ../src/content_objects.py:582
 msgid "Busy"
 msgstr "Ocupáu"
 
-#: ../src/content_objects.py:610 ../src/content_objects.py:615
-#: ../src/content_objects.py:620
+#: ../src/content_objects.py:614 ../src/content_objects.py:619
+#: ../src/content_objects.py:624
 msgid "with"
 msgstr "con"
 
-#: ../src/content_objects.py:659
+#: ../src/content_objects.py:663
 msgid "Time Tracker"
 msgstr "Xestor de tiempu"
 
-#: ../src/content_objects.py:680 ../src/content_objects.py:682
+#: ../src/content_objects.py:737 ../src/content_objects.py:739
 msgid "{source._desc_sing} from {event.subjects[0].text}"
 msgstr "{source._desc_sing} de {event.subjects[0].text}"
 
-#: ../src/content_objects.py:681
+#: ../src/content_objects.py:738
 msgid ""
 "{source._desc_sing} from {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
@@ -79,16 +181,16 @@ msgstr ""
 "{source._desc_sing} de {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 
-#: ../src/content_objects.py:685
+#: ../src/content_objects.py:742
 #, python-format
 msgid " (%s Attachments)"
 msgstr " (%s Axuntos)"
 
-#: ../src/content_objects.py:709
+#: ../src/content_objects.py:766
 msgid "{event.subjects[0].text}"
 msgstr "{event.subjects[0].text}"
 
-#: ../src/content_objects.py:710 ../src/content_objects.py:711
+#: ../src/content_objects.py:767 ../src/content_objects.py:768
 msgid ""
 "Note\n"
 "{event.subjects[0].text}"
@@ -96,89 +198,15 @@ msgstr ""
 "Nota\n"
 "{event.subjects[0].text}"
 
-#: ../src/supporting_widgets.py:453
-msgid "Type here to search..."
-msgstr "Escribe equí pa guetar..."
+#: ../src/content_objects.py:786
+msgid "{source._desc_sing} {event.subjects[0].text}"
+msgstr ""
 
-#: ../src/supporting_widgets.py:675
-msgid "Powered by Zeitgeist"
-msgstr "Col sofitu de Zeitgeist"
-
-#: ../src/supporting_widgets.py:732 ../src/activity_widgets.py:469
-msgid "Remove Pin"
-msgstr "Quitar pinchu"
-
-#: ../src/supporting_widgets.py:733 ../src/supporting_widgets.py:1196
-msgid "Add Pin"
-msgstr "Pinchar"
-
-#: ../src/supporting_widgets.py:734
-msgid "Delete item from Journal"
-msgstr "Desaniciar elementu del Diariu"
-
-#: ../src/supporting_widgets.py:735
-msgid "Delete all events with this URI"
-msgstr "Desaniciar tolos eventos con esti URI"
-
-#: ../src/supporting_widgets.py:736
-msgid "More Information"
-msgstr "Más Información"
-
-#: ../src/supporting_widgets.py:748
-msgid "Send To..."
-msgstr "Unviar a…"
-
-#: ../src/supporting_widgets.py:849
-msgid "Search"
-msgstr "Guetar"
-
-#: ../src/supporting_widgets.py:860 ../src/supporting_widgets.py:1348
-msgid "Preferences"
-msgstr "Preferencies"
-
-#: ../src/supporting_widgets.py:865 ../src/supporting_widgets.py:866
-msgid "Go to Today"
-msgstr "Dir a güei"
-
-#: ../src/supporting_widgets.py:1108
-msgid "Used With"
-msgstr "Usáu con"
-
-#: ../src/supporting_widgets.py:1191
-msgid "Launch this subject"
-msgstr "Llanzar esti asuntu"
-
-#: ../src/supporting_widgets.py:1193
-msgid "Delete this subject"
-msgstr "Desaniciar esti asuntu"
-
-#: ../src/supporting_widgets.py:1212
-msgid "Tags"
-msgstr "Etiquetes"
-
-#: ../src/supporting_widgets.py:1357
-msgid "Active Plugins:"
-msgstr "Complementos activos:"
-
-#: ../src/supporting_widgets.py:1365
-msgid "Plugins"
-msgstr "Complementos"
-
-#: ../src/activity_widgets.py:149 ../src/common.py:170
-msgid "Morning"
-msgstr "Mañana"
-
-#: ../src/activity_widgets.py:149 ../src/common.py:170
-msgid "Afternoon"
-msgstr "Tardi"
-
-#: ../src/activity_widgets.py:149 ../src/common.py:170
-msgid "Evening"
-msgstr "Nuechi"
-
-#: ../src/activity_widgets.py:1225
-msgid "Pinned Items"
-msgstr "Artículos pinchaos"
+#: ../src/content_objects.py:787 ../src/content_objects.py:788
+msgid ""
+"GTG\n"
+"{source._desc_sing} {event.subjects[0].text}"
+msgstr ""
 
 #: ../src/histogram.py:438
 msgid "item"
@@ -186,107 +214,98 @@ msgid_plural "items"
 msgstr[0] "elementu"
 msgstr[1] "elementos"
 
-#: ../src/main.py:125
-msgid "Switch to MultiView"
-msgstr "Cambear a vista múltiple"
-
-#: ../src/main.py:126
-msgid "Switch to ThumbView"
-msgstr "Cambear a vista de miniatures"
-
-#: ../src/main.py:127
-msgid "Switch to TimelineView"
-msgstr "Cambear a vista de llinia de tiempu"
-
-#: ../src/main.py:295
-msgid "Today"
-msgstr "Güei"
-
-#: ../src/main.py:298
-msgid "Yesterday"
-msgstr "Ayeri"
-
-#: ../src/main.py:309
-#, python-format
-msgid "%s to %s"
-msgstr "%s a %s"
-
-#: ../src/main.py:309 ../extra/gnome-activity-journal.desktop.in.h:1
-msgid "Activity Journal"
-msgstr "Diariu d'actividá"
-
 #. TODO: Move this into Zeitgeist's library, implemented properly
-#: ../src/config.py:240
+#: ../src/config.py:237
 msgid "Worked with a Video"
 msgstr "Trabayó con un videu"
 
-#: ../src/config.py:240
+#: ../src/config.py:237
 msgid "Worked with Videos"
 msgstr "Trabayó con videos"
 
-#: ../src/config.py:241
+#: ../src/config.py:238
 msgid "Worked with Audio"
 msgstr "Trabayó con soníu"
 
-#: ../src/config.py:242
+#: ../src/config.py:239
 msgid "Worked with an Image"
 msgstr "Trabayó con una imaxen"
 
-#: ../src/config.py:242
+#: ../src/config.py:239
 msgid "Worked with Images"
 msgstr "Trabayó con imáxenes"
 
-#: ../src/config.py:243
+#: ../src/config.py:240
 msgid "Edited or Read Document"
 msgstr "Documentu editáu o lleíu"
 
-#: ../src/config.py:243
+#: ../src/config.py:240
 msgid "Edited or Read Documents"
 msgstr "Documentos editaos o lleíos"
 
-#: ../src/config.py:244
+#: ../src/config.py:241
 msgid "Edited or Read Code"
 msgstr "Códigu editáu o lleíu"
 
-#: ../src/config.py:245
+#: ../src/config.py:242
 msgid "Conversation"
 msgstr "Conversación"
 
-#: ../src/config.py:245
+#: ../src/config.py:242
 msgid "Conversations"
 msgstr "Conversaciones"
 
-#: ../src/config.py:246
+#: ../src/config.py:243
 msgid "Visited Website"
 msgstr "Sitiu web visitáu"
 
-#: ../src/config.py:246
+#: ../src/config.py:243
 msgid "Visited Websites"
 msgstr "Sitios web visitaos"
 
-#: ../src/config.py:247 ../src/common.py:150
+#: ../src/config.py:244 ../src/common.py:150
 msgid "Email"
 msgstr "Corréu electrónicu"
 
-#: ../src/config.py:247
+#: ../src/config.py:244
 msgid "Emails"
 msgstr "Correos electrónicos"
 
-#: ../src/config.py:248
+#: ../src/config.py:245
+msgid "Todo"
+msgstr ""
+
+#: ../src/config.py:245
+msgid "Todos"
+msgstr ""
+
+#: ../src/config.py:246
 msgid "Other Activity"
 msgstr "Otra actividá"
 
-#: ../src/config.py:248
+#: ../src/config.py:246
 msgid "Other Activities"
 msgstr "Otres actividaes"
 
-#: ../src/config.py:249
+#: ../src/config.py:247
 msgid "Edited or Read Note"
 msgstr "Nota editada o lleída"
 
-#: ../src/config.py:249
+#: ../src/config.py:247
 msgid "Edited or Read Notes"
 msgstr "Notes editaes o lleíes"
+
+#: ../src/config.py:248
+msgid "Software Development"
+msgstr ""
+
+#: ../src/config.py:248
+msgid "Software Developments"
+msgstr ""
+
+#: ../src/Indicator.py:87
+msgid "Hide/Show GAJ"
+msgstr ""
 
 #: ../src/common.py:143
 msgid "Video"
@@ -315,6 +334,50 @@ msgstr "Desconocíu"
 #: ../src/common.py:149
 msgid "IM Message"
 msgstr "Mensaxe nel intre"
+
+#. TODO: In a future, I'd be cool to make the day partitions configurable.
+#. This includes redefining what Morning/Afternoon/etc. are, but also
+#. changing the categories entirely (eg. "Work", "Lunch time", etc.).
+#. For this get_day_parts and other methods should take a timestamp of
+#. the relevant day so they can account for weekends not having "Work", etc.
+#: ../src/common.py:927
+msgid "Morning"
+msgstr "Mañana"
+
+#: ../src/common.py:927
+msgid "Afternoon"
+msgstr "Tardi"
+
+#: ../src/common.py:927
+msgid "Evening"
+msgstr "Nuechi"
+
+#: ../src/activity_widgets.py:113
+msgid "Switch to MultiView"
+msgstr "Cambear a vista múltiple"
+
+#: ../src/activity_widgets.py:627
+msgid "<b>Name: </b>"
+msgstr ""
+
+#: ../src/activity_widgets.py:631
+#, python-format
+msgid ""
+"\n"
+"<b>MIME Type:</b> %s (%s)"
+msgstr ""
+
+#: ../src/activity_widgets.py:689
+msgid "Switch to ThumbView"
+msgstr "Cambear a vista de miniatures"
+
+#: ../src/activity_widgets.py:1050
+msgid "Switch to TimelineView"
+msgstr "Cambear a vista de llinia de tiempu"
+
+#: ../src/activity_widgets.py:1395
+msgid "Pinned Items"
+msgstr "Artículos pinchaos"
 
 #: ../extra/gnome-activity-journal.desktop.in.h:2
 msgid ""
@@ -378,3 +441,12 @@ msgstr "Altor de la ventana"
 #: ../extra/gnome-activity-journal.schemas.in.h:10
 msgid "Window width"
 msgstr "Anchor de la ventana"
+
+#~ msgid "Powered by Zeitgeist"
+#~ msgstr "Col sofitu de Zeitgeist"
+
+#~ msgid "Search"
+#~ msgstr "Guetar"
+
+#~ msgid "Tags"
+#~ msgstr "Etiquetes"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-activity-journal\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-09-18 21:43+0200\n"
+"POT-Creation-Date: 2011-01-23 14:06+0100\n"
 "PO-Revision-Date: 2010-11-14 14:20+0000\n"
 "Last-Translator: Μάριος Ζηντίλης <m.zindilis@dmajor.org>\n"
 "Language-Team: Greek <el@li.org>\n"
@@ -15,8 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2010-11-15 05:13+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
+"X-Launchpad-Export-Date: 2011-01-24 05:09+0000\n"
+"X-Generator: Launchpad (build 12177)\n"
 
 #: ../gnome-activity-journal:83
 msgid "print additional debugging information"
@@ -30,11 +30,113 @@ msgstr "ΣΦΑΛΜΑ"
 msgid "Unable to connect to Zeitgeist:"
 msgstr "Αδυναμία σύνδεσης με το Zeitgeist:"
 
-#: ../src/content_objects.py:563 ../src/content_objects.py:565
+#: ../src/supporting_widgets.py:181
+msgid "Go to Today"
+msgstr "Σημερινή μέρα"
+
+#: ../src/supporting_widgets.py:183
+msgid "Go to the previous day "
+msgstr ""
+
+#: ../src/supporting_widgets.py:183
+msgid "Go to the next day"
+msgstr ""
+
+#: ../src/supporting_widgets.py:515
+msgid "Type here to search..."
+msgstr "Όροι αναζήτησης..."
+
+#: ../src/supporting_widgets.py:701
+msgid "<b>Playing...</b>"
+msgstr ""
+
+#: ../src/supporting_widgets.py:815 ../src/supporting_widgets.py:825
+#: ../src/supporting_widgets.py:1406
+msgid "Preferences"
+msgstr "Προτιμήσεις"
+
+#: ../src/supporting_widgets.py:824
+msgid "About"
+msgstr ""
+
+#: ../src/supporting_widgets.py:907 ../src/activity_widgets.py:551
+msgid "Remove Pin"
+msgstr "Ξεκαρφίτσωμα"
+
+#: ../src/supporting_widgets.py:908 ../src/supporting_widgets.py:1279
+msgid "Add Pin"
+msgstr "Καρφίτσωμα"
+
+#: ../src/supporting_widgets.py:909
+msgid "Delete item from Journal"
+msgstr "Διαγραφή από το Ημερολόγιο"
+
+#: ../src/supporting_widgets.py:910
+msgid "Delete all events with this URI"
+msgstr "Διαγραφή των γεγονότων με το ίδιο URI"
+
+#: ../src/supporting_widgets.py:911
+msgid "More Information"
+msgstr "Περισσότερες πληροφορίες"
+
+#: ../src/supporting_widgets.py:923
+msgid "Send To..."
+msgstr "Αποστολή προς..."
+
+#: ../src/supporting_widgets.py:1191
+msgid "Used With"
+msgstr "Χρησιμοποιήθηκε ταυτόχρονα με"
+
+#: ../src/supporting_widgets.py:1274
+msgid "Launch this subject"
+msgstr "Έναρξη αυτού του θέματος"
+
+#: ../src/supporting_widgets.py:1276
+msgid "Delete this subject"
+msgstr "Διαγραφή αυτού του θέματος"
+
+#: ../src/supporting_widgets.py:1416
+msgid "Active Plugins:"
+msgstr "Ενεργές πρόσθετες λειτουργίες:"
+
+#: ../src/supporting_widgets.py:1424
+msgid "Plugins"
+msgstr "Πρόσθετες λειτουργίες"
+
+#: ../src/supporting_widgets.py:1429
+msgid "Show icon in system tray"
+msgstr ""
+
+#: ../src/supporting_widgets.py:1436
+msgid "Configuration"
+msgstr ""
+
+#: ../src/main.py:139
+msgid "<span size=\"larger\"><b>Loading Journal...</b></span>"
+msgstr ""
+
+#: ../src/main.py:300
+msgid "Today"
+msgstr "Σήμερα"
+
+#: ../src/main.py:303
+msgid "Yesterday"
+msgstr "Χθες"
+
+#: ../src/main.py:314
+#, python-format
+msgid "%s to %s"
+msgstr "%s σε %s"
+
+#: ../src/main.py:314 ../extra/gnome-activity-journal.desktop.in.h:1
+msgid "Activity Journal"
+msgstr "Ημερολόγιο δραστηριοτήτων"
+
+#: ../src/content_objects.py:567 ../src/content_objects.py:569
 msgid "{source._desc_sing} with {event.subjects[0].text}"
 msgstr "{source._desc_sing} με {event.subjects[0].text}"
 
-#: ../src/content_objects.py:564
+#: ../src/content_objects.py:568
 msgid ""
 "{source._desc_sing} with {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
@@ -42,36 +144,36 @@ msgstr ""
 "{source._desc_sing} με {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 
-#: ../src/content_objects.py:575
+#: ../src/content_objects.py:579
 msgid "Available"
 msgstr "Διαθέσιμος/η"
 
-#: ../src/content_objects.py:576
+#: ../src/content_objects.py:580
 msgid "Offline"
 msgstr "Εκτός σύνδεσης"
 
-#: ../src/content_objects.py:577
+#: ../src/content_objects.py:581
 msgid "Away"
 msgstr "Απουσιάζει"
 
-#: ../src/content_objects.py:578
+#: ../src/content_objects.py:582
 msgid "Busy"
 msgstr "Απασχολημένος/η"
 
-#: ../src/content_objects.py:610 ../src/content_objects.py:615
-#: ../src/content_objects.py:620
+#: ../src/content_objects.py:614 ../src/content_objects.py:619
+#: ../src/content_objects.py:624
 msgid "with"
 msgstr "με"
 
-#: ../src/content_objects.py:659
+#: ../src/content_objects.py:663
 msgid "Time Tracker"
 msgstr "Καταγραφή χρόνου"
 
-#: ../src/content_objects.py:680 ../src/content_objects.py:682
+#: ../src/content_objects.py:737 ../src/content_objects.py:739
 msgid "{source._desc_sing} from {event.subjects[0].text}"
 msgstr "{source._desc_sing} από {event.subjects[0].text}"
 
-#: ../src/content_objects.py:681
+#: ../src/content_objects.py:738
 msgid ""
 "{source._desc_sing} from {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
@@ -79,16 +181,16 @@ msgstr ""
 "{source._desc_sing} από {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 
-#: ../src/content_objects.py:685
+#: ../src/content_objects.py:742
 #, python-format
 msgid " (%s Attachments)"
 msgstr " (%s Συνημμένα)"
 
-#: ../src/content_objects.py:709
+#: ../src/content_objects.py:766
 msgid "{event.subjects[0].text}"
 msgstr "{event.subjects[0].text}"
 
-#: ../src/content_objects.py:710 ../src/content_objects.py:711
+#: ../src/content_objects.py:767 ../src/content_objects.py:768
 msgid ""
 "Note\n"
 "{event.subjects[0].text}"
@@ -96,89 +198,15 @@ msgstr ""
 "Σημείωση\n"
 "{event.subjects[0].text}"
 
-#: ../src/supporting_widgets.py:453
-msgid "Type here to search..."
-msgstr "Όροι αναζήτησης..."
+#: ../src/content_objects.py:786
+msgid "{source._desc_sing} {event.subjects[0].text}"
+msgstr ""
 
-#: ../src/supporting_widgets.py:675
-msgid "Powered by Zeitgeist"
-msgstr "Με τη δύναμη του Zeitgeist"
-
-#: ../src/supporting_widgets.py:732 ../src/activity_widgets.py:469
-msgid "Remove Pin"
-msgstr "Ξεκαρφίτσωμα"
-
-#: ../src/supporting_widgets.py:733 ../src/supporting_widgets.py:1196
-msgid "Add Pin"
-msgstr "Καρφίτσωμα"
-
-#: ../src/supporting_widgets.py:734
-msgid "Delete item from Journal"
-msgstr "Διαγραφή από το Ημερολόγιο"
-
-#: ../src/supporting_widgets.py:735
-msgid "Delete all events with this URI"
-msgstr "Διαγραφή των γεγονότων με το ίδιο URI"
-
-#: ../src/supporting_widgets.py:736
-msgid "More Information"
-msgstr "Περισσότερες πληροφορίες"
-
-#: ../src/supporting_widgets.py:748
-msgid "Send To..."
-msgstr "Αποστολή προς..."
-
-#: ../src/supporting_widgets.py:849
-msgid "Search"
-msgstr "Αναζήτηση"
-
-#: ../src/supporting_widgets.py:860 ../src/supporting_widgets.py:1348
-msgid "Preferences"
-msgstr "Προτιμήσεις"
-
-#: ../src/supporting_widgets.py:865 ../src/supporting_widgets.py:866
-msgid "Go to Today"
-msgstr "Σημερινή μέρα"
-
-#: ../src/supporting_widgets.py:1108
-msgid "Used With"
-msgstr "Χρησιμοποιήθηκε ταυτόχρονα με"
-
-#: ../src/supporting_widgets.py:1191
-msgid "Launch this subject"
-msgstr "Έναρξη αυτού του θέματος"
-
-#: ../src/supporting_widgets.py:1193
-msgid "Delete this subject"
-msgstr "Διαγραφή αυτού του θέματος"
-
-#: ../src/supporting_widgets.py:1212
-msgid "Tags"
-msgstr "Ετικέτες"
-
-#: ../src/supporting_widgets.py:1357
-msgid "Active Plugins:"
-msgstr "Ενεργές πρόσθετες λειτουργίες:"
-
-#: ../src/supporting_widgets.py:1365
-msgid "Plugins"
-msgstr "Πρόσθετες λειτουργίες"
-
-#: ../src/activity_widgets.py:149 ../src/common.py:170
-msgid "Morning"
-msgstr "Πρωί"
-
-#: ../src/activity_widgets.py:149 ../src/common.py:170
-msgid "Afternoon"
-msgstr "Απόγευμα"
-
-#: ../src/activity_widgets.py:149 ../src/common.py:170
-msgid "Evening"
-msgstr "Βράδυ"
-
-#: ../src/activity_widgets.py:1225
-msgid "Pinned Items"
-msgstr "Καρφιτσωμένα αντικείμενα"
+#: ../src/content_objects.py:787 ../src/content_objects.py:788
+msgid ""
+"GTG\n"
+"{source._desc_sing} {event.subjects[0].text}"
+msgstr ""
 
 #: ../src/histogram.py:438
 msgid "item"
@@ -186,107 +214,98 @@ msgid_plural "items"
 msgstr[0] "αντικείμενο"
 msgstr[1] "αντικείμενα"
 
-#: ../src/main.py:125
-msgid "Switch to MultiView"
-msgstr "Πολλαπλή προβολή"
-
-#: ../src/main.py:126
-msgid "Switch to ThumbView"
-msgstr "Προβολή εικονιδίων"
-
-#: ../src/main.py:127
-msgid "Switch to TimelineView"
-msgstr "Προβολή χρονογραμμής"
-
-#: ../src/main.py:295
-msgid "Today"
-msgstr "Σήμερα"
-
-#: ../src/main.py:298
-msgid "Yesterday"
-msgstr "Χθες"
-
-#: ../src/main.py:309
-#, python-format
-msgid "%s to %s"
-msgstr "%s σε %s"
-
-#: ../src/main.py:309 ../extra/gnome-activity-journal.desktop.in.h:1
-msgid "Activity Journal"
-msgstr "Ημερολόγιο δραστηριοτήτων"
-
 #. TODO: Move this into Zeitgeist's library, implemented properly
-#: ../src/config.py:240
+#: ../src/config.py:237
 msgid "Worked with a Video"
 msgstr "Εργασία με ένα Βίντεο"
 
-#: ../src/config.py:240
+#: ../src/config.py:237
 msgid "Worked with Videos"
 msgstr "Εργασία με πολλά Βίντεο"
 
-#: ../src/config.py:241
+#: ../src/config.py:238
 msgid "Worked with Audio"
 msgstr "Εργασία με Ήχο"
 
-#: ../src/config.py:242
+#: ../src/config.py:239
 msgid "Worked with an Image"
 msgstr "Εργασία με Ήχους"
 
-#: ../src/config.py:242
+#: ../src/config.py:239
 msgid "Worked with Images"
 msgstr "Εργασία με Εικόνες"
 
-#: ../src/config.py:243
+#: ../src/config.py:240
 msgid "Edited or Read Document"
 msgstr "Επεξεργασία ή ανάγνωση ενός Εγγράφου"
 
-#: ../src/config.py:243
+#: ../src/config.py:240
 msgid "Edited or Read Documents"
 msgstr "Επεργασία ή ανάγνωση πολλαπλών Εγγράφων"
 
-#: ../src/config.py:244
+#: ../src/config.py:241
 msgid "Edited or Read Code"
 msgstr "Επεξεργασία ή ανάγνωση Κώδικα"
 
-#: ../src/config.py:245
+#: ../src/config.py:242
 msgid "Conversation"
 msgstr "Συνομιλία"
 
-#: ../src/config.py:245
+#: ../src/config.py:242
 msgid "Conversations"
 msgstr "Συνομιλίες"
 
-#: ../src/config.py:246
+#: ../src/config.py:243
 msgid "Visited Website"
 msgstr "Επίσκεψη ιστότοπου"
 
-#: ../src/config.py:246
+#: ../src/config.py:243
 msgid "Visited Websites"
 msgstr "Επίσκεψη ιστότοπων"
 
-#: ../src/config.py:247 ../src/common.py:150
+#: ../src/config.py:244 ../src/common.py:150
 msgid "Email"
 msgstr "Μήνυμα αλληλογραφίας"
 
-#: ../src/config.py:247
+#: ../src/config.py:244
 msgid "Emails"
 msgstr "Μηνύματα αλληλογραφίας"
 
-#: ../src/config.py:248
+#: ../src/config.py:245
+msgid "Todo"
+msgstr ""
+
+#: ../src/config.py:245
+msgid "Todos"
+msgstr ""
+
+#: ../src/config.py:246
 msgid "Other Activity"
 msgstr "Άλλη δραστηριότητα"
 
-#: ../src/config.py:248
+#: ../src/config.py:246
 msgid "Other Activities"
 msgstr "Άλλες δραστηριότητες"
 
-#: ../src/config.py:249
+#: ../src/config.py:247
 msgid "Edited or Read Note"
 msgstr "Επεξεργασία ή ανάγνωση σημείωσης"
 
-#: ../src/config.py:249
+#: ../src/config.py:247
 msgid "Edited or Read Notes"
 msgstr "Επεξεργασία ή ανάγνωση σημειώσεων"
+
+#: ../src/config.py:248
+msgid "Software Development"
+msgstr ""
+
+#: ../src/config.py:248
+msgid "Software Developments"
+msgstr ""
+
+#: ../src/Indicator.py:87
+msgid "Hide/Show GAJ"
+msgstr ""
 
 #: ../src/common.py:143
 msgid "Video"
@@ -315,6 +334,50 @@ msgstr "Άγνωστο"
 #: ../src/common.py:149
 msgid "IM Message"
 msgstr "Άμεσο μήνυμα"
+
+#. TODO: In a future, I'd be cool to make the day partitions configurable.
+#. This includes redefining what Morning/Afternoon/etc. are, but also
+#. changing the categories entirely (eg. "Work", "Lunch time", etc.).
+#. For this get_day_parts and other methods should take a timestamp of
+#. the relevant day so they can account for weekends not having "Work", etc.
+#: ../src/common.py:927
+msgid "Morning"
+msgstr "Πρωί"
+
+#: ../src/common.py:927
+msgid "Afternoon"
+msgstr "Απόγευμα"
+
+#: ../src/common.py:927
+msgid "Evening"
+msgstr "Βράδυ"
+
+#: ../src/activity_widgets.py:113
+msgid "Switch to MultiView"
+msgstr "Πολλαπλή προβολή"
+
+#: ../src/activity_widgets.py:627
+msgid "<b>Name: </b>"
+msgstr ""
+
+#: ../src/activity_widgets.py:631
+#, python-format
+msgid ""
+"\n"
+"<b>MIME Type:</b> %s (%s)"
+msgstr ""
+
+#: ../src/activity_widgets.py:689
+msgid "Switch to ThumbView"
+msgstr "Προβολή εικονιδίων"
+
+#: ../src/activity_widgets.py:1050
+msgid "Switch to TimelineView"
+msgstr "Προβολή χρονογραμμής"
+
+#: ../src/activity_widgets.py:1395
+msgid "Pinned Items"
+msgstr "Καρφιτσωμένα αντικείμενα"
 
 #: ../extra/gnome-activity-journal.desktop.in.h:2
 msgid ""
@@ -381,3 +444,12 @@ msgstr "Ύψος παραθύρου"
 #: ../extra/gnome-activity-journal.schemas.in.h:10
 msgid "Window width"
 msgstr "Πλάτος παραθύρου"
+
+#~ msgid "Powered by Zeitgeist"
+#~ msgstr "Με τη δύναμη του Zeitgeist"
+
+#~ msgid "Search"
+#~ msgstr "Αναζήτηση"
+
+#~ msgid "Tags"
+#~ msgstr "Ετικέτες"

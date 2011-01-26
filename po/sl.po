@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-activity-journal\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-09-18 21:43+0200\n"
+"POT-Creation-Date: 2011-01-23 14:06+0100\n"
 "PO-Revision-Date: 2011-01-21 12:41+0000\n"
 "Last-Translator: Andrej Znidarsic <andrej.znidarsic@gmail.com>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || "
 "n%100==4 ? 3 : 0);\n"
-"X-Launchpad-Export-Date: 2011-01-22 05:13+0000\n"
+"X-Launchpad-Export-Date: 2011-01-24 05:10+0000\n"
 "X-Generator: Launchpad (build 12177)\n"
 
 #: ../gnome-activity-journal:83
@@ -31,11 +31,113 @@ msgstr "NAPAKA"
 msgid "Unable to connect to Zeitgeist:"
 msgstr "Ni se bilo mogoče povezati z Zeitgeistom:"
 
-#: ../src/content_objects.py:563 ../src/content_objects.py:565
+#: ../src/supporting_widgets.py:181
+msgid "Go to Today"
+msgstr "Pojdi na današnji dan"
+
+#: ../src/supporting_widgets.py:183
+msgid "Go to the previous day "
+msgstr ""
+
+#: ../src/supporting_widgets.py:183
+msgid "Go to the next day"
+msgstr ""
+
+#: ../src/supporting_widgets.py:515
+msgid "Type here to search..."
+msgstr "Tipkajte tukaj za iskanje ..."
+
+#: ../src/supporting_widgets.py:701
+msgid "<b>Playing...</b>"
+msgstr ""
+
+#: ../src/supporting_widgets.py:815 ../src/supporting_widgets.py:825
+#: ../src/supporting_widgets.py:1406
+msgid "Preferences"
+msgstr "Možnosti"
+
+#: ../src/supporting_widgets.py:824
+msgid "About"
+msgstr ""
+
+#: ../src/supporting_widgets.py:907 ../src/activity_widgets.py:551
+msgid "Remove Pin"
+msgstr "Odstrani priponko"
+
+#: ../src/supporting_widgets.py:908 ../src/supporting_widgets.py:1279
+msgid "Add Pin"
+msgstr "Dodaj priponko"
+
+#: ../src/supporting_widgets.py:909
+msgid "Delete item from Journal"
+msgstr "Odstrani predmet iz Dnevnika"
+
+#: ../src/supporting_widgets.py:910
+msgid "Delete all events with this URI"
+msgstr "Izbriši vse dogodke s tem URI"
+
+#: ../src/supporting_widgets.py:911
+msgid "More Information"
+msgstr "Več podrobnosti"
+
+#: ../src/supporting_widgets.py:923
+msgid "Send To..."
+msgstr "Pošlji v ..."
+
+#: ../src/supporting_widgets.py:1191
+msgid "Used With"
+msgstr "Uporabljeno z"
+
+#: ../src/supporting_widgets.py:1274
+msgid "Launch this subject"
+msgstr "Poženi to zadevo"
+
+#: ../src/supporting_widgets.py:1276
+msgid "Delete this subject"
+msgstr "Izbriši to zadevo"
+
+#: ../src/supporting_widgets.py:1416
+msgid "Active Plugins:"
+msgstr "Dejavni vstavki:"
+
+#: ../src/supporting_widgets.py:1424
+msgid "Plugins"
+msgstr "Vstavki"
+
+#: ../src/supporting_widgets.py:1429
+msgid "Show icon in system tray"
+msgstr ""
+
+#: ../src/supporting_widgets.py:1436
+msgid "Configuration"
+msgstr ""
+
+#: ../src/main.py:139
+msgid "<span size=\"larger\"><b>Loading Journal...</b></span>"
+msgstr ""
+
+#: ../src/main.py:300
+msgid "Today"
+msgstr "Danes"
+
+#: ../src/main.py:303
+msgid "Yesterday"
+msgstr "Včeraj"
+
+#: ../src/main.py:314
+#, python-format
+msgid "%s to %s"
+msgstr "%s v %s"
+
+#: ../src/main.py:314 ../extra/gnome-activity-journal.desktop.in.h:1
+msgid "Activity Journal"
+msgstr "Dnevnik dejavnosti"
+
+#: ../src/content_objects.py:567 ../src/content_objects.py:569
 msgid "{source._desc_sing} with {event.subjects[0].text}"
 msgstr "{source._desc_sing} z {event.subjects[0].text}"
 
-#: ../src/content_objects.py:564
+#: ../src/content_objects.py:568
 msgid ""
 "{source._desc_sing} with {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
@@ -43,36 +145,36 @@ msgstr ""
 "{source._desc_sing} z {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 
-#: ../src/content_objects.py:575
+#: ../src/content_objects.py:579
 msgid "Available"
 msgstr "Na voljo"
 
-#: ../src/content_objects.py:576
+#: ../src/content_objects.py:580
 msgid "Offline"
 msgstr "Brez povezave"
 
-#: ../src/content_objects.py:577
+#: ../src/content_objects.py:581
 msgid "Away"
 msgstr "Odsoten"
 
-#: ../src/content_objects.py:578
+#: ../src/content_objects.py:582
 msgid "Busy"
 msgstr "Zaseden"
 
-#: ../src/content_objects.py:610 ../src/content_objects.py:615
-#: ../src/content_objects.py:620
+#: ../src/content_objects.py:614 ../src/content_objects.py:619
+#: ../src/content_objects.py:624
 msgid "with"
 msgstr "z"
 
-#: ../src/content_objects.py:659
+#: ../src/content_objects.py:663
 msgid "Time Tracker"
 msgstr "Sledilnik časa"
 
-#: ../src/content_objects.py:680 ../src/content_objects.py:682
+#: ../src/content_objects.py:737 ../src/content_objects.py:739
 msgid "{source._desc_sing} from {event.subjects[0].text}"
 msgstr "{source._desc_sing} od {event.subjects[0].text}"
 
-#: ../src/content_objects.py:681
+#: ../src/content_objects.py:738
 msgid ""
 "{source._desc_sing} from {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
@@ -80,16 +182,16 @@ msgstr ""
 "{source._desc_sing} od {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 
-#: ../src/content_objects.py:685
+#: ../src/content_objects.py:742
 #, python-format
 msgid " (%s Attachments)"
 msgstr " (%s priloge)"
 
-#: ../src/content_objects.py:709
+#: ../src/content_objects.py:766
 msgid "{event.subjects[0].text}"
 msgstr "{event.subjects[0].text}"
 
-#: ../src/content_objects.py:710 ../src/content_objects.py:711
+#: ../src/content_objects.py:767 ../src/content_objects.py:768
 msgid ""
 "Note\n"
 "{event.subjects[0].text}"
@@ -97,89 +199,15 @@ msgstr ""
 "Opomba\n"
 "{event.subjects[0].text}"
 
-#: ../src/supporting_widgets.py:453
-msgid "Type here to search..."
-msgstr "Tipkajte tukaj za iskanje ..."
+#: ../src/content_objects.py:786
+msgid "{source._desc_sing} {event.subjects[0].text}"
+msgstr ""
 
-#: ../src/supporting_widgets.py:675
-msgid "Powered by Zeitgeist"
-msgstr "Poganja Zeitgeist"
-
-#: ../src/supporting_widgets.py:732 ../src/activity_widgets.py:469
-msgid "Remove Pin"
-msgstr "Odstrani priponko"
-
-#: ../src/supporting_widgets.py:733 ../src/supporting_widgets.py:1196
-msgid "Add Pin"
-msgstr "Dodaj priponko"
-
-#: ../src/supporting_widgets.py:734
-msgid "Delete item from Journal"
-msgstr "Odstrani predmet iz Dnevnika"
-
-#: ../src/supporting_widgets.py:735
-msgid "Delete all events with this URI"
-msgstr "Izbriši vse dogodke s tem URI"
-
-#: ../src/supporting_widgets.py:736
-msgid "More Information"
-msgstr "Več podrobnosti"
-
-#: ../src/supporting_widgets.py:748
-msgid "Send To..."
-msgstr "Pošlji v ..."
-
-#: ../src/supporting_widgets.py:849
-msgid "Search"
-msgstr "Iskanje"
-
-#: ../src/supporting_widgets.py:860 ../src/supporting_widgets.py:1348
-msgid "Preferences"
-msgstr "Možnosti"
-
-#: ../src/supporting_widgets.py:865 ../src/supporting_widgets.py:866
-msgid "Go to Today"
-msgstr "Pojdi na današnji dan"
-
-#: ../src/supporting_widgets.py:1108
-msgid "Used With"
-msgstr "Uporabljeno z"
-
-#: ../src/supporting_widgets.py:1191
-msgid "Launch this subject"
-msgstr "Poženi to zadevo"
-
-#: ../src/supporting_widgets.py:1193
-msgid "Delete this subject"
-msgstr "Izbriši to zadevo"
-
-#: ../src/supporting_widgets.py:1212
-msgid "Tags"
-msgstr "Oznake"
-
-#: ../src/supporting_widgets.py:1357
-msgid "Active Plugins:"
-msgstr "Dejavni vstavki:"
-
-#: ../src/supporting_widgets.py:1365
-msgid "Plugins"
-msgstr "Vstavki"
-
-#: ../src/activity_widgets.py:149 ../src/common.py:170
-msgid "Morning"
-msgstr "Zjutraj"
-
-#: ../src/activity_widgets.py:149 ../src/common.py:170
-msgid "Afternoon"
-msgstr "Popoldne"
-
-#: ../src/activity_widgets.py:149 ../src/common.py:170
-msgid "Evening"
-msgstr "Zvečer"
-
-#: ../src/activity_widgets.py:1225
-msgid "Pinned Items"
-msgstr "Pripeti predmeti"
+#: ../src/content_objects.py:787 ../src/content_objects.py:788
+msgid ""
+"GTG\n"
+"{source._desc_sing} {event.subjects[0].text}"
+msgstr ""
 
 #: ../src/histogram.py:438
 msgid "item"
@@ -189,107 +217,98 @@ msgstr[1] "predmeta"
 msgstr[2] "predmeti"
 msgstr[3] "predmeti"
 
-#: ../src/main.py:125
-msgid "Switch to MultiView"
-msgstr "Preklopi v razširjen pogled"
-
-#: ../src/main.py:126
-msgid "Switch to ThumbView"
-msgstr "Preklopi v pogled sličic"
-
-#: ../src/main.py:127
-msgid "Switch to TimelineView"
-msgstr "Preklopi v pogled časovnice"
-
-#: ../src/main.py:295
-msgid "Today"
-msgstr "Danes"
-
-#: ../src/main.py:298
-msgid "Yesterday"
-msgstr "Včeraj"
-
-#: ../src/main.py:309
-#, python-format
-msgid "%s to %s"
-msgstr "%s v %s"
-
-#: ../src/main.py:309 ../extra/gnome-activity-journal.desktop.in.h:1
-msgid "Activity Journal"
-msgstr "Dnevnik dejavnosti"
-
 #. TODO: Move this into Zeitgeist's library, implemented properly
-#: ../src/config.py:240
+#: ../src/config.py:237
 msgid "Worked with a Video"
 msgstr "Delo z videom"
 
-#: ../src/config.py:240
+#: ../src/config.py:237
 msgid "Worked with Videos"
 msgstr "Delo z videi"
 
-#: ../src/config.py:241
+#: ../src/config.py:238
 msgid "Worked with Audio"
 msgstr "Delo z zvokom"
 
-#: ../src/config.py:242
+#: ../src/config.py:239
 msgid "Worked with an Image"
 msgstr "Delo s sliko"
 
-#: ../src/config.py:242
+#: ../src/config.py:239
 msgid "Worked with Images"
 msgstr "Delo s slikami"
 
-#: ../src/config.py:243
+#: ../src/config.py:240
 msgid "Edited or Read Document"
 msgstr "Urejanje ali branje dokumenta"
 
-#: ../src/config.py:243
+#: ../src/config.py:240
 msgid "Edited or Read Documents"
 msgstr "Urejanje ali branje dokumentov"
 
-#: ../src/config.py:244
+#: ../src/config.py:241
 msgid "Edited or Read Code"
 msgstr "Urejanje ali branje kode"
 
-#: ../src/config.py:245
+#: ../src/config.py:242
 msgid "Conversation"
 msgstr "Pogovor"
 
-#: ../src/config.py:245
+#: ../src/config.py:242
 msgid "Conversations"
 msgstr "Pogovori"
 
-#: ../src/config.py:246
+#: ../src/config.py:243
 msgid "Visited Website"
 msgstr "Obisk spletne strani"
 
-#: ../src/config.py:246
+#: ../src/config.py:243
 msgid "Visited Websites"
 msgstr "Obisk spletnih strani"
 
-#: ../src/config.py:247 ../src/common.py:150
+#: ../src/config.py:244 ../src/common.py:150
 msgid "Email"
 msgstr "E-pošta"
 
-#: ../src/config.py:247
+#: ../src/config.py:244
 msgid "Emails"
 msgstr "E-pošta"
 
-#: ../src/config.py:248
+#: ../src/config.py:245
+msgid "Todo"
+msgstr ""
+
+#: ../src/config.py:245
+msgid "Todos"
+msgstr ""
+
+#: ../src/config.py:246
 msgid "Other Activity"
 msgstr "Druga dejavnost"
 
-#: ../src/config.py:248
+#: ../src/config.py:246
 msgid "Other Activities"
 msgstr "Druge dejavnosti"
 
-#: ../src/config.py:249
+#: ../src/config.py:247
 msgid "Edited or Read Note"
 msgstr "Urejanje ali branje opombe"
 
-#: ../src/config.py:249
+#: ../src/config.py:247
 msgid "Edited or Read Notes"
 msgstr "Urejanje ali branje opomb"
+
+#: ../src/config.py:248
+msgid "Software Development"
+msgstr ""
+
+#: ../src/config.py:248
+msgid "Software Developments"
+msgstr ""
+
+#: ../src/Indicator.py:87
+msgid "Hide/Show GAJ"
+msgstr ""
 
 #: ../src/common.py:143
 msgid "Video"
@@ -318,6 +337,50 @@ msgstr "Neznano"
 #: ../src/common.py:149
 msgid "IM Message"
 msgstr "Hipno sporočilo"
+
+#. TODO: In a future, I'd be cool to make the day partitions configurable.
+#. This includes redefining what Morning/Afternoon/etc. are, but also
+#. changing the categories entirely (eg. "Work", "Lunch time", etc.).
+#. For this get_day_parts and other methods should take a timestamp of
+#. the relevant day so they can account for weekends not having "Work", etc.
+#: ../src/common.py:927
+msgid "Morning"
+msgstr "Zjutraj"
+
+#: ../src/common.py:927
+msgid "Afternoon"
+msgstr "Popoldne"
+
+#: ../src/common.py:927
+msgid "Evening"
+msgstr "Zvečer"
+
+#: ../src/activity_widgets.py:113
+msgid "Switch to MultiView"
+msgstr "Preklopi v razširjen pogled"
+
+#: ../src/activity_widgets.py:627
+msgid "<b>Name: </b>"
+msgstr ""
+
+#: ../src/activity_widgets.py:631
+#, python-format
+msgid ""
+"\n"
+"<b>MIME Type:</b> %s (%s)"
+msgstr ""
+
+#: ../src/activity_widgets.py:689
+msgid "Switch to ThumbView"
+msgstr "Preklopi v pogled sličic"
+
+#: ../src/activity_widgets.py:1050
+msgid "Switch to TimelineView"
+msgstr "Preklopi v pogled časovnice"
+
+#: ../src/activity_widgets.py:1395
+msgid "Pinned Items"
+msgstr "Pripeti predmeti"
 
 #: ../extra/gnome-activity-journal.desktop.in.h:2
 msgid ""
@@ -382,3 +445,12 @@ msgstr "Višina okna"
 #: ../extra/gnome-activity-journal.schemas.in.h:10
 msgid "Window width"
 msgstr "Širina okna"
+
+#~ msgid "Search"
+#~ msgstr "Iskanje"
+
+#~ msgid "Tags"
+#~ msgstr "Oznake"
+
+#~ msgid "Powered by Zeitgeist"
+#~ msgstr "Poganja Zeitgeist"
