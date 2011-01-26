@@ -21,7 +21,10 @@
  - Fixed bookmark/pinning feature (LP: #680653).
  - Fixed support for RECEIVE_EVENT (LP: #667870).
  - Fixed day's part timerange (LP: #655045).
- - Fixed videos preview problem.
+ - Fixed crash caused by gstreamer (LP: #705545).
+ - Fixed problem with dialog windows (LP: #706543).
+ - Fixed title of MoreInformation window(LP: #706544).
+ - Fixed video previews problem.
  - Fixed visualization bug in TimeLineView.
  
 * Misc
