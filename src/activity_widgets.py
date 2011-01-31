@@ -29,13 +29,8 @@ import urllib
 import pango
 import threading
 try:
-    import gst
-    try:
-        gst.element_factory_make("playbin2", "player")
-    except gst.ElementNotFoundError:
-        print "Gstreamer plugins aren't installed. Please install gstreamer0.10-plugins-base "
-        print "for audio and video preview."
-        gst = None
+    import gst   
+    if gst.element_factory_find("playbin2") is None : gst = None  
 except ImportError:
     gst = None
 
