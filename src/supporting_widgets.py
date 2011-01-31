@@ -697,10 +697,10 @@ class AudioPreviewTooltip(PreviewTooltip):
         #Playing label stuffs
         screen = self.get_screen()
         rgba = screen.get_rgba_colormap()
-	self.set_colormap(rgba)
-	self.set_app_paintable(True)
-	img = gtk.image_new_from_stock(gtk.STOCK_MEDIA_PLAY,gtk.ICON_SIZE_LARGE_TOOLBAR)
-	self.image = AnimatedImage(get_data_path("zlogo/zg%d.png"), 150, size=20)
+        self.set_colormap(rgba)
+        self.set_app_paintable(True)
+        img = gtk.image_new_from_stock(gtk.STOCK_MEDIA_PLAY,gtk.ICON_SIZE_LARGE_TOOLBAR)
+        self.image = AnimatedImage(get_data_path("zlogo/zg%d.png"), 150, size=20)
         self.image.start()
         label = gtk.Label()
         label.set_markup(_("<b>Playing...</b>"))
@@ -724,12 +724,12 @@ class AudioPreviewTooltip(PreviewTooltip):
         self.connect("expose-event", self.transparent_expose)
         
     def transparent_expose(self, widget, event):
-	cr = widget.window.cairo_create()
-	cr.set_operator(cairo.OPERATOR_CLEAR)
-	region = gtk.gdk.region_rectangle(event.area)
-	cr.region(region)
-	cr.fill()
-	return False
+        cr = widget.window.cairo_create()
+        cr.set_operator(cairo.OPERATOR_CLEAR)
+        region = gtk.gdk.region_rectangle(event.area)
+        cr.region(region)
+        cr.fill()
+        return False
 
     def _handle_hide(self, widget):
         self.image.stop()
