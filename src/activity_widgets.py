@@ -30,6 +30,12 @@ import pango
 import threading
 try:
     import gst
+    try:
+        gst.element_factory_make("playbin2", "player")
+    except gst.ElementNotFoundError:
+        print "Gstreamer plugins aren't installed. Please install gstreamer0.10-plugins-base "
+        print "for audio and video preview."
+        gst = None
 except ImportError:
     gst = None
 
@@ -409,7 +415,10 @@ class CategoryBox(gtk.HBox):
         Create the tooltip for the categories
         """
         if self.expander.get_expanded(): return False
-        pix = get_icon_for_name(SUPPORTED_SOURCES[self.category].icon, 32)
+        if self.category in SUPPORTED_SOURCES:
+            pix = get_icon_for_name(SUPPORTED_SOURCES[self.category].icon, 32)
+        else:
+            pix = None
         hbox = gtk.HBox()
         label_title = gtk.Label()
         label_title.set_markup(self.text_title)

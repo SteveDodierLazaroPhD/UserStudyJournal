@@ -643,7 +643,7 @@ class VideoPreviewTooltip(PreviewTooltip):
         self.movie_window = gtk.DrawingArea()
         hbox.pack_start(self.movie_window)
         self.add(hbox)
-        self.player = gst.element_factory_make("playbin", "player")
+        self.player = gst.element_factory_make("playbin2", "player")
         bus = self.player.get_bus()
         bus.add_signal_watch()
         bus.enable_sync_message_emission()
