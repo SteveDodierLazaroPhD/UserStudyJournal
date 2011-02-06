@@ -450,7 +450,8 @@ class SearchBox(gtk.ToolItem):
     @staticmethod
     def do_search_objs(text, callback, interpretation=None):
         def _search(text, callback):
-            if STORE.fts_search_enabled:
+            # Disabled FTS search until it is further refined
+            if False:# STORE.fts_search_enabled:
                 matching = STORE.search_using_zeitgeist_fts(text)
             else:
                 def matching_test_function(obj):
