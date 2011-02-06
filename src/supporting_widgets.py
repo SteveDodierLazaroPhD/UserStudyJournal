@@ -455,16 +455,18 @@ class SearchBox(gtk.ToolItem):
     def do_search_objs(text, callback, interpretation=None):
         def _search(text, callback):
             matching = []
-            for day in STORE.days:
-                for obj in day.items:
-                    subject = obj.event.subjects[0]
-                    if text.lower() in subject.text.lower() or text in subject.uri:
-                        if interpretation:
-                            try:
-                                if subject.interpretation != interpretation:
-                                    continue
-                            except: continue
-                        matching.append(obj)
+            def matching_test_function(obj):
+                subject = obj.event.subjects[0]
+                if text.lower() in subject.text.lower() or text in subject.uri:
+                    if interpretation:
+                        try:
+                            if subject.interpretation != interpretation:
+                                return False
+                        except:
+                            return False
+                    return True
+                return False
+            matching = STORE.search_store_using_matching_function(matching_test_function)
             gtk.gdk.threads_enter()
             callback(matching)
             gtk.gdk.threads_leave()

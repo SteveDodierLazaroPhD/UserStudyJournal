@@ -355,7 +355,7 @@ class Store(gobject.GObject):
     __gsignals__ = {
         "update" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
     }
-
+    
     @property
     def today(self):
         return self[datetime.date.today()]
@@ -374,6 +374,12 @@ class Store(gobject.GObject):
     @property
     def list_deleted_uris(self):
         return self._deleted_uris
+
+    @property
+    def loaded_items(self):
+        for day in self.days:
+            for item in day.items:
+                yield item
 
     def __init__(self):
         super(Store, self).__init__()
@@ -529,6 +535,17 @@ class Store(gobject.GObject):
                 date = datetime.date.fromtimestamp(int(event.timestamp)/1000)
                 day = self[date]
                 day._insert_event(event, overwrite)
+
+    def search_store_using_matching_function(self, func, date=None, use_zeitgeist_fts=False):
+        matches = []
+        items = self.loaded_items if not date else self[date].items
+        for item in items:
+            if func(item):
+                matches.append(item)
+        #if use_zeitgeist_fts:
+            # test if z-fts is loaded
+            # Insert fts code here
+        return matches
 
 
 
