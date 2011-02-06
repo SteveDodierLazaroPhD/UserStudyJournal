@@ -536,17 +536,32 @@ class Store(gobject.GObject):
                 day = self[date]
                 day._insert_event(event, overwrite)
 
-    def search_store_using_matching_function(self, func, date=None, use_zeitgeist_fts=False):
+    def search_store_using_matching_function(self, func, date=None):
         matches = []
         items = self.loaded_items if not date else self[date].items
         for item in items:
             if func(item):
                 matches.append(item)
-        #if use_zeitgeist_fts:
-            # test if z-fts is loaded
-            # Insert fts code here
         return matches
 
+    def search_using_zeitgeist_fts(self, text):
+        if not external.FTS:
+            return []
+        events = external.FTS.search(text)
+        ids = [event.id for event in events]
+        results = []
+        for id_ in ids:
+            try:
+                event = self.get_event_from_id(id_)
+                results.append(event)
+            except KeyError:
+                pass
+        return results
+
+    @property
+    def fts_search_enabled(self):
+        if external.FTS: return True
+        return False
 
 
 gobject.type_register(Day)

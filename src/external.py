@@ -26,8 +26,7 @@ import random
 import time
 
 from zeitgeist.client import ZeitgeistClient
-from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
-    ResultType, TimeRange
+from zeitgeist.datamodel import Event, Subject, TimeRange, ResultType, Interpretation, Manifestation
 
 try:
     CLIENT = ZeitgeistClient()
@@ -36,6 +35,11 @@ except RuntimeError, e:
     CLIENT = None
 
 STORE = None
+
+try:
+    BUS = dbus.SessionBus()
+except:
+    BUS = None
 
 # Telepathy
 
@@ -93,8 +97,7 @@ class Hamster(object):
             return events
 
     def __init__(self):
-        bus = dbus.SessionBus()
-        self.hamster = bus.get_object(HAMSTER_URI, HAMSTER_PATH)
+        self.hamster = BUS.get_object(HAMSTER_URI, HAMSTER_PATH)
         self.iface = dbus.Interface(self.hamster, dbus_interface=HAMSTER_URI)
 
     def get_facts(self, start=1, end=86400, date=None):
@@ -112,3 +115,18 @@ except:
     HAMSTER = None
 
 
+class ZeitgeistFTS(object):
+    result_type_relevancy = 100
+    def __init__(self):
+        self._fts = BUS.get_object('org.gnome.zeitgeist.Engine',
+                               '/org/gnome/zeitgeist/index/activity')
+        self.fts = dbus.Interface(self._fts, 'org.gnome.zeitgeist.Index')
+
+    def search(self, text):
+        results, count = self.fts.Search(text,  TimeRange.always(), [], 0, 10, self.result_type_relevancy)
+        return map(Event, results)
+
+try:
+    FTS = ZeitgeistFTS()
+except:
+    FTS = None

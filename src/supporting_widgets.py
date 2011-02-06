@@ -46,6 +46,7 @@ from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
 from common import *
 import content_objects
 from config import BASE_PATH, VERSION, settings, PluginManager, get_icon_path, get_data_path, bookmarker, SUPPORTED_SOURCES
+import external
 from store import STORE, get_related_events_for_uri, CLIENT
 
 
@@ -449,19 +450,21 @@ class SearchBox(gtk.ToolItem):
     @staticmethod
     def do_search_objs(text, callback, interpretation=None):
         def _search(text, callback):
-            matching = []
-            def matching_test_function(obj):
-                subject = obj.event.subjects[0]
-                if text.lower() in subject.text.lower() or text in subject.uri:
-                    if interpretation:
-                        try:
-                            if subject.interpretation != interpretation:
+            if STORE.fts_search_enabled:
+                matching = STORE.search_using_zeitgeist_fts(text)
+            else:
+                def matching_test_function(obj):
+                    subject = obj.event.subjects[0]
+                    if text.lower() in subject.text.lower() or text in subject.uri:
+                        if interpretation:
+                            try:
+                                if subject.interpretation != interpretation:
+                                    return False
+                            except:
                                 return False
-                        except:
-                            return False
-                    return True
-                return False
-            matching = STORE.search_store_using_matching_function(matching_test_function)
+                        return True
+                    return False
+                matching = STORE.search_store_using_matching_function(matching_test_function)
             gtk.gdk.threads_enter()
             callback(matching)
             gtk.gdk.threads_leave()
