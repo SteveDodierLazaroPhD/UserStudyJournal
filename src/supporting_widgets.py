@@ -48,11 +48,6 @@ import content_objects
 from config import BASE_PATH, VERSION, settings, PluginManager, get_icon_path, get_data_path, bookmarker, SUPPORTED_SOURCES
 from store import STORE, get_related_events_for_uri, CLIENT
 
-#dirty hack for having a pointer to the main window
-PORTAL = None
-def set_portal(portal):
-    global PORTAL
-    PORTAL = portal
 
 class DayLabel(gtk.DrawingArea):
 
@@ -907,10 +902,11 @@ class AboutDialog(gtk.AboutDialog):
 
 class ContextMenu(gtk.Menu):
     subjects = []# A list of Zeitgeist event uris
-    informationwindow = None
+    infowindow = None
+    parent_window = None
+    
     def __init__(self):
         super(ContextMenu, self).__init__()
-        self.infowindow = None
         self.menuitems = {
             "open" : gtk.ImageMenuItem(gtk.STOCK_OPEN),
             "unpin" : gtk.MenuItem(_("Remove Pin")),
@@ -965,7 +961,7 @@ class ContextMenu(gtk.Menu):
         if self.subjects:
             if self.infowindow:
                 self.infowindow.destroy()
-            self.infowindow = InformationContainer()
+            self.infowindow = InformationContainer(parent=self.parent_window)
             self.infowindow.set_content_object(self.subjects[0])
             self.infowindow.show_all()
 
@@ -1000,6 +996,9 @@ class ContextMenu(gtk.Menu):
 
     def do_send_to(self, menuitem):
         launch_command("nautilus-sendto", map(lambda obj: obj.uri, self.subjects))
+
+    def set_parent_window(self, parent):
+        self.parent_window = parent
 
 
 class ToolButton(gtk.RadioToolButton):
@@ -1294,9 +1293,9 @@ class InformationContainer(gtk.Dialog):
                 if item:
                     self.insert(item, 0)
 
-    def __init__(self):
+    def __init__(self, parent=None):
         super(gtk.Window, self).__init__()
-        self.set_transient_for(PORTAL)
+        if parent: self.set_transient_for(parent)
         self.set_destroy_with_parent(True)
         self.set_size_request(400, 400)
         self.connect("destroy", self.hide_on_delete)
@@ -1417,9 +1416,9 @@ class PreferencesDialog(gtk.Dialog):
             self.manager = manager
             self.set_model(store)
 
-    def __init__(self):
+    def __init__(self, parent=None):
         super(PreferencesDialog, self).__init__()
-        self.set_transient_for(PORTAL)
+        if parent: self.set_transient_for(parent)
         self.set_destroy_with_parent(True)
         self.set_has_separator(False)
         self.set_title(_("Preferences"))

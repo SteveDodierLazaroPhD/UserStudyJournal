@@ -29,7 +29,7 @@ import datetime
 import os
 
 from activity_widgets import MultiViewContainer, TimelineViewContainer, ThumbViewContainer
-from supporting_widgets import DayButton, DayLabel, Toolbar, SearchBox, PreferencesDialog, set_portal
+from supporting_widgets import DayButton, DayLabel, Toolbar, SearchBox, PreferencesDialog, ContextMenu
 from histogram import HistogramWidget
 from store import Store, tdelta, STORE, CLIENT
 from config import settings, get_icon_path, get_data_path, PluginManager
@@ -113,15 +113,12 @@ class ViewContainer(gtk.Notebook):
 
 class PortalWindow(gtk.Window):
     """
-    The Main Window where everything starts... :)
+    The primary application window
     """
     def __init__(self):
         super(PortalWindow, self).__init__()
         # Important
         self._request_size()
-        #dirty hack for having a pointer to the mainwindow
-        #used in the supporting widgets
-        set_portal(self) 
         self.store = STORE
         self.day_iter = self.store.today
         self.pages_loaded = 0
@@ -131,7 +128,8 @@ class PortalWindow(gtk.Window):
         default_views[0].connect("view-ready", self._on_view_ready)
         map(self.view._register_default_view, default_views)
         map(self.toolbar.add_new_view_button, self.view.tool_buttons[::-1])
-        self.preferences_dialog = PreferencesDialog()
+        self.preferences_dialog = PreferencesDialog(parent=self)
+        ContextMenu.set_parent_window(self)
         self.histogram = HistogramWidget()
         self.histogram.set_store(self.store)
         self.backward_button, ev_backward_button = DayButton.new(0)
