@@ -1251,8 +1251,11 @@ class TimelineView(gtk.TreeView, Draggable):
         self.popupmenu = ContextMenu
         self.add_events(gtk.gdk.LEAVE_NOTIFY_MASK)
         self.connect("button-press-event", self.on_button_press)
+        self.connect("button-release-event", self.on_button_release)
         self.connect("row-activated" , self.on_activate)
         self.connect("style-set", self.change_style)
+        self.connect("drag-begin", self.on_drag_begin)
+        self.connect("drag-end", self.on_drag_end)
         pcolumn = gtk.TreeViewColumn("Timeline")
         self.render = render = _TimelineRenderer()
         pcolumn.pack_start(render)
@@ -1263,6 +1266,7 @@ class TimelineView(gtk.TreeView, Draggable):
         self.set_tooltip_window(StaticPreviewTooltip)
         SearchBox.connect("search", lambda *args: self.queue_draw())
         SearchBox.connect("clear", lambda *args: self.queue_draw())
+        self.on_drag = False
 
     def set_model_from_list(self, items):
         """
@@ -1309,7 +1313,25 @@ class TimelineView(gtk.TreeView, Draggable):
                 obj = model[path[0]][0]
                 self.popupmenu.do_popup(event.time, [obj])
                 return True
+                         
         return False
+    
+    def on_button_release (self, widget, event):
+        if event.button == 1 and not self.on_drag:
+            self.on_drag = False
+            path = self.get_dest_row_at_pos(int(event.x), int(event.y))
+            if path:
+                model = self.get_model()
+                obj = model[path[0]][0].launch()
+                return True
+            
+        return False
+        
+    def on_drag_begin(self, widget, context, *args):
+        self.on_drag = True
+    
+    def on_drag_end(self, widget, context, *args):
+        self.on_drag = False
 
     def on_activate(self, widget, path, column):
         model = self.get_model()
