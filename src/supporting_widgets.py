@@ -368,6 +368,12 @@ class SearchBox(gtk.ToolItem):
                     (gobject.TYPE_PYOBJECT,))
     }
 
+    @property
+    def use_fts(self):
+        if STORE.fts_search_enabled:
+            return self.fts_checkbutton.get_active()
+        return False
+
     def __init__(self):
         gtk.ToolItem.__init__(self)
 
@@ -380,12 +386,22 @@ class SearchBox(gtk.ToolItem):
         self.search = SearchEntry()
         self.hbox.pack_start(self.search)
         self.category = {}
+        if STORE.fts_search_enabled:
+            self.fts_checkbutton = gtk.CheckButton(_("Use Zeitgeist FTS"))
 
         for source in SUPPORTED_SOURCES.keys():
             s = SUPPORTED_SOURCES[source]._desc_pl
             self.category[s] = source
+        self.combobox = gtk.combo_box_new_text()
+        self.combobox.set_focus_on_click(False)
+        self.hbox.pack_start(self.combobox, False, False, 6)
+        if STORE.fts_search_enabled:
+            self.hbox.pack_end(self.fts_checkbutton)
+        self.combobox.append_text("All activities")
+        self.combobox.set_active(0)
+        for cat in self.category.keys():
+            self.combobox.append_text(cat)
 
-        self._init_combobox()
         self.show_all()
 
         def change_style(widget, style):
@@ -413,14 +429,6 @@ class SearchBox(gtk.ToolItem):
             self.results = [] 
             self.emit("clear")  
 
-    def _init_combobox(self):
-        self.combobox = gtk.combo_box_new_text()
-        self.combobox.set_focus_on_click(False)
-        self.hbox.pack_end(self.combobox, False, False, 6)
-        self.combobox.append_text("All activities")
-        self.combobox.set_active(0)
-        for cat in self.category.keys():
-            self.combobox.append_text(cat)
 
     def set_search(self, widget, text=None):
         if not self.text.strip() == text.strip():
@@ -447,12 +455,10 @@ class SearchBox(gtk.ToolItem):
         if not callback: return
         self.do_search_objs(text, callback, interpretation)
 
-    @staticmethod
-    def do_search_objs(text, callback, interpretation=None):
+    def do_search_objs(self, text, callback, interpretation=None):
         def _search(text, callback):
-            # Disabled FTS search until it is further refined
-            if False:# STORE.fts_search_enabled:
-                matching = STORE.search_using_zeitgeist_fts(text)
+            if STORE.fts_search_enabled and self.use_fts:
+                matching = STORE.search_using_zeitgeist_fts(text, [Event.new_for_values(subject_interpretation=interpretation)] if interpretation else [])
             else:
                 def matching_test_function(obj):
                     subject = obj.event.subjects[0]

@@ -222,6 +222,10 @@ class Day(gobject.GObject):
             return len(self._items)
         return self._population or 0
 
+    def has_id(self, id_):
+        if not self._loaded: self.load_ids()
+        return self._items.has_key(id_)
+
     @DoEmit("update")
     def set_ids(self, event_ids):
         deleted_uris = STORE.list_deleted_uris
@@ -520,21 +524,24 @@ class Store(gobject.GObject):
                 event_templates, callback, [start*1000, end*1000], num_events=50000)
         return False
 
+    def __add_event(self, event, overwrite):
+        date = datetime.date.fromtimestamp(int(event.timestamp)/1000)
+        day = self[date]
+        day._insert_event(event, overwrite)
+
+    def __add_events(self, events, overwrite):
+        for event in events:
+            self.__add_event(event, overwrite)
+
     def add_events(self, events, overwrite=True, idle=True):
         if idle:
             def _idle_add(events, overwrite):
                 # Use _insert_event to avoid update signals
-                for event in events:
-                    date = datetime.date.fromtimestamp(int(event.timestamp)/1000)
-                    day = self[date]
-                    day._insert_event(event, overwrite)
+                self.__add_events(events, overwrite)
                 return False
             gobject.idle_add(_idle_add, events, overwrite)
         else:
-            for event in events:
-                date = datetime.date.fromtimestamp(int(event.timestamp)/1000)
-                day = self[date]
-                day._insert_event(event, overwrite)
+            self.__add_events(events, overwrite)
 
     def search_store_using_matching_function(self, func, date=None):
         matches = []
@@ -544,22 +551,23 @@ class Store(gobject.GObject):
                 matches.append(item)
         return matches
 
-    def search_using_zeitgeist_fts(self, text):
+    def search_using_zeitgeist_fts(self, text, event_templates=None):
         if not external.FTS:
             return []
-        events = external.FTS.search(text)
-        ids = [event.id for event in events]
+        events = external.FTS.search(text, event_templates if event_templates else [])
+        ids = [int(event.id) for event in events]
         results = []
         for id_ in ids:
             try:
                 event = self.get_event_from_id(id_)
                 results.append(event)
-            except KeyError:
+            except KeyError as e:
                 pass
         return results
 
     @property
     def fts_search_enabled(self):
+        # Disabled FTS search until it is further refined
         if external.FTS: return True
         return False
 

@@ -122,8 +122,8 @@ class ZeitgeistFTS(object):
                                '/org/gnome/zeitgeist/index/activity')
         self.fts = dbus.Interface(self._fts, 'org.gnome.zeitgeist.Index')
 
-    def search(self, text):
-        results, count = self.fts.Search(text,  TimeRange.always(), [], 0, 10, self.result_type_relevancy)
+    def search(self, text, templates=None):
+        results, count = self.fts.Search(text,  TimeRange.always(), templates if templates else [] , 0, 10, self.result_type_relevancy)
         return map(Event, results)
 
 try:

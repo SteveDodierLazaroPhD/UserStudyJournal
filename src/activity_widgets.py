@@ -540,7 +540,6 @@ class Item(gtk.HBox, Draggable):
             text = self.content_obj.uri.replace("&", "&amp;")
         self.label.set_markup(text)
         self.label.set_ellipsize(pango.ELLIPSIZE_END)
-        self.label.set_width_chars(35)   
         self.label.set_alignment(0.0, 0.5)
         if self.icon: img = gtk.image_new_from_pixbuf(self.icon)
         else: img = None
