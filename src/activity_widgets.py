@@ -493,6 +493,7 @@ class Item(gtk.HBox, Draggable):
         self.show_all()
         self.o_style = None
         self.markup = None
+        self.last_launch = 0
         self.__highlight()
         SearchBox.connect("search", self.__highlight)
         SearchBox.connect("clear", self.__clear)
@@ -678,11 +679,14 @@ class Item(gtk.HBox, Draggable):
         uri = unicode(self.subject.uri)
         bookmarker.bookmark(uri) if bool_ else bookmarker.unbookmark(uri)
         if not bool_: self.destroy()
-
+        
     def launch(self, *discard):
-        if self.content_obj is not None:
+        ev_time = time.time()
+        #1 sec it's a good range imo...
+        launch = True if (ev_time - self.last_launch)*1000 > 1000 else False
+        if self.content_obj is not None and launch:
+            self.last_launch = ev_time
             self.content_obj.launch()
-
 
 #####################
 ## ThumbView code
