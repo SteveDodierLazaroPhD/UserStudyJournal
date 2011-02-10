@@ -107,11 +107,9 @@ class DayLabel(gtk.DrawingArea):
 
     def day_text(self, widget, event, context):
         actual_y = self.get_size_request()[1]
-        if actual_y > event.area.height:
-            y = actual_y
-        else:
-            y = event.area.height
-        x = event.area.width
+        gx, gy, gw, gh, gq = widget.window.get_geometry()
+        y = actual_y if actual_y > gh else gh; x = gw
+
         gc = self.style.fg_gc[gtk.STATE_SELECTED if self.leading else gtk.STATE_NORMAL]
         layout = widget.create_pango_layout(self.weekday_string)
         layout.set_font_description(pango.FontDescription(self.font_name + " Bold 15"))
@@ -120,13 +118,15 @@ class DayLabel(gtk.DrawingArea):
         self.date_text(widget, event, context, (y)/2 + 5)
 
     def date_text(self, widget, event, context, lastfontheight):
+        gx, gy, gw, gh, gq = widget.window.get_geometry()
         gc = self.style.fg_gc[gtk.STATE_SELECTED if self.leading else gtk.STATE_INSENSITIVE]
         layout = widget.create_pango_layout(self.date_string)
         layout.set_font_description(pango.FontDescription(self.font_name + " 10"))
         w, h = layout.get_pixel_size()
-        widget.window.draw_layout(gc, (event.area.width-w)/2, lastfontheight, layout)
+        widget.window.draw_layout(gc, (gw-w)/2, lastfontheight, layout)
 
     def draw(self, widget, event, context):
+        gx, gy, w, h, gq = widget.window.get_geometry()
         if self.leading:
             bg = self.style.bg[gtk.STATE_SELECTED]
             red, green, blue = bg.red/65535.0, bg.green/65535.0, bg.blue/65535.0
@@ -137,7 +137,6 @@ class DayLabel(gtk.DrawingArea):
             blue = (bg.blue * 125 / 100)/65535.0
         x = 0; y = 0
         r = 5
-        w, h = event.area.width, event.area.height
         context.set_source_rgba(red, green, blue, 1)
         context.new_sub_path()
         context.arc(r+x, r+y, r, math.pi, 3 * math.pi /2)
@@ -281,7 +280,7 @@ class DayButton(gtk.DrawingArea):
 
         x = 0; y = 0
         r = 5
-        w, h = event.area.width, event.area.height
+        gx, gy, w, h, gq = widget.window.get_geometry()
         size = 20
         if self.sensitive:
             context.set_source_rgba(*(self.leading_header_color if self.leading else self.header_color))
