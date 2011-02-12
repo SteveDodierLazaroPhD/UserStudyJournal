@@ -608,6 +608,12 @@ class Item(gtk.HBox, Draggable):
         Create the tooltip for non-GioFile events
         """
         text = "<b>" + self.label.get_text() + "</b>\n"
+        if isinstance(self.content_obj, GioFile) and \
+           self.content_obj.annotation is not None:
+            if self.content_obj.annotation.strip () != "":
+                note = _("Notes")
+                note_text = _("<b>"+ note +":</b> %s")% (self.content_obj.annotation)
+                text += note_text + "\n"
         uri = urllib.unquote(self.content_obj.uri)
         if len(uri) > 90: uri = uri[:90] + "..." #ellipsize--it's ugly!
         if uri.startswith("file://"):
@@ -633,8 +639,17 @@ class Item(gtk.HBox, Draggable):
         descr = gio.content_type_from_mime_type(self.content_obj.mime_type)
         descr = gio.content_type_get_description(descr)
         mime_text = _("\n<b>MIME Type:</b> %s (%s)")% (descr, self.content_obj.mime_type)
-        text += mime_text + "\n\n"
-        truncate_lenght = len(mime_text)
+        text += mime_text + "\n"
+        if self.content_obj.annotation is not None:
+            if self.content_obj.annotation.strip () != "":
+                note = _("Notes")
+                note_text = _("<b>"+ note +":</b> %s")% (self.content_obj.annotation)
+                text += note_text + "\n\n"
+                truncate_lenght = max (len(mime_text), len(note_text))
+            else: truncate_lenght = len(mime_text)
+        else: 
+            text += "\n"
+            truncate_lenght = len(mime_text)
         if uri.startswith("file://"):
             uri = self.truncate_string(uri[7:], truncate_lenght)
             text += unicode(uri)

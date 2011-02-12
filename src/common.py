@@ -775,7 +775,7 @@ class GioFile(object):
     def __init__(self, path):
         self._file_object = gio.File(path)
         self._file_info = self._file_object.query_info(
-            "standard::content-type,standard::icon,time::modified")
+            "standard::content-type,standard::icon,time::modified,metadata::annotation")
 
     @property
     def mime_type(self):
@@ -792,6 +792,14 @@ class GioFile(object):
     @property
     def uri(self):
         return self._file_object.get_uri()
+        
+    def get_annotation(self):
+        return self._file_info.get_attribute_as_string("metadata::annotation")
+        
+    def set_annotation(self, annotation):
+        self._file_info.set_attribute_string("metadata::annotation", annotation)
+        
+    annotation = property(get_annotation, set_annotation)
 
     def get_content(self):
         f = open(self._file_object.get_path())
@@ -858,7 +866,7 @@ class GioFile(object):
 
     def refresh(self):
         self._file_info = self._file_object.query_info(
-            "standard::content-type,standard::icon,time::modified")
+            "standard::content-type,standard::icon,time::modified,metadata::annotation")
 
     def get_icon(self, size=24, can_thumb=False, border=0):
         icon = None

@@ -1297,8 +1297,11 @@ class InformationContainer(gtk.Dialog):
             self.pin_button = pin = Toolbar.get_toolbutton(
                 get_icon_path("hicolor/24x24/status/pin.png"),
                 _("Add Pin"),radio=False)
+            self.note_button = note = Toolbar.get_toolbutton(
+                get_icon_path("hicolor/24x24/status/note.png"),
+                _("Edit Note"),radio=False)
             sep = gtk.SeparatorToolItem()
-            for item in (del_, pin, sep, ob):
+            for item in (del_, note, pin, sep, ob):
                 if item:
                     self.insert(item, 0)
 
@@ -1332,6 +1335,7 @@ class InformationContainer(gtk.Dialog):
         self.toolbar.open_button.connect("clicked", _launch)
         self.toolbar.delete_button.connect("clicked", self.do_delete_events_with_shared_uri)
         self.toolbar.pin_button.connect("clicked", self.do_toggle_bookmark)
+        self.toolbar.note_button.connect("clicked", self.do_edit_note)
         self.connect("size-allocate", self.size_allocate)
         # Remove the close button
         separator = gtk.SeparatorToolItem()
@@ -1351,6 +1355,10 @@ class InformationContainer(gtk.Dialog):
             bookmarker.unbookmark(uri)
         else:
             bookmarker.bookmark(uri)
+    
+    def do_edit_note(self, *args):
+        #TODO
+        pass
 
     def do_delete_events_with_shared_uri(self, *args):
         CLIENT.find_event_ids_for_template(
