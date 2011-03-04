@@ -171,6 +171,9 @@ class PortalWindow(gtk.Window):
         self.view.connect("new-view-added", lambda w, v: self.toolbar.add_new_view_button(v.button, len(self.view.tool_buttons)))
         self.connect("destroy", self.quit)
         self.connect("delete-event", self.on_delete)
+        self.toolbar.connect("previous", self.previous)
+        self.toolbar.connect("jump-to-today", lambda w: self.set_date(datetime.date.today()))
+        self.toolbar.connect("next", self.next)
         self.backward_button.connect("clicked", self.previous)
         self.forward_button.connect("clicked", self.next)
         self.forward_button.connect("jump-to-today", lambda w: self.set_date(datetime.date.today()))
@@ -250,9 +253,11 @@ class PortalWindow(gtk.Window):
         today = datetime.date.today()
         if date == today:
             self.forward_button.set_sensitive(False)
+            self.toolbar.nextd_button.set_sensitive(False)
         else:
             self.forward_button.set_leading(True)
             self.forward_button.set_sensitive(True)
+            self.toolbar.nextd_button.set_sensitive(True)
 
     def on_view_button_click(self, w, button, i):
         self.view.set_view_page(i)

@@ -1034,8 +1034,21 @@ class InformationToolButton(gtk.ToolButton):
 
 
 class Toolbar(gtk.Toolbar):
+
+    __gsignals__ = {
+        "previous" : (gobject.SIGNAL_RUN_FIRST,
+                   gobject.TYPE_NONE,
+                   ()),
+        "jump-to-today" : (gobject.SIGNAL_RUN_FIRST,
+                   gobject.TYPE_NONE,
+                   ()),
+        "next" : (gobject.SIGNAL_RUN_FIRST,
+                   gobject.TYPE_NONE,
+                   ()),
+    }
+    
     @staticmethod
-    def get_toolbutton(path, label_string,radio=True):
+    def get_toolbutton(path, label_string, radio=True):
         if radio:
             button = ToolButton()
         else:
@@ -1049,19 +1062,27 @@ class Toolbar(gtk.Toolbar):
 
     def __init__(self):
         super(Toolbar, self).__init__()
-        #self.set_style(gtk.TOOLBAR_BOTH)
-        #
-        #self.append_space()
+        #Search button
         self.search_button = sb = gtk.ToolButton(gtk.STOCK_FIND)
         self.search_dialog = sdialog = SearchBox
         self.search_dialog.search.connect("close", self.toggle_searchbox_visibility)
         self.search_button.connect("clicked", self.toggle_searchbox_visibility)
+        #Previuos-day button
+        self.previousd_button = pdb = gtk.ToolButton(gtk.STOCK_GO_BACK)
+        self.previousd_button.connect("clicked", lambda x: self.emit("previous"))
+        #Jump-to-today button
+        self.home_button = hb = gtk.ToolButton(gtk.STOCK_HOME)
+        self.home_button.connect("clicked", lambda x: self.emit("jump-to-today"))
+        #Next-day button button
+        self.nextd_button = ndb = gtk.ToolButton(gtk.STOCK_GO_FORWARD)
+        self.nextd_button.connect("clicked", lambda x: self.emit("next"))
+        self.nextd_button.set_sensitive(False)
 
         sep1 = gtk.SeparatorToolItem()
-        sep2 = gtk.SeparatorToolItem()
-        for item in (sdialog, sb, sep1):
+        sep2 = gtk.SeparatorToolItem()       
+        for item in (sdialog, sb, sep1, ndb, hb, pdb, sep2):
             self.insert(item, 0)
-        #
+            
         separator = gtk.SeparatorToolItem()
         separator.set_expand(True)
         separator.set_draw(False)
@@ -1265,7 +1286,6 @@ class _RelatedPane(gtk.TreeView):
                 obj = model[path[0]][0]
                 obj.launch()
 
-
 class InformationContainer(gtk.Dialog):
     """
     . . . . .
@@ -1304,7 +1324,30 @@ class InformationContainer(gtk.Dialog):
             for item in (del_, note, pin, sep, ob):
                 if item:
                     self.insert(item, 0)
-
+                    
+    class _EditNoteWindow(gtk.Window):
+    
+        def __init__(self, parent, obj):  
+            gtk.Window.__init__(self)
+            self.obj = obj
+            self.set_title(_("Edit Note"))
+            self.set_transient_for(parent)
+            self.set_destroy_with_parent(True)
+            self.set_size_request(400, 400)
+            self.connect("destroy", self.on_save_note)
+            sw = gtk.ScrolledWindow()
+            sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+            textview = gtk.TextView()
+            self.textbuffer = textview.get_buffer()
+            self.textbuffer.set_text("" if self.obj.annotation is None else self.obj.annotation) 
+            sw.add(textview)
+            self.add(sw)
+            self.show_all()
+            
+        def on_save_note(self, *arg):
+            self.obj.annotation = self.textbuffer.get_text(self.textbuffer.get_start_iter (),
+                                                           self.textbuffer.get_end_iter())
+    
     def __init__(self, parent=None):
         super(gtk.Window, self).__init__()
         if parent: self.set_transient_for(parent)
@@ -1357,8 +1400,7 @@ class InformationContainer(gtk.Dialog):
             bookmarker.bookmark(uri)
     
     def do_edit_note(self, *args):
-        #TODO
-        pass
+        window = self._EditNoteWindow(self, self.obj)
 
     def do_delete_events_with_shared_uri(self, *args):
         CLIENT.find_event_ids_for_template(
@@ -1368,6 +1410,8 @@ class InformationContainer(gtk.Dialog):
 
     def set_content_object(self, obj):
         self.obj = obj
+        if not isinstance(self.obj, GioFile):
+            self.toolbar.note_button.set_sensitive(False)
         def _callback(events):
             self.relatedpane.set_model_from_list(events)
         get_related_events_for_uri(obj.uri, _callback)
