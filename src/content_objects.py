@@ -441,7 +441,7 @@ class BaseContentType(ContentObject):
         """Special method which returns a pixbuf for the thumbview and a ispreview bool describing if it is a preview"""
         if self.thumbnail_uri:
             thumbview_pixbuf, isthumb = common.PIXBUFCACHE.get_pixbuf_from_uri(
-                self.thumbnail_uri, SIZE_LARGE, iconscale=0.1875, w=SIZE_THUMBVIEW[0], h=SIZE_THUMBVIEW[1])
+                self.thumbnail_uri, SIZE_LARGE, iconscale=0.1875, w=SIZE_THUMBVIEW[1][0], h=SIZE_THUMBVIEW[1][1])
         else:
             thumbview_pixbuf = None
         return thumbview_pixbuf
@@ -449,7 +449,7 @@ class BaseContentType(ContentObject):
     @CachedAttribute
     def timelineview_pixbuf(self):
         """Special method which returns a sized pixbuf for the timeline and a ispreview bool describing if it is a preview"""
-        icon = self.get_icon(SIZE_TIMELINEVIEW[1])
+        icon = self.get_icon(SIZE_TIMELINEVIEW[1][1])
         if not icon:
             icon = common.PLACEHOLDER_PIXBUFFS[24]
         return icon

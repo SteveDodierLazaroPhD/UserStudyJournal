@@ -1045,6 +1045,9 @@ class Toolbar(gtk.Toolbar):
         "next" : (gobject.SIGNAL_RUN_FIRST,
                    gobject.TYPE_NONE,
                    ()),
+        "zoom-changed" : (gobject.SIGNAL_RUN_FIRST,
+                   gobject.TYPE_NONE,
+                   (gobject.TYPE_INT,))
     }
     
     @staticmethod
@@ -1073,6 +1076,7 @@ class Toolbar(gtk.Toolbar):
         #Jump-to-today button
         self.home_button = hb = gtk.ToolButton(gtk.STOCK_HOME)
         self.home_button.connect("clicked", lambda x: self.emit("jump-to-today"))
+        self.home_button.set_sensitive(False)
         #Next-day button button
         self.nextd_button = ndb = gtk.ToolButton(gtk.STOCK_GO_FORWARD)
         self.nextd_button.connect("clicked", lambda x: self.emit("next"))
@@ -1086,8 +1090,16 @@ class Toolbar(gtk.Toolbar):
         separator = gtk.SeparatorToolItem()
         separator.set_expand(True)
         separator.set_draw(False)
-        self.throbber_popup_button = ThrobberPopupButton()
-        for item in (separator, self.throbber_popup_button):
+        #Zoom-in button
+        self.zoomin_button = zi = gtk.ToolButton(gtk.STOCK_ZOOM_IN)
+        self.zoomin_button.connect("clicked", lambda x: self.emit("zoom-changed", 1))
+        self.zoomin_button.set_sensitive(False)
+        #Zoom-out button 
+        self.zoomout_button = zo = gtk.ToolButton(gtk.STOCK_ZOOM_OUT)
+        self.zoomout_button.connect("clicked", lambda x: self.emit("zoom-changed", -1))
+        self.zoomout_button.set_sensitive(False)
+        self.throbber_popup_button = ThrobberPopupButton()       
+        for item in (separator, zo, zi, self.throbber_popup_button):
             self.insert(item, -1)
 
     def do_throb(self):

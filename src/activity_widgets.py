@@ -164,6 +164,9 @@ class MultiViewContainer(gtk.HBox):
             if page.day == day:
                 page.set_day(day)
         self.emit("view-ready")
+        
+    def set_zoom(self, zoom):
+        pass
 
 class DayViewContainer(gtk.VBox):
     event_templates = (
@@ -720,6 +723,9 @@ class ThumbViewContainer(_GenericViewWidget):
         self.scrolledwindow.get_children()[0].set_shadow_type(gtk.SHADOW_NONE)
         self.pack_end(self.scrolledwindow)
         self.show_all()
+        
+    def set_zoom(self, zoom):
+        self.view.set_zoom(zoom)
 
 
 class _ThumbViewRenderer(gtk.GenericCellRenderer):
@@ -736,11 +742,46 @@ class _ThumbViewRenderer(gtk.GenericCellRenderer):
          "event to be displayed",
          gobject.PARAM_READWRITE,
          ),
+         "size_w" :
+        (gobject.TYPE_INT,
+         "Width of cell",
+         "Width of cell",
+         48,
+         256,
+         96,
+         gobject.PARAM_READWRITE,
+         ),
+         "size_h" :
+        (gobject.TYPE_INT,
+         "Height of cell",
+         "Height of cell",
+         36,
+         192,
+         72,
+         gobject.PARAM_READWRITE,
+         ),
+         "text_size" :
+        (gobject.TYPE_STRING,
+         "Size of the text",
+         "Size of the text",
+         "",
+         gobject.PARAM_READWRITE,
+         )
     }
 
-    width = 96
-    height = 72
     properties = {}
+    
+    @property
+    def width(self):
+        return self.get_property("size_w")
+        
+    @property
+    def height(self):
+        return self.get_property("size_h")
+        
+    @property
+    def text_size(self):
+        return self.get_property("text_size")
 
     @property
     def content_obj(self):
@@ -761,7 +802,6 @@ class _ThumbViewRenderer(gtk.GenericCellRenderer):
     def __init__(self):
         super(_ThumbViewRenderer, self).__init__()
         self.properties = {}
-        self.set_fixed_size(self.width, self.height)
         self.set_property("mode", gtk.CELL_RENDERER_MODE_ACTIVATABLE)
 
     def do_set_property(self, pspec, value):
@@ -771,10 +811,9 @@ class _ThumbViewRenderer(gtk.GenericCellRenderer):
         return self.properties[pspec.name]
 
     def on_get_size(self, widget, area):
-        if area:
-            #return (area.x, area.y, area.width, area.height)
-            return (0, 0, area.width, area.height)
-        return (0,0,0,0)
+        w = self.width 
+        h = self.height
+        return (0, 0, w, h)
 
     def on_render(self, window, widget, background_area, cell_area, expose_area, flags):
         """
@@ -785,10 +824,11 @@ class _ThumbViewRenderer(gtk.GenericCellRenderer):
         y = cell_area.y
         w = cell_area.width
         h = cell_area.height
-        pixbuf_w = self.pixbuf.get_width() if self.pixbuf else 0
-        pixbuf_h = self.pixbuf.get_height() if self.pixbuf else 0
-        if (pixbuf_w, pixbuf_h) == content_objects.SIZE_THUMBVIEW:
-            render_pixbuf(window, x, y, self.pixbuf)
+        pixbuf = self.pixbuf
+        pixbuf_w = pixbuf.get_width() if pixbuf else 0
+        pixbuf_h = pixbuf.get_height() if pixbuf else 0
+        if (pixbuf_w, pixbuf_h) != (0, 0) and (pixbuf_w, pixbuf_h) != (48, 48):
+            render_pixbuf(window, x, y, pixbuf, w, h)
         else:
             self.file_render_pixbuf(window, widget, x, y, w, h)
         render_emblems(window, x, y, w, h, self.emblems)
@@ -801,9 +841,9 @@ class _ThumbViewRenderer(gtk.GenericCellRenderer):
         return True
 
     @staticmethod
-    def insert_file_markup(text):
+    def insert_file_markup(text, size):
         text = text.replace("&", "&amp;")
-        text = "<span size='6400'>" + text + "</span>"
+        text = "<span size='" + size + "'>" + text + "</span>"
         return text
 
     def file_render_pixbuf(self, window, widget, x, y, w, h):
@@ -812,6 +852,7 @@ class _ThumbViewRenderer(gtk.GenericCellRenderer):
         """
         context = window.cairo_create()
         pixbuf = self.pixbuf
+        pixbuf = None
         if pixbuf:
             imgw, imgh = pixbuf.get_width(), pixbuf.get_height()
             ix = x + (self.width - imgw)
@@ -824,7 +865,7 @@ class _ThumbViewRenderer(gtk.GenericCellRenderer):
             context.fill()
         draw_frame(context, x, y, w, h)
         context = window.cairo_create()
-        text = self.insert_file_markup(self.content_obj.thumbview_text)
+        text = self.insert_file_markup(self.content_obj.thumbview_text, self.text_size)
 
         layout = widget.create_pango_layout(text)
         draw_text(context, layout, text, x+5, y+5, self.width-10)
@@ -868,12 +909,17 @@ class ThumbIconView(gtk.IconView, Draggable):
     """
     last_active = -1
     child_width = _ThumbViewRenderer.width
-    child_height = _ThumbViewRenderer.height
+    child_height = _ThumbViewRenderer.height    
+       
     def __init__(self):
         gtk.IconView.__init__(self)
         Draggable.__init__(self, self)
         self.active_list = []
+        self.current_size_index = 1
         self.popupmenu = ContextMenu
+        self.model = gtk.ListStore(gobject.TYPE_PYOBJECT, int, int, str)
+        self.set_model(self.model)
+        
         self.add_events(gtk.gdk.LEAVE_NOTIFY_MASK)
         self.connect("button-press-event", self.on_button_press)
         self.connect("button-release-event", self.on_button_release)
@@ -882,10 +928,12 @@ class ThumbIconView(gtk.IconView, Draggable):
         self.set_selection_mode(gtk.SELECTION_SINGLE)
         self.set_column_spacing(6)
         self.set_row_spacing(6)
-        pcolumn = gtk.TreeViewColumn("Preview")
         render = _ThumbViewRenderer()
         self.pack_end(render)
         self.add_attribute(render, "content_obj", 0)
+        self.add_attribute(render, "size_w", 1)
+        self.add_attribute(render, "size_h", 2)
+        self.add_attribute(render, "text_size", 3)
         self.set_margin(10)
         SearchBox.connect("search", lambda *args: self.queue_draw())
         SearchBox.connect("clear", lambda *args: self.queue_draw())
@@ -897,21 +945,19 @@ class ThumbIconView(gtk.IconView, Draggable):
         """
         lock = threading.Lock()
         self.active_list = []
-        liststore = gtk.ListStore(gobject.TYPE_PYOBJECT)
-        gtk.gdk.threads_enter()
-        self.set_model(liststore)
-        gtk.gdk.threads_leave()
-
+        self.model.clear()
         for item in items:
             obj = item.content_object
             if not obj: continue
             gtk.gdk.threads_enter()
             lock.acquire()
             self.active_list.append(False)
-            liststore.append((obj,))
+            self.model.append([obj, SIZE_THUMBVIEW[self.current_size_index][0], 
+                                    SIZE_THUMBVIEW[self.current_size_index][1],
+                                    SIZE_TEXT_THUMBVIEW[self.current_size_index]])
             lock.release()
             gtk.gdk.threads_leave()
-
+        
     def set_model_from_list(self, items):
         """
         Sets creates/sets a model from a list of zeitgeist events
@@ -919,10 +965,17 @@ class ThumbIconView(gtk.IconView, Draggable):
         """
         self.last_active = -1
         if not items:
-            self.set_model(None)
             return
         thread = threading.Thread(target=self._set_model_in_thread, args=(items,))
         thread.start()
+        
+    def set_zoom(self, size_index):
+        self.current_size_index = size_index
+        for row in self.model:
+            row[1] = SIZE_THUMBVIEW[size_index][0]
+            row[2] = SIZE_THUMBVIEW[size_index][1]
+            row[3] = SIZE_TEXT_THUMBVIEW[size_index]
+        self.queue_draw()
 
     def on_drag_data_get(self, iconview, context, selection, target_id, etime):
         model = iconview.get_model()
@@ -1029,7 +1082,6 @@ class ThumbView(gtk.VBox):
         if not items or len(items) == 0:
             view.hide_all()
             label.hide_all()
-            view.set_model_from_list(None)
             return False
         view.show_all()
         label.show_all()
@@ -1052,6 +1104,10 @@ class ThumbView(gtk.VBox):
 
         for i, part in enumerate(parts):
             self.set_phase_items(i, part)
+            
+    def set_zoom(self, zoom):
+         for i in range(0, len(DayParts.get_day_parts())):
+            self.views[i].set_zoom(zoom)
 
     def change_style(self, widget, style):
         rc_style = self.style
@@ -1089,6 +1145,9 @@ class TimelineViewContainer(_GenericViewWidget):
         color = rc_style.bg[gtk.STATE_NORMAL]
         color = shade_gdk_color(color, 102/100.0)
         self.ruler.modify_bg(gtk.STATE_NORMAL, color)
+        
+    def set_zoom(self, zoom):
+        self.view.set_zoom(zoom)
 
 
 class _TimelineRenderer(gtk.GenericCellRenderer):
@@ -1104,19 +1163,54 @@ class _TimelineRenderer(gtk.GenericCellRenderer):
          "event to be displayed",
          gobject.PARAM_READWRITE,
          ),
+        "size_w" :
+        (gobject.TYPE_INT,
+         "Width of cell",
+         "Width of cell",
+         16,
+         128,
+         32,
+         gobject.PARAM_READWRITE,
+         ),
+        "size_h" :
+        (gobject.TYPE_INT,
+         "Height of cell",
+         "Height of cell",
+         12,
+         96,
+         24,
+         gobject.PARAM_READWRITE,
+         ),
+        "text_size" :
+        (gobject.TYPE_STRING,
+         "Size of the text",
+         "Size of the text",
+         "",
+         gobject.PARAM_READWRITE,
+         ),
     }
-
-    width = 32
-    height = 48
+    
     barsize = 5
     properties = {}
 
     textcolor = {gtk.STATE_NORMAL : ("#ff", "#ff"),
                  gtk.STATE_SELECTED : ("#ff", "#ff")}
-
+                 
     @property
     def content_obj(self):
         return self.get_property("content_obj")
+                 
+    @property
+    def width(self):
+        return self.get_property("size_w")
+        
+    @property
+    def height(self):
+        return self.get_property("size_h")
+        
+    @property
+    def text_size(self):
+        return self.get_property("text_size")
 
     @property
     def phases(self):
@@ -1137,12 +1231,11 @@ class _TimelineRenderer(gtk.GenericCellRenderer):
 
     @property
     def pixbuf(self):
-        return self.content_obj.timelineview_pixbuf
+        return self.content_obj.get_icon(self.height)
 
     def __init__(self):
         super(_TimelineRenderer, self).__init__()
         self.properties = {}
-        self.set_fixed_size(self.width, self.height)
         self.set_property("mode", gtk.CELL_RENDERER_MODE_ACTIVATABLE)
 
     def do_set_property(self, pspec, value):
@@ -1152,9 +1245,9 @@ class _TimelineRenderer(gtk.GenericCellRenderer):
         return self.properties[pspec.name]
 
     def on_get_size(self, widget, area):
-        if area:
-            return (0, 0, area.width, area.height)
-        return (0,0,0,0)
+        w = self.width 
+        h = self.height + self.barsize*2 + 10
+        return (0, 0, w, h)
 
     def on_render(self, window, widget, background_area, cell_area, expose_area, flags):
         """
@@ -1200,20 +1293,20 @@ class _TimelineRenderer(gtk.GenericCellRenderer):
         if (pixbuf_w, pixbuf_h) == content_objects.SIZE_TIMELINEVIEW:
             drawframe = True
         else: drawframe = False
-        render_pixbuf(window, x, y, self.pixbuf, drawframe=drawframe)
+        render_pixbuf(window, x, y, self.pixbuf, w, h, drawframe=drawframe)
 
     def render_text(self, window, widget, x, y, w, h, flags):
         w = window.get_geometry()[2]
-        y+= 2
+        y += 2
         x += 5
         state = gtk.STATE_SELECTED if gtk.CELL_RENDERER_SELECTED & flags else gtk.STATE_NORMAL
         color1, color2 = self.textcolor[state]
-        text = self._make_timelineview_text(self.text, color1.to_string(), color2.to_string())
+        text = self._make_timelineview_text(self.text, color1.to_string(), color2.to_string(), self.text_size)
         layout = widget.create_pango_layout("")
         layout.set_markup(text)
         textw, texth = layout.get_pixel_size()
         if textw + x > w:
-            layout.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
+            layout.set_ellipsize(pango.ELLIPSIZE_END)
             layout.set_width(200*1024)
             textw, texth = layout.get_pixel_size()
             if x + textw > w:
@@ -1226,7 +1319,7 @@ class _TimelineRenderer(gtk.GenericCellRenderer):
         return x, y
 
     @staticmethod
-    def _make_timelineview_text(text, color1, color2):
+    def _make_timelineview_text(text, color1, color2, size):
         """
         :returns: a string of text markup used in timeline widget and elsewhere
         """
@@ -1235,8 +1328,10 @@ class _TimelineRenderer(gtk.GenericCellRenderer):
             p1, p2 = text[0], text[1]
         else:
             p1, p2 = text[0], " "
-        t1 = "<span color='" + color1 + "'><b>" + p1 + "</b></span>"
-        t2 = "<span color='" + color2 + "'>" + p2 + "</span> "
+        t1 = "<span size='"+ size + "' color='" + color1 + "'><b>" + p1 + "</b></span>"
+        t2 = "<span size='"+ size + "' color='" + color2 + "'>" + p2 + "</span> "
+        if size == 'small' or t2 == "":
+            return (str(t1)).replace("&", "&amp;")
         return (str(t1) + "\n" + str(t2) + "").replace("&", "&amp;")
 
     def on_start_editing(self, event, widget, path, background_area, cell_area, flags):
@@ -1266,6 +1361,9 @@ class TimelineView(gtk.TreeView, Draggable):
     def __init__(self):
         gtk.TreeView.__init__(self)
         Draggable.__init__(self, self)
+        
+        self.model = gtk.ListStore(gobject.TYPE_PYOBJECT, int, int, str)
+        self.set_model(self.model)
         self.popupmenu = ContextMenu
         self.add_events(gtk.gdk.LEAVE_NOTIFY_MASK)
         self.connect("button-press-event", self.on_button_press)
@@ -1279,12 +1377,16 @@ class TimelineView(gtk.TreeView, Draggable):
         pcolumn.pack_start(render)
         self.append_column(pcolumn)
         pcolumn.add_attribute(render, "content_obj", 0)
+        pcolumn.add_attribute(render, "size_w", 1)
+        pcolumn.add_attribute(render, "size_h", 2)
+        pcolumn.add_attribute(render, "text_size", 3)
         self.set_headers_visible(False)
         self.set_property("has-tooltip", True)
         self.set_tooltip_window(StaticPreviewTooltip)
         SearchBox.connect("search", lambda *args: self.queue_draw())
         SearchBox.connect("clear", lambda *args: self.queue_draw())
         self.on_drag = False
+        self.current_size_index = 1
 
     def set_model_from_list(self, items):
         """
@@ -1293,9 +1395,8 @@ class TimelineView(gtk.TreeView, Draggable):
         :param events: a list of :class:`Events <zeitgeist.datamodel.Event>`
         """
         if not items:
-            self.set_model(None)
             return
-        liststore = gtk.ListStore(gobject.TYPE_PYOBJECT)
+        self.model.clear()
         for row in items:
             #take the last and more updated content_obj
             item = row[len(row)-1][0]
@@ -1303,12 +1404,21 @@ class TimelineView(gtk.TreeView, Draggable):
             if not obj: continue
             obj.phases = [self.make_area_from_event(item.event.timestamp, stop) for (item, stop) in row]
             obj.phases.sort(key=lambda x: x[0])
-            liststore.append((obj,))
-        self.set_model(liststore)
+            self.model.append([obj, SIZE_TIMELINEVIEW[self.current_size_index][0],
+                                    SIZE_TIMELINEVIEW[self.current_size_index][1],
+                                    SIZE_TEXT_TIMELINEVIEW[self.current_size_index]])
 
     def set_day(self, day):
         items = day.get_time_map()
         self.set_model_from_list(items)
+    
+    def set_zoom(self, size_index):
+        self.current_size_index = size_index
+        for row in self.model:
+                row[1] = SIZE_TIMELINEVIEW[size_index][0]
+                row[2] = SIZE_TIMELINEVIEW[size_index][1]
+                row[3] = SIZE_TEXT_TIMELINEVIEW[size_index]
+        self.queue_draw()
 
     def on_drag_data_get(self, treeview, context, selection, target_id, etime):
         tree_selection = treeview.get_selection()
@@ -1359,14 +1469,13 @@ class TimelineView(gtk.TreeView, Draggable):
         """
         Sets the widgets style and coloring
         """
-        layout = self.create_pango_layout("")
-        layout.set_markup("<b>qPqPqP|</b>\nqPqPqP|")
-        tw, th = layout.get_pixel_size()
-        self.render.height = max(_TimelineRenderer.height, th + 3 + _TimelineRenderer.barsize)
+        #layout = self.create_pango_layout("")
+        #layout.set_markup("<b>qPqPqP|</b>\nqPqPqP|")
+        #tw, th = layout.get_pixel_size()
+        #self.render.set_property("size_h", max(self.render.height, th + 3 + _TimelineRenderer.barsize))
         if self.window:
             width = self.window.get_geometry()[2] - 4
-            self.render.width = max(_TimelineRenderer.width, width)
-        self.render.set_fixed_size(self.render.width, self.render.height)
+            self.render.set_property("size_w", max(self.render.width, width))
         def change_color(color, inc):
             color = shade_gdk_color(color, inc/100.0)
             return color

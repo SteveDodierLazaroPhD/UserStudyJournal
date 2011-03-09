@@ -66,8 +66,10 @@ ICONS = collections.defaultdict(dict)
 ICON_SIZES = SIZE_NORMAL, SIZE_LARGE = ((128, 128), (256, 256))
 
 # Thumbview and Timelineview sizes
-SIZE_THUMBVIEW = (92, 72)
-SIZE_TIMELINEVIEW = (32, 24)
+SIZE_THUMBVIEW = [(48, 36), (96, 72), (150, 108), (256, 192)]
+SIZE_TIMELINEVIEW = [(16,12), (32, 24), (64, 48), (128, 96)] 
+SIZE_TEXT_TIMELINEVIEW = ["small", "medium", "large", "x-large"]
+SIZE_TEXT_THUMBVIEW = ["x-small", "small", "large", "xx-large"]
 
 THUMBNAIL_FACTORIES = {
     SIZE_NORMAL: gnome.ui.ThumbnailFactory("normal"),
@@ -293,14 +295,14 @@ def draw_text(context, layout, markup, x, y, maxw = 0, color = (0.3, 0.3, 0.3)):
     """
     pcontext = pangocairo.CairoContext(context)
     layout.set_markup(markup)
-    layout.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
+    layout.set_ellipsize(pango.ELLIPSIZE_END)
     pcontext.set_source_rgba(*color)
     if maxw:
         layout.set_width(maxw*1024)
     pcontext.move_to(x, y)
     pcontext.show_layout(layout)
 
-def render_pixbuf(window, x, y, pixbuf, drawframe = True):
+def render_pixbuf(window, x, y, pixbuf, w, h, drawframe = True):
     """
     Renders a pixbuf to be displayed on the cell
 
@@ -310,16 +312,18 @@ def render_pixbuf(window, x, y, pixbuf, drawframe = True):
     :param y: y position
     :param drawframe: if true we draw a frame around the pixbuf
     """
-    imgw, imgh = pixbuf.get_width(), pixbuf.get_height()
     context = window.cairo_create()
-    context.rectangle(x, y, imgw, imgh)
+    context.save()
+    context.rectangle(x, y, w, h)
     if drawframe:
         context.set_source_rgb(1, 1, 1)
         context.fill_preserve()
     context.set_source_pixbuf(pixbuf, x, y)
-    context.fill()
+    context.clip()
+    context.paint()
+    context.restore();
     if drawframe: # Draw a pretty frame
-        draw_frame(context, x, y, imgw, imgh)
+        draw_frame(context, x, y, w, h)
 
 def render_emblems(window, x, y, w, h, emblems):
     """
@@ -639,7 +643,7 @@ class PixbufCache(dict):
             cached = self.check_cache(uri)
         except gobject.GError:
             cached = None
-        if cached:
+        if cached and w == SIZE_THUMBVIEW[1][0] and h == SIZE_THUMBVIEW[1][1]:
             return cached
         gfile = GioFile.create(uri)
         thumb = True
@@ -655,7 +659,7 @@ class PixbufCache(dict):
             pb = ICON_THEME.lookup_icon(gtk.STOCK_MISSING_IMAGE, int(size[0]*iconscale), gtk.ICON_LOOKUP_FORCE_SVG).load_icon()
             thumb = False
         if thumb:
-            pb = scale_to_fill(pb, w, h)
+            #pb = scale_to_fill(pb, w, h)
             self[uri] = (pb, thumb)
         return pb, thumb
 

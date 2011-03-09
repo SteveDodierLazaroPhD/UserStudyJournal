@@ -34,6 +34,7 @@ from histogram import HistogramWidget
 from store import Store, tdelta, STORE, CLIENT
 from config import settings, get_icon_path, get_data_path, PluginManager
 from Indicator import TrayIconManager
+from common import SIZE_THUMBVIEW, SIZE_TIMELINEVIEW
 
 class ViewContainer(gtk.Notebook):
     __gsignals__ = {
@@ -62,6 +63,11 @@ class ViewContainer(gtk.Notebook):
             page = self.page
         if hasattr(self.pages[page], "set_day"):
             self.pages[page].set_day(day, self.store)
+            
+    def set_zoom(self, zoom):
+        page = self.page
+        if hasattr(self.pages[page], "set_zoom"):
+            self.pages[page].set_zoom(zoom)
 
     def _register_new_view(self, viewstruct):
         self.append_page(viewstruct.view)
@@ -109,6 +115,7 @@ class ViewContainer(gtk.Notebook):
         toolbutton = Toolbar.get_toolbutton(view.icon_path, view.dsc_text)
         self._register_new_view(self.ViewStruct(view, toolbutton))
         self.set_view_page(0)
+    
 
 
 class PortalWindow(gtk.Window):
@@ -124,6 +131,7 @@ class PortalWindow(gtk.Window):
         self.pages_loaded = 0
         self.view = ViewContainer(self.store)
         self.toolbar = Toolbar()
+        self.current_size_index = 1
         default_views = (MultiViewContainer(), ThumbViewContainer(), TimelineViewContainer())
         default_views[0].connect("view-ready", self._on_view_ready)
         map(self.view._register_default_view, default_views)
@@ -147,7 +155,7 @@ class PortalWindow(gtk.Window):
         vbox.pack_start(label, True)
         spinner_table.attach(vbox, 1, 2, 1, 2, gtk.EXPAND, gtk.EXPAND)
         # Widget placement
-        vbox = gtk.VBox(); hbox = gtk.HBox(); self.histogramhbox = gtk.HBox(); vbox_general = gtk.VBox()
+        vbox = gtk.VBox(); hbox = gtk.HBox();self.histogramhbox = gtk.HBox(); vbox_general = gtk.VBox()
         hbox.pack_start(ev_backward_button, False, False); hbox.pack_start(self.view, True, True, 6)
         hbox.pack_end(ev_forward_button, False, False);
         vbox.pack_start(self.toolbar, False, False); vbox.pack_start(hbox, True, True, 5)
@@ -174,6 +182,7 @@ class PortalWindow(gtk.Window):
         self.toolbar.connect("previous", self.previous)
         self.toolbar.connect("jump-to-today", lambda w: self.set_date(datetime.date.today()))
         self.toolbar.connect("next", self.next)
+        self.toolbar.connect("zoom-changed", self._on_zoom_changed)
         self.backward_button.connect("clicked", self.previous)
         self.forward_button.connect("clicked", self.next)
         self.forward_button.connect("jump-to-today", lambda w: self.set_date(datetime.date.today()))
@@ -254,16 +263,23 @@ class PortalWindow(gtk.Window):
         if date == today:
             self.forward_button.set_sensitive(False)
             self.toolbar.nextd_button.set_sensitive(False)
+            self.toolbar.home_button.set_sensitive(False)
         else:
             self.forward_button.set_leading(True)
             self.forward_button.set_sensitive(True)
             self.toolbar.nextd_button.set_sensitive(True)
+            self.toolbar.home_button.set_sensitive(True)
 
     def on_view_button_click(self, w, button, i):
         self.view.set_view_page(i)
         self.view.set_day(self.day_iter, page=i)
         self.histogram.set_dates(self.active_dates)
-        self.set_title_from_date(self.day_iter.date)
+        self.set_title_from_date(self.day_iter.date)        
+        if i != 0:
+            self._on_zoom_changed(None, 0)
+        else:
+            self.toolbar.zoomin_button.set_sensitive(False)
+            self.toolbar.zoomout_button.set_sensitive(False)
     
     def _on_view_ready(self, view):
         if self.pages_loaded == view.num_pages - 1 :
@@ -296,6 +312,36 @@ class PortalWindow(gtk.Window):
         self.set_geometry_hints(min_width=800, min_height=360)
         self.resize(size[0], size[1])
         self._requested_size = size
+        
+    def _zoom_button_sensitive(self):
+        """
+        Handles the zooming button sensitivity.
+        Returns:
+        -1 --> zoomout should be sensitive; 
+         1---> zoomin should be sensitive;
+         0 --> both should be sensitive.
+        """
+        size_list = SIZE_THUMBVIEW if self.view.page == 1 else SIZE_TIMELINEVIEW
+        if self.current_size_index == len(size_list) - 1:
+            return -1
+        elif self.current_size_index == 0: 
+            return 1
+        return 0
+        
+    def _on_zoom_changed(self, w, value):
+        #FIXME this is crap           
+        self.current_size_index += value
+        self.view.set_zoom(self.current_size_index)
+        s = self._zoom_button_sensitive()
+        if s == -1: 
+            self.toolbar.zoomin_button.set_sensitive(False)
+            self.toolbar.zoomout_button.set_sensitive(True)
+        elif s == 1:
+            self.toolbar.zoomin_button.set_sensitive(True)
+            self.toolbar.zoomout_button.set_sensitive(False)
+        else:
+            self.toolbar.zoomin_button.set_sensitive(True)
+            self.toolbar.zoomout_button.set_sensitive(True)
 
     def set_title_from_date(self, date):
         pages = self.view.pages[0].num_pages
