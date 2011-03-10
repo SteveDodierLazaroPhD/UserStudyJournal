@@ -971,7 +971,7 @@ class ThumbIconView(gtk.IconView, Draggable):
         thread.start()
         
     def set_zoom(self, size_index):
-        if size_index > len(SIZE_TEXT_THUMBVIEW) - 1 or size_index < 0: return
+        if size_index > len(SIZE_THUMBVIEW) - 1 or size_index < 0: return
         self.current_size_index = size_index
         for row in self.model:
             row[1] = SIZE_THUMBVIEW[size_index][0]
@@ -1033,6 +1033,8 @@ class ThumbIconView(gtk.IconView, Draggable):
                 self.set_zoom(self.current_size_index + 1)
             elif event.direction == gtk.gdk.SCROLL_DOWN:
                 self.set_zoom(self.current_size_index - 1)
+            
+            return False
         
 
     def query_tooltip(self, widget, x, y, keyboard_mode, tooltip):
@@ -1375,13 +1377,14 @@ class TimelineView(gtk.TreeView, Draggable):
         self.model = gtk.ListStore(gobject.TYPE_PYOBJECT, int, int, str)
         self.set_model(self.model)
         self.popupmenu = ContextMenu
-        self.add_events(gtk.gdk.LEAVE_NOTIFY_MASK)
+        self.add_events(gtk.gdk.LEAVE_NOTIFY_MASK | gtk.gdk.SCROLL_MASK )
         self.connect("button-press-event", self.on_button_press)
         self.connect("button-release-event", self.on_button_release)
         self.connect("row-activated" , self.on_activate)
         self.connect("style-set", self.change_style)
         self.connect("drag-begin", self.on_drag_begin)
         self.connect("drag-end", self.on_drag_end)
+        self.connect("scroll-event", self.on_scroll_event)
         pcolumn = gtk.TreeViewColumn("Timeline")
         self.render = render = _TimelineRenderer()
         pcolumn.pack_start(render)
@@ -1423,6 +1426,7 @@ class TimelineView(gtk.TreeView, Draggable):
         self.set_model_from_list(items)
     
     def set_zoom(self, size_index):
+        if size_index > len(SIZE_TIMELINEVIEW) - 1 or size_index < 0: return
         self.current_size_index = size_index
         for row in self.model:
                 row[1] = SIZE_TIMELINEVIEW[size_index][0]
@@ -1470,6 +1474,15 @@ class TimelineView(gtk.TreeView, Draggable):
     
     def on_drag_end(self, widget, context, *args):
         self.on_drag = False
+        
+    def on_scroll_event(self, widget, event):
+        if event.state == gtk.gdk.CONTROL_MASK:
+            if event.direction == gtk.gdk.SCROLL_UP:
+                self.set_zoom(self.current_size_index + 1)
+            elif event.direction == gtk.gdk.SCROLL_DOWN:
+                self.set_zoom(self.current_size_index - 1)
+                
+            return False
 
     def on_activate(self, widget, path, column):
         model = self.get_model()
