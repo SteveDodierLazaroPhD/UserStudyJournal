@@ -369,8 +369,8 @@ class SearchBox(gtk.ToolItem):
 
     @property
     def use_fts(self):
-        if STORE.fts_search_enabled:
-            return self.fts_checkbutton.get_active()
+        #if STORE.fts_search_enabled:
+        #    return self.fts_checkbutton.get_active()
         return False
 
     def __init__(self):
@@ -385,8 +385,8 @@ class SearchBox(gtk.ToolItem):
         self.search = SearchEntry()
         self.hbox.pack_start(self.search)
         self.category = {}
-        if STORE.fts_search_enabled:
-            self.fts_checkbutton = gtk.CheckButton(_("Use Zeitgeist FTS"))
+        #if STORE.fts_search_enabled:
+        #    self.fts_checkbutton = gtk.CheckButton(_("Use Zeitgeist FTS"))
 
         for source in SUPPORTED_SOURCES.keys():
             s = SUPPORTED_SOURCES[source]._desc_pl
@@ -394,8 +394,8 @@ class SearchBox(gtk.ToolItem):
         self.combobox = gtk.combo_box_new_text()
         self.combobox.set_focus_on_click(False)
         self.hbox.pack_start(self.combobox, False, False, 6)
-        if STORE.fts_search_enabled:
-            self.hbox.pack_end(self.fts_checkbutton)
+        #if STORE.fts_search_enabled:
+        #    self.hbox.pack_end(self.fts_checkbutton)
         self.combobox.append_text("All activities")
         self.combobox.set_active(0)
         for cat in self.category.keys():
@@ -1045,9 +1045,6 @@ class Toolbar(gtk.Toolbar):
         "next" : (gobject.SIGNAL_RUN_FIRST,
                    gobject.TYPE_NONE,
                    ()),
-        "zoom-changed" : (gobject.SIGNAL_RUN_FIRST,
-                   gobject.TYPE_NONE,
-                   (gobject.TYPE_INT,))
     }
     
     @staticmethod
@@ -1089,21 +1086,8 @@ class Toolbar(gtk.Toolbar):
             
         separator = gtk.SeparatorToolItem()
         separator.set_expand(True)
-        separator.set_draw(False)
-        #Zoom-in button
-        self.zoomin_button = zi = gtk.ToolButton(gtk.STOCK_ZOOM_IN)
-        self.zoomin_button.connect("clicked", lambda x: self.emit("zoom-changed", 1))
-        self.zoomin_button.set_sensitive(False)
-        #Zoom-out button 
-        self.zoomout_button = zo = gtk.ToolButton(gtk.STOCK_ZOOM_OUT)
-        self.zoomout_button.connect("clicked", lambda x: self.emit("zoom-changed", -1))
-        self.zoomout_button.set_sensitive(False)
-        self.throbber_popup_button = ThrobberPopupButton()       
-        for item in (separator, zo, zi, self.throbber_popup_button):
-            self.insert(item, -1)
-
-    def do_throb(self):
-        self.throbber_popup_button.image.animate_for_seconds(1)
+        separator.set_draw(False)            
+        self.insert(separator, -1)
 
     def toggle_searchbox_visibility(self, w):
         result = self.search_dialog.toggle_visibility()

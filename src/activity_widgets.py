@@ -167,6 +167,9 @@ class MultiViewContainer(gtk.HBox):
         
     def set_zoom(self, zoom):
         pass
+        
+    def set_slider(self, slider):
+        pass
 
 class DayViewContainer(gtk.VBox):
     event_templates = (
@@ -726,6 +729,9 @@ class ThumbViewContainer(_GenericViewWidget):
         
     def set_zoom(self, zoom):
         self.view.set_zoom(zoom)
+        
+    def set_slider(self, slider):
+        self.view.set_slider(slider)
 
 
 class _ThumbViewRenderer(gtk.GenericCellRenderer):
@@ -920,12 +926,11 @@ class ThumbIconView(gtk.IconView, Draggable):
         self.model = gtk.ListStore(gobject.TYPE_PYOBJECT, int, int, str)
         self.set_model(self.model)
         
-        self.add_events(gtk.gdk.LEAVE_NOTIFY_MASK | gtk.gdk.SCROLL_MASK )
+        self.add_events(gtk.gdk.LEAVE_NOTIFY_MASK)
         self.connect("button-press-event", self.on_button_press)
         self.connect("button-release-event", self.on_button_release)
         self.connect("motion-notify-event", self.on_motion_notify)
         self.connect("leave-notify-event", self.on_leave_notify)
-        self.connect("scroll-event", self.on_scroll_event)
         self.set_selection_mode(gtk.SELECTION_SINGLE)
         self.set_column_spacing(6)
         self.set_row_spacing(6)
@@ -971,7 +976,6 @@ class ThumbIconView(gtk.IconView, Draggable):
         thread.start()
         
     def set_zoom(self, size_index):
-        if size_index > len(SIZE_THUMBVIEW) - 1 or size_index < 0: return
         self.current_size_index = size_index
         for row in self.model:
             row[1] = SIZE_THUMBVIEW[size_index][0]
@@ -1026,16 +1030,6 @@ class ThumbIconView(gtk.IconView, Draggable):
                 self.active_list[path[0]] = True
                 self.last_active = path[0]
                 self.queue_draw()
-                    
-    def on_scroll_event(self, widget, event):
-        if event.state == gtk.gdk.CONTROL_MASK:
-            if event.direction == gtk.gdk.SCROLL_UP:
-                self.set_zoom(self.current_size_index + 1)
-            elif event.direction == gtk.gdk.SCROLL_DOWN:
-                self.set_zoom(self.current_size_index - 1)
-            
-            return False
-        
 
     def query_tooltip(self, widget, x, y, keyboard_mode, tooltip):
         """
@@ -1071,6 +1065,8 @@ class ThumbView(gtk.VBox):
         gtk.VBox.__init__(self)
         self.views = []
         self.labels = []
+        self.current_size_index = 1
+        self.zoom_slider = None
         for text in DayParts.get_day_parts():
             label = gtk.Label()
             label.set_markup("\n  <span size='10336'>%s</span>" % (text))
@@ -1080,6 +1076,8 @@ class ThumbView(gtk.VBox):
             self.labels.append(label)
             self.pack_start(label, False, False)
             self.pack_start(self.views[-1], False, False)
+        self.add_events(gtk.gdk.SCROLL_MASK)
+        self.connect("scroll-event", self.on_scroll_event)
         self.connect("style-set", self.change_style)
 
     def set_phase_items(self, i, items):
@@ -1118,6 +1116,8 @@ class ThumbView(gtk.VBox):
             self.set_phase_items(i, part)
             
     def set_zoom(self, zoom):
+         if zoom > len(SIZE_THUMBVIEW) - 1 or zoom < 0: return
+         self.current_size_index = zoom
          for i in range(0, len(DayParts.get_day_parts())):
             self.views[i].set_zoom(zoom)
 
@@ -1133,6 +1133,20 @@ class ThumbView(gtk.VBox):
         color = shade_gdk_color(color, 0.95)
         for label in self.labels:
             label.modify_fg(0, color)
+            
+    def on_scroll_event(self, widget, event):
+        if event.state == gtk.gdk.CONTROL_MASK:
+            if event.direction == gtk.gdk.SCROLL_UP:
+                self.set_zoom(self.current_size_index + 1)
+                self.zoom_slider.set_value(self.current_size_index + 1)
+            elif event.direction == gtk.gdk.SCROLL_DOWN:
+                self.set_zoom(self.current_size_index - 1)
+                self.zoom_slider.set_value(self.current_size_index - 1)
+                
+            return True
+            
+    def set_slider(self, slider):
+        self.zoom_slider = slider
 
 
 class TimelineViewContainer(_GenericViewWidget):
@@ -1160,6 +1174,9 @@ class TimelineViewContainer(_GenericViewWidget):
         
     def set_zoom(self, zoom):
         self.view.set_zoom(zoom)
+        
+    def set_slider(self, slider):
+        self.view.set_slider(slider)
 
 
 class _TimelineRenderer(gtk.GenericCellRenderer):
@@ -1377,6 +1394,7 @@ class TimelineView(gtk.TreeView, Draggable):
         self.model = gtk.ListStore(gobject.TYPE_PYOBJECT, int, int, str)
         self.set_model(self.model)
         self.popupmenu = ContextMenu
+        self.zoom_slider = None
         self.add_events(gtk.gdk.LEAVE_NOTIFY_MASK | gtk.gdk.SCROLL_MASK )
         self.connect("button-press-event", self.on_button_press)
         self.connect("button-release-event", self.on_button_release)
@@ -1479,10 +1497,15 @@ class TimelineView(gtk.TreeView, Draggable):
         if event.state == gtk.gdk.CONTROL_MASK:
             if event.direction == gtk.gdk.SCROLL_UP:
                 self.set_zoom(self.current_size_index + 1)
+                self.zoom_slider.set_value(self.current_size_index + 1)
             elif event.direction == gtk.gdk.SCROLL_DOWN:
                 self.set_zoom(self.current_size_index - 1)
+                self.zoom_slider.set_value(self.current_size_index - 1)
                 
-            return False
+            return True
+            
+    def set_slider(self, slider):
+        self.zoom_slider = slider
 
     def on_activate(self, widget, path, column):
         model = self.get_model()
