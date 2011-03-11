@@ -162,8 +162,7 @@ class PortalWindow(gtk.Window):
         self.hscale.set_size_request(120, -1)
         self.hscale.set_sensitive(False)
         self.hscale.set_draw_value(False)
-        self.hscale.set_digits(0)
-        al = gtk.Alignment(xalign = 0.6 ,yalign = 0.7)
+        al = gtk.Alignment(yalign=0.5)
         al.set_padding(0, 0, 8, 8)
         al.add(self.hscale)
         im_in = gtk.image_new_from_stock(gtk.STOCK_ZOOM_IN, gtk.ICON_SIZE_MENU)
@@ -174,9 +173,8 @@ class PortalWindow(gtk.Window):
         vbox_general = gtk.VBox();scale_toolbar_box = gtk.HBox()
         hbox.pack_start(ev_backward_button, False, False); hbox.pack_start(self.view, True, True, 6)
         hbox.pack_end(ev_forward_button, False, False);
-        scale_box.pack_start(gtk.SeparatorToolItem(),False,False);scale_box.pack_start(im_out,False,False)
-        scale_box.pack_start(al, False, False);scale_box.pack_start(im_in,False,False)
-        scale_box.pack_end(gtk.SeparatorToolItem(),False,False);
+        scale_box.pack_start(im_out,False,False);scale_box.pack_start(al, False, False)
+        scale_box.pack_start(im_in,False,False);scale_box.pack_end(gtk.SeparatorToolItem(),False,False)
         scale_toolbar_box.pack_start(self.toolbar); scale_toolbar_box.pack_end(self.throbber_popup_button,False,False);
         scale_toolbar_box.pack_end(scale_box, False, False);
         vbox.pack_start(scale_toolbar_box, False, False); vbox.pack_start(hbox, True, True, 5)
@@ -334,7 +332,7 @@ class PortalWindow(gtk.Window):
 
         self.set_geometry_hints(min_width=1024, min_height=360)
         self.resize(size[0], size[1])
-        self._requested_size = size        
+        self._requested_size = size     
              
     def _on_zoom_changed(self, hscale):
         self.current_zoom = int(hscale.get_value())

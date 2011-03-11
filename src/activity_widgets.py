@@ -1137,10 +1137,8 @@ class ThumbView(gtk.VBox):
     def on_scroll_event(self, widget, event):
         if event.state == gtk.gdk.CONTROL_MASK:
             if event.direction == gtk.gdk.SCROLL_UP:
-                self.set_zoom(self.current_size_index + 1)
                 self.zoom_slider.set_value(self.current_size_index + 1)
             elif event.direction == gtk.gdk.SCROLL_DOWN:
-                self.set_zoom(self.current_size_index - 1)
                 self.zoom_slider.set_value(self.current_size_index - 1)
                 
             return True
@@ -1496,10 +1494,8 @@ class TimelineView(gtk.TreeView, Draggable):
     def on_scroll_event(self, widget, event):
         if event.state == gtk.gdk.CONTROL_MASK:
             if event.direction == gtk.gdk.SCROLL_UP:
-                self.set_zoom(self.current_size_index + 1)
                 self.zoom_slider.set_value(self.current_size_index + 1)
             elif event.direction == gtk.gdk.SCROLL_DOWN:
-                self.set_zoom(self.current_size_index - 1)
                 self.zoom_slider.set_value(self.current_size_index - 1)
                 
             return True
