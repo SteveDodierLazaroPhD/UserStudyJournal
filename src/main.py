@@ -35,7 +35,8 @@ from store import Store, tdelta, STORE, CLIENT
 from config import settings, get_icon_path, get_data_path, PluginManager
 from Indicator import TrayIconManager
 from common import SIZE_THUMBVIEW, SIZE_TIMELINEVIEW
-
+#TODO granularity scrool, allineamento della parola in grassetto nella timelineview_icon
+#more metadata? use website cache as thumbpreview??
 class ViewContainer(gtk.Notebook):
     __gsignals__ = {
         "new-view-added" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,(gobject.TYPE_PYOBJECT,)),
@@ -160,7 +161,6 @@ class PortalWindow(gtk.Window):
         spinner_table.attach(vbox, 1, 2, 1, 2, gtk.EXPAND, gtk.EXPAND)
         self.hscale = gtk.HScale(gtk.Adjustment(1.0, 0.0, 3.0, 1.0, 1.0, 0.0))
         self.hscale.set_size_request(120, -1)
-        self.hscale.set_sensitive(False)
         self.hscale.set_draw_value(False)
         al = gtk.Alignment(yalign=0.5)
         al.set_padding(0, 0, 8, 8)
@@ -169,14 +169,14 @@ class PortalWindow(gtk.Window):
         im_out =  gtk.image_new_from_stock(gtk.STOCK_ZOOM_OUT, gtk.ICON_SIZE_MENU)
         self.throbber_popup_button = ThrobberPopupButton()
         # Widget placement
-        vbox = gtk.VBox(); hbox = gtk.HBox();scale_box = gtk.HBox();self.histogramhbox = gtk.HBox()
+        vbox = gtk.VBox(); hbox = gtk.HBox();self.scale_box = gtk.HBox();self.histogramhbox = gtk.HBox()
         vbox_general = gtk.VBox();scale_toolbar_box = gtk.HBox()
         hbox.pack_start(ev_backward_button, False, False); hbox.pack_start(self.view, True, True, 6)
         hbox.pack_end(ev_forward_button, False, False);
-        scale_box.pack_start(im_out,False,False);scale_box.pack_start(al, False, False)
-        scale_box.pack_start(im_in,False,False);scale_box.pack_end(gtk.SeparatorToolItem(),False,False)
+        self.scale_box.pack_start(im_out,False,False);self.scale_box.pack_start(al, False, False)
+        self.scale_box.pack_start(im_in,False,False);self.scale_box.pack_end(gtk.SeparatorToolItem(),False,False)
         scale_toolbar_box.pack_start(self.toolbar); scale_toolbar_box.pack_end(self.throbber_popup_button,False,False);
-        scale_toolbar_box.pack_end(scale_box, False, False);
+        scale_toolbar_box.pack_end(self.scale_box, False, False);
         vbox.pack_start(scale_toolbar_box, False, False); vbox.pack_start(hbox, True, True, 5)
         self.histogramhbox.pack_end(self.histogram, True, True, 32);
         self.histogramhbox.set_sensitive(False)
@@ -189,6 +189,7 @@ class PortalWindow(gtk.Window):
         vbox_general.pack_end(self.histogramhbox, False, False)
         self.add(vbox_general)
         vbox_general.show_all()
+        self.scale_box.hide()
         self.show()
         #Tray Icon
         self.tray_manager = TrayIconManager(self)
@@ -296,10 +297,10 @@ class PortalWindow(gtk.Window):
         self.histogram.set_dates(self.active_dates)
         self.set_title_from_date(self.day_iter.date)        
         if i == 0:
-            self.hscale.set_sensitive(False)
+            self.scale_box.hide()
         else:
             self.view.set_zoom(self.current_zoom)
-            self.hscale.set_sensitive(True)
+            self.scale_box.show()
 
     
     def _on_view_ready(self, view):

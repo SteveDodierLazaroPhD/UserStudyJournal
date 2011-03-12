@@ -799,7 +799,7 @@ class _ThumbViewRenderer(gtk.GenericCellRenderer):
 
     @property
     def pixbuf(self):
-        return self.content_obj.thumbview_pixbuf
+        return self.content_obj.get_thumbview_pixbuf_for_size(self.width, self.height)
 
     @property
     def event(self):
@@ -830,13 +830,11 @@ class _ThumbViewRenderer(gtk.GenericCellRenderer):
         y = cell_area.y
         w = cell_area.width
         h = cell_area.height
-        pixbuf = self.pixbuf
-        pixbuf_w = pixbuf.get_width() if pixbuf else 0
-        pixbuf_h = pixbuf.get_height() if pixbuf else 0
-        if (pixbuf_w, pixbuf_h) != (0, 0) and (pixbuf_w, pixbuf_h) != (48, 48):
+        pixbuf, isthumb = self.pixbuf
+        if pixbuf and isthumb:
             render_pixbuf(window, x, y, pixbuf, w, h)
         else:
-            self.file_render_pixbuf(window, widget, x, y, w, h)
+            self.file_render_pixbuf(window, widget, pixbuf, x, y, w , h)
         render_emblems(window, x, y, w, h, self.emblems)
         path = widget.get_path_at_pos(cell_area.x, cell_area.y)
         if path != None:
@@ -852,17 +850,16 @@ class _ThumbViewRenderer(gtk.GenericCellRenderer):
         text = "<span size='" + size + "'>" + text + "</span>"
         return text
 
-    def file_render_pixbuf(self, window, widget, x, y, w, h):
+    def file_render_pixbuf(self, window, widget, pixbuf, x, y, w, h):
         """
         Renders a icon and file name for non-thumb objects
         """
         context = window.cairo_create()
-        pixbuf = self.pixbuf
-        pixbuf = None
+        if w == SIZE_THUMBVIEW[0][0]: pixbuf = None
         if pixbuf:
             imgw, imgh = pixbuf.get_width(), pixbuf.get_height()
-            ix = x + (self.width - imgw)
-            iy = y + self.height - imgh
+            ix = x + (self.width - imgw )
+            iy = y + (self.height - imgh) 
         context.rectangle(x, y, w, h)
         context.set_source_rgb(1, 1, 1)
         context.fill_preserve()

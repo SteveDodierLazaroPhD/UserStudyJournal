@@ -621,7 +621,7 @@ class PixbufCache(dict):
             pb.save(path, "png")
         return super(PixbufCache, self).__setitem__(key, (pb, isthumb))
 
-    def get_pixbuf_from_uri(self, uri, size=SIZE_LARGE, iconscale=1, w=0, h=0):
+    def get_pixbuf_from_uri(self, uri, size=SIZE_LARGE, iconscale=1):
         """
         Returns a pixbuf and True if a thumbnail was found, else False. Uses the
         Pixbuf Cache for thumbnail compatible files. If the pixbuf is a thumb
@@ -643,20 +643,23 @@ class PixbufCache(dict):
             cached = self.check_cache(uri)
         except gobject.GError:
             cached = None
-        if cached and w == SIZE_THUMBVIEW[1][0] and h == SIZE_THUMBVIEW[1][1]:
+        if cached:
             return cached
         gfile = GioFile.create(uri)
         thumb = True
+        
         if gfile:
-            if gfile.has_preview() and "audio-x-generic" not in gfile.icon_names:
+            if gfile.has_preview():
                 pb = gfile.get_thumbnail(size=size)
+                if pb is None and "audio-x-generic" in gfile.icon_names:
+                    pb = gfile.get_icon(size=SIZE_NORMAL[0])
+                    thumb = False
             else:
-                iconsize = int(size[0]*iconscale)
-                pb = gfile.get_icon(size=iconsize)
+                pb = gfile.get_icon(size=SIZE_NORMAL[0])
                 thumb = False
         else: pb = None
         if not pb:
-            pb = ICON_THEME.lookup_icon(gtk.STOCK_MISSING_IMAGE, int(size[0]*iconscale), gtk.ICON_LOOKUP_FORCE_SVG).load_icon()
+            pb = ICON_THEME.lookup_icon(gtk.STOCK_MISSING_IMAGE, SIZE_NORMAL[0], gtk.ICON_LOOKUP_FORCE_SVG).load_icon()
             thumb = False
         if thumb:
             #pb = scale_to_fill(pb, w, h)
@@ -844,6 +847,8 @@ class GioFile(object):
                             thumb = create_opendocument_thumb(self._file_object.get_path())
                         elif "text-x-generic" in self.icon_names or "text-x-script" in self.icon_names:
                             thumb = create_text_thumb(self, size, 1)
+                        elif "audio-x-generic" in self.icon_names:
+                            thumb = self.get_audio_cover(size)
                     if thumb is None:
                         factory.create_failed_thumbnail(self.uri, self.mtime)
                     else:
@@ -863,6 +868,22 @@ class GioFile(object):
         if thumb is not None and border:
             thumb = make_icon_frame(thumb, border=border, color=0x00000080)
         return thumb
+        
+    def get_audio_cover(self, size):
+        """
+        Try to get a cover art in the folder of the song.
+        It's s simple hack, but i think it's a good and quick compromise.
+        """
+        dirname = os.path.dirname(self.event.subjects[0].uri)
+        dirname = urllib.unquote(dirname)[7:]
+        if not os.path.exists(dirname): return None 
+        for f in os.listdir(dirname):
+            if f.endswith(".jpg") or f.endswith(".jpeg"): 
+                path = dirname + os.sep + f
+                pix = gtk.gdk.pixbuf_new_from_file(path)               
+                return pix
+                
+        return None
 
     @property
     def thumbnail(self):

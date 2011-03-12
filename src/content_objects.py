@@ -29,7 +29,6 @@ import glib
 import gtk
 import os
 import sys
-from urlparse import urlparse
 from xdg import DesktopEntry
 import xml.dom.minidom as dom
 
@@ -320,6 +319,8 @@ class FileContentObject(GioFile, ContentObject):
         if event.subjects[0].uri.startswith("file://"):
             return cls
         return False
+    
+    thumbnail_uri = ""
 
     def __init__(self, event):
         ContentObject.__init__(self, event)
@@ -339,9 +340,12 @@ class FileContentObject(GioFile, ContentObject):
 
     @CachedAttribute
     def thumbview_pixbuf(self):
-        """Special method which returns a pixbuf for the thumbview and a ispreview bool describing if it is a preview"""
-        thumbview_pixbuf, isthumb = common.PIXBUFCACHE.get_pixbuf_from_uri(self.uri, SIZE_LARGE, iconscale=0.1875, w=SIZE_THUMBVIEW[0], h=SIZE_THUMBVIEW[1])
-        return thumbview_pixbuf
+        """
+        Special method which returns a pixbuf for the thumbview 
+        and a ispreview bool describing if it is a preview
+        """
+        thumbview_pixbuf, isthumb = common.PIXBUFCACHE.get_pixbuf_from_uri(self.uri, SIZE_LARGE)
+        return thumbview_pixbuf, isthumb
 
     @CachedAttribute
     def timelineview_pixbuf(self):
@@ -360,6 +364,15 @@ class FileContentObject(GioFile, ContentObject):
         if not pixbuf: pixbuf = common.PLACEHOLDER_PIXBUFFS[24]
         is_thumbnail = usethumb&thumb
         return pixbuf
+        
+    def get_thumbview_pixbuf_for_size(self, w, h):
+        pix, isthumb = self.thumbview_pixbuf
+        if pix is not None:
+            if isthumb:
+                pix = common.scale_to_fill(pix, w, h)
+            else:
+                pix = pix.scale_simple(w // 2, w // 2, gtk.gdk.INTERP_TILES)
+        return pix,isthumb
 
 
 class BaseContentType(ContentObject):
@@ -439,12 +452,22 @@ class BaseContentType(ContentObject):
     @CachedAttribute
     def thumbview_pixbuf(self):
         """Special method which returns a pixbuf for the thumbview and a ispreview bool describing if it is a preview"""
+        isthumb = False
         if self.thumbnail_uri:
             thumbview_pixbuf, isthumb = common.PIXBUFCACHE.get_pixbuf_from_uri(
-                self.thumbnail_uri, SIZE_LARGE, iconscale=0.1875, w=SIZE_THUMBVIEW[1][0], h=SIZE_THUMBVIEW[1][1])
+                self.uri, SIZE_LARGE)
         else:
-            thumbview_pixbuf = None
-        return thumbview_pixbuf
+            thumbview_pixbuf = self.get_icon(SIZE_NORMAL[0])
+        return thumbview_pixbuf, isthumb
+        
+    def get_thumbview_pixbuf_for_size(self, w, h):
+       pix, isthumb = self.thumbview_pixbuf
+       if pix is not None:
+           if isthumb:
+               pix = common.scale_to_fill(pix, w, h)
+           else:
+               pix = pix.scale_simple(w // 2, w // 2, gtk.gdk.INTERP_TILES)
+       return pix,isthumb
 
     @CachedAttribute
     def timelineview_pixbuf(self):
@@ -526,7 +549,6 @@ class GenericContentObject(BaseContentType):
         if common.PLACEHOLDER_PIXBUFFS.has_key(size): return common.PLACEHOLDER_PIXBUFFS[size]
         icon = self.get_actor_pixbuf(size)
         return icon
-
 
 class BzrContentObject(BaseContentType):
     @classmethod
