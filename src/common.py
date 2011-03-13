@@ -351,6 +351,36 @@ def render_emblems(window, x, y, w, h, emblems):
             context.set_source_pixbuf(pixbuf, corners[i][0]-pbw, corners[i][1]-pbh)
             context.rectangle(corners[i][0]-pbw, corners[i][1]-pbh, pbw*2, pbh*2)
             context.fill()
+            
+def render_molteplicity(window, x, y, w, h, molteplicity):
+    """
+    Renders the molteplicity number on the top-right corner of the rectangle
+
+    Arguments:
+    :param window: a gdk window
+    :param x: x position
+    :param y: y position
+    :param w: the width of the rectangle
+    :param y: the height of the rectangle
+    :param emblems: the molteplicity number
+    """    
+    radius = 10
+    center = [x + w, y ]           
+    context = window.cairo_create()
+    context.set_source_rgb(0.9, 0.9, 0.8)
+    context.arc(center[0], center[1], radius , 0, 2 * math.pi)
+    context.fill_preserve()
+    context.set_source_rgb(0.5, 0.7, 0.7)
+    context.stroke()
+    
+    context.set_source_rgb(0.1, 0.1, 0.1)
+    context.select_font_face("Serif", cairo.FONT_SLANT_NORMAL, 
+            cairo.FONT_WEIGHT_BOLD)
+    context.set_font_size(radius)
+    x_bearing, y_bearing, width, height = context.text_extents(str(molteplicity))[:4]
+    context.move_to(center[0] - width / 2 - x_bearing, center[1] - height / 2 - y_bearing)
+    context.show_text(str(molteplicity))
+        
 
 ##
 ## Color functions
@@ -662,7 +692,7 @@ class PixbufCache(dict):
             pb = ICON_THEME.lookup_icon(gtk.STOCK_MISSING_IMAGE, SIZE_NORMAL[0], gtk.ICON_LOOKUP_FORCE_SVG).load_icon()
             thumb = False
         if thumb:
-            #pb = scale_to_fill(pb, w, h)
+            if "audio-x-generic" in gfile.icon_names: thumb = False
             self[uri] = (pb, thumb)
         return pb, thumb
 
@@ -874,16 +904,17 @@ class GioFile(object):
         Try to get a cover art in the folder of the song.
         It's s simple hack, but i think it's a good and quick compromise.
         """
+        pix = None
         dirname = os.path.dirname(self.event.subjects[0].uri)
         dirname = urllib.unquote(dirname)[7:]
-        if not os.path.exists(dirname): return None 
+        if not os.path.exists(dirname): return pix
         for f in os.listdir(dirname):
             if f.endswith(".jpg") or f.endswith(".jpeg"): 
                 path = dirname + os.sep + f
-                pix = gtk.gdk.pixbuf_new_from_file(path)               
+                pix = gtk.gdk.pixbuf_new_from_file(path)            
                 return pix
                 
-        return None
+        return pix
 
     @property
     def thumbnail(self):

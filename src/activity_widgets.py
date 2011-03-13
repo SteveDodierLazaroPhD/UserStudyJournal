@@ -26,6 +26,7 @@ import gobject
 import gtk
 import math
 import urllib
+from urlparse import urlparse
 import pango
 import threading
 try:
@@ -772,6 +773,15 @@ class _ThumbViewRenderer(gtk.GenericCellRenderer):
          "Size of the text",
          "",
          gobject.PARAM_READWRITE,
+         ),
+         "molteplicity" :
+        (gobject.TYPE_INT,
+         "Molteplicity",
+         "Number of similar item that are grouped into one",
+         0,
+         999,
+         0,
+         gobject.PARAM_READWRITE,
          )
     }
 
@@ -792,6 +802,10 @@ class _ThumbViewRenderer(gtk.GenericCellRenderer):
     @property
     def content_obj(self):
         return self.get_property("content_obj")
+        
+    @property
+    def molteplicity(self):
+        return self.get_property("molteplicity")
 
     @property
     def emblems(self):
@@ -831,11 +845,12 @@ class _ThumbViewRenderer(gtk.GenericCellRenderer):
         w = cell_area.width
         h = cell_area.height
         pixbuf, isthumb = self.pixbuf
-        if pixbuf and isthumb:
+        if pixbuf and isthumb and "audio-x-generic" not in self.content_obj.icon_names:
             render_pixbuf(window, x, y, pixbuf, w, h)
         else:
             self.file_render_pixbuf(window, widget, pixbuf, x, y, w , h)
         render_emblems(window, x, y, w, h, self.emblems)
+        
         path = widget.get_path_at_pos(cell_area.x, cell_area.y)
         if path != None:
             try:
@@ -872,6 +887,8 @@ class _ThumbViewRenderer(gtk.GenericCellRenderer):
 
         layout = widget.create_pango_layout(text)
         draw_text(context, layout, text, x+5, y+5, self.width-10)
+        if self.molteplicity > 1:
+            render_molteplicity(window, x, y, w, h, self.molteplicity)
 
     @staticmethod
     def render_info_box(window, widget, cell_area, expose_area, event):
@@ -920,7 +937,15 @@ class ThumbIconView(gtk.IconView, Draggable):
         self.active_list = []
         self.current_size_index = 1
         self.popupmenu = ContextMenu
-        self.model = gtk.ListStore(gobject.TYPE_PYOBJECT, int, int, str)
+        
+        # Model fields
+        # 1) content object
+        # 2) preview width
+        # 3) preview height
+        # 4) text dimension
+        # 5) number of similar items grouped into one 
+        #   (show the molteplicity number in the top-right corner)        
+        self.model = gtk.ListStore(gobject.TYPE_PYOBJECT, int, int, str, int)
         self.set_model(self.model)
         
         self.add_events(gtk.gdk.LEAVE_NOTIFY_MASK)
@@ -937,11 +962,12 @@ class ThumbIconView(gtk.IconView, Draggable):
         self.add_attribute(render, "size_w", 1)
         self.add_attribute(render, "size_h", 2)
         self.add_attribute(render, "text_size", 3)
+        self.add_attribute(render, "molteplicity", 4)
         self.set_margin(10)
         SearchBox.connect("search", lambda *args: self.queue_draw())
         SearchBox.connect("clear", lambda *args: self.queue_draw())
 
-    def _set_model_in_thread(self, items):
+    def _set_model_in_thread(self, items, grouped_items):
         """
         A threaded which generates pixbufs and emblems for a list of events.
         It takes those properties and appends them to the view's model
@@ -957,11 +983,24 @@ class ThumbIconView(gtk.IconView, Draggable):
             self.active_list.append(False)
             self.model.append([obj, SIZE_THUMBVIEW[self.current_size_index][0], 
                                     SIZE_THUMBVIEW[self.current_size_index][1],
-                                    SIZE_TEXT_THUMBVIEW[self.current_size_index]])
+                                    SIZE_TEXT_THUMBVIEW[self.current_size_index], 0])
+            lock.release()
+            gtk.gdk.threads_leave()
+            
+        for item in grouped_items.values():
+            #i take the first element in the list
+            obj = item[0].content_object
+            if not obj: continue
+            gtk.gdk.threads_enter()
+            lock.acquire()
+            self.active_list.append(False)
+            self.model.append([obj, SIZE_THUMBVIEW[self.current_size_index][0], 
+                                    SIZE_THUMBVIEW[self.current_size_index][1],
+                                    SIZE_TEXT_THUMBVIEW[self.current_size_index], len(item)])
             lock.release()
             gtk.gdk.threads_leave()
         
-    def set_model_from_list(self, items):
+    def set_model_from_list(self, items, grouped_items):
         """
         Sets creates/sets a model from a list of zeitgeist events
         :param events: a list of :class:`Events <zeitgeist.datamodel.Event>`
@@ -969,7 +1008,7 @@ class ThumbIconView(gtk.IconView, Draggable):
         self.last_active = -1
         if not items:
             return
-        thread = threading.Thread(target=self._set_model_in_thread, args=(items,))
+        thread = threading.Thread(target=self._set_model_in_thread, args=(items, grouped_items))
         thread.start()
         
     def set_zoom(self, size_index):
@@ -1055,7 +1094,8 @@ class ThumbView(gtk.VBox):
             Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri),
             Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri),
             Event.new_for_values(interpretation=Interpretation.ACCESS_EVENT.uri),
-            Event.new_for_values(interpretation=Interpretation.RECEIVE_EVENT.uri)
+            Event.new_for_values(interpretation=Interpretation.SEND_EVENT.uri),
+            Event.new_for_values(interpretation=Interpretation.RECEIVE_EVENT.uri),
         )
     def __init__(self):
         """Woo"""
@@ -1077,7 +1117,7 @@ class ThumbView(gtk.VBox):
         self.connect("scroll-event", self.on_scroll_event)
         self.connect("style-set", self.change_style)
 
-    def set_phase_items(self, i, items):
+    def set_phase_items(self, i, items, grouped_items):
         """
         Set a time phases events
 
@@ -1086,31 +1126,43 @@ class ThumbView(gtk.VBox):
         """
         view = self.views[i]
         label = self.labels[i]
-        if not items or len(items) == 0:
+        if (not items or len(items) == 0) and \
+           (not grouped_items or len(grouped_items) == 0):
             view.hide_all()
             label.hide_all()
             return False
         view.show_all()
         label.show_all()
-        view.set_model_from_list(items)
+        view.set_model_from_list(items, grouped_items)
 
 
     def set_day(self, day):
         parts = [[] for i in DayParts.get_day_parts()]
         uris = [[] for i in parts]
+        grouped_items = [{} for i in parts]
         
         list = day.filter(self.event_templates, result_type=ResultType.MostRecentEvents)
         for item in list:
             if event_exists(item.event.subjects[0].uri):
                 i = DayParts.get_day_part_for_item(item)
                 uri = item.event.subjects[0].uri
-                interpretation = item.event.interpretation
                 if not uri in uris[i]:
+                    if item.content_object: 
+                        if item.content_object.molteplicity:
+                            origin = urlparse(uri).netloc
+                            if origin not in grouped_items[i].keys():
+                                grouped_items[i][origin] = [item,]
+                            else:
+                                grouped_items[i][origin].append(item)
+                            
+                            uris[i].append(uri)
+                            continue
+                                
                     uris[i].append(uri)
                     parts[i].append(item)
 
         for i, part in enumerate(parts):
-            self.set_phase_items(i, part)
+            self.set_phase_items(i, part, grouped_items[i])
             
     def set_zoom(self, zoom):
          if zoom > len(SIZE_THUMBVIEW) - 1 or zoom < 0: return

@@ -321,6 +321,7 @@ class FileContentObject(GioFile, ContentObject):
         return False
     
     thumbnail_uri = ""
+    molteplicity = False
 
     def __init__(self, event):
         ContentObject.__init__(self, event)
@@ -371,7 +372,7 @@ class FileContentObject(GioFile, ContentObject):
             if isthumb:
                 pix = common.scale_to_fill(pix, w, h)
             else:
-                pix = pix.scale_simple(w // 2, w // 2, gtk.gdk.INTERP_TILES)
+                pix = pix.scale_simple(w // 2, w // 2, gtk.gdk.INTERP_BILINEAR)
         return pix,isthumb
 
 
@@ -399,6 +400,10 @@ class BaseContentType(ContentObject):
     text = ""
     timelineview_text = ""
     thumbview_text = ""
+    
+    #Field used to group particular type of event like 
+    #website or irc chats in thumb and timeline view
+    molteplicity = False
 
     # Attributes of this class which will be ran into string format as described
     # in this class's doctstring
@@ -466,7 +471,7 @@ class BaseContentType(ContentObject):
            if isthumb:
                pix = common.scale_to_fill(pix, w, h)
            else:
-               pix = pix.scale_simple(w // 2, w // 2, gtk.gdk.INTERP_TILES)
+               pix = pix.scale_simple(w // 2, w // 2, gtk.gdk.INTERP_BILINEAR)
        return pix,isthumb
 
     @CachedAttribute
@@ -660,9 +665,11 @@ class WebContentObject(BaseContentType):
     @classmethod
     def use_class(cls, event):
         """ Used by the content object chooser to check if the content object will work for the event"""
-        if event.subjects[0].uri.startswith("http://"):
+        if event.subjects[0].uri.startswith(("http://", "https://")):
             return cls
         return False
+    
+    molteplicity = True
 
     icon_name = "$MIME $ACTOR"
     # thumbnail_uri = "/some/users/cache/hash(uri).png"
@@ -698,6 +705,8 @@ class XChatContentObject(BaseContentType):
         if event.actor == "application://xchat.desktop":
             return cls
         return False
+        
+    molteplicity = True
 
     icon_name = "$ACTOR"
     _text = "{event.subjects[0].text}"

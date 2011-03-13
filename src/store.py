@@ -333,6 +333,7 @@ class Day(gobject.GObject):
         results = {}
         for item in self.items:
             uri = item.event.subjects[0].uri
+            if uri.startswith("http://") or uri.startswith("https://"): continue
             if not uri in results:
                 results[uri] = []
             if not item.event.interpretation == Interpretation.LEAVE_EVENT.uri:
