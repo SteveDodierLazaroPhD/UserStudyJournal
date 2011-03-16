@@ -855,7 +855,8 @@ class _ThumbViewRenderer(gtk.GenericCellRenderer):
         if path != None:
             try:
                 if widget.active_list[path[0]]:
-                    gobject.timeout_add(2, self.render_info_box, window, widget, cell_area, expose_area, self.event)
+                    gobject.timeout_add(2, self.render_info_box, window, widget, cell_area,
+                                        expose_area, self.event, self.content_obj, self.molteplicity)
             except:pass
         return True
 
@@ -883,7 +884,12 @@ class _ThumbViewRenderer(gtk.GenericCellRenderer):
             context.fill()
         draw_frame(context, x, y, w, h)
         context = window.cairo_create()
-        text = self.insert_file_markup(self.content_obj.thumbview_text, self.text_size)
+        if self.molteplicity > 1:
+            text_ = get_text_or_uri(self.content_obj, molteplicity=True)
+            text_ = text_.split(" ")[-1]
+        else:
+            text_ = self.content_obj.thumbview_text
+        text = self.insert_file_markup(text_, self.text_size)
 
         layout = widget.create_pango_layout(text)
         draw_text(context, layout, text, x+5, y+5, self.width-10)
@@ -891,7 +897,7 @@ class _ThumbViewRenderer(gtk.GenericCellRenderer):
             render_molteplicity(window, x, y, w, h, self.molteplicity)
 
     @staticmethod
-    def render_info_box(window, widget, cell_area, expose_area, event):
+    def render_info_box(window, widget, cell_area, expose_area, event, content_obj, molteplicity):
         """
         Renders a info box when the item is active
         """
@@ -901,7 +907,10 @@ class _ThumbViewRenderer(gtk.GenericCellRenderer):
         h = cell_area.height
         context = window.cairo_create()
         t0 = get_event_typename(event)
-        t1 = event.subjects[0].text
+        if molteplicity > 1:
+            t1 = get_text_or_uri(content_obj, molteplicity=True)
+        else:
+           t1 = event.subjects[0].text 
         text = ("<span size='10240'>%s</span>\n<span size='8192'>%s</span>" % (t0, t1)).replace("&", "&amp;")
         layout = widget.create_pango_layout(text)
         layout.set_markup(text)

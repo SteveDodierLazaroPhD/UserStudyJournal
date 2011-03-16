@@ -819,6 +819,12 @@ class AnimatedImage(gtk.Image):
 
 class ThrobberPopupButton(gtk.ToolItem):
 
+    __gsignals__ = {
+        "toggle-erase-mode" : (gobject.SIGNAL_RUN_FIRST,
+                   gobject.TYPE_NONE,
+                   ()),
+    }
+
     def __init__(self):
         super(ThrobberPopupButton, self).__init__()
         box = gtk.HBox()
@@ -836,8 +842,10 @@ class ThrobberPopupButton(gtk.ToolItem):
         self.menu = gtk.Menu()
         self.about = get_menu_item_with_stock_id_and_text(gtk.STOCK_ABOUT, _("About"))
         self.preferences = get_menu_item_with_stock_id_and_text(gtk.STOCK_PREFERENCES, _("Preferences"))
-        for item in (self.about, self.preferences): self.menu.insert(item, 0)
+        self.erase_mode = get_menu_item_with_stock_id_and_text(gtk.STOCK_CANCEL, _("Enter Erase Mode"))
+        for item in (self.about, self.erase_mode, self.preferences): self.menu.insert(item, 0)
         self.about.connect("activate", self.show_about_window)
+        self.erase_mode.connect("activate", lambda: self.emit("toggle-erase-mode"))
         self.menu.show_all()
         button.connect("toggled", self.on_toggle)
         self.preferences.connect("activate", lambda *args: self.preferences.toggle())

@@ -142,7 +142,7 @@ class CairoHistogram(gtk.DrawingArea):
 
     def set_store(self, store):
         self._store = store
-        self.largest = min(max(max(map(lambda x: len(x), store.days)), 1), 100)
+        self.largest = min(max(max(map(lambda x: len(x), store.days)), 1), 200)
         if not self.get_selected():
             self.set_selected([datetime.date.today()])
         else:
@@ -234,7 +234,7 @@ class CairoHistogram(gtk.DrawingArea):
         if nitems > self.max_column_height:
             nitems = self.max_column_height
         maxheight = maxheight - self.bottom_padding - 2
-        height = int(((float(nitems)/self.largest)*(maxheight-2))) - self.top_padding
+        height = int((((float(nitems)/self.largest)**0.33)*(maxheight-2))) - self.top_padding
         if height < self.min_column_height:
             height = self.min_column_height
         y = maxheight - height
