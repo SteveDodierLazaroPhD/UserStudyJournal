@@ -182,8 +182,11 @@ def get_file_color(ftype, fmime):
         return TANGOCOLORS[min(i+l, len(TANGOCOLORS)-1)]
     return (136/255.0, 138/255.0, 133/255.0)
     
-def get_text_or_uri(obj, ellipsize=True):
-    text = unicode(obj.text.replace("&", "&amp;"))
+def get_text_or_uri(obj, ellipsize=True, molteplicity=False):
+    if molteplicity and obj.molteplicity:
+        text = obj.molteplicity_text
+    else:
+        text = unicode(obj.text.replace("&", "&amp;"))
     if text.strip() == "":
         text = unicode(obj.uri.replace("&", "&amp;"))
         text = urllib.unquote(text)
@@ -370,7 +373,7 @@ def render_molteplicity(window, x, y, w, h, molteplicity):
     context.set_source_rgb(0.9, 0.9, 0.8)
     context.arc(center[0], center[1], radius , 0, 2 * math.pi)
     context.fill_preserve()
-    context.set_source_rgb(0.5, 0.7, 0.7)
+    context.set_source_rgb(1, 0.5, 0.2)
     context.stroke()
     
     context.set_source_rgb(0.1, 0.1, 0.1)
@@ -536,7 +539,11 @@ def create_text_thumb(gio_file, size=None, threshold=2):
     formatter = ImageFormatter(font_name="DejaVu Sans Mono", line_numbers=False, font_size=10)
     # to speed things up only highlight the first 20 lines
     content = "\n".join(gio_file.get_content().split("\n")[:20])
-    content = highlight(content, lexer, formatter)
+    try:
+        content = highlight(content, lexer, formatter)
+    except UnicodeDecodeError:
+        # we can't create the pixbuf
+        return None
     thumb.write(content)
     thumb.flush()
     thumb.seek(0)
@@ -878,7 +885,9 @@ class GioFile(object):
                         elif "text-x-generic" in self.icon_names or "text-x-script" in self.icon_names:
                             thumb = create_text_thumb(self, size, 1)
                         elif "audio-x-generic" in self.icon_names:
-                            thumb = self.get_audio_cover(size)
+                            pass
+                            #FIXME
+                            #thumb = self.get_audio_cover(size)
                     if thumb is None:
                         factory.create_failed_thumbnail(self.uri, self.mtime)
                     else:

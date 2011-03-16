@@ -29,6 +29,7 @@ import glib
 import gtk
 import os
 import sys
+from urlparse import urlparse
 from xdg import DesktopEntry
 import xml.dom.minidom as dom
 
@@ -670,6 +671,10 @@ class WebContentObject(BaseContentType):
         return False
     
     molteplicity = True
+    
+    @CachedAttribute 
+    def molteplicity_text(self): 
+        return _("Surfed in ") + urlparse(self.uri).netloc
 
     icon_name = "$MIME $ACTOR"
     # thumbnail_uri = "/some/users/cache/hash(uri).png"
@@ -707,6 +712,10 @@ class XChatContentObject(BaseContentType):
         return False
         
     molteplicity = True
+    
+    @CachedAttribute 
+    def molteplicity_text(self): 
+        return _("Chatted in ") + urlparse(self.uri).netloc
 
     icon_name = "$ACTOR"
     _text = "{event.subjects[0].text}"

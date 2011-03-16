@@ -39,8 +39,8 @@ from common import *
 import content_objects
 from config import event_exists, settings, bookmarker, SUPPORTED_SOURCES
 from store import ContentStruct, CLIENT
-from supporting_widgets import DayLabel, ContextMenu, StaticPreviewTooltip, VideoPreviewTooltip, SearchBox,\
-AudioPreviewTooltip
+from supporting_widgets import DayLabel, ContextMenu, ContextMenuMolteplicity, StaticPreviewTooltip, VideoPreviewTooltip,\
+SearchBox, AudioPreviewTooltip
 from zeitgeist.datamodel import ResultType, StorageState, TimeRange
 
 #DND support variables
@@ -937,6 +937,7 @@ class ThumbIconView(gtk.IconView, Draggable):
         self.active_list = []
         self.current_size_index = 1
         self.popupmenu = ContextMenu
+        self.popupmenu_molteplicity = ContextMenuMolteplicity
         
         # Model fields
         # 1) content object
@@ -974,6 +975,7 @@ class ThumbIconView(gtk.IconView, Draggable):
         """
         lock = threading.Lock()
         self.active_list = []
+        self.grouped_items = grouped_items
         self.model.clear()
         for item in items:
             obj = item.content_object
@@ -1039,7 +1041,13 @@ class ThumbIconView(gtk.IconView, Draggable):
                 path, cell = val
                 model = self.get_model()
                 obj = model[path[0]][0]
-                self.popupmenu.do_popup(event.time, [obj])
+                if model[path[0]][4] > 1:
+                    key = urlparse(obj.uri).netloc
+                    if key in self.grouped_items.keys():
+                        list_ = self.grouped_items[key]
+                        self.popupmenu_molteplicity.do_popup(event.time, list_)
+                else:    
+                    self.popupmenu.do_popup(event.time, [obj])
     
     def on_button_release(self, widget, event):
         if event.button == 1:
@@ -1047,8 +1055,14 @@ class ThumbIconView(gtk.IconView, Draggable):
             if val:
                 path, cell = val
                 model = self.get_model()
-                obj = model[path[0]][0]
-                obj.launch()
+                if model[path[0]][4] > 1:
+                    key = urlparse(obj.uri).netloc
+                    if key in self.grouped_items.keys():
+                        list_ = self.grouped_items[key]
+                        self.popupmenu_molteplicity.do_show_molteplicity_list(list_)
+                else:
+                    obj = model[path[0]][0]
+                    obj.launch()
 
     def on_leave_notify(self, widget, event):
         try:

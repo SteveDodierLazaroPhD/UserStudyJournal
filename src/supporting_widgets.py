@@ -1008,6 +1008,64 @@ class ContextMenu(gtk.Menu):
 
     def set_parent_window(self, parent):
         self.parent_window = parent
+        
+class ContextMenuMolteplicity(gtk.Menu):
+    subjects = []# A list of Zeitgeist event uris
+    infowindow = None
+    parent_window = None
+    
+    def __init__(self):
+        super(ContextMenuMolteplicity, self).__init__()
+        self.menuitems = {
+            "delete" : get_menu_item_with_stock_id_and_text(gtk.STOCK_DELETE, _("Delete items from Journal")),
+            "info" : get_menu_item_with_stock_id_and_text(gtk.STOCK_INFO, _("Show all grouped items"))
+            }
+        callbacks = {
+            "delete" : self.do_delete,
+            "info" : self.do_show_info
+            }
+        names = ["delete", "info"]  
+        for name in names:
+            item = self.menuitems[name]
+            self.append(item)
+            item.connect("activate", callbacks[name])
+        self.show_all()
+
+    def do_popup(self, time, subjects):
+        """
+        Call this method to popup the context menu
+
+        :param time: the event time from the button press event
+        :param subjects: a list of uris
+        """
+        self.subjects = subjects
+        if len(subjects) == 1:
+            uri = subjects[0].uri
+            
+        self.popup(None, None, None, 3, time)
+        
+    def do_show_info(self, menuitem):
+        if self.subjects:
+            self.do_show_molteplicity_list(self.subjects)
+            
+    def do_show_molteplicity_list(self, item_list):
+        if item_list:
+            if self.infowindow:
+                self.infowindow.destroy()
+            self.infowindow = MolteplicityInformationContainer(parent=self.parent_window)
+            self.infowindow.set_item_list(item_list)
+            self.infowindow.show_all()    
+            
+    def do_delete(self, menuitem):
+        for obj_ in self.subjects:
+            obj = obj_.content_object
+            CLIENT.find_event_ids_for_template(
+                Event.new_for_values(subject_uri=obj.uri),
+                lambda ids: CLIENT.delete_events(map(int, ids)),
+                timerange=DayParts.get_day_part_range_for_item(obj))
+
+    def set_parent_window(self, parent):
+        self.parent_window = parent
 
 
 class ToolButton(gtk.RadioToolButton):
@@ -1127,8 +1185,12 @@ class StockIconButton(gtk.Button):
 class InformationBox(gtk.VBox):
     """
     Holds widgets which display information about a uri
+    
+    obj: the content object to be shown
+    is_molteplicity: bool used to discriminate grouped items from single ones
     """
     obj = None
+    is_molteplicity = False
 
     class _ImageDisplay(gtk.Image):
         """
@@ -1181,15 +1243,17 @@ class InformationBox(gtk.VBox):
     def set_content_object(self, obj):
         self.obj = obj
         self.set_displaytype(obj)
-        text = get_text_or_uri(obj)
+        text = get_text_or_uri(obj,molteplicity=self.is_molteplicity)
         self.label.set_markup("<span size='10336'>" + text + "</span>")
         path = obj.uri.replace("&", "&amp;").replace("%20", " ")
         self.is_file = path.startswith("file://")
         if self.is_file:
             self.textpath = os.path.dirname(path)[7:]
         else:
+            if self.is_molteplicity:
+                path = text.split(" ")[-1]  #take only the uri
             self.textpath = path
-
+            
         self.pathlabel.set_markup("<span color='#979797'>" + self.textpath + "</span>")
 
     def on_realize_event(self, parms):
@@ -1219,12 +1283,12 @@ class _RelatedPane(gtk.TreeView):
 
     Displays related events using a widget based on gtk.TreeView
     """
-    def __init__(self):
+    def __init__(self, column_name):
         super(_RelatedPane, self).__init__()
         self.popupmenu = ContextMenu
         self.connect("button-press-event", self.on_button_press)
         self.connect("row-activated", self.row_activated)
-        pcolumn = gtk.TreeViewColumn(_("Used With"))
+        pcolumn = gtk.TreeViewColumn(_(column_name))
         pixbuf_render = gtk.CellRendererPixbuf()
         pcolumn.pack_start(pixbuf_render, False)
         pcolumn.set_cell_data_func(pixbuf_render, self.celldatamethod, "pixbuf")
@@ -1355,7 +1419,7 @@ class InformationContainer(gtk.Dialog):
         vbox = gtk.VBox()
         self.toolbar = self._InformationToolbar()
         self.infopane = InformationBox()
-        self.relatedpane = _RelatedPane()
+        self.relatedpane = _RelatedPane("Used With")
         scrolledwindow = gtk.ScrolledWindow()
         box2.set_border_width(5)
         box1.pack_start(self.toolbar, False, False)
@@ -1418,6 +1482,60 @@ class InformationContainer(gtk.Dialog):
 
     def hide_on_delete(self, widget, *args):
         super(InformationContainer, self).hide_on_delete(widget)
+        return True
+        
+class MolteplicityInformationContainer(gtk.Dialog):
+    """
+    . . . . .
+    .Origin .
+    . Info  .
+    . . . . .
+    . . . . .
+    .       .
+    .       . <--- Similar items (same basename)
+    .       .
+    . . . . .
+
+    A pane which holds the information pane and grouped items pane
+    """
+    def __init__(self, parent=None):
+        super(gtk.Window, self).__init__()
+        if parent: self.set_transient_for(parent)
+        self.set_destroy_with_parent(True)
+        self.set_size_request(400, 400)
+        self.connect("destroy", self.hide_on_delete)
+        box2 = gtk.VBox()
+        vbox = gtk.VBox()
+        self.infopane = InformationBox()
+        self.infopane.is_molteplicity = True
+        self.relatedpane = _RelatedPane("Grouped items")
+        scrolledwindow = gtk.ScrolledWindow()
+        box2.set_border_width(5)
+        box2.pack_start(self.infopane, False, False, 4)
+        scrolledwindow.set_shadow_type(gtk.SHADOW_IN)
+        scrolledwindow.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        scrolledwindow.add(self.relatedpane)
+        vbox.pack_end(scrolledwindow, True, True)
+        scrolledwindow.set_size_request(50, 100)
+        box2.pack_end(vbox, True, True, 10)
+        area = self.get_content_area()
+        area.add(box2)
+        self.connect("size-allocate", self.size_allocate)
+
+    def size_allocate(self, widget, allocation):
+        if allocation.height < 400:
+            self.infopane.display_widget.hide()
+        else:
+            self.infopane.display_widget.show()
+
+    def set_item_list(self, list_):
+        self.infopane.set_content_object(list_[0].content_object)
+        self.relatedpane.set_model_from_list(list_)
+        self.set_title(_("More Information"))
+        self.show()
+
+    def hide_on_delete(self, widget, *args):
+        super(MolteplicityInformationContainer, self).hide_on_delete(widget)
         return True
 
 
@@ -1528,4 +1646,5 @@ else:
     AudioPreviewTooltip = None
 StaticPreviewTooltip = StaticPreviewTooltip()
 ContextMenu = ContextMenu()
+ContextMenuMolteplicity = ContextMenuMolteplicity()
 SearchBox = SearchBox()

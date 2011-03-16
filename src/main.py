@@ -29,13 +29,14 @@ import datetime
 import os
 
 from activity_widgets import MultiViewContainer, TimelineViewContainer, ThumbViewContainer
-from supporting_widgets import DayButton, DayLabel, Toolbar, SearchBox, PreferencesDialog, ContextMenu, ThrobberPopupButton
+from supporting_widgets import DayButton, DayLabel, Toolbar, SearchBox, PreferencesDialog, ContextMenu, ThrobberPopupButton, \
+ContextMenuMolteplicity
 from histogram import HistogramWidget
 from store import Store, tdelta, STORE, CLIENT
 from config import settings, get_icon_path, get_data_path, PluginManager
 from Indicator import TrayIconManager
 from common import SIZE_THUMBVIEW, SIZE_TIMELINEVIEW
-#TODO granularity scrool, allineamento della parola in grassetto nella timelineview_icon
+#TODO granularity scrool, alignment timelineview_icon
 #more metadata? use website cache as thumbpreview??
 class ViewContainer(gtk.Notebook):
     __gsignals__ = {
@@ -143,6 +144,7 @@ class PortalWindow(gtk.Window):
         map(self.toolbar.add_new_view_button, self.view.tool_buttons[::-1])
         self.preferences_dialog = PreferencesDialog(parent=self)
         ContextMenu.set_parent_window(self)
+        ContextMenuMolteplicity.set_parent_window(self)
         self.histogram = HistogramWidget()
         self.histogram.set_store(self.store)
         self.backward_button, ev_backward_button = DayButton.new(0)
