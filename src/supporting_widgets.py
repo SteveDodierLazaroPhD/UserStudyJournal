@@ -704,8 +704,10 @@ class AudioPreviewTooltip(PreviewTooltip):
         PreviewTooltip.__init__(self)     
         #Playing label stuffs
         screen = self.get_screen()
-        rgba = screen.get_rgba_colormap()
-        self.set_colormap(rgba)
+        map_ = screen.get_rgba_colormap()
+        if map_ is None:
+            map_ = screen.get_rgb_colormap()
+        self.set_colormap(map_)
         self.set_app_paintable(True)
         img = gtk.image_new_from_stock(gtk.STOCK_MEDIA_PLAY,gtk.ICON_SIZE_LARGE_TOOLBAR)
         self.image = AnimatedImage(get_data_path("zlogo/zg%d.png"), 150, size=20)
@@ -1007,7 +1009,6 @@ class ContextMenu(gtk.Menu):
                 
     def do_delete_object(self, obj):
         if obj is None: return
-        print obj.uri
         CLIENT.find_event_ids_for_template(
             Event.new_for_values(subject_uri=obj.uri),
             lambda ids: CLIENT.delete_events(map(int, ids)))

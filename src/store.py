@@ -244,7 +244,6 @@ class Day(gobject.GObject):
     def remove_ids(self, time_range, ids):
         for id_ in ids:
             try:
-                print self.date, ids
                 del self._items[id_]
             except KeyError:
                 pass
