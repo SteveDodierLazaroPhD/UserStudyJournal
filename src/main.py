@@ -30,12 +30,13 @@ import os
 
 from activity_widgets import MultiViewContainer, TimelineViewContainer, ThumbViewContainer
 from supporting_widgets import DayButton, DayLabel, Toolbar, SearchBox, PreferencesDialog, ContextMenu, ThrobberPopupButton, \
-ContextMenuMolteplicity
+ContextMenuMolteplicity, NiceBar
 from histogram import HistogramWidget
 from store import Store, tdelta, STORE, CLIENT
 from config import settings, get_icon_path, get_data_path, PluginManager
 from Indicator import TrayIconManager
 from common import SIZE_THUMBVIEW, SIZE_TIMELINEVIEW
+
 #TODO granularity scrool, alignment timelineview_icon
 #more metadata? use website cache as thumbpreview??
 class ViewContainer(gtk.Notebook):
@@ -122,6 +123,10 @@ class ViewContainer(gtk.Notebook):
         #FIXME dirty hack
         for page in self.pages:
             page.set_slider(hscale)
+            
+    def toggle_erase_mode(self):
+        for page in self.pages:
+            page.toggle_erase_mode()
         
 
 class PortalWindow(gtk.Window):
@@ -136,6 +141,7 @@ class PortalWindow(gtk.Window):
         self.day_iter = self.store.today
         self.pages_loaded = 0
         self.current_zoom = 1
+        self.in_erase_mode = False
         self.view = ViewContainer(self.store)
         self.toolbar = Toolbar()
         default_views = (MultiViewContainer(), ThumbViewContainer(), TimelineViewContainer())
@@ -149,6 +155,8 @@ class PortalWindow(gtk.Window):
         self.histogram.set_store(self.store)
         self.backward_button, ev_backward_button = DayButton.new(0)
         self.forward_button, ev_forward_button = DayButton.new(1, sensitive=False)
+        self.nicebar = NiceBar()
+        self.nicebar_timeout = None
         
         # use a table for the spinner (otherwise the spinner is massive!)
         spinner_table = gtk.Table(3, 3, False)
@@ -179,7 +187,7 @@ class PortalWindow(gtk.Window):
         self.scale_box.pack_start(im_in,False,False);self.scale_box.pack_end(gtk.SeparatorToolItem(),False,False)
         scale_toolbar_box.pack_start(self.toolbar); scale_toolbar_box.pack_end(self.throbber_popup_button,False,False);
         scale_toolbar_box.pack_end(self.scale_box, False, False);
-        vbox.pack_start(scale_toolbar_box, False, False); vbox.pack_start(hbox, True, True, 5)
+        vbox.pack_start(scale_toolbar_box, False, False); vbox.pack_start(self.nicebar,False,False);vbox.pack_start(hbox, True, True, 5);
         self.histogramhbox.pack_end(self.histogram, True, True, 32);
         self.histogramhbox.set_sensitive(False)
         self.spinner_notebook = gtk.Notebook()
@@ -193,6 +201,7 @@ class PortalWindow(gtk.Window):
         vbox_general.show_all()
         self.scale_box.hide()
         self.show()
+        self.nicebar.hide()
         #Tray Icon
         self.tray_manager = TrayIconManager(self)
         # Settings
@@ -213,6 +222,7 @@ class PortalWindow(gtk.Window):
         self.view.connect("view-button-clicked", self.on_view_button_click)
         self.store.connect("update", self.histogram.histogram.set_store)
         SearchBox.connect("search", self._on_search)
+        self.throbber_popup_button.connect("toggle-erase-mode", self._on_toggle_erase_mode)
         SearchBox.connect("clear", self._on_search_clear)
         # Window configuration
         self.set_icon_name("gnome-activity-journal")
@@ -339,7 +349,28 @@ class PortalWindow(gtk.Window):
              
     def _on_zoom_changed(self, hscale):
         self.current_zoom = int(hscale.get_value())
-        self.view.set_zoom(self.current_zoom)                
+        self.view.set_zoom(self.current_zoom) 
+        
+    def _on_toggle_erase_mode(self, *args):
+        self.in_erase_mode = not self.in_erase_mode
+        if self.in_erase_mode:
+            if self.nicebar_timeout:
+                gobject.source_remove(self.nicebar_timeout)
+                self.nicebar_timeout = None
+            hand = gtk.gdk.Cursor(gtk.gdk.PIRATE) 
+            message = _("Erase Mode is active")
+            background = NiceBar.ALERTBACKGROUND
+            stock = gtk.STOCK_DIALOG_WARNING
+        else:
+            hand = gtk.gdk.Cursor(gtk.gdk.ARROW)
+            message = _("Erase Mode deactivated")
+            background = NiceBar.NORMALBACKGROUND
+            stock = gtk.STOCK_DIALOG_INFO 
+            self.nicebar_timeout = gobject.timeout_add(3000, self.nicebar.remove_message)
+            
+        self.nicebar.display_message(message, background=background, stock=stock)
+        self.window.set_cursor(hand)
+        self.view.toggle_erase_mode()              
 
     def set_title_from_date(self, date):
         pages = self.view.pages[0].num_pages

@@ -171,6 +171,13 @@ class MultiViewContainer(gtk.HBox):
         
     def set_slider(self, slider):
         pass
+        
+    def toggle_erase_mode(self):
+        #yeah that'ugly..don't mind: it's only a temp solution
+        global IN_ERASE_MODE
+        IN_ERASE_MODE = not IN_ERASE_MODE
+        #for page in self.pages:
+        #    page.in_erase_mode = not page.in_erase_mode
 
 class DayViewContainer(gtk.VBox):
     event_templates = (
@@ -198,6 +205,7 @@ class DayViewContainer(gtk.VBox):
         self.scrolled_window.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         self.show_all()
         self.day = None
+        self.in_erase_mode = False
         self.connect("style-set", self.change_style)
 
     def set_day(self, day):
@@ -569,6 +577,7 @@ class Item(gtk.HBox, Draggable):
         evbox.add(self.btn)
         self.pack_start(evbox)
         self.btn.connect("clicked", self.launch)
+        self.btn.connect("enter", self._on_button_entered)
         self.btn.connect("button_press_event", self._show_item_popup)
         self.btn.connect("realize", self.realize_cb, evbox)
         self.init_multimedia_tooltip()
@@ -692,6 +701,14 @@ class Item(gtk.HBox, Draggable):
             t_string += "\n" + self.truncate_string(string[truncate_lenght_new:], truncate_lenght)
             return t_string
 
+    def _on_button_entered(self, widget, *args):
+        global IN_ERASE_MODE
+        if IN_ERASE_MODE:
+            hand = gtk.gdk.Cursor(gtk.gdk.PIRATE) 
+        else:
+            hand = gtk.gdk.Cursor(gtk.gdk.ARROW)           
+        widget.window.set_cursor(hand)
+    
     def _show_item_popup(self, widget, ev):
         if ev.button == 3:
             items = [self.content_obj]
@@ -703,12 +720,16 @@ class Item(gtk.HBox, Draggable):
         if not bool_: self.destroy()
         
     def launch(self, *discard):
-        ev_time = time.time()
-        #1 sec it's a good range imo...
-        launch = True if (ev_time - self.last_launch)*1000 > 1000 else False
-        if self.content_obj is not None and launch:
-            self.last_launch = ev_time
-            self.content_obj.launch()
+        global IN_ERASE_MODE
+        if IN_ERASE_MODE:
+            ContextMenu.do_delete_object(self.content_obj)
+        else:    
+            ev_time = time.time()
+            #1 sec it's a good range imo...
+            launch = True if (ev_time - self.last_launch)*1000 > 1000 else False
+            if self.content_obj is not None and launch:
+                self.last_launch = ev_time
+                self.content_obj.launch()
 
 #####################
 ## ThumbView code
@@ -733,7 +754,9 @@ class ThumbViewContainer(_GenericViewWidget):
         
     def set_slider(self, slider):
         self.view.set_slider(slider)
-
+        
+    def toggle_erase_mode(self):
+        self.view.toggle_erase_mode()
 
 class _ThumbViewRenderer(gtk.GenericCellRenderer):
     """
@@ -945,6 +968,7 @@ class ThumbIconView(gtk.IconView, Draggable):
         Draggable.__init__(self, self)
         self.active_list = []
         self.current_size_index = 1
+        self.in_erase_mode = False
         self.popupmenu = ContextMenu
         self.popupmenu_molteplicity = ContextMenuMolteplicity
         
@@ -1064,14 +1088,20 @@ class ThumbIconView(gtk.IconView, Draggable):
             if val:
                 path, cell = val
                 model = self.get_model()
+                obj = model[path[0]][0]
                 if model[path[0]][4] > 1:
                     key = urlparse(obj.uri).netloc
                     if key in self.grouped_items.keys():
                         list_ = self.grouped_items[key]
-                        self.popupmenu_molteplicity.do_show_molteplicity_list(list_)
+                        if self.in_erase_mode:
+                            self.popupmenu_molteplicity.do_delete_list(list_)
+                        else:
+                            self.popupmenu_molteplicity.do_show_molteplicity_list(list_) 
                 else:
-                    obj = model[path[0]][0]
-                    obj.launch()
+                    if self.in_erase_mode:
+                        self.popupmenu.do_delete_object(obj)
+                    else:    
+                        obj.launch()
 
     def on_leave_notify(self, widget, event):
         try:
@@ -1217,6 +1247,10 @@ class ThumbView(gtk.VBox):
             
     def set_slider(self, slider):
         self.zoom_slider = slider
+        
+    def toggle_erase_mode(self):
+        for view in self.views:
+            view.in_erase_mode = not view.in_erase_mode
 
 
 class TimelineViewContainer(_GenericViewWidget):
@@ -1247,7 +1281,9 @@ class TimelineViewContainer(_GenericViewWidget):
         
     def set_slider(self, slider):
         self.view.set_slider(slider)
-
+        
+    def toggle_erase_mode(self):
+        self.view.toggle_erase_mode()
 
 class _TimelineRenderer(gtk.GenericCellRenderer):
     """
@@ -1465,6 +1501,7 @@ class TimelineView(gtk.TreeView, Draggable):
         self.set_model(self.model)
         self.popupmenu = ContextMenu
         self.zoom_slider = None
+        self.in_erase_mode = False
         self.add_events(gtk.gdk.LEAVE_NOTIFY_MASK | gtk.gdk.SCROLL_MASK )
         self.connect("button-press-event", self.on_button_press)
         self.connect("button-release-event", self.on_button_release)
@@ -1552,7 +1589,11 @@ class TimelineView(gtk.TreeView, Draggable):
             path = self.get_dest_row_at_pos(int(event.x), int(event.y))
             if path:
                 model = self.get_model()
-                obj = model[path[0]][0].launch()
+                obj = model[path[0]][0]
+                if self.in_erase_mode:
+                    self.popupmenu.do_delete_object(obj)
+                else:
+                    obj.launch()
                 return True
             
         return False
@@ -1574,10 +1615,17 @@ class TimelineView(gtk.TreeView, Draggable):
             
     def set_slider(self, slider):
         self.zoom_slider = slider
+        
+    def toggle_erase_mode(self):
+        self.in_erase_mode = not self.in_erase_mode
 
     def on_activate(self, widget, path, column):
         model = self.get_model()
-        model[path][0].launch()
+        obj = model[path][0]
+        if self.in_erase_mode:
+            self.popupmenu.do_delete_object(obj)
+        else:
+            obj.launch()
 
     def change_style(self, widget, old_style):
         """

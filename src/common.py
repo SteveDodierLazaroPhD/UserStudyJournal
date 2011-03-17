@@ -77,6 +77,9 @@ THUMBNAIL_FACTORIES = {
 }
 ICON_THEME = gtk.icon_theme_get_default()
 
+#FIXME i know it's ugly. Btw this is only a temp solution. It will be removed
+# when we'll revamp the Multiview view.----sorry----cando
+IN_ERASE_MODE = False
 
 # Caches desktop files
 DESKTOP_FILES = {}

@@ -842,10 +842,10 @@ class ThrobberPopupButton(gtk.ToolItem):
         self.menu = gtk.Menu()
         self.about = get_menu_item_with_stock_id_and_text(gtk.STOCK_ABOUT, _("About"))
         self.preferences = get_menu_item_with_stock_id_and_text(gtk.STOCK_PREFERENCES, _("Preferences"))
-        self.erase_mode = get_menu_item_with_stock_id_and_text(gtk.STOCK_CANCEL, _("Enter Erase Mode"))
+        self.erase_mode = get_menu_item_with_stock_id_and_text(gtk.STOCK_CANCEL, _("Toggle Erase Mode"))
         for item in (self.about, self.erase_mode, self.preferences): self.menu.insert(item, 0)
         self.about.connect("activate", self.show_about_window)
-        self.erase_mode.connect("activate", lambda: self.emit("toggle-erase-mode"))
+        self.erase_mode.connect("activate", lambda x: self.emit("toggle-erase-mode"))
         self.menu.show_all()
         button.connect("toggled", self.on_toggle)
         self.preferences.connect("activate", lambda *args: self.preferences.toggle())
@@ -1004,6 +1004,14 @@ class ContextMenu(gtk.Menu):
                 Event.new_for_values(subject_uri=obj.uri),
                 lambda ids: CLIENT.delete_events(map(int, ids)),
                 timerange=DayParts.get_day_part_range_for_item(obj))
+                
+    def do_delete_object(self, obj):
+        if obj is None: return
+        print obj.uri
+        CLIENT.find_event_ids_for_template(
+            Event.new_for_values(subject_uri=obj.uri),
+            lambda ids: CLIENT.delete_events(map(int, ids)))
+
 
     def do_delete_events_with_shared_uri(self, menuitem):
         for uri in map(lambda obj: obj.uri, self.subjects):
@@ -1071,6 +1079,14 @@ class ContextMenuMolteplicity(gtk.Menu):
                 Event.new_for_values(subject_uri=obj.uri),
                 lambda ids: CLIENT.delete_events(map(int, ids)),
                 timerange=DayParts.get_day_part_range_for_item(obj))
+                
+    def do_delete_list(self, list_):
+        for obj_ in list_:
+            obj = obj_.content_object
+            CLIENT.find_event_ids_for_template(
+                Event.new_for_values(subject_uri=obj.uri),
+                lambda ids: CLIENT.delete_events(map(int, ids)),
+                timerange=DayParts.get_day_part_range_for_item(obj))    
 
     def set_parent_window(self, parent):
         self.parent_window = parent
@@ -1644,6 +1660,95 @@ class PreferencesDialog(gtk.Dialog):
     def on_check_toggled(self, button, *args):
         settings.set("tray_icon", button.get_active())
 
+
+#Code adapted from Emesene2 source. Get it at: https://github.com/emesene/emesene
+#Thanks Emesene's team
+class NiceBar(gtk.EventBox):
+    '''A class used to display messages in a non-intrusive bar'''
+    
+    NORMALBACKGROUND = gtk.gdk.Color(65025,65025,46155)
+    NORMALFOREGROUND = "black"
+    ALERTBACKGROUND = gtk.gdk.Color(57600,23040,19712)
+    ALERTFOREGROUND = NORMALFOREGROUND
+
+    def __init__(self, default_background=ALERTBACKGROUND, default_foreground=None):
+
+        gtk.EventBox.__init__(self)
+
+        self.message_label = gtk.Label()
+        self.message_label.set_line_wrap(True)
+        self.message_label.set_ellipsize(pango.ELLIPSIZE_END)
+        self.message_image = gtk.Image()
+        self.message_hbox = gtk.HBox()
+        self.message_hbox.set_border_width(2)
+
+        if default_background is None:
+            default_background = self.NORMALBACKGROUND
+        if default_foreground is None:
+            default_foreground = self.NORMALFOREGROUND
+
+        self.default_back = default_background
+        self.default_fore = default_foreground
+        self.empty_queue()
+        self.markup = '<span foreground="%s" font-weight="550" >%s</span>'
+        self.modify_bg(gtk.STATE_NORMAL, default_background)
+
+        self.message_hbox.pack_end(self.message_label)
+        self.add(self.message_hbox)
+
+    def new_message(self, message, stock=None, background=None, \
+                                                  foreground=None):
+        ''' Adds the actual message to the queue and show a new one '''
+
+        if self.actual_message != '':
+            self.messages_queue.append([self.actual_message, \
+                    self.actual_image, self.actual_background,
+                    self.actual_foreground])
+
+        self.display_message(message, stock, background, foreground)
+
+    def remove_message(self):
+        ''' Removes the actual message and display the next if any '''
+        try:
+            message, stock, back, fore = self.messages_queue.pop()
+            self.display_message(message, stock, back, fore)
+        except IndexError:
+            self.hide()
+
+    def display_message(self, message, stock=None, background=None, \
+                        foreground=None):
+        '''
+            Displays a message without modifying the queue
+            A background, text color and a stock image are optional
+        '''
+
+        self.actual_message = message
+        self.actual_image = stock
+        self.actual_background = background or self.default_back
+        self.actual_foreground = foreground or self.default_fore
+
+        if self.message_image.get_parent() is not None:
+            self.message_hbox.remove(self.message_image)
+
+        if stock is not None:
+            self.message_image = gtk.image_new_from_stock(stock, \
+                                             gtk.ICON_SIZE_LARGE_TOOLBAR)
+            self.message_hbox.pack_start(self.message_image, False, False)
+
+        self.modify_bg(gtk.STATE_NORMAL, self.actual_background)
+        self.message_label.set_markup(self.markup % (self.actual_foreground,
+                                                       self.actual_message))
+        self.show_all()
+
+    def empty_queue(self):
+        ''' Delets all messages and hide the bar '''
+
+        self.messages_queue = list()
+        self.actual_message = ''
+        self.actual_image = None
+        self.actual_background = self.default_back
+        self.actual_foreground = self.default_fore
+        self.hide()
 
 ###
 if gst is not None:
