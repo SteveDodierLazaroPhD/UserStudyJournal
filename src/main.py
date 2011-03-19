@@ -62,10 +62,12 @@ class ViewContainer(gtk.Notebook):
         self.tool_buttons = []
 
     def set_day(self, day, page=None):
+        force_update = True
         if page == None:
             page = self.page
+            force_update = False
         if hasattr(self.pages[page], "set_day"):
-            self.pages[page].set_day(day, self.store)
+            self.pages[page].set_day(day, self.store, force_update)
             
     def set_zoom(self, zoom):
         page = self.page

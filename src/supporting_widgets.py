@@ -1087,7 +1087,8 @@ class ContextMenuMolteplicity(gtk.Menu):
             CLIENT.find_event_ids_for_template(
                 Event.new_for_values(subject_uri=obj.uri),
                 lambda ids: CLIENT.delete_events(map(int, ids)),
-                timerange=DayParts.get_day_part_range_for_item(obj))    
+                timerange=DayParts.get_day_part_range_for_item(obj))
+ 
 
     def set_parent_window(self, parent):
         self.parent_window = parent

@@ -79,17 +79,17 @@ class _GenericViewWidget(gtk.VBox):
         self.pack_start(self.daylabel, False, False)
         self.connect("style-set", self.change_style)
 
-    def set_day(self, day, store):
+    def set_day(self, day, store, force_update=False):
         self.store = store
         if self.day:
             self.day.disconnect(self.day_signal_id)
         self.day = day
         self.day_signal_id = self.day.connect("update", self.update_day)
-        self.update_day(day)
+        self.update_day(day, force_update)
 
-    def update_day(self, day):
+    def update_day(self, day, force_update=False):
         self.daylabel.set_date(day.date)
-        self.view.set_day(self.day)
+        self.view.set_day(self.day, force_update)
 
     def click(self, widget, event):
         if event.button in (1, 3):
@@ -125,7 +125,7 @@ class MultiViewContainer(gtk.HBox):
             self.pages.append(group)
             self.pack_end(group, True, True, 6)
 
-    def set_day(self, day, store):
+    def set_day(self, day, store, force_update=False):
         t = time.time()
         if self.days:
             for i, _day in enumerate(self.__days(self.days[0], store)):
@@ -710,7 +710,8 @@ class Item(gtk.HBox, Draggable):
         widget.window.set_cursor(hand)
     
     def _show_item_popup(self, widget, ev):
-        if ev.button == 3:
+        global IN_ERASE_MODE
+        if ev.button == 3 and not  IN_ERASE_MODE:
             items = [self.content_obj]
             ContextMenu.do_popup(ev.time, items)
 
@@ -1041,7 +1042,7 @@ class ThumbIconView(gtk.IconView, Draggable):
         :param events: a list of :class:`Events <zeitgeist.datamodel.Event>`
         """
         self.last_active = -1
-        if not items:
+        if not (items or grouped_items):
             return
         thread = threading.Thread(target=self._set_model_in_thread, args=(items, grouped_items))
         thread.start()
@@ -1068,7 +1069,7 @@ class ThumbIconView(gtk.IconView, Draggable):
                     selection.set_uris([uri])     
 
     def on_button_press(self, widget, event):
-        if event.button == 3:
+        if event.button == 3 and not self.in_erase_mode:
             val = self.get_item_at_pos(int(event.x), int(event.y))
             if val:
                 path, cell = val
@@ -1094,11 +1095,13 @@ class ThumbIconView(gtk.IconView, Draggable):
                     if key in self.grouped_items.keys():
                         list_ = self.grouped_items[key]
                         if self.in_erase_mode:
+                            model.remove(model[path[0]].iter)
                             self.popupmenu_molteplicity.do_delete_list(list_)
                         else:
                             self.popupmenu_molteplicity.do_show_molteplicity_list(list_) 
                 else:
                     if self.in_erase_mode:
+                        model.remove(model[path[0]].iter)
                         self.popupmenu.do_delete_object(obj)
                     else:    
                         obj.launch()
@@ -1157,6 +1160,7 @@ class ThumbView(gtk.VBox):
         self.labels = []
         self.current_size_index = 1
         self.zoom_slider = None
+        self.old_date = None
         for text in DayParts.get_day_parts():
             label = gtk.Label()
             label.set_markup("\n  <span size='10336'>%s</span>" % (text))
@@ -1189,7 +1193,14 @@ class ThumbView(gtk.VBox):
         view.set_model_from_list(items, grouped_items)
 
 
-    def set_day(self, day):
+    def set_day(self, day, force_update=False):
+        if not force_update and self.old_date is not None:
+            if (day.date - self.old_date) == datetime.timedelta(days=0) and \
+                self.views[0].in_erase_mode:
+                #don't update the model when we are in ERASE_MODE
+                return
+            
+        self.old_date = day.date
         parts = [[] for i in DayParts.get_day_parts()]
         uris = [[] for i in parts]
         grouped_items = [{} for i in parts]
@@ -1502,6 +1513,7 @@ class TimelineView(gtk.TreeView, Draggable):
         self.popupmenu = ContextMenu
         self.zoom_slider = None
         self.in_erase_mode = False
+        self.old_date = None
         self.add_events(gtk.gdk.LEAVE_NOTIFY_MASK | gtk.gdk.SCROLL_MASK )
         self.connect("button-press-event", self.on_button_press)
         self.connect("button-release-event", self.on_button_release)
@@ -1546,7 +1558,14 @@ class TimelineView(gtk.TreeView, Draggable):
                                     SIZE_TIMELINEVIEW[self.current_size_index][1],
                                     SIZE_TEXT_TIMELINEVIEW[self.current_size_index]])
 
-    def set_day(self, day):
+    def set_day(self, day, force_update=False):
+        if not force_update and self.old_date is not None:
+            if (day.date - self.old_date) == datetime.timedelta(days=0) and \
+                self.in_erase_mode:
+                #don't update the model when we are in ERASE_MODE
+                return
+            
+        self.old_date = day.date
         items = day.get_time_map()
         self.set_model_from_list(items)
     
@@ -1573,7 +1592,7 @@ class TimelineView(gtk.TreeView, Draggable):
                     selection.set_uris([uri])
 
     def on_button_press(self, widget, event):
-        if event.button == 3:
+        if event.button == 3 and not self.in_erase_mode:
             path = self.get_dest_row_at_pos(int(event.x), int(event.y))
             if path:
                 model = self.get_model()
@@ -1591,6 +1610,7 @@ class TimelineView(gtk.TreeView, Draggable):
                 model = self.get_model()
                 obj = model[path[0]][0]
                 if self.in_erase_mode:
+                    model.remove(model[path[0]].iter)
                     self.popupmenu.do_delete_object(obj)
                 else:
                     obj.launch()
@@ -1623,6 +1643,7 @@ class TimelineView(gtk.TreeView, Draggable):
         model = self.get_model()
         obj = model[path][0]
         if self.in_erase_mode:
+            model.remove(model[path[0]].iter)
             self.popupmenu.do_delete_object(obj)
         else:
             obj.launch()
