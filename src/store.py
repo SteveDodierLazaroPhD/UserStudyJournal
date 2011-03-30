@@ -31,8 +31,8 @@ from zeitgeist.datamodel import Event, ResultType, Interpretation, TimeRange, Su
 
 import content_objects
 import external
+from external import CLIENT
 
-CLIENT = ZeitgeistClient()
 INTERFACE = ZeitgeistDBusInterface()
 MAXEVENTS = 999999
 
