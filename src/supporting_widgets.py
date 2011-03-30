@@ -39,9 +39,7 @@ try:
 except ImportError:
     gst = None
 
-from zeitgeist.client import ZeitgeistClient
-from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
-    ResultType
+from zeitgeist.datamodel import Event, Subject
 
 from common import *
 import content_objects
