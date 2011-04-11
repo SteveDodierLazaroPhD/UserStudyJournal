@@ -3,6 +3,8 @@
 # GNOME Activity Journal
 #
 # Copyright © 2010 Stefano Candori <stefano.candori@gmail.com>
+# Copyright © 2011 Collabora Ltd.
+#             By Siegfried-Angel Gevatter Pujals <siegfried@gevatter.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -21,6 +23,8 @@ import gtk
 import os 
 
 from config import get_icon_path, settings
+from blacklist import BLACKLIST
+from common import ignore_exceptions
 
 HAS_INDICATOR = True
 try:
@@ -34,7 +38,7 @@ else:
         """
         def __init__(self, main_window):
             path = get_icon_path("hicolor/scalable/apps/gnome-activity-journal.svg")
-            name = "Gnome Activity Journal"
+            name = _("Activity Journal")
             appindicator.Indicator.__init__(self, name, path, \
                 appindicator.CATEGORY_APPLICATION_STATUS)
 
@@ -54,13 +58,13 @@ class TrayIcon(gtk.StatusIcon):
 
         gtk.StatusIcon.__init__(self)
         self.main_window = main_window
-        path = get_icon_path("hicolor/scalable/apps/gnome-activity-journal.svg")
+        path = get_icon_path("hicolor/scalable/apps/gnome-activity-journal-paused.svg")
         self.set_from_file(path)
-        self.set_tooltip("Gnome Activity Journal")
+        self.set_tooltip(_("Activity Journal"))
         self.connect('activate', self._on_activate)
         self.connect('popup-menu', self._on_popup)
 
-        self.menu = Menu(self.main_window)
+        self.menu = Menu(self.main_window, self)
 
     def _on_activate(self, trayicon):
         if(self.main_window.get_property("visible")):
@@ -74,27 +78,42 @@ class TrayIcon(gtk.StatusIcon):
             position = gtk.status_icon_position_menu
         self.menu.popup(None, None, position, button, activate_time, trayicon)
 
+    def set_icon(self, paused):
+        if paused:
+            name = "hicolor/scalable/apps/gnome-activity-journal-paused.svg"
+        else:
+            name = "hicolor/scalable/apps/gnome-activity-journal.svg"
+        self.set_from_file(get_icon_path(name))
+
 class Menu(gtk.Menu):
     """
     a widget that represents the menu displayed on the trayicon on the
     main window
     """
 
-    def __init__(self, main_window):
+    def __init__(self, main_window, parent=None):
         
         gtk.Menu.__init__(self)
         self.main_window = main_window
+        self._parent = parent
         self.hide_show_mainwindow = gtk.MenuItem(_('Hide/Show GAJ'))
         self.hide_show_mainwindow.connect('activate', self._on_activate)
+        self.incognito_enable = gtk.MenuItem(_('Start incognito mode (pause event logging)'))
+        self.incognito_enable.connect('activate', self._toggle_incognito)
+        self.incognito_disable = gtk.MenuItem(_('Resume event logging (exit incognito)'))
+        self.incognito_disable.connect('activate', self._toggle_incognito)
         self.quit = gtk.ImageMenuItem(gtk.STOCK_QUIT)
         self.quit.connect('activate',
             lambda *args: self.main_window.quit_and_save())
 
         self.append(self.hide_show_mainwindow)
+        self.append(self.incognito_enable)
+        self.append(self.incognito_disable)
         self.append(gtk.SeparatorMenuItem())
         self.append(self.quit)
 
         self.show_all()
+        self._update_incognito()
 
     def _on_activate(self, tray):
         if(self.main_window != None):
@@ -102,6 +121,25 @@ class Menu(gtk.Menu):
                 self.main_window.hide()
             else:
                 self.main_window.show()
+
+    @ignore_exceptions
+    def _update_incognito(self, toggle=False):
+        enabled = BLACKLIST.get_incognito()
+        if toggle:
+            enabled = not enabled
+        if enabled:
+            self.incognito_enable.hide()
+            self.incognito_disable.show()
+        else:
+            self.incognito_enable.show()
+            self.incognito_disable.hide()
+        if self._parent is not None:
+            self._parent.set_icon(paused=enabled)
+        return enabled
+    
+    @ignore_exceptions
+    def _toggle_incognito(self, *discard):
+        BLACKLIST.set_incognito(self._update_incognito(toggle=True))
 
 class TrayIconManager():
 

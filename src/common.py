@@ -1044,3 +1044,12 @@ class DayParts:
         end[3] = cls.CHANGEHOURS[i+1] if len(cls.CHANGEHOURS) > (i + 1) else 23
         end[4] = end[5] = 59
         return time.mktime(start) * 1000, time.mktime(end) * 1000
+
+def ignore_exceptions(f):
+    def safe_method(*args, **kwargs):
+        try:
+            f(*args, **kwargs)
+        except Exception, e:
+            from traceback import print_stack
+            print_stack()
+    return safe_method
