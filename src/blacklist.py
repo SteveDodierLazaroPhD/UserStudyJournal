@@ -57,4 +57,34 @@ class OldBlacklistInterface:
         else:
             self._remove_blacklist_template(self.INCOGNITO)
 
-BLACKLIST = OldBlacklistInterface()
+class NewBlacklistInterface:
+
+    INCOGNITO = Event.new_for_values()
+    INCOGNITO_ID = 'incognito'
+
+    def __init__(self):
+        self._blacklist = CLIENT._iface.get_extension('Blacklist', 'blacklist')
+
+    def _get_blacklist_templates(self):
+        return self._blacklist.GetTemplates()
+
+    def _add_blacklist_template(self, template):
+        self._blacklist.AddTemplate(self.INCOGNITO_ID, self.INCOGNITO)
+
+    def _remove_blacklist_template(self, template_id):
+        self._blacklist.RemoveTemplate(self.INCOGNITO_ID)
+
+    def get_incognito(self):
+        templates = self._get_blacklist_templates()
+        return self.INCOGNITO_ID in templates
+
+    def set_incognito(self, enabled):
+        if enabled:
+            self._add_blacklist_template(self.INCOGNITO)
+        else:
+            self._remove_blacklist_template(self.INCOGNITO)
+
+if CLIENT.get_version() >= [0, 7, 99]:
+	BLACKLIST = NewBlacklistInterface()
+else:
+	BLACKLIST = OldBlacklistInterface()

@@ -1051,8 +1051,10 @@ def ignore_exceptions(return_value_on_failure=None):
             try:
                 return f(*args, **kwargs)
             except Exception, e:
-                from traceback import print_stack
-                print_stack()
+                from traceback import print_exc
+                print '\n --- Error running %s ---' % f.__name__
+                print_exc()
+                print
                 return return_value_on_failure
         return safe_method
     return wrap
