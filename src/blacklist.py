@@ -24,37 +24,37 @@ from zeitgeist.datamodel import Event, Subject
 
 from external import CLIENT
 
-class BlacklistInterface:
+class OldBlacklistInterface:
 
-	INCOGNITO = Event.new_for_values()
+    INCOGNITO = Event.new_for_values()
 
-	def __init__(self):
-		self._blacklist = CLIENT._iface.get_extension('Blacklist', 'blacklist')
+    def __init__(self):
+        self._blacklist = CLIENT._iface.get_extension('Blacklist', 'blacklist')
 
-	def _get_blacklist_templates(self):
-		return map(Event.new_for_struct, self._blacklist.GetBlacklist())
+    def _get_blacklist_templates(self):
+        return map(Event.new_for_struct, self._blacklist.GetBlacklist())
 
-	def _add_blacklist_template(self, template):
-		templates = self._get_blacklist_templates()
-		templates.append(template)
-		self._blacklist.SetBlacklist(templates)
+    def _add_blacklist_template(self, template):
+        templates = self._get_blacklist_templates()
+        templates.append(template)
+        self._blacklist.SetBlacklist(templates)
 
-	def _remove_blacklist_template(self, template):
-		templates = self._get_blacklist_templates()
-		updated_templates = list(templates)
-		for template in templates:
-			if self.INCOGNITO.matches_template(template):
-				updated_templates.remove(template)
-		self._blacklist.SetBlacklist(updated_templates)
+    def _remove_blacklist_template(self, template):
+        templates = self._get_blacklist_templates()
+        updated_templates = list(templates)
+        for template in templates:
+            if self.INCOGNITO.matches_template(template):
+                updated_templates.remove(template)
+        self._blacklist.SetBlacklist(updated_templates)
 
-	def get_incognito(self):
-		templates = self._get_blacklist_templates()
-		return any(imap(self.INCOGNITO.matches_template, templates))
+    def get_incognito(self):
+        templates = self._get_blacklist_templates()
+        return any(imap(self.INCOGNITO.matches_template, templates))
 
-	def set_incognito(self, enabled):
-		if enabled:
-			self._add_blacklist_template(self.INCOGNITO)
-		else:
-			self._remove_blacklist_template(self.INCOGNITO)
+    def set_incognito(self, enabled):
+        if enabled:
+            self._add_blacklist_template(self.INCOGNITO)
+        else:
+            self._remove_blacklist_template(self.INCOGNITO)
 
-BLACKLIST = BlacklistInterface()
+BLACKLIST = OldBlacklistInterface()
