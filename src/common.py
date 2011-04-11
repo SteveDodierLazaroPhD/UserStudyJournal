@@ -1045,11 +1045,14 @@ class DayParts:
         end[4] = end[5] = 59
         return time.mktime(start) * 1000, time.mktime(end) * 1000
 
-def ignore_exceptions(f):
-    def safe_method(*args, **kwargs):
-        try:
-            f(*args, **kwargs)
-        except Exception, e:
-            from traceback import print_stack
-            print_stack()
-    return safe_method
+def ignore_exceptions(return_value_on_failure=None):
+    def wrap(f):
+        def safe_method(*args, **kwargs):
+            try:
+                return f(*args, **kwargs)
+            except Exception, e:
+                from traceback import print_stack
+                print_stack()
+                return return_value_on_failure
+        return safe_method
+    return wrap

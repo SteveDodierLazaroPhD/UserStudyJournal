@@ -113,7 +113,9 @@ class Menu(gtk.Menu):
         self.append(self.quit)
 
         self.show_all()
-        self._update_incognito()
+        if self._update_incognito() is None:
+            self.incognito_enable.hide()
+            self.incognito_disable.hide()
 
     def _on_activate(self, tray):
         if(self.main_window != None):
@@ -122,7 +124,7 @@ class Menu(gtk.Menu):
             else:
                 self.main_window.show()
 
-    @ignore_exceptions
+    @ignore_exceptions()
     def _update_incognito(self, toggle=False):
         enabled = BLACKLIST.get_incognito()
         if toggle:
@@ -137,7 +139,7 @@ class Menu(gtk.Menu):
             self._parent.set_icon(paused=enabled)
         return enabled
     
-    @ignore_exceptions
+    @ignore_exceptions()
     def _toggle_incognito(self, *discard):
         BLACKLIST.set_incognito(self._update_incognito(toggle=True))
 
