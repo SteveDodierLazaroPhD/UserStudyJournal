@@ -27,7 +27,8 @@ import sys
 import time
 import threading
 from zeitgeist.client import ZeitgeistClient, ZeitgeistDBusInterface
-from zeitgeist.datamodel import Event, ResultType, Interpretation, TimeRange, Subject
+from zeitgeist.datamodel import Event, ResultType, Interpretation, TimeRange, \
+    Subject, StorageState
 
 import content_objects
 import external
@@ -63,8 +64,9 @@ def get_related_events_for_uri(uri, callback):
                         Event.new_for_values(subjects=[sub]),
                     ]
             CLIENT.find_event_ids_for_templates(templates, _event_request_handler,
-                                             TimeRange.until_now(), num_events=len(uris),
-                                             result_type=ResultType.MostRecentSubjects)
+                TimeRange.until_now(), num_events=len(uris),
+                storage_state=StorageState.Available,
+                result_type=ResultType.MostRecentSubjects)
 
     end = time.time() * 1000
     start = end - (86400*30*1000)
@@ -210,7 +212,9 @@ class Day(gobject.GObject):
     def load_ids(self):
         if not self._loaded:
             self._loaded = True
-            CLIENT.find_events_for_templates(self.templates, self.set_ids, self.time_range, num_events=MAXEVENTS)
+            CLIENT.find_events_for_templates(self.templates, self.set_ids,
+                self.time_range, num_events=MAXEVENTS,
+                storage_state=StorageState.Available)
             CLIENT.install_monitor(self.time_range, self.templates, self.insert_events, self.remove_ids)
 
     def __getitem__(self, id_):
@@ -393,15 +397,13 @@ class Store(gobject.GObject):
         self._day_connections = {}
         self._deleted_uris = []
         #Search for uris that have been deleted in order to not display them.
-        #This is needed for event signaled by external data-providers
-        #Zeitgeist Datahub already control if an item really exists.
         #FIXME we should add a timestamp field with the deleted uri
         #to prevent that a recent event with same uri than an older and deleted one
         #isn't displayed. - cando
         self._deleted_uris = []
         template = Event.new_for_values(interpretation=Interpretation.DELETE_EVENT.uri)
-        CLIENT.find_events_for_templates((template,), self.__set_deleted_uris, 
-                                         TimeRange.until_now(), num_events=MAXEVENTS)
+        CLIENT.find_events_for_templates((template,), self.__set_deleted_uris,
+            TimeRange.until_now(), num_events=MAXEVENTS)
         global currentTimestamp, histogramLoaderCounter
         today = datetime.date.today()
         currentTimestamp = time.mktime(today.timetuple())
@@ -519,10 +521,12 @@ class Store(gobject.GObject):
                 a = end - (inc*(i+1)) + 1
                 b = end - (inc*(i))
                 CLIENT.find_events_for_templates(
-                    event_templates, callback, [a*1000, b*1000], num_events=50000)
+                    event_templates, callback, [a*1000, b*1000],
+                    num_events=50000, storage_state=StorageState.Available)
         else:
             CLIENT.find_events_for_templates(
-                event_templates, callback, [start*1000, end*1000], num_events=50000)
+                event_templates, callback, [start*1000, end*1000],
+                num_events=50000, storage_state=StorageState.Available)
         return False
 
     def __add_event(self, event, overwrite):

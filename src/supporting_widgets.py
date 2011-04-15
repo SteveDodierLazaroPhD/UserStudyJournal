@@ -39,7 +39,7 @@ try:
 except ImportError:
     gst = None
 
-from zeitgeist.datamodel import Event, Subject
+from zeitgeist.datamodel import Event, Subject, StorageState
 
 from common import *
 import content_objects
@@ -482,7 +482,8 @@ class SearchBox(gtk.ToolItem):
             Event.new_for_values(subject_text="*"+text+"*", subject_interpretation=interpretation),
             Event.new_for_values(subject_uri="*"+text+"*", subject_interpretation=interpretation)
         ]
-        CLIENT.find_event_ids_for_templates(templates, self._search_callback, storage_state=2, num_events=20, result_type=0)
+        CLIENT.find_event_ids_for_templates(templates, self._search_callback,
+            storage_state=StorageState.Available, num_events=20, result_type=0)
 
     def _search_callback(self, ids):
         objs = []
