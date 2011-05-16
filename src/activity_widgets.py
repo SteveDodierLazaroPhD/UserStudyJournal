@@ -628,7 +628,7 @@ class Item(gtk.HBox, Draggable):
            self.content_obj.annotation is not None:
             if self.content_obj.annotation.strip () != "":
                 note = _("Notes")
-                note_text = _("<b>"+ note +":</b> %s")% (self.content_obj.annotation)
+                note_text = "<b>%s:</b> %s" % (note, self.content_obj.annotation)
                 text += note_text + "\n"
         uri = urllib.unquote(self.content_obj.uri)
         if len(uri) > 90: uri = uri[:90] + "..." #ellipsize--it's ugly!
@@ -659,7 +659,7 @@ class Item(gtk.HBox, Draggable):
         if self.content_obj.annotation is not None:
             if self.content_obj.annotation.strip () != "":
                 note = _("Notes")
-                note_text = _("<b>"+ note +":</b> %s")% (self.content_obj.annotation)
+                note_text = "<b>%s:</b> %s" % (note, self.content_obj.annotation)
                 text += note_text + "\n\n"
                 truncate_lenght = max (len(mime_text), len(note_text))
             else: truncate_lenght = len(mime_text)
