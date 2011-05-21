@@ -202,8 +202,11 @@ class PortalWindow(gtk.Window):
         self.add(vbox_general)
         vbox_general.show_all()
         self.scale_box.hide()
+        
         self.show()
         self.nicebar.hide()
+        SearchBox.hide()
+        
         #Tray Icon
         self.tray_manager = TrayIconManager(self)
         # Settings
@@ -237,8 +240,6 @@ class PortalWindow(gtk.Window):
                 "hicolor/256x256/apps/gnome-activity-journal.png")])
         gobject.idle_add(self.setup)
         gobject.idle_add(self.load_plugins)
-        # hide unused widgets
-        SearchBox.hide()
         
     def load_plugins(self):
         self.plug_manager = PluginManager(CLIENT, STORE, self)

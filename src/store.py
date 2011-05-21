@@ -26,7 +26,6 @@ import gtk
 import sys
 import time
 import threading
-from zeitgeist.client import ZeitgeistClient, ZeitgeistDBusInterface
 from zeitgeist.datamodel import Event, ResultType, Interpretation, TimeRange, \
     Subject, StorageState
 
@@ -34,9 +33,7 @@ import content_objects
 import external
 from external import CLIENT
 
-INTERFACE = ZeitgeistDBusInterface()
 MAXEVENTS = 999999
-
 
 tdelta = lambda x: datetime.timedelta(days=x)
 
@@ -124,7 +121,7 @@ class ContentStruct(object):
 
     @CachedAttribute
     def event(self):
-        events = INTERFACE.GetEvents([self.id])
+        events = CLIENT._iface.GetEvents([self.id])
         if events:
             return Event(events[0])
 
@@ -136,7 +133,6 @@ class ContentStruct(object):
             self.content_object = content_object
         if build:
             CLIENT.get_events([self.id], self.set_event)
-
 
     def set_event(self, value):
         if isinstance(value, dbus.Array) or isinstance(value, list) or isinstance(value, tuple) and len(value):
@@ -407,7 +403,7 @@ class Store(gobject.GObject):
         global currentTimestamp, histogramLoaderCounter
         today = datetime.date.today()
         currentTimestamp = time.mktime(today.timetuple())
-        days_population = ZeitgeistDBusInterface().get_extension("Log", "journal/activity").GetHistogramData()
+        days_population = CLIENT._iface.get_extension("Log", "journal/activity").GetHistogramData()
         for i in xrange(50 * 6):
             date = datetime.date.fromtimestamp(currentTimestamp)
             day = Day(date, days_population)

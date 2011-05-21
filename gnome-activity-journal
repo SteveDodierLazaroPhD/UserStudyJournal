@@ -85,15 +85,11 @@ parser.add_option("--debug",
                   help = _("print additional debugging information"))
 options, arguments = parser.parse_args()
 
-try:
-    from zeitgeist.client import ZeitgeistClient
-    CLIENT = ZeitgeistClient()
-except RuntimeError, e:
-    print "%s: %s" % (_("ERROR"), _("Unable to connect to Zeitgeist:"))
-    print "%s" % e
-    sys.exit(1)
+from src.external import CLIENT, CLIENT_VERSION
 
-if CLIENT.get_version() < [0, 3, 9, 99]:
+if CLIENT_VERSION is None:
+    sys.exit(1)
+elif CLIENT_VERSION < [0, 3, 9, 99]:
     print "You need Zeitgeist 0.5.0 or later for the GNOME Activity Journal to work."
     print "https://launchpad.net/zeitgeist"
     sys.exit(1)

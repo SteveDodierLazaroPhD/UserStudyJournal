@@ -22,7 +22,7 @@ from itertools import imap
 
 from zeitgeist.datamodel import Event, Subject
 
-from external import CLIENT
+from external import CLIENT, CLIENT_VERSION
 
 class OldBlacklistInterface:
 
@@ -84,7 +84,7 @@ class NewBlacklistInterface:
         else:
             self._remove_blacklist_template(self.INCOGNITO)
 
-if CLIENT.get_version() >= [0, 7, 99]:
+if CLIENT_VERSION >= [0, 7, 99]:
 	BLACKLIST = NewBlacklistInterface()
 else:
 	BLACKLIST = OldBlacklistInterface()
