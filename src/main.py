@@ -240,7 +240,7 @@ class PortalWindow(gtk.Window):
                 "hicolor/256x256/apps/gnome-activity-journal.png")])
         gobject.idle_add(self.setup)
         gobject.idle_add(self.load_plugins)
-        
+
     def load_plugins(self):
         self.plug_manager = PluginManager(CLIENT, STORE, self)
         self.preferences_dialog.notebook.show_all()
@@ -317,12 +317,12 @@ class PortalWindow(gtk.Window):
             self.view.set_zoom(self.current_zoom)
             self.scale_box.show()
 
-    
     def _on_view_ready(self, view):
-        if self.pages_loaded == view.num_pages - 1 :
+        if self.pages_loaded == view.num_pages - 1:
             self.histogramhbox.set_sensitive(True)
             self.spinner_notebook.set_current_page(1)
-        else: self.pages_loaded += 1
+        else:
+            self.pages_loaded += 1
 
     def _on_search(self, box, results):
         dates = []

@@ -272,7 +272,7 @@ class DayView(gtk.VBox):
             if self.view in self.get_children():
                 self.remove(self.view)
             self.view.destroy()
-        self.view = gtk.VBox() 
+        self.view = gtk.VBox()
         self.pack_start(self.view)
 
     def set_items(self, items):
