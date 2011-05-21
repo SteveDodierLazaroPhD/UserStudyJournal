@@ -464,7 +464,7 @@ class SearchBox(gtk.ToolItem):
                             try:
                                 if subject.interpretation != interpretation:
                                     return False
-                            except:
+                            except Exception:
                                 return False
                         return True
                     return False

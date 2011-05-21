@@ -258,7 +258,7 @@ class ContentObject(AbstractContentObject):
         """
         try:
             interpretation = INTERPRETATION_PARENTS[self.event.subjects[0].interpretation]
-        except:
+        except Exception:
             interpretation = self.event.subjects[0].interpretation
         t = (common.FILETYPESNAMES[interpretation] if
              interpretation in common.FILETYPESNAMES.keys() else "Unknown")
@@ -423,11 +423,11 @@ class BaseContentType(ContentObject):
         except KeyError: wrds["subject_interpretation"] = Interpretation
         try:
             wrds["source"] = SUPPORTED_SOURCES[self.event.subjects[0].interpretation]
-        except:
+        except Exception:
             wrds["source"] = SUPPORTED_SOURCES[""]
         try:
             wrds["manifestation"] = Manifestation[event.manifestation]
-        except:
+        except Exception:
             wrds["manifestation"] = Manifestation
         for name in self.fields_to_format:
             val = getattr(self, name)
@@ -530,7 +530,7 @@ class GenericContentObject(BaseContentType):
             except KeyError: wrds["subject_interpretation"] = Interpretation
             try:
                 wrds["source"] = SUPPORTED_SOURCES[self.event.subjects[0].interpretation]
-            except:
+            except Exception:
                 wrds["source"] = SUPPORTED_SOURCES[""]
 
         @CachedAttribute
@@ -633,7 +633,8 @@ class IMContentObject(BaseContentType):
             if size in (24, 48):
                 try:
                     return self.status_icon_funcs[status](size)
-                except:pass
+                except Exception:
+                    pass
             return BaseContentType.get_icon(self, size, *args, **kwargs)
 
         @property

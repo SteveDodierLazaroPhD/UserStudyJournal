@@ -33,7 +33,7 @@ from xdg import BaseDirectory
 
 try:
     from fungtk.quickconf import QuickConf
-except:
+except ImportError:
     from quickconf import QuickConf
 
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation, \
@@ -111,7 +111,7 @@ class Bookmarker(gobject.GObject):
                             removable.append(bookmark)
                     for uri in removable:
                         self.bookmarks.remove(uri)
-            except:
+            except Exception:
                 print "Pin database is corrupt."
 
     def _save(self):

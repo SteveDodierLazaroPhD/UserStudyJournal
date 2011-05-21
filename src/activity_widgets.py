@@ -879,9 +879,11 @@ class _ThumbViewRenderer(gtk.GenericCellRenderer):
         if path != None:
             try:
                 if widget.active_list[path[0]]:
-                    gobject.timeout_add(2, self.render_info_box, window, widget, cell_area,
-                                        expose_area, self.event, self.content_obj, self.molteplicity)
-            except:pass
+                    gobject.timeout_add(2, self.render_info_box, window,
+                        widget, cell_area, expose_area, self.event,
+                        self.content_obj, self.molteplicity)
+            except Exception:
+                pass
         return True
 
     @staticmethod

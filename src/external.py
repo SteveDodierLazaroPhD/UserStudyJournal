@@ -38,7 +38,7 @@ STORE = None
 
 try:
     BUS = dbus.SessionBus()
-except:
+except Exception:
     BUS = None
 
 # Telepathy
@@ -111,7 +111,7 @@ class Hamster(object):
 
 try:
     HAMSTER = Hamster()
-except:
+except Exception:
     HAMSTER = None
 
 
@@ -128,5 +128,5 @@ class ZeitgeistFTS(object):
 
 try:
     FTS = ZeitgeistFTS()
-except:
+except Exception:
     FTS = None
