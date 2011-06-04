@@ -174,7 +174,7 @@ class Day(gobject.GObject):
     def templates(self):
         subject = Subject()
         subject.uri = "!application://*"
-        return [Event.new_for_values(subjects = [subject])]
+        return[Event.new_for_values(subjects = [subject], actor="!application://activity-log-manager.desktop")]
 
     def __init__(self, date, days_population=None):
         super(Day, self).__init__()
@@ -397,7 +397,12 @@ class Store(gobject.GObject):
         #to prevent that a recent event with same uri than an older and deleted one
         #isn't displayed. - cando
         self._deleted_uris = []
-        template = Event.new_for_values(interpretation=Interpretation.DELETE_EVENT.uri)
+        subject = Subject()
+        subject.uri = "!application://*"
+        template = Event.new_for_values(interpretation=Interpretation.DELETE_EVENT.uri, 
+                                        subjects = [subject], 
+                                        actor="!application://activity-log-manager.desktop")
+        
         CLIENT.find_events_for_templates((template,), self.__set_deleted_uris,
             TimeRange.until_now(), num_events=MAXEVENTS)
         global currentTimestamp, histogramLoaderCounter
@@ -490,8 +495,11 @@ class Store(gobject.GObject):
             Event.new_for_values(interpretation=Interpretation.ACCESS_EVENT.uri, subjects=[subject]),
             Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri, subjects=[subject]),
             Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri, subjects=[subject]),
-            Event.new_for_values(interpretation=Interpretation.RECEIVE_EVENT.uri, subjects=[subject])
+            Event.new_for_values(interpretation=Interpretation.RECEIVE_EVENT.uri, subjects=[subject]),
+            Event.new_for_values(actor="!application://activity-log-manager.desktop")
         )
+        
+        
         def callback(events):
             def _thread_fn(events):
                 event_chunks = []
