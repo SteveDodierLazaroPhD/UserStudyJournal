@@ -31,18 +31,62 @@ from zeitgeist.client import ZeitgeistClient
 from zeitgeist.datamodel import Event, Subject, TimeRange, ResultType, \
     Interpretation, Manifestation
 
-__all__ = ['CLIENT', 'CLIENT_VERSION', 'TELEPATHY', 'HAMSTER', 'FTS']
+__all__ = ['CLIENT', 'CLIENT_VERSION', 'CLIENT_EXTENSION', 'TELEPATHY',
+    'HAMSTER', 'FTS']
 
 # Zeitgeist
+
+class ClientExtension(object):
+
+    _restarted = False
+
+    def __init__(self):
+        self._extension = CLIENT._iface.get_extension("Log", "journal/activity")
+
+    def _show_error(self):
+        dialog = gtk.MessageDialog(
+            type=gtk.MESSAGE_ERROR,
+            buttons=gtk.BUTTONS_CLOSE)
+        dialog.set_title(
+            _("Incomplete GNOME Activity Journal installation"))
+        dialog.set_markup(_(
+            "<b>GNOME Activity Journal comes together with a Zeitgeist "
+            "extension which can't be found.</b>\n\n"
+            "If you've installed GNOME Activity Journal manually, "
+            "please ensure that you've copied "
+            "<i>extension/gnome_activity_journal.py</i> "
+            "into <i>~/.local/share/zeitgeist/extensions/</i>."))
+        def _exit(*args, **kwargs):
+            raise SystemExit
+        dialog.connect('response', _exit)
+        dialog.show()
+        gtk.main()
+
+    def __getattr__(self, name):
+        try:
+            return getattr(self._extension, name)
+        except TypeError:
+            print _("Could not find extension method \"%s\"") % name
+            if self._restarted:
+                print _("Aborting.")
+                self._show_error()
+                raise SystemExit
+            else:
+                print _("Attempting to restart Zeitgeist...")
+                self._restarted = True
+                CLIENT._iface.Quit()
+                self._extension.reconnect()
+                return self.__getattr__(name)
 
 try:
     CLIENT = ZeitgeistClient()
 except RuntimeError, e:
     print "%s: %s" % (_("ERROR"), _("Unable to connect to Zeitgeist:"))
     print "%s" % e
-    CLIENT = CLIENT_VERSION = None
+    CLIENT = CLIENT_VERSION = CLIENT_EXTENSION = None
 else:
     CLIENT_VERSION = CLIENT.get_version()
+    CLIENT_EXTENSION = ClientExtension()
 
 STORE = None
 
@@ -61,7 +105,9 @@ HAMSTER_PATH = "/org/gnome/Hamster"
 HAMSTER_URI = "org.gnome.Hamster"
 
 class Hamster(object):
+
     class HamsterEvent(Event):
+    
         def _HAMSTER_ID_COUNTER():
             i = 1
             while True:
@@ -78,6 +124,7 @@ class Hamster(object):
             return self._id
 
     class Fact(object):
+    
         def __init__(self, dictionary):
             self._dictionary = dictionary
 
@@ -125,7 +172,9 @@ except Exception:
     HAMSTER = None
 
 class ZeitgeistFTS(object):
+
     result_type_relevancy = 100
+    
     def __init__(self):
         self._fts = BUS.get_object('org.gnome.zeitgeist.Engine',
             '/org/gnome/zeitgeist/index/activity')

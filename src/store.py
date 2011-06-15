@@ -31,7 +31,7 @@ from zeitgeist.datamodel import Event, ResultType, Interpretation, TimeRange, \
 
 import content_objects
 import external
-from external import CLIENT
+from external import CLIENT, CLIENT_EXTENSION
 
 MAXEVENTS = 999999
 
@@ -408,7 +408,7 @@ class Store(gobject.GObject):
         global currentTimestamp, histogramLoaderCounter
         today = datetime.date.today()
         currentTimestamp = time.mktime(today.timetuple())
-        days_population = CLIENT._iface.get_extension("Log", "journal/activity").GetHistogramData()
+        days_population = CLIENT_EXTENSION.GetHistogramData()
         for i in xrange(50 * 6):
             date = datetime.date.fromtimestamp(currentTimestamp)
             day = Day(date, days_population)
