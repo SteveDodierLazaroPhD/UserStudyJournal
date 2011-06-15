@@ -1,3 +1,10 @@
+2011-X-X: GNOME Activity Journal 0.8.0 ""
+-----------------------------------------
+
+ - Don't show application launch events nor fake events generated
+   by Activity Log Manager.
+ - Update blacklist functionality for Zeitgeist 0.8.0.
+
 2011-1-23: GNOME Activity Journal 0.6.0 "Pink Unicorns don't exist"
 -------------------------------------------------------------------
 * General New features
