@@ -30,6 +30,7 @@ import gobject
 import gettext
 import gio
 import gnome.ui
+import glib
 import gtk
 import os
 import pango
@@ -550,7 +551,10 @@ def create_text_thumb(gio_file, size=None, threshold=2):
     thumb.write(content)
     thumb.flush()
     thumb.seek(0)
-    pixbuf = gtk.gdk.pixbuf_new_from_file(thumb.name)
+    try:
+        pixbuf = gtk.gdk.pixbuf_new_from_file(thumb.name)
+    except glib.GError:
+        return None # (LP: #743125)
     thumb.close()
     if size is not None:
         new_height = None
