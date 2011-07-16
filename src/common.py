@@ -516,7 +516,10 @@ def create_opendocument_thumb(path):
         return None
     thumb.flush()
     thumb.seek(0)
-    pixbuf = gtk.gdk.pixbuf_new_from_file(thumb.name)
+    try:
+        pixbuf = gtk.gdk.pixbuf_new_from_file(thumb.name)
+    except glib.GError:
+        return None # (LP: #650917)
     thumb.close()
     return add_background(pixbuf)
 
