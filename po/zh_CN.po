@@ -7,128 +7,128 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-activity-journal\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2011-01-23 14:06+0100\n"
-"PO-Revision-Date: 2010-03-20 05:35+0000\n"
-"Last-Translator: Xhacker Liu <liu.dongyuan@gmail.com>\n"
+"POT-Creation-Date: 2011-01-26 18:05+0100\n"
+"PO-Revision-Date: 2011-04-24 10:03+0000\n"
+"Last-Translator: Lele Long <schemacs@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <zh_CN@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Launchpad-Export-Date: 2011-01-24 05:10+0000\n"
-"X-Generator: Launchpad (build 12177)\n"
+"X-Launchpad-Export-Date: 2011-04-25 05:02+0000\n"
+"X-Generator: Launchpad (build 12758)\n"
 
-#: ../gnome-activity-journal:83
+#: ../gnome-activity-journal:85
 msgid "print additional debugging information"
 msgstr "输出附加调试信息"
 
-#: ../gnome-activity-journal:90
+#: ../gnome-activity-journal:92
 msgid "ERROR"
 msgstr "错误"
 
-#: ../gnome-activity-journal:90
+#: ../gnome-activity-journal:92
 msgid "Unable to connect to Zeitgeist:"
 msgstr "无法连接到 Zeitgeist："
 
-#: ../src/supporting_widgets.py:181
-msgid "Go to Today"
-msgstr ""
-
-#: ../src/supporting_widgets.py:183
-msgid "Go to the previous day "
-msgstr ""
-
-#: ../src/supporting_widgets.py:183
-msgid "Go to the next day"
-msgstr ""
-
-#: ../src/supporting_widgets.py:515
-msgid "Type here to search..."
-msgstr "输入以搜索..."
-
-#: ../src/supporting_widgets.py:701
-msgid "<b>Playing...</b>"
-msgstr ""
-
-#: ../src/supporting_widgets.py:815 ../src/supporting_widgets.py:825
-#: ../src/supporting_widgets.py:1406
-msgid "Preferences"
-msgstr ""
-
-#: ../src/supporting_widgets.py:824
-msgid "About"
-msgstr ""
-
-#: ../src/supporting_widgets.py:907 ../src/activity_widgets.py:551
-msgid "Remove Pin"
-msgstr "取消固定"
-
-#: ../src/supporting_widgets.py:908 ../src/supporting_widgets.py:1279
-msgid "Add Pin"
-msgstr ""
-
-#: ../src/supporting_widgets.py:909
-msgid "Delete item from Journal"
-msgstr "从活动志中删除"
-
-#: ../src/supporting_widgets.py:910
-msgid "Delete all events with this URI"
-msgstr ""
-
-#: ../src/supporting_widgets.py:911
-msgid "More Information"
-msgstr ""
-
-#: ../src/supporting_widgets.py:923
-msgid "Send To..."
-msgstr ""
-
-#: ../src/supporting_widgets.py:1191
-msgid "Used With"
-msgstr ""
-
-#: ../src/supporting_widgets.py:1274
-msgid "Launch this subject"
-msgstr ""
-
-#: ../src/supporting_widgets.py:1276
-msgid "Delete this subject"
-msgstr ""
-
-#: ../src/supporting_widgets.py:1416
-msgid "Active Plugins:"
-msgstr ""
-
-#: ../src/supporting_widgets.py:1424
-msgid "Plugins"
-msgstr ""
-
-#: ../src/supporting_widgets.py:1429
-msgid "Show icon in system tray"
-msgstr ""
-
-#: ../src/supporting_widgets.py:1436
-msgid "Configuration"
-msgstr ""
-
-#: ../src/main.py:139
-msgid "<span size=\"larger\"><b>Loading Journal...</b></span>"
-msgstr ""
-
-#: ../src/main.py:300
+#: ../src/supporting_widgets.py:83 ../src/main.py:304
 msgid "Today"
 msgstr "今天"
 
-#: ../src/main.py:303
+#: ../src/supporting_widgets.py:86 ../src/main.py:307
 msgid "Yesterday"
 msgstr "昨天"
 
-#: ../src/main.py:314
+#: ../src/supporting_widgets.py:186
+msgid "Go to Today"
+msgstr "转到今天"
+
+#: ../src/supporting_widgets.py:188
+msgid "Go to the previous day "
+msgstr "转到上一天 "
+
+#: ../src/supporting_widgets.py:188
+msgid "Go to the next day"
+msgstr "转到下一天"
+
+#: ../src/supporting_widgets.py:520
+msgid "Type here to search..."
+msgstr "输入以搜索..."
+
+#: ../src/supporting_widgets.py:706
+msgid "<b>Playing...</b>"
+msgstr ""
+
+#: ../src/supporting_widgets.py:820 ../src/supporting_widgets.py:830
+#: ../src/supporting_widgets.py:1421
+msgid "Preferences"
+msgstr "首选项"
+
+#: ../src/supporting_widgets.py:829
+msgid "About"
+msgstr "关于"
+
+#: ../src/supporting_widgets.py:912 ../src/activity_widgets.py:551
+msgid "Remove Pin"
+msgstr "取消固定"
+
+#: ../src/supporting_widgets.py:913 ../src/supporting_widgets.py:1287
+msgid "Add Pin"
+msgstr "添加到锁定定"
+
+#: ../src/supporting_widgets.py:914
+msgid "Delete item from Journal"
+msgstr "从活动志中删除"
+
+#: ../src/supporting_widgets.py:915
+msgid "Delete all events with this URI"
+msgstr "删除所有包含这个 URI 的事件"
+
+#: ../src/supporting_widgets.py:916 ../src/supporting_widgets.py:1355
+msgid "More Information"
+msgstr "更多信息"
+
+#: ../src/supporting_widgets.py:928
+msgid "Send To..."
+msgstr "发送到..."
+
+#: ../src/supporting_widgets.py:1198
+msgid "Used With"
+msgstr ""
+
+#: ../src/supporting_widgets.py:1282
+msgid "Launch this subject"
+msgstr "打开这个主题"
+
+#: ../src/supporting_widgets.py:1284
+msgid "Delete this subject"
+msgstr "删除该主题"
+
+#: ../src/supporting_widgets.py:1431
+msgid "Active Plugins:"
+msgstr "已启用的插件"
+
+#: ../src/supporting_widgets.py:1439
+msgid "Plugins"
+msgstr "插件"
+
+#: ../src/supporting_widgets.py:1444
+msgid "Show icon in system tray"
+msgstr "在系统托盘显示图标"
+
+#: ../src/supporting_widgets.py:1451
+msgid "Configuration"
+msgstr "配置"
+
+#: ../src/main.py:143
+msgid "<span size=\"larger\"><b>Loading Journal...</b></span>"
+msgstr "<span size=\"larger\"><b>加载日志中...</b></span>"
+
+#: ../src/main.py:318
 #, python-format
 msgid "%s to %s"
 msgstr "%s 到 %s"
 
-#: ../src/main.py:314 ../extra/gnome-activity-journal.desktop.in.h:1
+#: ../src/main.py:318 ../extra/gnome-activity-journal.desktop.in.h:1
 msgid "Activity Journal"
 msgstr "活动志"
 
@@ -144,24 +144,24 @@ msgstr ""
 
 #: ../src/content_objects.py:579
 msgid "Available"
-msgstr ""
+msgstr "可用"
 
 #: ../src/content_objects.py:580
 msgid "Offline"
-msgstr ""
+msgstr "离线"
 
 #: ../src/content_objects.py:581
 msgid "Away"
-msgstr ""
+msgstr "离开"
 
 #: ../src/content_objects.py:582
 msgid "Busy"
-msgstr ""
+msgstr "忙碌"
 
 #: ../src/content_objects.py:614 ../src/content_objects.py:619
 #: ../src/content_objects.py:624
 msgid "with"
-msgstr ""
+msgstr "用"
 
 #: ../src/content_objects.py:663
 msgid "Time Tracker"
@@ -208,150 +208,150 @@ msgid_plural "items"
 msgstr[0] "项"
 
 #. TODO: Move this into Zeitgeist's library, implemented properly
-#: ../src/config.py:237
+#: ../src/config.py:238
 msgid "Worked with a Video"
 msgstr ""
 
-#: ../src/config.py:237
+#: ../src/config.py:238
 msgid "Worked with Videos"
 msgstr ""
 
-#: ../src/config.py:238
+#: ../src/config.py:239
 msgid "Worked with Audio"
 msgstr ""
 
-#: ../src/config.py:239
+#: ../src/config.py:240
 msgid "Worked with an Image"
 msgstr ""
 
-#: ../src/config.py:239
+#: ../src/config.py:240
 msgid "Worked with Images"
 msgstr ""
 
-#: ../src/config.py:240
+#: ../src/config.py:241
 msgid "Edited or Read Document"
 msgstr "编辑或阅读文档"
 
-#: ../src/config.py:240
+#: ../src/config.py:241
 msgid "Edited or Read Documents"
 msgstr "编辑或阅读文档"
 
-#: ../src/config.py:241
+#: ../src/config.py:242
 msgid "Edited or Read Code"
 msgstr "编辑或阅读代码"
 
-#: ../src/config.py:242
+#: ../src/config.py:243
 msgid "Conversation"
-msgstr ""
+msgstr "对话"
 
-#: ../src/config.py:242
+#: ../src/config.py:243
 msgid "Conversations"
-msgstr ""
-
-#: ../src/config.py:243
-msgid "Visited Website"
-msgstr ""
-
-#: ../src/config.py:243
-msgid "Visited Websites"
-msgstr ""
-
-#: ../src/config.py:244 ../src/common.py:150
-msgid "Email"
-msgstr ""
+msgstr "对话"
 
 #: ../src/config.py:244
-msgid "Emails"
-msgstr ""
+msgid "Visited Website"
+msgstr "访问过的网站"
+
+#: ../src/config.py:244
+msgid "Visited Websites"
+msgstr "访问过的网站"
+
+#: ../src/config.py:245 ../src/common.py:151
+msgid "Email"
+msgstr "电子邮件"
 
 #: ../src/config.py:245
+msgid "Emails"
+msgstr "电子邮件"
+
+#: ../src/config.py:246
 msgid "Todo"
 msgstr ""
 
-#: ../src/config.py:245
+#: ../src/config.py:246
 msgid "Todos"
 msgstr ""
 
-#: ../src/config.py:246
+#: ../src/config.py:247
 msgid "Other Activity"
 msgstr "其他活动"
 
-#: ../src/config.py:246
+#: ../src/config.py:247
 msgid "Other Activities"
 msgstr "其他活动"
 
-#: ../src/config.py:247
+#: ../src/config.py:248
 msgid "Edited or Read Note"
-msgstr ""
+msgstr "编辑或阅读笔记"
 
-#: ../src/config.py:247
+#: ../src/config.py:248
 msgid "Edited or Read Notes"
-msgstr ""
+msgstr "已编辑或阅读的笔记"
 
-#: ../src/config.py:248
+#: ../src/config.py:249
 msgid "Software Development"
-msgstr ""
+msgstr "软件开发"
 
-#: ../src/config.py:248
+#: ../src/config.py:249
 msgid "Software Developments"
-msgstr ""
+msgstr "软件开发"
 
 #: ../src/Indicator.py:87
 msgid "Hide/Show GAJ"
-msgstr ""
+msgstr "隐藏/显示 GAJ"
 
-#: ../src/common.py:143
+#: ../src/common.py:144
 msgid "Video"
 msgstr "视频"
 
-#: ../src/common.py:144
+#: ../src/common.py:145
 msgid "Music"
 msgstr "音乐"
 
-#: ../src/common.py:145
+#: ../src/common.py:146
 msgid "Document"
 msgstr "文档"
 
-#: ../src/common.py:146
+#: ../src/common.py:147
 msgid "Image"
 msgstr "图片"
 
-#: ../src/common.py:147
+#: ../src/common.py:148
 msgid "Source Code"
 msgstr "源码"
 
-#: ../src/common.py:148
+#: ../src/common.py:149
 msgid "Unknown"
 msgstr "未知"
 
-#: ../src/common.py:149
+#: ../src/common.py:150
 msgid "IM Message"
-msgstr ""
+msgstr "即时消息"
 
 #. TODO: In a future, I'd be cool to make the day partitions configurable.
 #. This includes redefining what Morning/Afternoon/etc. are, but also
 #. changing the categories entirely (eg. "Work", "Lunch time", etc.).
 #. For this get_day_parts and other methods should take a timestamp of
 #. the relevant day so they can account for weekends not having "Work", etc.
-#: ../src/common.py:927
+#: ../src/common.py:936
 msgid "Morning"
 msgstr "上午"
 
-#: ../src/common.py:927
+#: ../src/common.py:936
 msgid "Afternoon"
 msgstr "下午"
 
-#: ../src/common.py:927
+#: ../src/common.py:936
 msgid "Evening"
 msgstr "晚上"
 
-#: ../src/activity_widgets.py:113
+#: ../src/activity_widgets.py:116
 msgid "Switch to MultiView"
 msgstr ""
 
 #: ../src/activity_widgets.py:627
 msgid "<b>Name: </b>"
-msgstr ""
+msgstr "<b>名称： </b>"
 
 #: ../src/activity_widgets.py:631
 #, python-format
@@ -362,15 +362,15 @@ msgstr ""
 
 #: ../src/activity_widgets.py:689
 msgid "Switch to ThumbView"
-msgstr ""
+msgstr "切换到缩略图视图"
 
 #: ../src/activity_widgets.py:1050
 msgid "Switch to TimelineView"
-msgstr ""
+msgstr "切换到时间轴视图"
 
 #: ../src/activity_widgets.py:1395
 msgid "Pinned Items"
-msgstr ""
+msgstr "锁定项目"
 
 #: ../extra/gnome-activity-journal.desktop.in.h:2
 msgid ""

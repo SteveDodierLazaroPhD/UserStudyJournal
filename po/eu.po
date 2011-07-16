@@ -7,128 +7,128 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-activity-journal\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2011-01-23 14:06+0100\n"
-"PO-Revision-Date: 2010-11-12 07:38+0000\n"
+"POT-Creation-Date: 2011-01-26 18:05+0100\n"
+"PO-Revision-Date: 2011-05-18 15:22+0000\n"
 "Last-Translator: Asier Sarasua Garmendia <Unknown>\n"
 "Language-Team: Basque <eu@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2011-01-24 05:09+0000\n"
-"X-Generator: Launchpad (build 12177)\n"
+"X-Launchpad-Export-Date: 2011-05-19 04:51+0000\n"
+"X-Generator: Launchpad (build 12959)\n"
 
-#: ../gnome-activity-journal:83
+#: ../gnome-activity-journal:85
 msgid "print additional debugging information"
 msgstr "inprimatu arazketa-informazio gehigarria"
 
-#: ../gnome-activity-journal:90
+#: ../gnome-activity-journal:92
 msgid "ERROR"
 msgstr "ERROREA"
 
-#: ../gnome-activity-journal:90
+#: ../gnome-activity-journal:92
 msgid "Unable to connect to Zeitgeist:"
 msgstr "Ezin izan da Zeitgeist-era konektatu:"
 
-#: ../src/supporting_widgets.py:181
-msgid "Go to Today"
-msgstr "Joan Gaur egunera"
-
-#: ../src/supporting_widgets.py:183
-msgid "Go to the previous day "
-msgstr ""
-
-#: ../src/supporting_widgets.py:183
-msgid "Go to the next day"
-msgstr ""
-
-#: ../src/supporting_widgets.py:515
-msgid "Type here to search..."
-msgstr "Idatzi hemen bilaketa egiteko..."
-
-#: ../src/supporting_widgets.py:701
-msgid "<b>Playing...</b>"
-msgstr ""
-
-#: ../src/supporting_widgets.py:815 ../src/supporting_widgets.py:825
-#: ../src/supporting_widgets.py:1406
-msgid "Preferences"
-msgstr "Hobespenak"
-
-#: ../src/supporting_widgets.py:824
-msgid "About"
-msgstr ""
-
-#: ../src/supporting_widgets.py:907 ../src/activity_widgets.py:551
-msgid "Remove Pin"
-msgstr "Kendu pin-a"
-
-#: ../src/supporting_widgets.py:908 ../src/supporting_widgets.py:1279
-msgid "Add Pin"
-msgstr "Gehitu pin-a"
-
-#: ../src/supporting_widgets.py:909
-msgid "Delete item from Journal"
-msgstr "Ezabatu elementua egunkaritik"
-
-#: ../src/supporting_widgets.py:910
-msgid "Delete all events with this URI"
-msgstr "Ezabatu URI hau daukaten elementu guztiak"
-
-#: ../src/supporting_widgets.py:911
-msgid "More Information"
-msgstr "Informazio gehiago"
-
-#: ../src/supporting_widgets.py:923
-msgid "Send To..."
-msgstr "Bidali hona..."
-
-#: ../src/supporting_widgets.py:1191
-msgid "Used With"
-msgstr "Honekin erabilia"
-
-#: ../src/supporting_widgets.py:1274
-msgid "Launch this subject"
-msgstr "Abiarazi gai hau"
-
-#: ../src/supporting_widgets.py:1276
-msgid "Delete this subject"
-msgstr "Ezabatu gai hau"
-
-#: ../src/supporting_widgets.py:1416
-msgid "Active Plugins:"
-msgstr "Plugin aktiboak:"
-
-#: ../src/supporting_widgets.py:1424
-msgid "Plugins"
-msgstr "Pluginak"
-
-#: ../src/supporting_widgets.py:1429
-msgid "Show icon in system tray"
-msgstr ""
-
-#: ../src/supporting_widgets.py:1436
-msgid "Configuration"
-msgstr ""
-
-#: ../src/main.py:139
-msgid "<span size=\"larger\"><b>Loading Journal...</b></span>"
-msgstr ""
-
-#: ../src/main.py:300
+#: ../src/supporting_widgets.py:83 ../src/main.py:304
 msgid "Today"
 msgstr "Gaur"
 
-#: ../src/main.py:303
+#: ../src/supporting_widgets.py:86 ../src/main.py:307
 msgid "Yesterday"
 msgstr "Atzo"
 
-#: ../src/main.py:314
+#: ../src/supporting_widgets.py:186
+msgid "Go to Today"
+msgstr "Joan Gaur egunera"
+
+#: ../src/supporting_widgets.py:188
+msgid "Go to the previous day "
+msgstr "Joan aurreko egunera "
+
+#: ../src/supporting_widgets.py:188
+msgid "Go to the next day"
+msgstr "Joan hurrengo egunera"
+
+#: ../src/supporting_widgets.py:520
+msgid "Type here to search..."
+msgstr "Idatzi hemen bilaketa egiteko..."
+
+#: ../src/supporting_widgets.py:706
+msgid "<b>Playing...</b>"
+msgstr "<b>Erreproduzitzen...</b>"
+
+#: ../src/supporting_widgets.py:820 ../src/supporting_widgets.py:830
+#: ../src/supporting_widgets.py:1421
+msgid "Preferences"
+msgstr "Hobespenak"
+
+#: ../src/supporting_widgets.py:829
+msgid "About"
+msgstr "Honi buruz"
+
+#: ../src/supporting_widgets.py:912 ../src/activity_widgets.py:551
+msgid "Remove Pin"
+msgstr "Kendu pin-a"
+
+#: ../src/supporting_widgets.py:913 ../src/supporting_widgets.py:1287
+msgid "Add Pin"
+msgstr "Gehitu pin-a"
+
+#: ../src/supporting_widgets.py:914
+msgid "Delete item from Journal"
+msgstr "Ezabatu elementua egunkaritik"
+
+#: ../src/supporting_widgets.py:915
+msgid "Delete all events with this URI"
+msgstr "Ezabatu URI hau daukaten elementu guztiak"
+
+#: ../src/supporting_widgets.py:916 ../src/supporting_widgets.py:1355
+msgid "More Information"
+msgstr "Informazio gehiago"
+
+#: ../src/supporting_widgets.py:928
+msgid "Send To..."
+msgstr "Bidali hona..."
+
+#: ../src/supporting_widgets.py:1198
+msgid "Used With"
+msgstr "Honekin erabilia"
+
+#: ../src/supporting_widgets.py:1282
+msgid "Launch this subject"
+msgstr "Abiarazi gai hau"
+
+#: ../src/supporting_widgets.py:1284
+msgid "Delete this subject"
+msgstr "Ezabatu gai hau"
+
+#: ../src/supporting_widgets.py:1431
+msgid "Active Plugins:"
+msgstr "Plugin aktiboak:"
+
+#: ../src/supporting_widgets.py:1439
+msgid "Plugins"
+msgstr "Pluginak"
+
+#: ../src/supporting_widgets.py:1444
+msgid "Show icon in system tray"
+msgstr "Erakutsi ikonoa sistemaren erretiluan"
+
+#: ../src/supporting_widgets.py:1451
+msgid "Configuration"
+msgstr "Konfigurazioa"
+
+#: ../src/main.py:143
+msgid "<span size=\"larger\"><b>Loading Journal...</b></span>"
+msgstr "<span size=\"larger\"><b>Journal kargatzen...</b></span>"
+
+#: ../src/main.py:318
 #, python-format
 msgid "%s to %s"
 msgstr "%s-(e)tik %s-(e)ra"
 
-#: ../src/main.py:314 ../extra/gnome-activity-journal.desktop.in.h:1
+#: ../src/main.py:318 ../extra/gnome-activity-journal.desktop.in.h:1
 msgid "Activity Journal"
 msgstr "Jarduera-egunkaria"
 
@@ -200,13 +200,15 @@ msgstr ""
 
 #: ../src/content_objects.py:786
 msgid "{source._desc_sing} {event.subjects[0].text}"
-msgstr ""
+msgstr "{source._desc_sing} {event.subjects[0].text}"
 
 #: ../src/content_objects.py:787 ../src/content_objects.py:788
 msgid ""
 "GTG\n"
 "{source._desc_sing} {event.subjects[0].text}"
 msgstr ""
+"GTG\n"
+"{source._desc_sing} {event.subjects[0].text}"
 
 #: ../src/histogram.py:438
 msgid "item"
@@ -215,123 +217,123 @@ msgstr[0] "elementu"
 msgstr[1] "elementu"
 
 #. TODO: Move this into Zeitgeist's library, implemented properly
-#: ../src/config.py:237
+#: ../src/config.py:238
 msgid "Worked with a Video"
 msgstr "Bideo batekin prestatua"
 
-#: ../src/config.py:237
+#: ../src/config.py:238
 msgid "Worked with Videos"
 msgstr "Bideoekin prestatua"
 
-#: ../src/config.py:238
+#: ../src/config.py:239
 msgid "Worked with Audio"
 msgstr "Audio batekin prestatua"
 
-#: ../src/config.py:239
+#: ../src/config.py:240
 msgid "Worked with an Image"
 msgstr "Irudi batekin prestatua"
 
-#: ../src/config.py:239
+#: ../src/config.py:240
 msgid "Worked with Images"
 msgstr "Irudiekin prestatua"
 
-#: ../src/config.py:240
+#: ../src/config.py:241
 msgid "Edited or Read Document"
 msgstr "Dokumentu editatu edo irakurria"
 
-#: ../src/config.py:240
+#: ../src/config.py:241
 msgid "Edited or Read Documents"
 msgstr "Dokumentu editatu edo irakurriak"
 
-#: ../src/config.py:241
+#: ../src/config.py:242
 msgid "Edited or Read Code"
 msgstr "Kode editatu edo irakurria"
 
-#: ../src/config.py:242
+#: ../src/config.py:243
 msgid "Conversation"
 msgstr "Berriketa"
 
-#: ../src/config.py:242
+#: ../src/config.py:243
 msgid "Conversations"
 msgstr "Berriketak"
 
-#: ../src/config.py:243
+#: ../src/config.py:244
 msgid "Visited Website"
 msgstr "Bisitatutako webgunea"
 
-#: ../src/config.py:243
+#: ../src/config.py:244
 msgid "Visited Websites"
 msgstr "Bisitatutako webguneak"
 
-#: ../src/config.py:244 ../src/common.py:150
+#: ../src/config.py:245 ../src/common.py:151
 msgid "Email"
 msgstr "Posta elektronikoa"
 
-#: ../src/config.py:244
+#: ../src/config.py:245
 msgid "Emails"
 msgstr "Posta elektronikoak"
 
-#: ../src/config.py:245
+#: ../src/config.py:246
 msgid "Todo"
-msgstr ""
-
-#: ../src/config.py:245
-msgid "Todos"
-msgstr ""
+msgstr "Egiteke"
 
 #: ../src/config.py:246
+msgid "Todos"
+msgstr "Egitekoak"
+
+#: ../src/config.py:247
 msgid "Other Activity"
 msgstr "Beste jarduera bat"
 
-#: ../src/config.py:246
+#: ../src/config.py:247
 msgid "Other Activities"
 msgstr "Beste jarduera batzuk"
 
-#: ../src/config.py:247
+#: ../src/config.py:248
 msgid "Edited or Read Note"
 msgstr "Ohar editatu edo irakurria"
 
-#: ../src/config.py:247
+#: ../src/config.py:248
 msgid "Edited or Read Notes"
 msgstr "Ohar editatu edo irakurriak"
 
-#: ../src/config.py:248
+#: ../src/config.py:249
 msgid "Software Development"
-msgstr ""
+msgstr "Software-garapena"
 
-#: ../src/config.py:248
+#: ../src/config.py:249
 msgid "Software Developments"
-msgstr ""
+msgstr "Software-garapenak"
 
 #: ../src/Indicator.py:87
 msgid "Hide/Show GAJ"
-msgstr ""
+msgstr "Ezkutatu/erakutsi GAJ"
 
-#: ../src/common.py:143
+#: ../src/common.py:144
 msgid "Video"
 msgstr "Bideoa"
 
-#: ../src/common.py:144
+#: ../src/common.py:145
 msgid "Music"
 msgstr "Musika"
 
-#: ../src/common.py:145
+#: ../src/common.py:146
 msgid "Document"
 msgstr "Dokumentua"
 
-#: ../src/common.py:146
+#: ../src/common.py:147
 msgid "Image"
 msgstr "Irudia"
 
-#: ../src/common.py:147
+#: ../src/common.py:148
 msgid "Source Code"
 msgstr "Iturburu-kodea"
 
-#: ../src/common.py:148
+#: ../src/common.py:149
 msgid "Unknown"
 msgstr "Ezezaguna"
 
-#: ../src/common.py:149
+#: ../src/common.py:150
 msgid "IM Message"
 msgstr "IM mezua"
 
@@ -340,25 +342,25 @@ msgstr "IM mezua"
 #. changing the categories entirely (eg. "Work", "Lunch time", etc.).
 #. For this get_day_parts and other methods should take a timestamp of
 #. the relevant day so they can account for weekends not having "Work", etc.
-#: ../src/common.py:927
+#: ../src/common.py:936
 msgid "Morning"
 msgstr "Goiza"
 
-#: ../src/common.py:927
+#: ../src/common.py:936
 msgid "Afternoon"
 msgstr "Arratsaldea"
 
-#: ../src/common.py:927
+#: ../src/common.py:936
 msgid "Evening"
 msgstr "Ilunabarra"
 
-#: ../src/activity_widgets.py:113
+#: ../src/activity_widgets.py:116
 msgid "Switch to MultiView"
 msgstr "Aldatu bistaratze anitzera"
 
 #: ../src/activity_widgets.py:627
 msgid "<b>Name: </b>"
-msgstr ""
+msgstr "<b>Izena: </b>"
 
 #: ../src/activity_widgets.py:631
 #, python-format
@@ -366,6 +368,8 @@ msgid ""
 "\n"
 "<b>MIME Type:</b> %s (%s)"
 msgstr ""
+"\n"
+"<b>MIME mota:</b> %s (%s)"
 
 #: ../src/activity_widgets.py:689
 msgid "Switch to ThumbView"

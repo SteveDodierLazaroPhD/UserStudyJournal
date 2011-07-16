@@ -1,190 +1,190 @@
-# Esperanto translation for gnome-activity-journal
-# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# Hungarian translation for gnome-activity-journal
+# Copyright (c) 2011 Rosetta Contributors and Canonical Ltd 2011
 # This file is distributed under the same license as the gnome-activity-journal package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-activity-journal\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2011-01-26 18:05+0100\n"
-"PO-Revision-Date: 2011-04-05 08:01+0000\n"
-"Last-Translator: Michael Moroni <michael.moroni@mailoo.org>\n"
-"Language-Team: Esperanto <eo@li.org>\n"
+"PO-Revision-Date: 2011-05-29 16:55+0000\n"
+"Last-Translator: Kántor Dániel <kdani3@gmail.com>\n"
+"Language-Team: Hungarian <hu@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2011-04-06 04:52+0000\n"
-"X-Generator: Launchpad (build 12559)\n"
+"X-Launchpad-Export-Date: 2011-05-30 05:08+0000\n"
+"X-Generator: Launchpad (build 12959)\n"
 
 #: ../gnome-activity-journal:85
 msgid "print additional debugging information"
-msgstr "presi aldonan sencimigan informon"
+msgstr "további hibaelhárítási információ kiírása"
 
 #: ../gnome-activity-journal:92
 msgid "ERROR"
-msgstr "ERARO"
+msgstr "HIBA"
 
 #: ../gnome-activity-journal:92
 msgid "Unable to connect to Zeitgeist:"
-msgstr "Ne eblas konekti al Zeitgeist:"
+msgstr "Nem sikerült csatlakozni a Zeitgeisthoz:"
 
 #: ../src/supporting_widgets.py:83 ../src/main.py:304
 msgid "Today"
-msgstr ""
+msgstr "Ma"
 
 #: ../src/supporting_widgets.py:86 ../src/main.py:307
 msgid "Yesterday"
-msgstr ""
+msgstr "Tegnap"
 
 #: ../src/supporting_widgets.py:186
 msgid "Go to Today"
-msgstr "Iri hodiaŭen"
+msgstr "Ugrás a mai naphoz"
 
 #: ../src/supporting_widgets.py:188
 msgid "Go to the previous day "
-msgstr ""
+msgstr "Ugrás az előző naphoz "
 
 #: ../src/supporting_widgets.py:188
 msgid "Go to the next day"
-msgstr ""
+msgstr "Ugrás a következő naphoz"
 
 #: ../src/supporting_widgets.py:520
 msgid "Type here to search..."
-msgstr "Tajpu ĉi tie por traserĉi..."
+msgstr "Gépeljen ide a kereséshez..."
 
 #: ../src/supporting_widgets.py:706
 msgid "<b>Playing...</b>"
-msgstr ""
+msgstr "<b>Lejátszás...</b>"
 
 #: ../src/supporting_widgets.py:820 ../src/supporting_widgets.py:830
 #: ../src/supporting_widgets.py:1421
 msgid "Preferences"
-msgstr "Agordoj"
+msgstr "Beállítások"
 
 #: ../src/supporting_widgets.py:829
 msgid "About"
-msgstr ""
+msgstr "Névjegy"
 
 #: ../src/supporting_widgets.py:912 ../src/activity_widgets.py:551
 msgid "Remove Pin"
-msgstr "Forigi pinglon"
+msgstr "Kitűzés megszüntetése"
 
 #: ../src/supporting_widgets.py:913 ../src/supporting_widgets.py:1287
 msgid "Add Pin"
-msgstr "Aldoni pinglon"
+msgstr "Kitűzés"
 
 #: ../src/supporting_widgets.py:914
 msgid "Delete item from Journal"
-msgstr "Forigi eron el ĵurnalo"
+msgstr "Bejegyzés eltávolítása a Naplóból"
 
 #: ../src/supporting_widgets.py:915
 msgid "Delete all events with this URI"
-msgstr "Forigi ĉiujn okazintaĵojn per ĉi tiu URI"
+msgstr "Távolítson el minden bejegyzést erről a címről"
 
 #: ../src/supporting_widgets.py:916 ../src/supporting_widgets.py:1355
 msgid "More Information"
-msgstr "Pliaj informoj"
+msgstr "További információ"
 
 #: ../src/supporting_widgets.py:928
 msgid "Send To..."
-msgstr "Sendi al..."
+msgstr "Küldés ide…"
 
 #: ../src/supporting_widgets.py:1198
 msgid "Used With"
-msgstr ""
+msgstr "Használta ezzel"
 
 #: ../src/supporting_widgets.py:1282
 msgid "Launch this subject"
-msgstr ""
+msgstr "Bejegyzés elindítása"
 
 #: ../src/supporting_widgets.py:1284
 msgid "Delete this subject"
-msgstr ""
+msgstr "Bejegyzés eltávolítása"
 
 #: ../src/supporting_widgets.py:1431
 msgid "Active Plugins:"
-msgstr ""
+msgstr "Bekapcsolt bővítőmodulok:"
 
 #: ../src/supporting_widgets.py:1439
 msgid "Plugins"
-msgstr ""
+msgstr "Bővítőmodulok"
 
 #: ../src/supporting_widgets.py:1444
 msgid "Show icon in system tray"
-msgstr ""
+msgstr "Jelenjen meg ikon az óra mellet"
 
 #: ../src/supporting_widgets.py:1451
 msgid "Configuration"
-msgstr ""
+msgstr "Konfiguráció"
 
 #: ../src/main.py:143
 msgid "<span size=\"larger\"><b>Loading Journal...</b></span>"
-msgstr ""
+msgstr "<span size=\"larger\"><b>Napló betöltése...</b></span>"
 
 #: ../src/main.py:318
 #, python-format
 msgid "%s to %s"
-msgstr ""
+msgstr "%s és %s között"
 
 #: ../src/main.py:318 ../extra/gnome-activity-journal.desktop.in.h:1
 msgid "Activity Journal"
-msgstr ""
+msgstr "Aktivitásfigyelő"
 
 #: ../src/content_objects.py:567 ../src/content_objects.py:569
 msgid "{source._desc_sing} with {event.subjects[0].text}"
-msgstr "{source._desc_sing} kun {event.subjects[0].text}"
+msgstr "{source._desc_sing} ezzel: {event.subjects[0].text}"
 
 #: ../src/content_objects.py:568
 msgid ""
 "{source._desc_sing} with {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 msgstr ""
-"{source._desc_sing} kun {event.subjects[0].text}\n"
+"{source._desc_sing} ezzel: {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 
 #: ../src/content_objects.py:579
 msgid "Available"
-msgstr "Disponebla"
+msgstr "Elérhető"
 
 #: ../src/content_objects.py:580
 msgid "Offline"
-msgstr "Malkonektita"
+msgstr "Kijelentkezett"
 
 #: ../src/content_objects.py:581
 msgid "Away"
-msgstr "Fora"
+msgstr "Távol"
 
 #: ../src/content_objects.py:582
 msgid "Busy"
-msgstr "Okupata"
+msgstr "Elfoglalt"
 
 #: ../src/content_objects.py:614 ../src/content_objects.py:619
 #: ../src/content_objects.py:624
 msgid "with"
-msgstr "kun"
+msgstr "ezzel"
 
 #: ../src/content_objects.py:663
 msgid "Time Tracker"
-msgstr ""
+msgstr "Időnyilvántartó"
 
 #: ../src/content_objects.py:737 ../src/content_objects.py:739
 msgid "{source._desc_sing} from {event.subjects[0].text}"
-msgstr "{source._desc_sing} de {event.subjects[0].text}"
+msgstr "{source._desc_sing} ebből: {event.subjects[0].text}"
 
 #: ../src/content_objects.py:738
 msgid ""
 "{source._desc_sing} from {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 msgstr ""
-"{source._desc_sing} de {event.subjects[0].text}\n"
+"{source._desc_sing} ebből: {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 
 #: ../src/content_objects.py:742
 #, python-format
 msgid " (%s Attachments)"
-msgstr " (%s aldonaĵoj)"
+msgstr " (%s Mellékletek)"
 
 #: ../src/content_objects.py:766
 msgid "{event.subjects[0].text}"
@@ -195,7 +195,7 @@ msgid ""
 "Note\n"
 "{event.subjects[0].text}"
 msgstr ""
-"Notaro\n"
+"Jegyzet\n"
 "{event.subjects[0].text}"
 
 #: ../src/content_objects.py:786
@@ -207,103 +207,101 @@ msgid ""
 "GTG\n"
 "{source._desc_sing} {event.subjects[0].text}"
 msgstr ""
-"GTG\n"
-"{source._desc_sing} {event.subjects[0].text}"
 
 #: ../src/histogram.py:438
 msgid "item"
 msgid_plural "items"
-msgstr[0] "ero"
-msgstr[1] "eroj"
+msgstr[0] "bejegyzés"
+msgstr[1] "bejegyzések"
 
 #. TODO: Move this into Zeitgeist's library, implemented properly
 #: ../src/config.py:238
 msgid "Worked with a Video"
-msgstr ""
+msgstr "Egy videóval foglalkozott"
 
 #: ../src/config.py:238
 msgid "Worked with Videos"
-msgstr ""
+msgstr "Videókkal foglalkozott"
 
 #: ../src/config.py:239
 msgid "Worked with Audio"
-msgstr ""
+msgstr "Hangfájlokkal foglalkozott"
 
 #: ../src/config.py:240
 msgid "Worked with an Image"
-msgstr ""
+msgstr "Egy képfájllal foglalkozott"
 
 #: ../src/config.py:240
 msgid "Worked with Images"
-msgstr ""
+msgstr "Képfájlokkal foglalkozott"
 
 #: ../src/config.py:241
 msgid "Edited or Read Document"
-msgstr ""
+msgstr "Egy dokumentummal foglalkozott"
 
 #: ../src/config.py:241
 msgid "Edited or Read Documents"
-msgstr ""
+msgstr "Dokumentumokkal foglalkozott"
 
 #: ../src/config.py:242
 msgid "Edited or Read Code"
-msgstr ""
+msgstr "Forráskóddal fogalkozott"
 
 #: ../src/config.py:243
 msgid "Conversation"
-msgstr ""
+msgstr "Beszélgetés"
 
 #: ../src/config.py:243
 msgid "Conversations"
-msgstr ""
+msgstr "Beszélgetések"
 
 #: ../src/config.py:244
 msgid "Visited Website"
-msgstr ""
+msgstr "Meglátogatott egy weboldalt"
 
 #: ../src/config.py:244
 msgid "Visited Websites"
-msgstr ""
+msgstr "Weboldalakat látogatott"
 
 #: ../src/config.py:245 ../src/common.py:151
 msgid "Email"
-msgstr ""
+msgstr "E-mail"
 
 #: ../src/config.py:245
 msgid "Emails"
-msgstr ""
+msgstr "E-mailek"
 
 #: ../src/config.py:246
 msgid "Todo"
-msgstr ""
+msgstr "Tennivalók"
 
 #: ../src/config.py:246
 msgid "Todos"
-msgstr ""
+msgstr "Tennivalók"
 
 #: ../src/config.py:247
 msgid "Other Activity"
-msgstr ""
+msgstr "Egyéb tevékenység"
 
 #: ../src/config.py:247
 msgid "Other Activities"
-msgstr ""
+msgstr "Egyéb tevékenység"
 
 #: ../src/config.py:248
 msgid "Edited or Read Note"
-msgstr ""
+msgstr "Egy jegyzettel foglalkozott"
 
 #: ../src/config.py:248
 msgid "Edited or Read Notes"
-msgstr ""
+msgstr "Jegyzetekkel foglalkozott"
 
 #: ../src/config.py:249
 msgid "Software Development"
-msgstr ""
+msgstr "Szoftverfejlesztés"
 
 #: ../src/config.py:249
 msgid "Software Developments"
-msgstr ""
+msgstr "Szoftverfejlesztés"
 
 #: ../src/Indicator.py:87
 msgid "Hide/Show GAJ"
@@ -311,31 +309,31 @@ msgstr ""
 
 #: ../src/common.py:144
 msgid "Video"
-msgstr ""
+msgstr "Videó"
 
 #: ../src/common.py:145
 msgid "Music"
-msgstr ""
+msgstr "Zene"
 
 #: ../src/common.py:146
 msgid "Document"
-msgstr ""
+msgstr "Dokumentum"
 
 #: ../src/common.py:147
 msgid "Image"
-msgstr ""
+msgstr "Kép"
 
 #: ../src/common.py:148
 msgid "Source Code"
-msgstr ""
+msgstr "Forráskód"
 
 #: ../src/common.py:149
 msgid "Unknown"
-msgstr ""
+msgstr "Ismeretlen"
 
 #: ../src/common.py:150
 msgid "IM Message"
-msgstr ""
+msgstr "Azonnali üzenet"
 
 #. TODO: In a future, I'd be cool to make the day partitions configurable.
 #. This includes redefining what Morning/Afternoon/etc. are, but also
@@ -344,23 +342,23 @@ msgstr ""
 #. the relevant day so they can account for weekends not having "Work", etc.
 #: ../src/common.py:936
 msgid "Morning"
-msgstr ""
+msgstr "Reggel"
 
 #: ../src/common.py:936
 msgid "Afternoon"
-msgstr ""
+msgstr "Délután"
 
 #: ../src/common.py:936
 msgid "Evening"
-msgstr ""
+msgstr "Este"
 
 #: ../src/activity_widgets.py:116
 msgid "Switch to MultiView"
-msgstr ""
+msgstr "Összetett nézetre váltás"
 
 #: ../src/activity_widgets.py:627
 msgid "<b>Name: </b>"
-msgstr ""
+msgstr "<b>Név: </b>"
 
 #: ../src/activity_widgets.py:631
 #, python-format
@@ -368,52 +366,60 @@ msgid ""
 "\n"
 "<b>MIME Type:</b> %s (%s)"
 msgstr ""
+"\n"
+"<b>MIME Típus:</b> %s (%s)"
 
 #: ../src/activity_widgets.py:689
 msgid "Switch to ThumbView"
-msgstr ""
+msgstr "Ikonnézetre váltás"
 
 #: ../src/activity_widgets.py:1050
 msgid "Switch to TimelineView"
-msgstr ""
+msgstr "Idősávnézetre váltás"
 
 #: ../src/activity_widgets.py:1395
 msgid "Pinned Items"
-msgstr ""
+msgstr "Kitűzött elemek"
 
 #: ../extra/gnome-activity-journal.desktop.in.h:2
 msgid ""
 "Browse a chronological log of your activities and easily find files, "
 "contacts, etc."
 msgstr ""
+"Időrendbe szedett napló a tevékenységeiről. Segítségével egyszerűen "
+"megtalálhatja a fájljait, kapcsolatait stb."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:1
 msgid "Accessibility"
-msgstr ""
+msgstr "Akadálymentesítés"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:2
 msgid "Allow thumbnails as icons"
-msgstr ""
+msgstr "Miniatűrök megjelenítése"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:3
 msgid "Amount of visible days"
-msgstr ""
+msgstr "Látható napok száma"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:4
 msgid ""
 "Customized height for the main window, in pixels (requires restart). Can't "
 "be bigger than the desktop's size."
 msgstr ""
+"Egyedi magasság a főablaknak, pixelekben (újraindítás szükséges). Nem lehet "
+"nagyobb mint az asztal mérete."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:5
 msgid ""
 "Customized width for the main window, in pixels (requires restart). Can't be "
 "bigger than the desktop's size."
 msgstr ""
+"Egyedi szélesség a főablaknak, pixelekben (újraindítás szükséges). Nem lehet "
+"nagyobb mint az asztal mérete."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:6
 msgid "The amount of days to show at once."
-msgstr ""
+msgstr "Az egyszerre megjelenítendő napok száma."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:7
 msgid ""
@@ -428,11 +434,8 @@ msgstr ""
 
 #: ../extra/gnome-activity-journal.schemas.in.h:9
 msgid "Window height"
-msgstr ""
+msgstr "Ablak magassága"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:10
 msgid "Window width"
-msgstr ""
-
-#~ msgid "Search"
-#~ msgstr "Serĉi"
+msgstr "Ablak szélessége"

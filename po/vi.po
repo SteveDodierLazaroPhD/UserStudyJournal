@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-activity-journal\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2011-01-23 14:06+0100\n"
+"POT-Creation-Date: 2011-01-26 18:05+0100\n"
 "PO-Revision-Date: 2010-12-21 13:10+0000\n"
 "Last-Translator: dat.a1k61 <dat.a1k61@gmail.com>\n"
 "Language-Team: Vietnamese <vi@li.org>\n"
@@ -15,120 +15,120 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Launchpad-Export-Date: 2011-01-24 05:10+0000\n"
+"X-Launchpad-Export-Date: 2011-01-27 04:53+0000\n"
 "X-Generator: Launchpad (build 12177)\n"
 
-#: ../gnome-activity-journal:83
+#: ../gnome-activity-journal:85
 msgid "print additional debugging information"
 msgstr "hiển thị thêm thông tin gỡ lỗi"
 
-#: ../gnome-activity-journal:90
+#: ../gnome-activity-journal:92
 msgid "ERROR"
 msgstr "CÓ LỖI"
 
-#: ../gnome-activity-journal:90
+#: ../gnome-activity-journal:92
 msgid "Unable to connect to Zeitgeist:"
 msgstr "Không thể kết nối tới Zeitgeist"
 
-#: ../src/supporting_widgets.py:181
-msgid "Go to Today"
-msgstr ""
-
-#: ../src/supporting_widgets.py:183
-msgid "Go to the previous day "
-msgstr ""
-
-#: ../src/supporting_widgets.py:183
-msgid "Go to the next day"
-msgstr ""
-
-#: ../src/supporting_widgets.py:515
-msgid "Type here to search..."
-msgstr "Nhập vào đây để tìm kiếm..."
-
-#: ../src/supporting_widgets.py:701
-msgid "<b>Playing...</b>"
-msgstr ""
-
-#: ../src/supporting_widgets.py:815 ../src/supporting_widgets.py:825
-#: ../src/supporting_widgets.py:1406
-msgid "Preferences"
-msgstr ""
-
-#: ../src/supporting_widgets.py:824
-msgid "About"
-msgstr ""
-
-#: ../src/supporting_widgets.py:907 ../src/activity_widgets.py:551
-msgid "Remove Pin"
-msgstr "Bỏ chú ý"
-
-#: ../src/supporting_widgets.py:908 ../src/supporting_widgets.py:1279
-msgid "Add Pin"
-msgstr ""
-
-#: ../src/supporting_widgets.py:909
-msgid "Delete item from Journal"
-msgstr "Xoá mục này khỏi Nhật ký"
-
-#: ../src/supporting_widgets.py:910
-msgid "Delete all events with this URI"
-msgstr ""
-
-#: ../src/supporting_widgets.py:911
-msgid "More Information"
-msgstr ""
-
-#: ../src/supporting_widgets.py:923
-msgid "Send To..."
-msgstr ""
-
-#: ../src/supporting_widgets.py:1191
-msgid "Used With"
-msgstr ""
-
-#: ../src/supporting_widgets.py:1274
-msgid "Launch this subject"
-msgstr ""
-
-#: ../src/supporting_widgets.py:1276
-msgid "Delete this subject"
-msgstr ""
-
-#: ../src/supporting_widgets.py:1416
-msgid "Active Plugins:"
-msgstr ""
-
-#: ../src/supporting_widgets.py:1424
-msgid "Plugins"
-msgstr ""
-
-#: ../src/supporting_widgets.py:1429
-msgid "Show icon in system tray"
-msgstr ""
-
-#: ../src/supporting_widgets.py:1436
-msgid "Configuration"
-msgstr ""
-
-#: ../src/main.py:139
-msgid "<span size=\"larger\"><b>Loading Journal...</b></span>"
-msgstr ""
-
-#: ../src/main.py:300
+#: ../src/supporting_widgets.py:83 ../src/main.py:304
 msgid "Today"
 msgstr "Hôm nay"
 
-#: ../src/main.py:303
+#: ../src/supporting_widgets.py:86 ../src/main.py:307
 msgid "Yesterday"
 msgstr "Hôm qua"
 
-#: ../src/main.py:314
+#: ../src/supporting_widgets.py:186
+msgid "Go to Today"
+msgstr ""
+
+#: ../src/supporting_widgets.py:188
+msgid "Go to the previous day "
+msgstr ""
+
+#: ../src/supporting_widgets.py:188
+msgid "Go to the next day"
+msgstr ""
+
+#: ../src/supporting_widgets.py:520
+msgid "Type here to search..."
+msgstr "Nhập vào đây để tìm kiếm..."
+
+#: ../src/supporting_widgets.py:706
+msgid "<b>Playing...</b>"
+msgstr ""
+
+#: ../src/supporting_widgets.py:820 ../src/supporting_widgets.py:830
+#: ../src/supporting_widgets.py:1421
+msgid "Preferences"
+msgstr ""
+
+#: ../src/supporting_widgets.py:829
+msgid "About"
+msgstr ""
+
+#: ../src/supporting_widgets.py:912 ../src/activity_widgets.py:551
+msgid "Remove Pin"
+msgstr "Bỏ chú ý"
+
+#: ../src/supporting_widgets.py:913 ../src/supporting_widgets.py:1287
+msgid "Add Pin"
+msgstr ""
+
+#: ../src/supporting_widgets.py:914
+msgid "Delete item from Journal"
+msgstr "Xoá mục này khỏi Nhật ký"
+
+#: ../src/supporting_widgets.py:915
+msgid "Delete all events with this URI"
+msgstr ""
+
+#: ../src/supporting_widgets.py:916 ../src/supporting_widgets.py:1355
+msgid "More Information"
+msgstr ""
+
+#: ../src/supporting_widgets.py:928
+msgid "Send To..."
+msgstr ""
+
+#: ../src/supporting_widgets.py:1198
+msgid "Used With"
+msgstr ""
+
+#: ../src/supporting_widgets.py:1282
+msgid "Launch this subject"
+msgstr ""
+
+#: ../src/supporting_widgets.py:1284
+msgid "Delete this subject"
+msgstr ""
+
+#: ../src/supporting_widgets.py:1431
+msgid "Active Plugins:"
+msgstr ""
+
+#: ../src/supporting_widgets.py:1439
+msgid "Plugins"
+msgstr ""
+
+#: ../src/supporting_widgets.py:1444
+msgid "Show icon in system tray"
+msgstr ""
+
+#: ../src/supporting_widgets.py:1451
+msgid "Configuration"
+msgstr ""
+
+#: ../src/main.py:143
+msgid "<span size=\"larger\"><b>Loading Journal...</b></span>"
+msgstr ""
+
+#: ../src/main.py:318
 #, python-format
 msgid "%s to %s"
 msgstr "%s đến %s"
 
-#: ../src/main.py:314 ../extra/gnome-activity-journal.desktop.in.h:1
+#: ../src/main.py:318 ../extra/gnome-activity-journal.desktop.in.h:1
 msgid "Activity Journal"
 msgstr "Nhật Ký Hoạt Động"
 
@@ -208,91 +208,91 @@ msgid_plural "items"
 msgstr[0] "mục"
 
 #. TODO: Move this into Zeitgeist's library, implemented properly
-#: ../src/config.py:237
+#: ../src/config.py:238
 msgid "Worked with a Video"
 msgstr "Đã làm việc với một Phim"
 
-#: ../src/config.py:237
+#: ../src/config.py:238
 msgid "Worked with Videos"
 msgstr "Đã làm việc với các Phim"
 
-#: ../src/config.py:238
+#: ../src/config.py:239
 msgid "Worked with Audio"
 msgstr "Đã làm việc với tập tin Âm thanh"
 
-#: ../src/config.py:239
+#: ../src/config.py:240
 msgid "Worked with an Image"
 msgstr "Đã làm việc với một Hình ảnh"
 
-#: ../src/config.py:239
+#: ../src/config.py:240
 msgid "Worked with Images"
 msgstr "Đã làm việc với các Hình ảnh"
 
-#: ../src/config.py:240
+#: ../src/config.py:241
 msgid "Edited or Read Document"
 msgstr "Tài liệu đã chỉnh sửa hoặc đọc"
 
-#: ../src/config.py:240
+#: ../src/config.py:241
 msgid "Edited or Read Documents"
 msgstr "Các tài liệu đã chỉnh sửa hoặc đã đọc"
 
-#: ../src/config.py:241
+#: ../src/config.py:242
 msgid "Edited or Read Code"
 msgstr "Đoạn mã đã chỉnh sửa hoặc đã đọc"
 
-#: ../src/config.py:242
+#: ../src/config.py:243
 msgid "Conversation"
 msgstr ""
 
-#: ../src/config.py:242
+#: ../src/config.py:243
 msgid "Conversations"
 msgstr ""
 
-#: ../src/config.py:243
+#: ../src/config.py:244
 msgid "Visited Website"
 msgstr ""
 
-#: ../src/config.py:243
+#: ../src/config.py:244
 msgid "Visited Websites"
 msgstr ""
 
-#: ../src/config.py:244 ../src/common.py:150
+#: ../src/config.py:245 ../src/common.py:151
 msgid "Email"
 msgstr ""
 
-#: ../src/config.py:244
+#: ../src/config.py:245
 msgid "Emails"
 msgstr ""
 
-#: ../src/config.py:245
+#: ../src/config.py:246
 msgid "Todo"
 msgstr ""
 
-#: ../src/config.py:245
+#: ../src/config.py:246
 msgid "Todos"
 msgstr ""
 
-#: ../src/config.py:246
+#: ../src/config.py:247
 msgid "Other Activity"
 msgstr "Hoạt động khác"
 
-#: ../src/config.py:246
+#: ../src/config.py:247
 msgid "Other Activities"
 msgstr "Các hoạt động khác"
 
-#: ../src/config.py:247
+#: ../src/config.py:248
 msgid "Edited or Read Note"
 msgstr ""
 
-#: ../src/config.py:247
+#: ../src/config.py:248
 msgid "Edited or Read Notes"
 msgstr ""
 
-#: ../src/config.py:248
+#: ../src/config.py:249
 msgid "Software Development"
 msgstr ""
 
-#: ../src/config.py:248
+#: ../src/config.py:249
 msgid "Software Developments"
 msgstr ""
 
@@ -300,31 +300,31 @@ msgstr ""
 msgid "Hide/Show GAJ"
 msgstr ""
 
-#: ../src/common.py:143
+#: ../src/common.py:144
 msgid "Video"
 msgstr "Phim"
 
-#: ../src/common.py:144
+#: ../src/common.py:145
 msgid "Music"
 msgstr "Nhạc"
 
-#: ../src/common.py:145
+#: ../src/common.py:146
 msgid "Document"
 msgstr "Tài liệu"
 
-#: ../src/common.py:146
+#: ../src/common.py:147
 msgid "Image"
 msgstr "Hình ảnh"
 
-#: ../src/common.py:147
+#: ../src/common.py:148
 msgid "Source Code"
 msgstr "Mã Nguồn"
 
-#: ../src/common.py:148
+#: ../src/common.py:149
 msgid "Unknown"
 msgstr "Chưa xác định."
 
-#: ../src/common.py:149
+#: ../src/common.py:150
 msgid "IM Message"
 msgstr ""
 
@@ -333,19 +333,19 @@ msgstr ""
 #. changing the categories entirely (eg. "Work", "Lunch time", etc.).
 #. For this get_day_parts and other methods should take a timestamp of
 #. the relevant day so they can account for weekends not having "Work", etc.
-#: ../src/common.py:927
+#: ../src/common.py:936
 msgid "Morning"
 msgstr "Sáng"
 
-#: ../src/common.py:927
+#: ../src/common.py:936
 msgid "Afternoon"
 msgstr "Chiều"
 
-#: ../src/common.py:927
+#: ../src/common.py:936
 msgid "Evening"
 msgstr "Chiều/tối"
 
-#: ../src/activity_widgets.py:113
+#: ../src/activity_widgets.py:116
 msgid "Switch to MultiView"
 msgstr ""
 

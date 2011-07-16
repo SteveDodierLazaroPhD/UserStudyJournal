@@ -1,34 +1,35 @@
-# Esperanto translation for gnome-activity-journal
-# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# Serbian translation for gnome-activity-journal
+# Copyright (c) 2011 Rosetta Contributors and Canonical Ltd 2011
 # This file is distributed under the same license as the gnome-activity-journal package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-activity-journal\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2011-01-26 18:05+0100\n"
-"PO-Revision-Date: 2011-04-05 08:01+0000\n"
-"Last-Translator: Michael Moroni <michael.moroni@mailoo.org>\n"
-"Language-Team: Esperanto <eo@li.org>\n"
+"PO-Revision-Date: 2011-06-11 08:08+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Serbian <sr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2011-04-06 04:52+0000\n"
-"X-Generator: Launchpad (build 12559)\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Launchpad-Export-Date: 2011-06-12 04:59+0000\n"
+"X-Generator: Launchpad (build 13168)\n"
 
 #: ../gnome-activity-journal:85
 msgid "print additional debugging information"
-msgstr "presi aldonan sencimigan informon"
+msgstr ""
 
 #: ../gnome-activity-journal:92
 msgid "ERROR"
-msgstr "ERARO"
+msgstr ""
 
 #: ../gnome-activity-journal:92
 msgid "Unable to connect to Zeitgeist:"
-msgstr "Ne eblas konekti al Zeitgeist:"
+msgstr ""
 
 #: ../src/supporting_widgets.py:83 ../src/main.py:304
 msgid "Today"
@@ -40,7 +41,7 @@ msgstr ""
 
 #: ../src/supporting_widgets.py:186
 msgid "Go to Today"
-msgstr "Iri hodiaŭen"
+msgstr ""
 
 #: ../src/supporting_widgets.py:188
 msgid "Go to the previous day "
@@ -52,7 +53,7 @@ msgstr ""
 
 #: ../src/supporting_widgets.py:520
 msgid "Type here to search..."
-msgstr "Tajpu ĉi tie por traserĉi..."
+msgstr ""
 
 #: ../src/supporting_widgets.py:706
 msgid "<b>Playing...</b>"
@@ -61,7 +62,7 @@ msgstr ""
 #: ../src/supporting_widgets.py:820 ../src/supporting_widgets.py:830
 #: ../src/supporting_widgets.py:1421
 msgid "Preferences"
-msgstr "Agordoj"
+msgstr ""
 
 #: ../src/supporting_widgets.py:829
 msgid "About"
@@ -69,27 +70,27 @@ msgstr ""
 
 #: ../src/supporting_widgets.py:912 ../src/activity_widgets.py:551
 msgid "Remove Pin"
-msgstr "Forigi pinglon"
+msgstr ""
 
 #: ../src/supporting_widgets.py:913 ../src/supporting_widgets.py:1287
 msgid "Add Pin"
-msgstr "Aldoni pinglon"
+msgstr ""
 
 #: ../src/supporting_widgets.py:914
 msgid "Delete item from Journal"
-msgstr "Forigi eron el ĵurnalo"
+msgstr ""
 
 #: ../src/supporting_widgets.py:915
 msgid "Delete all events with this URI"
-msgstr "Forigi ĉiujn okazintaĵojn per ĉi tiu URI"
+msgstr ""
 
 #: ../src/supporting_widgets.py:916 ../src/supporting_widgets.py:1355
 msgid "More Information"
-msgstr "Pliaj informoj"
+msgstr ""
 
 #: ../src/supporting_widgets.py:928
 msgid "Send To..."
-msgstr "Sendi al..."
+msgstr ""
 
 #: ../src/supporting_widgets.py:1198
 msgid "Used With"
@@ -134,36 +135,34 @@ msgstr ""
 
 #: ../src/content_objects.py:567 ../src/content_objects.py:569
 msgid "{source._desc_sing} with {event.subjects[0].text}"
-msgstr "{source._desc_sing} kun {event.subjects[0].text}"
+msgstr ""
 
 #: ../src/content_objects.py:568
 msgid ""
 "{source._desc_sing} with {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 msgstr ""
-"{source._desc_sing} kun {event.subjects[0].text}\n"
-"{event.subjects[0].uri}"
 
 #: ../src/content_objects.py:579
 msgid "Available"
-msgstr "Disponebla"
+msgstr ""
 
 #: ../src/content_objects.py:580
 msgid "Offline"
-msgstr "Malkonektita"
+msgstr ""
 
 #: ../src/content_objects.py:581
 msgid "Away"
-msgstr "Fora"
+msgstr ""
 
 #: ../src/content_objects.py:582
 msgid "Busy"
-msgstr "Okupata"
+msgstr ""
 
 #: ../src/content_objects.py:614 ../src/content_objects.py:619
 #: ../src/content_objects.py:624
 msgid "with"
-msgstr "kun"
+msgstr ""
 
 #: ../src/content_objects.py:663
 msgid "Time Tracker"
@@ -171,50 +170,44 @@ msgstr ""
 
 #: ../src/content_objects.py:737 ../src/content_objects.py:739
 msgid "{source._desc_sing} from {event.subjects[0].text}"
-msgstr "{source._desc_sing} de {event.subjects[0].text}"
+msgstr ""
 
 #: ../src/content_objects.py:738
 msgid ""
 "{source._desc_sing} from {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 msgstr ""
-"{source._desc_sing} de {event.subjects[0].text}\n"
-"{event.subjects[0].uri}"
 
 #: ../src/content_objects.py:742
 #, python-format
 msgid " (%s Attachments)"
-msgstr " (%s aldonaĵoj)"
+msgstr ""
 
 #: ../src/content_objects.py:766
 msgid "{event.subjects[0].text}"
-msgstr "{event.subjects[0].text}"
+msgstr ""
 
 #: ../src/content_objects.py:767 ../src/content_objects.py:768
 msgid ""
 "Note\n"
 "{event.subjects[0].text}"
 msgstr ""
-"Notaro\n"
-"{event.subjects[0].text}"
 
 #: ../src/content_objects.py:786
 msgid "{source._desc_sing} {event.subjects[0].text}"
-msgstr "{source._desc_sing} {event.subjects[0].text}"
+msgstr ""
 
 #: ../src/content_objects.py:787 ../src/content_objects.py:788
 msgid ""
 "GTG\n"
 "{source._desc_sing} {event.subjects[0].text}"
 msgstr ""
-"GTG\n"
-"{source._desc_sing} {event.subjects[0].text}"
 
 #: ../src/histogram.py:438
 msgid "item"
 msgid_plural "items"
-msgstr[0] "ero"
-msgstr[1] "eroj"
+msgstr[0] ""
+msgstr[1] ""
 
 #. TODO: Move this into Zeitgeist's library, implemented properly
 #: ../src/config.py:238
@@ -433,6 +426,3 @@ msgstr ""
 #: ../extra/gnome-activity-journal.schemas.in.h:10
 msgid "Window width"
 msgstr ""
-
-#~ msgid "Search"
-#~ msgstr "Serĉi"

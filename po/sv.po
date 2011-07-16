@@ -7,128 +7,128 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-activity-journal\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2011-01-23 14:06+0100\n"
-"PO-Revision-Date: 2011-01-19 19:25+0000\n"
+"POT-Creation-Date: 2011-01-26 18:05+0100\n"
+"PO-Revision-Date: 2011-03-21 16:59+0000\n"
 "Last-Translator: Daniel Nylander <yeager@ubuntu.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2011-01-24 05:10+0000\n"
-"X-Generator: Launchpad (build 12177)\n"
+"X-Launchpad-Export-Date: 2011-03-22 04:56+0000\n"
+"X-Generator: Launchpad (build 12559)\n"
 
-#: ../gnome-activity-journal:83
+#: ../gnome-activity-journal:85
 msgid "print additional debugging information"
 msgstr "skriv ut ytterligare felsökningsinformation"
 
-#: ../gnome-activity-journal:90
+#: ../gnome-activity-journal:92
 msgid "ERROR"
 msgstr "FEL"
 
-#: ../gnome-activity-journal:90
+#: ../gnome-activity-journal:92
 msgid "Unable to connect to Zeitgeist:"
 msgstr "Kunde inte ansluta till Zeitgeist:"
 
-#: ../src/supporting_widgets.py:181
-msgid "Go to Today"
-msgstr "Gå till idag"
-
-#: ../src/supporting_widgets.py:183
-msgid "Go to the previous day "
-msgstr ""
-
-#: ../src/supporting_widgets.py:183
-msgid "Go to the next day"
-msgstr ""
-
-#: ../src/supporting_widgets.py:515
-msgid "Type here to search..."
-msgstr "Skriv här för att söka..."
-
-#: ../src/supporting_widgets.py:701
-msgid "<b>Playing...</b>"
-msgstr ""
-
-#: ../src/supporting_widgets.py:815 ../src/supporting_widgets.py:825
-#: ../src/supporting_widgets.py:1406
-msgid "Preferences"
-msgstr "Inställningar"
-
-#: ../src/supporting_widgets.py:824
-msgid "About"
-msgstr ""
-
-#: ../src/supporting_widgets.py:907 ../src/activity_widgets.py:551
-msgid "Remove Pin"
-msgstr "Ta bort nål"
-
-#: ../src/supporting_widgets.py:908 ../src/supporting_widgets.py:1279
-msgid "Add Pin"
-msgstr ""
-
-#: ../src/supporting_widgets.py:909
-msgid "Delete item from Journal"
-msgstr "Ta bort objekt från journal"
-
-#: ../src/supporting_widgets.py:910
-msgid "Delete all events with this URI"
-msgstr "Ta bort alla händelser med denna URI"
-
-#: ../src/supporting_widgets.py:911
-msgid "More Information"
-msgstr "Mer information"
-
-#: ../src/supporting_widgets.py:923
-msgid "Send To..."
-msgstr "Skicka till..."
-
-#: ../src/supporting_widgets.py:1191
-msgid "Used With"
-msgstr "Används med"
-
-#: ../src/supporting_widgets.py:1274
-msgid "Launch this subject"
-msgstr ""
-
-#: ../src/supporting_widgets.py:1276
-msgid "Delete this subject"
-msgstr ""
-
-#: ../src/supporting_widgets.py:1416
-msgid "Active Plugins:"
-msgstr "Aktiva insticksmoduler:"
-
-#: ../src/supporting_widgets.py:1424
-msgid "Plugins"
-msgstr "Insticksmoduler"
-
-#: ../src/supporting_widgets.py:1429
-msgid "Show icon in system tray"
-msgstr ""
-
-#: ../src/supporting_widgets.py:1436
-msgid "Configuration"
-msgstr ""
-
-#: ../src/main.py:139
-msgid "<span size=\"larger\"><b>Loading Journal...</b></span>"
-msgstr ""
-
-#: ../src/main.py:300
+#: ../src/supporting_widgets.py:83 ../src/main.py:304
 msgid "Today"
 msgstr "Idag"
 
-#: ../src/main.py:303
+#: ../src/supporting_widgets.py:86 ../src/main.py:307
 msgid "Yesterday"
 msgstr "Igår"
 
-#: ../src/main.py:314
+#: ../src/supporting_widgets.py:186
+msgid "Go to Today"
+msgstr "Gå till idag"
+
+#: ../src/supporting_widgets.py:188
+msgid "Go to the previous day "
+msgstr "Gå till föregående dag "
+
+#: ../src/supporting_widgets.py:188
+msgid "Go to the next day"
+msgstr "Gå till nästa dag"
+
+#: ../src/supporting_widgets.py:520
+msgid "Type here to search..."
+msgstr "Skriv här för att söka..."
+
+#: ../src/supporting_widgets.py:706
+msgid "<b>Playing...</b>"
+msgstr "<b>Spelar upp...</b>"
+
+#: ../src/supporting_widgets.py:820 ../src/supporting_widgets.py:830
+#: ../src/supporting_widgets.py:1421
+msgid "Preferences"
+msgstr "Inställningar"
+
+#: ../src/supporting_widgets.py:829
+msgid "About"
+msgstr "Om"
+
+#: ../src/supporting_widgets.py:912 ../src/activity_widgets.py:551
+msgid "Remove Pin"
+msgstr "Ta bort nål"
+
+#: ../src/supporting_widgets.py:913 ../src/supporting_widgets.py:1287
+msgid "Add Pin"
+msgstr "Lägg till nål"
+
+#: ../src/supporting_widgets.py:914
+msgid "Delete item from Journal"
+msgstr "Ta bort objekt från journal"
+
+#: ../src/supporting_widgets.py:915
+msgid "Delete all events with this URI"
+msgstr "Ta bort alla händelser med denna URI"
+
+#: ../src/supporting_widgets.py:916 ../src/supporting_widgets.py:1355
+msgid "More Information"
+msgstr "Mer information"
+
+#: ../src/supporting_widgets.py:928
+msgid "Send To..."
+msgstr "Skicka till..."
+
+#: ../src/supporting_widgets.py:1198
+msgid "Used With"
+msgstr "Används med"
+
+#: ../src/supporting_widgets.py:1282
+msgid "Launch this subject"
+msgstr "Starta detta ämne"
+
+#: ../src/supporting_widgets.py:1284
+msgid "Delete this subject"
+msgstr "Ta bort detta ämne"
+
+#: ../src/supporting_widgets.py:1431
+msgid "Active Plugins:"
+msgstr "Aktiva insticksmoduler:"
+
+#: ../src/supporting_widgets.py:1439
+msgid "Plugins"
+msgstr "Insticksmoduler"
+
+#: ../src/supporting_widgets.py:1444
+msgid "Show icon in system tray"
+msgstr "Visa ikon i aktivitetsfält"
+
+#: ../src/supporting_widgets.py:1451
+msgid "Configuration"
+msgstr "Konfiguration"
+
+#: ../src/main.py:143
+msgid "<span size=\"larger\"><b>Loading Journal...</b></span>"
+msgstr "<span size=\"larger\"><b>Läser in journal...</b></span>"
+
+#: ../src/main.py:318
 #, python-format
 msgid "%s to %s"
 msgstr "%s till %s"
 
-#: ../src/main.py:314 ../extra/gnome-activity-journal.desktop.in.h:1
+#: ../src/main.py:318 ../extra/gnome-activity-journal.desktop.in.h:1
 msgid "Activity Journal"
 msgstr "Aktivitetsjournal"
 
@@ -207,6 +207,8 @@ msgid ""
 "GTG\n"
 "{source._desc_sing} {event.subjects[0].text}"
 msgstr ""
+"GTG\n"
+"{source._desc_sing} {event.subjects[0].text}"
 
 #: ../src/histogram.py:438
 msgid "item"
@@ -215,123 +217,123 @@ msgstr[0] "objekt"
 msgstr[1] "objekt"
 
 #. TODO: Move this into Zeitgeist's library, implemented properly
-#: ../src/config.py:237
+#: ../src/config.py:238
 msgid "Worked with a Video"
 msgstr "Arbetat med en film"
 
-#: ../src/config.py:237
+#: ../src/config.py:238
 msgid "Worked with Videos"
 msgstr "Arbetat med filmer"
 
-#: ../src/config.py:238
+#: ../src/config.py:239
 msgid "Worked with Audio"
 msgstr "Arbetat med ljud"
 
-#: ../src/config.py:239
+#: ../src/config.py:240
 msgid "Worked with an Image"
 msgstr "Arbetat med en bild"
 
-#: ../src/config.py:239
+#: ../src/config.py:240
 msgid "Worked with Images"
 msgstr "Arbetat med bilder"
 
-#: ../src/config.py:240
+#: ../src/config.py:241
 msgid "Edited or Read Document"
 msgstr "Redigerat eller läst dokument"
 
-#: ../src/config.py:240
+#: ../src/config.py:241
 msgid "Edited or Read Documents"
 msgstr "Redigerade eller läst dokument"
 
-#: ../src/config.py:241
+#: ../src/config.py:242
 msgid "Edited or Read Code"
 msgstr "Redigerat eller läst kod"
 
-#: ../src/config.py:242
+#: ../src/config.py:243
 msgid "Conversation"
 msgstr "Konversation"
 
-#: ../src/config.py:242
+#: ../src/config.py:243
 msgid "Conversations"
 msgstr "Konversationer"
 
-#: ../src/config.py:243
+#: ../src/config.py:244
 msgid "Visited Website"
 msgstr "Besökt webbplats"
 
-#: ../src/config.py:243
+#: ../src/config.py:244
 msgid "Visited Websites"
 msgstr "Besökta webbplatser"
 
-#: ../src/config.py:244 ../src/common.py:150
+#: ../src/config.py:245 ../src/common.py:151
 msgid "Email"
 msgstr "E-post"
 
-#: ../src/config.py:244
+#: ../src/config.py:245
 msgid "Emails"
 msgstr "E-post"
 
-#: ../src/config.py:245
+#: ../src/config.py:246
 msgid "Todo"
-msgstr ""
-
-#: ../src/config.py:245
-msgid "Todos"
-msgstr ""
+msgstr "Att göra"
 
 #: ../src/config.py:246
+msgid "Todos"
+msgstr "Att göra"
+
+#: ../src/config.py:247
 msgid "Other Activity"
 msgstr "Annan aktivitet"
 
-#: ../src/config.py:246
+#: ../src/config.py:247
 msgid "Other Activities"
 msgstr "Andra aktiviteter"
 
-#: ../src/config.py:247
+#: ../src/config.py:248
 msgid "Edited or Read Note"
-msgstr ""
+msgstr "Redigerad eller Läs anteckning"
 
-#: ../src/config.py:247
+#: ../src/config.py:248
 msgid "Edited or Read Notes"
-msgstr ""
+msgstr "Redigerade eller Läs anteckningar"
 
-#: ../src/config.py:248
+#: ../src/config.py:249
 msgid "Software Development"
-msgstr ""
+msgstr "Programutveckling"
 
-#: ../src/config.py:248
+#: ../src/config.py:249
 msgid "Software Developments"
-msgstr ""
+msgstr "Programutveckling"
 
 #: ../src/Indicator.py:87
 msgid "Hide/Show GAJ"
-msgstr ""
+msgstr "Visa/dölj GAJ"
 
-#: ../src/common.py:143
+#: ../src/common.py:144
 msgid "Video"
 msgstr "Video"
 
-#: ../src/common.py:144
+#: ../src/common.py:145
 msgid "Music"
 msgstr "Musik"
 
-#: ../src/common.py:145
+#: ../src/common.py:146
 msgid "Document"
 msgstr "Dokument"
 
-#: ../src/common.py:146
+#: ../src/common.py:147
 msgid "Image"
 msgstr "Bild"
 
-#: ../src/common.py:147
+#: ../src/common.py:148
 msgid "Source Code"
 msgstr "Källkod"
 
-#: ../src/common.py:148
+#: ../src/common.py:149
 msgid "Unknown"
 msgstr "Okänd"
 
-#: ../src/common.py:149
+#: ../src/common.py:150
 msgid "IM Message"
 msgstr "Snabbmeddelande"
 
@@ -340,25 +342,25 @@ msgstr "Snabbmeddelande"
 #. changing the categories entirely (eg. "Work", "Lunch time", etc.).
 #. For this get_day_parts and other methods should take a timestamp of
 #. the relevant day so they can account for weekends not having "Work", etc.
-#: ../src/common.py:927
+#: ../src/common.py:936
 msgid "Morning"
 msgstr "Morgon"
 
-#: ../src/common.py:927
+#: ../src/common.py:936
 msgid "Afternoon"
 msgstr "Eftermiddag"
 
-#: ../src/common.py:927
+#: ../src/common.py:936
 msgid "Evening"
 msgstr "Kväll"
 
-#: ../src/activity_widgets.py:113
+#: ../src/activity_widgets.py:116
 msgid "Switch to MultiView"
 msgstr "Växla till multivy"
 
 #: ../src/activity_widgets.py:627
 msgid "<b>Name: </b>"
-msgstr ""
+msgstr "<b>Namn: </b>"
 
 #: ../src/activity_widgets.py:631
 #, python-format
@@ -366,6 +368,8 @@ msgid ""
 "\n"
 "<b>MIME Type:</b> %s (%s)"
 msgstr ""
+"\n"
+"<b>MIME-typ:</b> %s (%s)"
 
 #: ../src/activity_widgets.py:689
 msgid "Switch to ThumbView"
@@ -377,7 +381,7 @@ msgstr "Växla till tidslinjevy"
 
 #: ../src/activity_widgets.py:1395
 msgid "Pinned Items"
-msgstr ""
+msgstr "Nålade objekt"
 
 #: ../extra/gnome-activity-journal.desktop.in.h:2
 msgid ""

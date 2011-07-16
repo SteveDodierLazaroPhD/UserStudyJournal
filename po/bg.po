@@ -7,128 +7,128 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-activity-journal\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2011-01-23 14:06+0100\n"
-"PO-Revision-Date: 2010-10-26 07:56+0000\n"
+"POT-Creation-Date: 2011-01-26 18:05+0100\n"
+"PO-Revision-Date: 2011-02-11 06:56+0000\n"
 "Last-Translator: Svetoslav Stefanov <svetlisashkov@yahoo.com>\n"
 "Language-Team: Bulgarian <bg@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2011-01-24 05:09+0000\n"
-"X-Generator: Launchpad (build 12177)\n"
+"X-Launchpad-Export-Date: 2011-02-12 05:19+0000\n"
+"X-Generator: Launchpad (build 12351)\n"
 
-#: ../gnome-activity-journal:83
+#: ../gnome-activity-journal:85
 msgid "print additional debugging information"
 msgstr "извеждане на допълнителна информация за изчистване на грешки"
 
-#: ../gnome-activity-journal:90
+#: ../gnome-activity-journal:92
 msgid "ERROR"
 msgstr "ГРЕШКА"
 
-#: ../gnome-activity-journal:90
+#: ../gnome-activity-journal:92
 msgid "Unable to connect to Zeitgeist:"
 msgstr "Невъзможност за свързване с Zaitgeist"
 
-#: ../src/supporting_widgets.py:181
-msgid "Go to Today"
-msgstr "Отиване на днешната дата"
-
-#: ../src/supporting_widgets.py:183
-msgid "Go to the previous day "
-msgstr ""
-
-#: ../src/supporting_widgets.py:183
-msgid "Go to the next day"
-msgstr ""
-
-#: ../src/supporting_widgets.py:515
-msgid "Type here to search..."
-msgstr "Пишете тук за да търсите"
-
-#: ../src/supporting_widgets.py:701
-msgid "<b>Playing...</b>"
-msgstr ""
-
-#: ../src/supporting_widgets.py:815 ../src/supporting_widgets.py:825
-#: ../src/supporting_widgets.py:1406
-msgid "Preferences"
-msgstr "Предпочитания"
-
-#: ../src/supporting_widgets.py:824
-msgid "About"
-msgstr ""
-
-#: ../src/supporting_widgets.py:907 ../src/activity_widgets.py:551
-msgid "Remove Pin"
-msgstr "Премахване на отметка"
-
-#: ../src/supporting_widgets.py:908 ../src/supporting_widgets.py:1279
-msgid "Add Pin"
-msgstr "Добавяне на отметка"
-
-#: ../src/supporting_widgets.py:909
-msgid "Delete item from Journal"
-msgstr "Изтриване от Дневника"
-
-#: ../src/supporting_widgets.py:910
-msgid "Delete all events with this URI"
-msgstr "Изтриване на всички събития с този адрес"
-
-#: ../src/supporting_widgets.py:911
-msgid "More Information"
-msgstr "Повече информация"
-
-#: ../src/supporting_widgets.py:923
-msgid "Send To..."
-msgstr "Изпращане до…"
-
-#: ../src/supporting_widgets.py:1191
-msgid "Used With"
-msgstr "Използвано с"
-
-#: ../src/supporting_widgets.py:1274
-msgid "Launch this subject"
-msgstr "Пускане на тази тема"
-
-#: ../src/supporting_widgets.py:1276
-msgid "Delete this subject"
-msgstr "Изтриване на тази тема"
-
-#: ../src/supporting_widgets.py:1416
-msgid "Active Plugins:"
-msgstr "Активни приставки"
-
-#: ../src/supporting_widgets.py:1424
-msgid "Plugins"
-msgstr "Приставки"
-
-#: ../src/supporting_widgets.py:1429
-msgid "Show icon in system tray"
-msgstr ""
-
-#: ../src/supporting_widgets.py:1436
-msgid "Configuration"
-msgstr ""
-
-#: ../src/main.py:139
-msgid "<span size=\"larger\"><b>Loading Journal...</b></span>"
-msgstr ""
-
-#: ../src/main.py:300
+#: ../src/supporting_widgets.py:83 ../src/main.py:304
 msgid "Today"
 msgstr "Днес"
 
-#: ../src/main.py:303
+#: ../src/supporting_widgets.py:86 ../src/main.py:307
 msgid "Yesterday"
 msgstr "Вчера"
 
-#: ../src/main.py:314
+#: ../src/supporting_widgets.py:186
+msgid "Go to Today"
+msgstr "Отиване на днешната дата"
+
+#: ../src/supporting_widgets.py:188
+msgid "Go to the previous day "
+msgstr "Отиване към предишния ден "
+
+#: ../src/supporting_widgets.py:188
+msgid "Go to the next day"
+msgstr "Отиване към следващия ден"
+
+#: ../src/supporting_widgets.py:520
+msgid "Type here to search..."
+msgstr "Пишете тук за да търсите"
+
+#: ../src/supporting_widgets.py:706
+msgid "<b>Playing...</b>"
+msgstr "<b>Възпроизвеждане...</b>"
+
+#: ../src/supporting_widgets.py:820 ../src/supporting_widgets.py:830
+#: ../src/supporting_widgets.py:1421
+msgid "Preferences"
+msgstr "Предпочитания"
+
+#: ../src/supporting_widgets.py:829
+msgid "About"
+msgstr "Относно"
+
+#: ../src/supporting_widgets.py:912 ../src/activity_widgets.py:551
+msgid "Remove Pin"
+msgstr "Премахване на отметка"
+
+#: ../src/supporting_widgets.py:913 ../src/supporting_widgets.py:1287
+msgid "Add Pin"
+msgstr "Добавяне на отметка"
+
+#: ../src/supporting_widgets.py:914
+msgid "Delete item from Journal"
+msgstr "Изтриване от Дневника"
+
+#: ../src/supporting_widgets.py:915
+msgid "Delete all events with this URI"
+msgstr "Изтриване на всички събития с този адрес"
+
+#: ../src/supporting_widgets.py:916 ../src/supporting_widgets.py:1355
+msgid "More Information"
+msgstr "Повече информация"
+
+#: ../src/supporting_widgets.py:928
+msgid "Send To..."
+msgstr "Изпращане до…"
+
+#: ../src/supporting_widgets.py:1198
+msgid "Used With"
+msgstr "Използвано с"
+
+#: ../src/supporting_widgets.py:1282
+msgid "Launch this subject"
+msgstr "Пускане на тази тема"
+
+#: ../src/supporting_widgets.py:1284
+msgid "Delete this subject"
+msgstr "Изтриване на тази тема"
+
+#: ../src/supporting_widgets.py:1431
+msgid "Active Plugins:"
+msgstr "Активни приставки"
+
+#: ../src/supporting_widgets.py:1439
+msgid "Plugins"
+msgstr "Приставки"
+
+#: ../src/supporting_widgets.py:1444
+msgid "Show icon in system tray"
+msgstr "Показване на икона в системната област за уведомяване"
+
+#: ../src/supporting_widgets.py:1451
+msgid "Configuration"
+msgstr "Настройка"
+
+#: ../src/main.py:143
+msgid "<span size=\"larger\"><b>Loading Journal...</b></span>"
+msgstr "<span size=\"larger\"><b>Зареждане на дневника...</b></span>"
+
+#: ../src/main.py:318
 #, python-format
 msgid "%s to %s"
 msgstr "%s до %s"
 
-#: ../src/main.py:314 ../extra/gnome-activity-journal.desktop.in.h:1
+#: ../src/main.py:318 ../extra/gnome-activity-journal.desktop.in.h:1
 msgid "Activity Journal"
 msgstr "Дневник на действията"
 
@@ -200,13 +200,15 @@ msgstr ""
 
 #: ../src/content_objects.py:786
 msgid "{source._desc_sing} {event.subjects[0].text}"
-msgstr ""
+msgstr "{source._desc_sing} {event.subjects[0].text}"
 
 #: ../src/content_objects.py:787 ../src/content_objects.py:788
 msgid ""
 "GTG\n"
 "{source._desc_sing} {event.subjects[0].text}"
 msgstr ""
+"GTG\n"
+"{source._desc_sing} {event.subjects[0].text}"
 
 #: ../src/histogram.py:438
 msgid "item"
@@ -215,123 +217,123 @@ msgstr[0] "елемент"
 msgstr[1] "елементи"
 
 #. TODO: Move this into Zeitgeist's library, implemented properly
-#: ../src/config.py:237
+#: ../src/config.py:238
 msgid "Worked with a Video"
 msgstr "Работа с видео"
 
-#: ../src/config.py:237
+#: ../src/config.py:238
 msgid "Worked with Videos"
 msgstr "Работа с видео"
 
-#: ../src/config.py:238
+#: ../src/config.py:239
 msgid "Worked with Audio"
 msgstr "Работа със звук"
 
-#: ../src/config.py:239
+#: ../src/config.py:240
 msgid "Worked with an Image"
 msgstr "Работа с изображение"
 
-#: ../src/config.py:239
+#: ../src/config.py:240
 msgid "Worked with Images"
 msgstr "Работа с изображения"
 
-#: ../src/config.py:240
+#: ../src/config.py:241
 msgid "Edited or Read Document"
 msgstr "Редактиране или четене на документ"
 
-#: ../src/config.py:240
+#: ../src/config.py:241
 msgid "Edited or Read Documents"
 msgstr "Редактиране или четене на документи"
 
-#: ../src/config.py:241
+#: ../src/config.py:242
 msgid "Edited or Read Code"
 msgstr "Редактиране или четене на код"
 
-#: ../src/config.py:242
+#: ../src/config.py:243
 msgid "Conversation"
 msgstr "Разговор"
 
-#: ../src/config.py:242
+#: ../src/config.py:243
 msgid "Conversations"
 msgstr "Разговори"
 
-#: ../src/config.py:243
+#: ../src/config.py:244
 msgid "Visited Website"
 msgstr "Посетена уеб страница"
 
-#: ../src/config.py:243
+#: ../src/config.py:244
 msgid "Visited Websites"
 msgstr "Посетени уеб страници"
 
-#: ../src/config.py:244 ../src/common.py:150
+#: ../src/config.py:245 ../src/common.py:151
 msgid "Email"
 msgstr "Е-писмо"
 
-#: ../src/config.py:244
+#: ../src/config.py:245
 msgid "Emails"
 msgstr "Е-писма"
 
-#: ../src/config.py:245
+#: ../src/config.py:246
 msgid "Todo"
-msgstr ""
-
-#: ../src/config.py:245
-msgid "Todos"
-msgstr ""
+msgstr "За правене"
 
 #: ../src/config.py:246
+msgid "Todos"
+msgstr "Задачи"
+
+#: ../src/config.py:247
 msgid "Other Activity"
 msgstr "Друга дейност"
 
-#: ../src/config.py:246
+#: ../src/config.py:247
 msgid "Other Activities"
 msgstr "Други дейности"
 
-#: ../src/config.py:247
+#: ../src/config.py:248
 msgid "Edited or Read Note"
 msgstr "Редактиране или четене на бележка"
 
-#: ../src/config.py:247
+#: ../src/config.py:248
 msgid "Edited or Read Notes"
 msgstr "Редактиране или четене на бележки"
 
-#: ../src/config.py:248
+#: ../src/config.py:249
 msgid "Software Development"
-msgstr ""
+msgstr "Разработка на софтуер"
 
-#: ../src/config.py:248
+#: ../src/config.py:249
 msgid "Software Developments"
-msgstr ""
+msgstr "Разработки на софтуер"
 
 #: ../src/Indicator.py:87
 msgid "Hide/Show GAJ"
-msgstr ""
+msgstr "Скриване/Показване"
 
-#: ../src/common.py:143
+#: ../src/common.py:144
 msgid "Video"
 msgstr "Видео"
 
-#: ../src/common.py:144
+#: ../src/common.py:145
 msgid "Music"
 msgstr "Музика"
 
-#: ../src/common.py:145
+#: ../src/common.py:146
 msgid "Document"
 msgstr "Документ"
 
-#: ../src/common.py:146
+#: ../src/common.py:147
 msgid "Image"
 msgstr "Изображение"
 
-#: ../src/common.py:147
+#: ../src/common.py:148
 msgid "Source Code"
 msgstr "Изходен код"
 
-#: ../src/common.py:148
+#: ../src/common.py:149
 msgid "Unknown"
 msgstr "Неизвестно"
 
-#: ../src/common.py:149
+#: ../src/common.py:150
 msgid "IM Message"
 msgstr "Съобщение"
 
@@ -340,25 +342,25 @@ msgstr "Съобщение"
 #. changing the categories entirely (eg. "Work", "Lunch time", etc.).
 #. For this get_day_parts and other methods should take a timestamp of
 #. the relevant day so they can account for weekends not having "Work", etc.
-#: ../src/common.py:927
+#: ../src/common.py:936
 msgid "Morning"
 msgstr "Сутрин"
 
-#: ../src/common.py:927
+#: ../src/common.py:936
 msgid "Afternoon"
 msgstr "Следобед"
 
-#: ../src/common.py:927
+#: ../src/common.py:936
 msgid "Evening"
 msgstr "Вечер"
 
-#: ../src/activity_widgets.py:113
+#: ../src/activity_widgets.py:116
 msgid "Switch to MultiView"
 msgstr "Превключване към паралелен изглед"
 
 #: ../src/activity_widgets.py:627
 msgid "<b>Name: </b>"
-msgstr ""
+msgstr "<b>Име: </b>"
 
 #: ../src/activity_widgets.py:631
 #, python-format
@@ -366,6 +368,8 @@ msgid ""
 "\n"
 "<b>MIME Type:</b> %s (%s)"
 msgstr ""
+"\n"
+"<b>Вид MIME:</b> %s (%s)"
 
 #: ../src/activity_widgets.py:689
 msgid "Switch to ThumbView"

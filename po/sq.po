@@ -1,58 +1,58 @@
-# Esperanto translation for gnome-activity-journal
-# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# Albanian translation for gnome-activity-journal
+# Copyright (c) 2011 Rosetta Contributors and Canonical Ltd 2011
 # This file is distributed under the same license as the gnome-activity-journal package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-activity-journal\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2011-01-26 18:05+0100\n"
-"PO-Revision-Date: 2011-04-05 08:01+0000\n"
-"Last-Translator: Michael Moroni <michael.moroni@mailoo.org>\n"
-"Language-Team: Esperanto <eo@li.org>\n"
+"PO-Revision-Date: 2011-01-27 10:24+0000\n"
+"Last-Translator: Lulzim <Unknown>\n"
+"Language-Team: Albanian <sq@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2011-04-06 04:52+0000\n"
-"X-Generator: Launchpad (build 12559)\n"
+"X-Launchpad-Export-Date: 2011-01-28 05:02+0000\n"
+"X-Generator: Launchpad (build 12177)\n"
 
 #: ../gnome-activity-journal:85
 msgid "print additional debugging information"
-msgstr "presi aldonan sencimigan informon"
+msgstr ""
 
 #: ../gnome-activity-journal:92
 msgid "ERROR"
-msgstr "ERARO"
+msgstr "GABIM"
 
 #: ../gnome-activity-journal:92
 msgid "Unable to connect to Zeitgeist:"
-msgstr "Ne eblas konekti al Zeitgeist:"
+msgstr "E pamundur për t'u lidhur me Zeitgeist:"
 
 #: ../src/supporting_widgets.py:83 ../src/main.py:304
 msgid "Today"
-msgstr ""
+msgstr "Sot"
 
 #: ../src/supporting_widgets.py:86 ../src/main.py:307
 msgid "Yesterday"
-msgstr ""
+msgstr "Dje"
 
 #: ../src/supporting_widgets.py:186
 msgid "Go to Today"
-msgstr "Iri hodiaŭen"
+msgstr "Shko tek Sot"
 
 #: ../src/supporting_widgets.py:188
 msgid "Go to the previous day "
-msgstr ""
+msgstr "Shko në ditën e mëparshme "
 
 #: ../src/supporting_widgets.py:188
 msgid "Go to the next day"
-msgstr ""
+msgstr "Shko në ditën e ardhshme"
 
 #: ../src/supporting_widgets.py:520
 msgid "Type here to search..."
-msgstr "Tajpu ĉi tie por traserĉi..."
+msgstr "Shtyp këtu për të kërkuar..."
 
 #: ../src/supporting_widgets.py:706
 msgid "<b>Playing...</b>"
@@ -61,55 +61,55 @@ msgstr ""
 #: ../src/supporting_widgets.py:820 ../src/supporting_widgets.py:830
 #: ../src/supporting_widgets.py:1421
 msgid "Preferences"
-msgstr "Agordoj"
+msgstr "Preferencat"
 
 #: ../src/supporting_widgets.py:829
 msgid "About"
-msgstr ""
+msgstr "Informacione"
 
 #: ../src/supporting_widgets.py:912 ../src/activity_widgets.py:551
 msgid "Remove Pin"
-msgstr "Forigi pinglon"
+msgstr "Hiq kapësën"
 
 #: ../src/supporting_widgets.py:913 ../src/supporting_widgets.py:1287
 msgid "Add Pin"
-msgstr "Aldoni pinglon"
+msgstr "Shto kapës"
 
 #: ../src/supporting_widgets.py:914
 msgid "Delete item from Journal"
-msgstr "Forigi eron el ĵurnalo"
+msgstr "Fshij artikullin nga ditari"
 
 #: ../src/supporting_widgets.py:915
 msgid "Delete all events with this URI"
-msgstr "Forigi ĉiujn okazintaĵojn per ĉi tiu URI"
+msgstr "Fshij të gjitha ngjarjet me këtë URI"
 
 #: ../src/supporting_widgets.py:916 ../src/supporting_widgets.py:1355
 msgid "More Information"
-msgstr "Pliaj informoj"
+msgstr "Më Tepër Informacion"
 
 #: ../src/supporting_widgets.py:928
 msgid "Send To..."
-msgstr "Sendi al..."
+msgstr "Dërgo Tek..."
 
 #: ../src/supporting_widgets.py:1198
 msgid "Used With"
-msgstr ""
+msgstr "Përdorur Me"
 
 #: ../src/supporting_widgets.py:1282
 msgid "Launch this subject"
-msgstr ""
+msgstr "Lësho këtë subjekt"
 
 #: ../src/supporting_widgets.py:1284
 msgid "Delete this subject"
-msgstr ""
+msgstr "Fshije këtë subjekt"
 
 #: ../src/supporting_widgets.py:1431
 msgid "Active Plugins:"
-msgstr ""
+msgstr "Shtojcat Aktive:"
 
 #: ../src/supporting_widgets.py:1439
 msgid "Plugins"
-msgstr ""
+msgstr "Shtojca"
 
 #: ../src/supporting_widgets.py:1444
 msgid "Show icon in system tray"
@@ -117,74 +117,74 @@ msgstr ""
 
 #: ../src/supporting_widgets.py:1451
 msgid "Configuration"
-msgstr ""
+msgstr "Konfiguracioni"
 
 #: ../src/main.py:143
 msgid "<span size=\"larger\"><b>Loading Journal...</b></span>"
-msgstr ""
+msgstr "<span size=\"larger\"><b>Duke Ngarkuar Ditarin...</b></span>"
 
 #: ../src/main.py:318
 #, python-format
 msgid "%s to %s"
-msgstr ""
+msgstr "%s tek %s"
 
 #: ../src/main.py:318 ../extra/gnome-activity-journal.desktop.in.h:1
 msgid "Activity Journal"
-msgstr ""
+msgstr "Ditari i aktiviteteve"
 
 #: ../src/content_objects.py:567 ../src/content_objects.py:569
 msgid "{source._desc_sing} with {event.subjects[0].text}"
-msgstr "{source._desc_sing} kun {event.subjects[0].text}"
+msgstr "{source._desc_sing} me {event.subjects[0].text}"
 
 #: ../src/content_objects.py:568
 msgid ""
 "{source._desc_sing} with {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 msgstr ""
-"{source._desc_sing} kun {event.subjects[0].text}\n"
+"{source._desc_sing} me {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 
 #: ../src/content_objects.py:579
 msgid "Available"
-msgstr "Disponebla"
+msgstr "I Disponueshëm"
 
 #: ../src/content_objects.py:580
 msgid "Offline"
-msgstr "Malkonektita"
+msgstr "Jashtë Linje"
 
 #: ../src/content_objects.py:581
 msgid "Away"
-msgstr "Fora"
+msgstr "I Larguar"
 
 #: ../src/content_objects.py:582
 msgid "Busy"
-msgstr "Okupata"
+msgstr "I Zënë"
 
 #: ../src/content_objects.py:614 ../src/content_objects.py:619
 #: ../src/content_objects.py:624
 msgid "with"
-msgstr "kun"
+msgstr "me"
 
 #: ../src/content_objects.py:663
 msgid "Time Tracker"
-msgstr ""
+msgstr "Ndjekës kohe"
 
 #: ../src/content_objects.py:737 ../src/content_objects.py:739
 msgid "{source._desc_sing} from {event.subjects[0].text}"
-msgstr "{source._desc_sing} de {event.subjects[0].text}"
+msgstr "{source._desc_sing} nga {event.subjects[0].text}"
 
 #: ../src/content_objects.py:738
 msgid ""
 "{source._desc_sing} from {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 msgstr ""
-"{source._desc_sing} de {event.subjects[0].text}\n"
+"{source._desc_sing} nga {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 
 #: ../src/content_objects.py:742
 #, python-format
 msgid " (%s Attachments)"
-msgstr " (%s aldonaĵoj)"
+msgstr ""
 
 #: ../src/content_objects.py:766
 msgid "{event.subjects[0].text}"
@@ -195,7 +195,7 @@ msgid ""
 "Note\n"
 "{event.subjects[0].text}"
 msgstr ""
-"Notaro\n"
+"Shënim\n"
 "{event.subjects[0].text}"
 
 #: ../src/content_objects.py:786
@@ -213,125 +213,125 @@ msgstr ""
 #: ../src/histogram.py:438
 msgid "item"
 msgid_plural "items"
-msgstr[0] "ero"
-msgstr[1] "eroj"
+msgstr[0] "element"
+msgstr[1] "elementët"
 
 #. TODO: Move this into Zeitgeist's library, implemented properly
 #: ../src/config.py:238
 msgid "Worked with a Video"
-msgstr ""
+msgstr "Punuar me nje Video"
 
 #: ../src/config.py:238
 msgid "Worked with Videos"
-msgstr ""
+msgstr "Punuar me Video"
 
 #: ../src/config.py:239
 msgid "Worked with Audio"
-msgstr ""
+msgstr "Punuar me zë"
 
 #: ../src/config.py:240
 msgid "Worked with an Image"
-msgstr ""
+msgstr "Punuar me një imazh"
 
 #: ../src/config.py:240
 msgid "Worked with Images"
-msgstr ""
+msgstr "Punuar me imazhe"
 
 #: ../src/config.py:241
 msgid "Edited or Read Document"
-msgstr ""
+msgstr "Dokument i ndryshuar ose i lexuar"
 
 #: ../src/config.py:241
 msgid "Edited or Read Documents"
-msgstr ""
+msgstr "Dokumenta të ndryshuar ose të lexuar"
 
 #: ../src/config.py:242
 msgid "Edited or Read Code"
-msgstr ""
+msgstr "Kod i ndryshuar ose i lexuar"
 
 #: ../src/config.py:243
 msgid "Conversation"
-msgstr ""
+msgstr "Bisedë"
 
 #: ../src/config.py:243
 msgid "Conversations"
-msgstr ""
+msgstr "Bisedat"
 
 #: ../src/config.py:244
 msgid "Visited Website"
-msgstr ""
+msgstr "faqe Interneti e Vizituar"
 
 #: ../src/config.py:244
 msgid "Visited Websites"
-msgstr ""
+msgstr "faqe Interneti të Vizituara"
 
 #: ../src/config.py:245 ../src/common.py:151
 msgid "Email"
-msgstr ""
+msgstr "Email"
 
 #: ../src/config.py:245
 msgid "Emails"
-msgstr ""
+msgstr "Email-e"
 
 #: ../src/config.py:246
 msgid "Todo"
-msgstr ""
+msgstr "Për tu bërë"
 
 #: ../src/config.py:246
 msgid "Todos"
-msgstr ""
+msgstr "Për tu bërë"
 
 #: ../src/config.py:247
 msgid "Other Activity"
-msgstr ""
+msgstr "Aktivitet tjetër"
 
 #: ../src/config.py:247
 msgid "Other Activities"
-msgstr ""
+msgstr "Aktivitete të tjera"
 
 #: ../src/config.py:248
 msgid "Edited or Read Note"
-msgstr ""
+msgstr "Shënim i ndryshuar ose i lexuar"
 
 #: ../src/config.py:248
 msgid "Edited or Read Notes"
-msgstr ""
+msgstr "Shenime të ndryshuara ose te lexuara"
 
 #: ../src/config.py:249
 msgid "Software Development"
-msgstr ""
+msgstr "Bërje Programi"
 
 #: ../src/config.py:249
 msgid "Software Developments"
-msgstr ""
+msgstr "Bërje programesh"
 
 #: ../src/Indicator.py:87
 msgid "Hide/Show GAJ"
-msgstr ""
+msgstr "fsheh/Shfaq GAJ"
 
 #: ../src/common.py:144
 msgid "Video"
-msgstr ""
+msgstr "Video"
 
 #: ../src/common.py:145
 msgid "Music"
-msgstr ""
+msgstr "Muzikë"
 
 #: ../src/common.py:146
 msgid "Document"
-msgstr ""
+msgstr "Dokument"
 
 #: ../src/common.py:147
 msgid "Image"
-msgstr ""
+msgstr "Imazh"
 
 #: ../src/common.py:148
 msgid "Source Code"
-msgstr ""
+msgstr "Kodi Burim"
 
 #: ../src/common.py:149
 msgid "Unknown"
-msgstr ""
+msgstr "I Panjohur"
 
 #: ../src/common.py:150
 msgid "IM Message"
@@ -344,15 +344,15 @@ msgstr ""
 #. the relevant day so they can account for weekends not having "Work", etc.
 #: ../src/common.py:936
 msgid "Morning"
-msgstr ""
+msgstr "Mëngjes"
 
 #: ../src/common.py:936
 msgid "Afternoon"
-msgstr ""
+msgstr "Mbrëmje"
 
 #: ../src/common.py:936
 msgid "Evening"
-msgstr ""
+msgstr "Mbrëmje"
 
 #: ../src/activity_widgets.py:116
 msgid "Switch to MultiView"
@@ -360,7 +360,7 @@ msgstr ""
 
 #: ../src/activity_widgets.py:627
 msgid "<b>Name: </b>"
-msgstr ""
+msgstr "<b>Emri: </b>"
 
 #: ../src/activity_widgets.py:631
 #, python-format
@@ -379,17 +379,19 @@ msgstr ""
 
 #: ../src/activity_widgets.py:1395
 msgid "Pinned Items"
-msgstr ""
+msgstr "Elementët e fiksuar"
 
 #: ../extra/gnome-activity-journal.desktop.in.h:2
 msgid ""
 "Browse a chronological log of your activities and easily find files, "
 "contacts, etc."
 msgstr ""
+"Shfleto kronologjinë e veprimtarisë tuaj dhe gjej lehtësisht skedarë, "
+"adresa, etj."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:1
 msgid "Accessibility"
-msgstr ""
+msgstr "Përdorshmëria"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:2
 msgid "Allow thumbnails as icons"
@@ -397,28 +399,34 @@ msgstr ""
 
 #: ../extra/gnome-activity-journal.schemas.in.h:3
 msgid "Amount of visible days"
-msgstr ""
+msgstr "Shuma e ditëve të dukshme"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:4
 msgid ""
 "Customized height for the main window, in pixels (requires restart). Can't "
 "be bigger than the desktop's size."
 msgstr ""
+"Gjatësia për dritaren kryesore, në piksel (kerkon rinisje). Nuk mund të jetë "
+"më e madhe se madhësia e desktop-it."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:5
 msgid ""
 "Customized width for the main window, in pixels (requires restart). Can't be "
 "bigger than the desktop's size."
 msgstr ""
+"Gjerësia për dritaren kryesore, në piksel (kerkon rinisje). Nuk mund të jetë "
+"më e madhe se madhësia e desktop-it."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:6
 msgid "The amount of days to show at once."
-msgstr ""
+msgstr "Shuma e ditëve për tu shfaqur në të njëjtën kohë."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:7
 msgid ""
 "Whether special accessibility options should be enabled (requires restart)."
 msgstr ""
+"Nëse mundësitë e veçanta të aksesueshmërisë duhet të jenë të aktivizuara "
+"(kerkon rinisje)."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:8
 msgid ""
@@ -428,11 +436,8 @@ msgstr ""
 
 #: ../extra/gnome-activity-journal.schemas.in.h:9
 msgid "Window height"
-msgstr ""
+msgstr "Lartësia e dritares"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:10
 msgid "Window width"
-msgstr ""
-
-#~ msgid "Search"
-#~ msgstr "Serĉi"
+msgstr "Gjerësia e dritares"

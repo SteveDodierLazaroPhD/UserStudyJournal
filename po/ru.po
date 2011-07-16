@@ -7,129 +7,129 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-activity-journal\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2011-01-23 14:06+0100\n"
-"PO-Revision-Date: 2011-01-05 05:12+0000\n"
-"Last-Translator: Alexey Ivanov <alexey.ivanes@gmail.com>\n"
+"POT-Creation-Date: 2011-01-26 18:05+0100\n"
+"PO-Revision-Date: 2011-06-11 23:06+0000\n"
+"Last-Translator: Suntechnic <Unknown>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2011-01-24 05:10+0000\n"
-"X-Generator: Launchpad (build 12177)\n"
+"X-Launchpad-Export-Date: 2011-06-13 04:49+0000\n"
+"X-Generator: Launchpad (build 13168)\n"
 
-#: ../gnome-activity-journal:83
+#: ../gnome-activity-journal:85
 msgid "print additional debugging information"
 msgstr "Вывести добавочную отладочную информацию"
 
-#: ../gnome-activity-journal:90
+#: ../gnome-activity-journal:92
 msgid "ERROR"
 msgstr "ОШИБКА"
 
-#: ../gnome-activity-journal:90
+#: ../gnome-activity-journal:92
 msgid "Unable to connect to Zeitgeist:"
 msgstr "Не удается подключиться к Zeitgeist:"
 
-#: ../src/supporting_widgets.py:181
-msgid "Go to Today"
-msgstr "Перейти к сегодняшнему дню"
-
-#: ../src/supporting_widgets.py:183
-msgid "Go to the previous day "
-msgstr ""
-
-#: ../src/supporting_widgets.py:183
-msgid "Go to the next day"
-msgstr ""
-
-#: ../src/supporting_widgets.py:515
-msgid "Type here to search..."
-msgstr "Найти..."
-
-#: ../src/supporting_widgets.py:701
-msgid "<b>Playing...</b>"
-msgstr ""
-
-#: ../src/supporting_widgets.py:815 ../src/supporting_widgets.py:825
-#: ../src/supporting_widgets.py:1406
-msgid "Preferences"
-msgstr "Параметры"
-
-#: ../src/supporting_widgets.py:824
-msgid "About"
-msgstr ""
-
-#: ../src/supporting_widgets.py:907 ../src/activity_widgets.py:551
-msgid "Remove Pin"
-msgstr "Удалить контакт"
-
-#: ../src/supporting_widgets.py:908 ../src/supporting_widgets.py:1279
-msgid "Add Pin"
-msgstr "Добавить контакт"
-
-#: ../src/supporting_widgets.py:909
-msgid "Delete item from Journal"
-msgstr "Удалить элемент из журнала"
-
-#: ../src/supporting_widgets.py:910
-msgid "Delete all events with this URI"
-msgstr "Удалить все события с этим идентификатором ресурса"
-
-#: ../src/supporting_widgets.py:911
-msgid "More Information"
-msgstr "Больше информации"
-
-#: ../src/supporting_widgets.py:923
-msgid "Send To..."
-msgstr "Отправить..."
-
-#: ../src/supporting_widgets.py:1191
-msgid "Used With"
-msgstr ""
-
-#: ../src/supporting_widgets.py:1274
-msgid "Launch this subject"
-msgstr "Запустить объект"
-
-#: ../src/supporting_widgets.py:1276
-msgid "Delete this subject"
-msgstr "Удалить эту тему"
-
-#: ../src/supporting_widgets.py:1416
-msgid "Active Plugins:"
-msgstr "Активные Плагины:"
-
-#: ../src/supporting_widgets.py:1424
-msgid "Plugins"
-msgstr "Дополнения"
-
-#: ../src/supporting_widgets.py:1429
-msgid "Show icon in system tray"
-msgstr ""
-
-#: ../src/supporting_widgets.py:1436
-msgid "Configuration"
-msgstr ""
-
-#: ../src/main.py:139
-msgid "<span size=\"larger\"><b>Loading Journal...</b></span>"
-msgstr ""
-
-#: ../src/main.py:300
+#: ../src/supporting_widgets.py:83 ../src/main.py:304
 msgid "Today"
 msgstr "Сегодня"
 
-#: ../src/main.py:303
+#: ../src/supporting_widgets.py:86 ../src/main.py:307
 msgid "Yesterday"
 msgstr "Вчера"
 
-#: ../src/main.py:314
-#, python-format
-msgid "%s to %s"
+#: ../src/supporting_widgets.py:186
+msgid "Go to Today"
+msgstr "Перейти к сегодняшнему дню"
+
+#: ../src/supporting_widgets.py:188
+msgid "Go to the previous day "
+msgstr "Перейти к предыдущему дню "
+
+#: ../src/supporting_widgets.py:188
+msgid "Go to the next day"
+msgstr "Перейти к следующему дню"
+
+#: ../src/supporting_widgets.py:520
+msgid "Type here to search..."
+msgstr "Напишите здесь, чтоб начать поиск"
+
+#: ../src/supporting_widgets.py:706
+msgid "<b>Playing...</b>"
+msgstr "<b>Проигрывается...</b>"
+
+#: ../src/supporting_widgets.py:820 ../src/supporting_widgets.py:830
+#: ../src/supporting_widgets.py:1421
+msgid "Preferences"
+msgstr "Параметры"
+
+#: ../src/supporting_widgets.py:829
+msgid "About"
+msgstr "О программе"
+
+#: ../src/supporting_widgets.py:912 ../src/activity_widgets.py:551
+msgid "Remove Pin"
+msgstr "Удалить контакт"
+
+#: ../src/supporting_widgets.py:913 ../src/supporting_widgets.py:1287
+msgid "Add Pin"
+msgstr "Добавить контакт"
+
+#: ../src/supporting_widgets.py:914
+msgid "Delete item from Journal"
+msgstr "Удалить элемент из журнала"
+
+#: ../src/supporting_widgets.py:915
+msgid "Delete all events with this URI"
+msgstr "Удалить все события с этим идентификатором ресурса"
+
+#: ../src/supporting_widgets.py:916 ../src/supporting_widgets.py:1355
+msgid "More Information"
+msgstr "Дополнительная информация"
+
+#: ../src/supporting_widgets.py:928
+msgid "Send To..."
+msgstr "Отправить..."
+
+#: ../src/supporting_widgets.py:1198
+msgid "Used With"
 msgstr ""
 
-#: ../src/main.py:314 ../extra/gnome-activity-journal.desktop.in.h:1
+#: ../src/supporting_widgets.py:1282
+msgid "Launch this subject"
+msgstr "Запустить объект"
+
+#: ../src/supporting_widgets.py:1284
+msgid "Delete this subject"
+msgstr "Удалить эту тему"
+
+#: ../src/supporting_widgets.py:1431
+msgid "Active Plugins:"
+msgstr "Активные дополнения:"
+
+#: ../src/supporting_widgets.py:1439
+msgid "Plugins"
+msgstr "Дополнения"
+
+#: ../src/supporting_widgets.py:1444
+msgid "Show icon in system tray"
+msgstr "Показать иконку в области уведомлений"
+
+#: ../src/supporting_widgets.py:1451
+msgid "Configuration"
+msgstr "Настройка"
+
+#: ../src/main.py:143
+msgid "<span size=\"larger\"><b>Loading Journal...</b></span>"
+msgstr "<span size=\"larger\"><b>Загрузка журнала...</b></span>"
+
+#: ../src/main.py:318
+#, python-format
+msgid "%s to %s"
+msgstr "из %s в %s"
+
+#: ../src/main.py:318 ../extra/gnome-activity-journal.desktop.in.h:1
 msgid "Activity Journal"
 msgstr "Журнал активности"
 
@@ -155,7 +155,7 @@ msgstr "Не в сети"
 
 #: ../src/content_objects.py:581
 msgid "Away"
-msgstr "Отсутствую"
+msgstr "Отошёл"
 
 #: ../src/content_objects.py:582
 msgid "Busy"
@@ -172,13 +172,15 @@ msgstr "Учёт времени"
 
 #: ../src/content_objects.py:737 ../src/content_objects.py:739
 msgid "{source._desc_sing} from {event.subjects[0].text}"
-msgstr ""
+msgstr "{source._desc_sing} из {event.subjects[0].text}"
 
 #: ../src/content_objects.py:738
 msgid ""
 "{source._desc_sing} from {event.subjects[0].text}\n"
 "{event.subjects[0].uri}"
 msgstr ""
+"{source._desc_sing} из {event.subjects[0].text}\n"
+"{event.subjects[0].uri}"
 
 #: ../src/content_objects.py:742
 #, python-format
@@ -187,13 +189,13 @@ msgstr " (%s вложения)"
 
 #: ../src/content_objects.py:766
 msgid "{event.subjects[0].text}"
-msgstr ""
+msgstr "{event.subjects[0].text}"
 
 #: ../src/content_objects.py:767 ../src/content_objects.py:768
 msgid ""
 "Note\n"
 "{event.subjects[0].text}"
-msgstr ""
+msgstr "Заметка"
 
 #: ../src/content_objects.py:786
 msgid "{source._desc_sing} {event.subjects[0].text}"
@@ -213,123 +215,123 @@ msgstr[1] "элемента"
 msgstr[2] "элементов"
 
 #. TODO: Move this into Zeitgeist's library, implemented properly
-#: ../src/config.py:237
+#: ../src/config.py:238
 msgid "Worked with a Video"
-msgstr ""
-
-#: ../src/config.py:237
-msgid "Worked with Videos"
-msgstr ""
+msgstr "Работа с видео"
 
 #: ../src/config.py:238
+msgid "Worked with Videos"
+msgstr "Работа с видео"
+
+#: ../src/config.py:239
 msgid "Worked with Audio"
-msgstr ""
-
-#: ../src/config.py:239
-msgid "Worked with an Image"
-msgstr ""
-
-#: ../src/config.py:239
-msgid "Worked with Images"
-msgstr ""
+msgstr "Работа с аудио"
 
 #: ../src/config.py:240
+msgid "Worked with an Image"
+msgstr "Работа с изображением"
+
+#: ../src/config.py:240
+msgid "Worked with Images"
+msgstr "Работа с изображениями"
+
+#: ../src/config.py:241
 msgid "Edited or Read Document"
 msgstr "Изменённый или прочитанный документ"
 
-#: ../src/config.py:240
+#: ../src/config.py:241
 msgid "Edited or Read Documents"
 msgstr "Ред. или Чтение документов"
 
-#: ../src/config.py:241
+#: ../src/config.py:242
 msgid "Edited or Read Code"
 msgstr "Изменённый или прочитанный код"
 
-#: ../src/config.py:242
+#: ../src/config.py:243
 msgid "Conversation"
 msgstr "Беседа"
 
-#: ../src/config.py:242
+#: ../src/config.py:243
 msgid "Conversations"
 msgstr "Беседы"
 
-#: ../src/config.py:243
+#: ../src/config.py:244
 msgid "Visited Website"
 msgstr "Посетили веб-сайт"
 
-#: ../src/config.py:243
+#: ../src/config.py:244
 msgid "Visited Websites"
 msgstr "Посещенные веб-сайты"
 
-#: ../src/config.py:244 ../src/common.py:150
+#: ../src/config.py:245 ../src/common.py:151
 msgid "Email"
 msgstr "Электронная почта"
 
-#: ../src/config.py:244
+#: ../src/config.py:245
 msgid "Emails"
 msgstr "Письма"
 
-#: ../src/config.py:245
+#: ../src/config.py:246
 msgid "Todo"
-msgstr ""
-
-#: ../src/config.py:245
-msgid "Todos"
-msgstr ""
+msgstr "Задача"
 
 #: ../src/config.py:246
+msgid "Todos"
+msgstr "Задачи"
+
+#: ../src/config.py:247
 msgid "Other Activity"
 msgstr "Другая активность"
 
-#: ../src/config.py:246
-msgid "Other Activities"
-msgstr "Другие действия"
-
 #: ../src/config.py:247
+msgid "Other Activities"
+msgstr "Другая активность"
+
+#: ../src/config.py:248
 msgid "Edited or Read Note"
 msgstr "Изменённая или прочитанная текстовая заметка"
 
-#: ../src/config.py:247
+#: ../src/config.py:248
 msgid "Edited or Read Notes"
 msgstr "Изменённые или прочитанные текстовые заметки"
 
-#: ../src/config.py:248
+#: ../src/config.py:249
 msgid "Software Development"
-msgstr ""
+msgstr "Разработка ПО"
 
-#: ../src/config.py:248
+#: ../src/config.py:249
 msgid "Software Developments"
-msgstr ""
+msgstr "Разработка ПО"
 
 #: ../src/Indicator.py:87
 msgid "Hide/Show GAJ"
-msgstr ""
+msgstr "Скрыть/Показать журнал активности"
 
-#: ../src/common.py:143
+#: ../src/common.py:144
 msgid "Video"
 msgstr "Видео"
 
-#: ../src/common.py:144
+#: ../src/common.py:145
 msgid "Music"
 msgstr "Музыка"
 
-#: ../src/common.py:145
+#: ../src/common.py:146
 msgid "Document"
 msgstr "Документ"
 
-#: ../src/common.py:146
+#: ../src/common.py:147
 msgid "Image"
 msgstr "Изображение"
 
-#: ../src/common.py:147
+#: ../src/common.py:148
 msgid "Source Code"
 msgstr "Исходный код"
 
-#: ../src/common.py:148
+#: ../src/common.py:149
 msgid "Unknown"
 msgstr "Неизвестно"
 
-#: ../src/common.py:149
+#: ../src/common.py:150
 msgid "IM Message"
 msgstr "Мгновенное сообщение"
 
@@ -338,25 +340,25 @@ msgstr "Мгновенное сообщение"
 #. changing the categories entirely (eg. "Work", "Lunch time", etc.).
 #. For this get_day_parts and other methods should take a timestamp of
 #. the relevant day so they can account for weekends not having "Work", etc.
-#: ../src/common.py:927
+#: ../src/common.py:936
 msgid "Morning"
 msgstr "Утро"
 
-#: ../src/common.py:927
+#: ../src/common.py:936
 msgid "Afternoon"
 msgstr "День"
 
-#: ../src/common.py:927
+#: ../src/common.py:936
 msgid "Evening"
 msgstr "Вечер"
 
-#: ../src/activity_widgets.py:113
+#: ../src/activity_widgets.py:116
 msgid "Switch to MultiView"
 msgstr "Показать общий вид"
 
 #: ../src/activity_widgets.py:627
 msgid "<b>Name: </b>"
-msgstr ""
+msgstr "<b>Имя: </b>"
 
 #: ../src/activity_widgets.py:631
 #, python-format
@@ -364,6 +366,8 @@ msgid ""
 "\n"
 "<b>MIME Type:</b> %s (%s)"
 msgstr ""
+"\n"
+"<b>MIME тип:</b> %s (%s)"
 
 #: ../src/activity_widgets.py:689
 msgid "Switch to ThumbView"
@@ -382,8 +386,7 @@ msgid ""
 "Browse a chronological log of your activities and easily find files, "
 "contacts, etc."
 msgstr ""
-"Хронологический журнал вашей деятельности и лёгкое нахождение файлов, "
-"контактов и т.п."
+"Хронология вашей активности и лёгкое нахождение файлов, контактов и т.п."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:1
 msgid "Accessibility"
@@ -420,13 +423,16 @@ msgstr "Количество дней, которое будет отображ�
 #: ../extra/gnome-activity-journal.schemas.in.h:7
 msgid ""
 "Whether special accessibility options should be enabled (requires restart)."
-msgstr ""
+msgstr "Включить специальные опции доступа (требуется перезагрузка)."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:8
 msgid ""
 "Whether to allow showing little thumbnails next to each activity (requires "
 "restart). If False, only generic mime-type icons will be used."
 msgstr ""
+"Разрешить отображения иконок к каждому типу активности (требуется "
+"перезагрузка). В противном случае будут использоваться только иконки типа "
+"MIME."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:9
 msgid "Window height"

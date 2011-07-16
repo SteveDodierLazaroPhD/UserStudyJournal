@@ -7,128 +7,128 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-activity-journal\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2011-01-23 14:06+0100\n"
-"PO-Revision-Date: 2010-04-13 04:19+0000\n"
-"Last-Translator: GNOME Zeitgeist Team <gnome-zeitgeist@lists.launchpad.net>\n"
+"POT-Creation-Date: 2011-01-26 18:05+0100\n"
+"PO-Revision-Date: 2011-04-18 15:44+0000\n"
+"Last-Translator: Konki <pavel.konkol@seznam.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2011-01-24 05:09+0000\n"
-"X-Generator: Launchpad (build 12177)\n"
+"X-Launchpad-Export-Date: 2011-04-19 05:18+0000\n"
+"X-Generator: Launchpad (build 12758)\n"
 
-#: ../gnome-activity-journal:83
+#: ../gnome-activity-journal:85
 msgid "print additional debugging information"
 msgstr "vytisknout dodatečné ladící informace"
 
-#: ../gnome-activity-journal:90
+#: ../gnome-activity-journal:92
 msgid "ERROR"
 msgstr "CHYBA"
 
-#: ../gnome-activity-journal:90
+#: ../gnome-activity-journal:92
 msgid "Unable to connect to Zeitgeist:"
 msgstr "Nelze se připojit k Zeitgeist:"
 
-#: ../src/supporting_widgets.py:181
-msgid "Go to Today"
-msgstr ""
-
-#: ../src/supporting_widgets.py:183
-msgid "Go to the previous day "
-msgstr ""
-
-#: ../src/supporting_widgets.py:183
-msgid "Go to the next day"
-msgstr ""
-
-#: ../src/supporting_widgets.py:515
-msgid "Type here to search..."
-msgstr "Piště zde pro vyhledávání..."
-
-#: ../src/supporting_widgets.py:701
-msgid "<b>Playing...</b>"
-msgstr ""
-
-#: ../src/supporting_widgets.py:815 ../src/supporting_widgets.py:825
-#: ../src/supporting_widgets.py:1406
-msgid "Preferences"
-msgstr ""
-
-#: ../src/supporting_widgets.py:824
-msgid "About"
-msgstr ""
-
-#: ../src/supporting_widgets.py:907 ../src/activity_widgets.py:551
-msgid "Remove Pin"
-msgstr "Odstranit špendlík"
-
-#: ../src/supporting_widgets.py:908 ../src/supporting_widgets.py:1279
-msgid "Add Pin"
-msgstr ""
-
-#: ../src/supporting_widgets.py:909
-msgid "Delete item from Journal"
-msgstr "Odstranit položku z deníku"
-
-#: ../src/supporting_widgets.py:910
-msgid "Delete all events with this URI"
-msgstr ""
-
-#: ../src/supporting_widgets.py:911
-msgid "More Information"
-msgstr ""
-
-#: ../src/supporting_widgets.py:923
-msgid "Send To..."
-msgstr ""
-
-#: ../src/supporting_widgets.py:1191
-msgid "Used With"
-msgstr ""
-
-#: ../src/supporting_widgets.py:1274
-msgid "Launch this subject"
-msgstr ""
-
-#: ../src/supporting_widgets.py:1276
-msgid "Delete this subject"
-msgstr ""
-
-#: ../src/supporting_widgets.py:1416
-msgid "Active Plugins:"
-msgstr ""
-
-#: ../src/supporting_widgets.py:1424
-msgid "Plugins"
-msgstr ""
-
-#: ../src/supporting_widgets.py:1429
-msgid "Show icon in system tray"
-msgstr ""
-
-#: ../src/supporting_widgets.py:1436
-msgid "Configuration"
-msgstr ""
-
-#: ../src/main.py:139
-msgid "<span size=\"larger\"><b>Loading Journal...</b></span>"
-msgstr ""
-
-#: ../src/main.py:300
+#: ../src/supporting_widgets.py:83 ../src/main.py:304
 msgid "Today"
 msgstr "Dnes"
 
-#: ../src/main.py:303
+#: ../src/supporting_widgets.py:86 ../src/main.py:307
 msgid "Yesterday"
 msgstr "Včera"
 
-#: ../src/main.py:314
+#: ../src/supporting_widgets.py:186
+msgid "Go to Today"
+msgstr ""
+
+#: ../src/supporting_widgets.py:188
+msgid "Go to the previous day "
+msgstr ""
+
+#: ../src/supporting_widgets.py:188
+msgid "Go to the next day"
+msgstr ""
+
+#: ../src/supporting_widgets.py:520
+msgid "Type here to search..."
+msgstr "Piště zde pro vyhledávání..."
+
+#: ../src/supporting_widgets.py:706
+msgid "<b>Playing...</b>"
+msgstr ""
+
+#: ../src/supporting_widgets.py:820 ../src/supporting_widgets.py:830
+#: ../src/supporting_widgets.py:1421
+msgid "Preferences"
+msgstr ""
+
+#: ../src/supporting_widgets.py:829
+msgid "About"
+msgstr ""
+
+#: ../src/supporting_widgets.py:912 ../src/activity_widgets.py:551
+msgid "Remove Pin"
+msgstr "Odstranit špendlík"
+
+#: ../src/supporting_widgets.py:913 ../src/supporting_widgets.py:1287
+msgid "Add Pin"
+msgstr ""
+
+#: ../src/supporting_widgets.py:914
+msgid "Delete item from Journal"
+msgstr "Odstranit položku z deníku"
+
+#: ../src/supporting_widgets.py:915
+msgid "Delete all events with this URI"
+msgstr ""
+
+#: ../src/supporting_widgets.py:916 ../src/supporting_widgets.py:1355
+msgid "More Information"
+msgstr "Více informací"
+
+#: ../src/supporting_widgets.py:928
+msgid "Send To..."
+msgstr "Odeslat..."
+
+#: ../src/supporting_widgets.py:1198
+msgid "Used With"
+msgstr ""
+
+#: ../src/supporting_widgets.py:1282
+msgid "Launch this subject"
+msgstr ""
+
+#: ../src/supporting_widgets.py:1284
+msgid "Delete this subject"
+msgstr ""
+
+#: ../src/supporting_widgets.py:1431
+msgid "Active Plugins:"
+msgstr ""
+
+#: ../src/supporting_widgets.py:1439
+msgid "Plugins"
+msgstr ""
+
+#: ../src/supporting_widgets.py:1444
+msgid "Show icon in system tray"
+msgstr ""
+
+#: ../src/supporting_widgets.py:1451
+msgid "Configuration"
+msgstr ""
+
+#: ../src/main.py:143
+msgid "<span size=\"larger\"><b>Loading Journal...</b></span>"
+msgstr ""
+
+#: ../src/main.py:318
 #, python-format
 msgid "%s to %s"
 msgstr "%s do %s"
 
-#: ../src/main.py:314 ../extra/gnome-activity-journal.desktop.in.h:1
+#: ../src/main.py:318 ../extra/gnome-activity-journal.desktop.in.h:1
 msgid "Activity Journal"
 msgstr "Deník aktivit"
 
@@ -161,7 +161,7 @@ msgstr ""
 #: ../src/content_objects.py:614 ../src/content_objects.py:619
 #: ../src/content_objects.py:624
 msgid "with"
-msgstr ""
+msgstr "s"
 
 #: ../src/content_objects.py:663
 msgid "Time Tracker"
@@ -210,91 +210,91 @@ msgstr[1] "položky"
 msgstr[2] "položek"
 
 #. TODO: Move this into Zeitgeist's library, implemented properly
-#: ../src/config.py:237
+#: ../src/config.py:238
 msgid "Worked with a Video"
 msgstr "Práce s videem"
 
-#: ../src/config.py:237
+#: ../src/config.py:238
 msgid "Worked with Videos"
 msgstr "Práce s videi"
 
-#: ../src/config.py:238
+#: ../src/config.py:239
 msgid "Worked with Audio"
 msgstr "Práce se zvukem"
 
-#: ../src/config.py:239
+#: ../src/config.py:240
 msgid "Worked with an Image"
 msgstr "Práce s obrázkem"
 
-#: ../src/config.py:239
+#: ../src/config.py:240
 msgid "Worked with Images"
 msgstr "Práce s obrázky"
 
-#: ../src/config.py:240
+#: ../src/config.py:241
 msgid "Edited or Read Document"
 msgstr "Úprava či přečtení dokumentu"
 
-#: ../src/config.py:240
+#: ../src/config.py:241
 msgid "Edited or Read Documents"
 msgstr "Úprava či čtení dokumentů"
 
-#: ../src/config.py:241
+#: ../src/config.py:242
 msgid "Edited or Read Code"
 msgstr "Úprava či čtení kódu"
 
-#: ../src/config.py:242
+#: ../src/config.py:243
 msgid "Conversation"
 msgstr ""
 
-#: ../src/config.py:242
+#: ../src/config.py:243
 msgid "Conversations"
 msgstr ""
 
-#: ../src/config.py:243
+#: ../src/config.py:244
 msgid "Visited Website"
 msgstr ""
 
-#: ../src/config.py:243
+#: ../src/config.py:244
 msgid "Visited Websites"
 msgstr ""
 
-#: ../src/config.py:244 ../src/common.py:150
+#: ../src/config.py:245 ../src/common.py:151
 msgid "Email"
-msgstr ""
+msgstr "Email"
 
-#: ../src/config.py:244
+#: ../src/config.py:245
 msgid "Emails"
 msgstr ""
 
-#: ../src/config.py:245
+#: ../src/config.py:246
 msgid "Todo"
 msgstr ""
 
-#: ../src/config.py:245
+#: ../src/config.py:246
 msgid "Todos"
 msgstr ""
 
-#: ../src/config.py:246
+#: ../src/config.py:247
 msgid "Other Activity"
 msgstr "Jiná aktivita"
 
-#: ../src/config.py:246
+#: ../src/config.py:247
 msgid "Other Activities"
 msgstr "Jiné aktivity"
 
-#: ../src/config.py:247
+#: ../src/config.py:248
 msgid "Edited or Read Note"
 msgstr ""
 
-#: ../src/config.py:247
+#: ../src/config.py:248
 msgid "Edited or Read Notes"
 msgstr ""
 
-#: ../src/config.py:248
+#: ../src/config.py:249
 msgid "Software Development"
 msgstr ""
 
-#: ../src/config.py:248
+#: ../src/config.py:249
 msgid "Software Developments"
 msgstr ""
 
@@ -302,52 +302,52 @@ msgstr ""
 msgid "Hide/Show GAJ"
 msgstr ""
 
-#: ../src/common.py:143
+#: ../src/common.py:144
 msgid "Video"
 msgstr "Video"
 
-#: ../src/common.py:144
+#: ../src/common.py:145
 msgid "Music"
 msgstr "Hudba"
 
-#: ../src/common.py:145
+#: ../src/common.py:146
 msgid "Document"
 msgstr "Dokument"
 
-#: ../src/common.py:146
+#: ../src/common.py:147
 msgid "Image"
 msgstr "Obrázek"
 
-#: ../src/common.py:147
+#: ../src/common.py:148
 msgid "Source Code"
 msgstr "Zdrojový kód"
 
-#: ../src/common.py:148
+#: ../src/common.py:149
 msgid "Unknown"
 msgstr "Neznámé"
 
-#: ../src/common.py:149
+#: ../src/common.py:150
 msgid "IM Message"
-msgstr ""
+msgstr "IM zpráva"
 
 #. TODO: In a future, I'd be cool to make the day partitions configurable.
 #. This includes redefining what Morning/Afternoon/etc. are, but also
 #. changing the categories entirely (eg. "Work", "Lunch time", etc.).
 #. For this get_day_parts and other methods should take a timestamp of
 #. the relevant day so they can account for weekends not having "Work", etc.
-#: ../src/common.py:927
+#: ../src/common.py:936
 msgid "Morning"
 msgstr "Ráno"
 
-#: ../src/common.py:927
+#: ../src/common.py:936
 msgid "Afternoon"
 msgstr "Odpoledne"
 
-#: ../src/common.py:927
+#: ../src/common.py:936
 msgid "Evening"
 msgstr "Večer"
 
-#: ../src/activity_widgets.py:113
+#: ../src/activity_widgets.py:116
 msgid "Switch to MultiView"
 msgstr ""
 
@@ -384,7 +384,7 @@ msgstr ""
 
 #: ../extra/gnome-activity-journal.schemas.in.h:1
 msgid "Accessibility"
-msgstr "Přístupnost"
+msgstr "Dostupnost"
 
 #: ../extra/gnome-activity-journal.schemas.in.h:2
 msgid "Allow thumbnails as icons"
@@ -412,7 +412,7 @@ msgstr ""
 
 #: ../extra/gnome-activity-journal.schemas.in.h:6
 msgid "The amount of days to show at once."
-msgstr "Množství dní zobrazované v jednom."
+msgstr "Množství dní zobrazovaných najednou."
 
 #: ../extra/gnome-activity-journal.schemas.in.h:7
 msgid ""
