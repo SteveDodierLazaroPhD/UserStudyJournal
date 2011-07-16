@@ -544,7 +544,7 @@ def create_text_thumb(gio_file, size=None, threshold=2):
     content = "\n".join(gio_file.get_content().split("\n")[:20])
     try:
         content = highlight(content, lexer, formatter)
-    except UnicodeDecodeError:
+    except (UnicodeDecodeError, TypeError):
         # we can't create the pixbuf
         return None
     thumb.write(content)
