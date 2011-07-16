@@ -1,11 +1,18 @@
-2011-X-X: GNOME Activity Journal 0.8.0 ""
+2011-7-X: GNOME Activity Journal 0.8.0 ""
 -----------------------------------------
 
+ - Updated blacklist functionality for Zeitgeist 0.8.0.
+ - Added an incognito mode option to the tray icon.
+ - Added different zoom levels to ThumbView and TimelineView.
+ - Added an erase mode to easily delete many events.
+ - Improved handling of the extension not being available (LP: #638217).
+ - Added support for file annotation meta-data (LP: #715910).
  - Don't show application launch events nor fake events generated
    by Activity Log Manager.
- - Update blacklist functionality for Zeitgeist 0.8.0.
+ - Fixed blacklist template deletion (LP: #643795).
+ - Several other minor tweaks (better netbook screen support, etc).
 
-2011-1-23: GNOME Activity Journal 0.6.0 "Pink Unicorns don't exist"
+2011-1-26: GNOME Activity Journal 0.6.0 "Pink Unicorns don't exist"
 -------------------------------------------------------------------
 * General New features
  - Added drag and drop support to the three views (LP: #553385).
