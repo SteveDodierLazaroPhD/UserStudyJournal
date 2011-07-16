@@ -886,7 +886,10 @@ class GioFile(object):
                         if filter(lambda name: "application-vnd.oasis.opendocument" in name, self.icon_names):
                             thumb = create_opendocument_thumb(self._file_object.get_path())
                         elif "text-x-generic" in self.icon_names or "text-x-script" in self.icon_names:
-                            thumb = create_text_thumb(self, size, 1)
+                            try:
+                                thumb = create_text_thumb(self, size, 1)
+                            except Exception:
+                                thumb = None
                         elif "audio-x-generic" in self.icon_names:
                             pass
                             #FIXME
