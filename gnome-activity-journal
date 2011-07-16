@@ -89,8 +89,8 @@ from src.external import CLIENT, CLIENT_VERSION
 
 if CLIENT_VERSION is None:
     sys.exit(1)
-elif CLIENT_VERSION < [0, 8, 1]:
-    print "You need Zeitgeist 0.8.1 or later for the GNOME Activity Journal to work."
+elif CLIENT_VERSION < [0, 8, 0]:
+    print "You need Zeitgeist 0.8.0 or later for the GNOME Activity Journal to work."
     print "https://launchpad.net/zeitgeist"
     sys.exit(1)
 
