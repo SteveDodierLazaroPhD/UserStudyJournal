@@ -48,7 +48,7 @@ INTERPRETATION_VCS = "aj://vcs" #version control system
 # Installation details
 BASE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 DATA_PATH = os.path.join(BASE_PATH, "data")
-VERSION = "0.6.0"
+VERSION = "0.8.0"
 GETTEXT_PATH = os.path.join(BASE_PATH, "../locale")
 
 USER_DATA_PATH = BaseDirectory.save_data_path("gnome-activity-journal")

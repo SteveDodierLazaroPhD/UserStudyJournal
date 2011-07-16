@@ -1,8 +1,8 @@
-2011-7-X: GNOME Activity Journal 0.8.0 ""
------------------------------------------
+2011-7-16: GNOME Activity Journal 0.8.0 "Sword"
+-----------------------------------------------
 
- - Updated blacklist functionality for Zeitgeist 0.8.0.
  - Added an incognito mode option to the tray icon.
+ - Removed blacklist plugin, replaced by Activity Log Manager.
  - Added different zoom levels to ThumbView and TimelineView.
  - Added an erase mode to easily delete many events.
  - Improved handling of the extension not being available (LP: #790834).
