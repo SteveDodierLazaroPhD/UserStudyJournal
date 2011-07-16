@@ -113,6 +113,8 @@ class Menu(gtk.Menu):
         self.append(self.quit)
 
         self.show_all()
+        
+        BLACKLIST.set_incognito_toggle_callback(self._update_incognito)
         if self._update_incognito() is None:
             self.incognito_enable.hide()
             self.incognito_disable.hide()
@@ -125,10 +127,8 @@ class Menu(gtk.Menu):
                 self.main_window.show()
 
     @ignore_exceptions()
-    def _update_incognito(self, toggle=False):
+    def _update_incognito(self):
         enabled = BLACKLIST.get_incognito()
-        if toggle:
-            enabled = not enabled
         if enabled:
             self.incognito_enable.hide()
             self.incognito_disable.show()
@@ -141,7 +141,7 @@ class Menu(gtk.Menu):
     
     @ignore_exceptions()
     def _toggle_incognito(self, *discard):
-        BLACKLIST.set_incognito(self._update_incognito(toggle=True))
+        BLACKLIST.toggle_incognito()
 
 class TrayIconManager():
 

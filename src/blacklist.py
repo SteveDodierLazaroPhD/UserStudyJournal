@@ -51,8 +51,8 @@ class OldBlacklistInterface:
         templates = self._get_blacklist_templates()
         return any(imap(self.INCOGNITO.matches_template, templates))
 
-    def set_incognito(self, enabled):
-        if enabled:
+    def toggle_incognito(self):
+        if not self.get_incognito():
             self._add_blacklist_template(self.INCOGNITO)
         else:
             self._remove_blacklist_template(self.INCOGNITO)
@@ -60,10 +60,22 @@ class OldBlacklistInterface:
 class NewBlacklistInterface:
 
     INCOGNITO = Event.new_for_values()
-    INCOGNITO_ID = 'incognito'
+    INCOGNITO_ID = 'block-all'
+    
+    _callback = None
 
     def __init__(self):
         self._blacklist = CLIENT._iface.get_extension('Blacklist', 'blacklist')
+        self._blacklist.connect('TemplateAdded', self._on_notification)
+        self._blacklist.connect('TemplateRemoved', self._on_notification)
+
+    def set_incognito_toggle_callback(self, callback):
+        self._callback = callback
+
+    def _on_notification(self, blacklist_id, template):
+        if self.INCOGNITO.matches_template(template):
+            if self._callback is not None:
+                self._callback()
 
     def _get_blacklist_templates(self):
         return self._blacklist.GetTemplates()
@@ -72,14 +84,17 @@ class NewBlacklistInterface:
         self._blacklist.AddTemplate(self.INCOGNITO_ID, self.INCOGNITO)
 
     def _remove_blacklist_template(self, template_id):
+        # FIXME: This should be changed to something that doesn't depend on
+        # INCOGNITO_ID, but just on the INCOGNITO template.
         self._blacklist.RemoveTemplate(self.INCOGNITO_ID)
+        self._blacklist.RemoveTemplate('incognito') # for backwards compatibility
 
     def get_incognito(self):
         templates = self._get_blacklist_templates()
-        return self.INCOGNITO_ID in templates
+        return any(imap(self.INCOGNITO.matches_template, templates.itervalues()))
 
-    def set_incognito(self, enabled):
-        if enabled:
+    def toggle_incognito(self):
+        if not self.get_incognito():
             self._add_blacklist_template(self.INCOGNITO)
         else:
             self._remove_blacklist_template(self.INCOGNITO)
