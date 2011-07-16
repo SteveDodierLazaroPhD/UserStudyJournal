@@ -5,7 +5,7 @@
  - Added an incognito mode option to the tray icon.
  - Added different zoom levels to ThumbView and TimelineView.
  - Added an erase mode to easily delete many events.
- - Improved handling of the extension not being available (LP: #638217).
+ - Improved handling of the extension not being available (LP: #790834).
  - Added support for file annotation meta-data (LP: #715910).
  - Don't show application launch events nor fake events generated
    by Activity Log Manager.
