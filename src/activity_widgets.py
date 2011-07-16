@@ -626,7 +626,7 @@ class Item(gtk.HBox, Draggable):
         text = "<b>" + self.label.get_text() + "</b>\n"
         if isinstance(self.content_obj, GioFile) and \
            self.content_obj.annotation is not None:
-            if self.content_obj.annotation.strip () != "":
+            if self.content_obj.annotation.strip() != "":
                 note = _("Notes")
                 note_text = "<b>%s:</b> %s" % (note, self.content_obj.annotation)
                 text += note_text + "\n"
@@ -657,15 +657,16 @@ class Item(gtk.HBox, Draggable):
         mime_text = _("\n<b>MIME Type:</b> %s (%s)")% (descr, self.content_obj.mime_type)
         text += mime_text + "\n"
         if self.content_obj.annotation is not None:
-            if self.content_obj.annotation.strip () != "":
+            if self.content_obj.annotation.strip() != "":
                 note = _("Notes")
                 note_text = "<b>%s:</b> %s" % (note, self.content_obj.annotation)
-                text += note_text + "\n\n"
-                truncate_lenght = max (len(mime_text), len(note_text))
-            else: truncate_lenght = len(mime_text)
+                text += note_text + "\n"
+                truncate_lenght = max(len(mime_text), len(note_text))
+            else:
+                truncate_lenght = len(mime_text)
         else: 
-            text += "\n"
             truncate_lenght = len(mime_text)
+        text += "\n"
         if uri.startswith("file://"):
             uri = self.truncate_string(uri[7:], truncate_lenght)
             text += unicode(uri)
