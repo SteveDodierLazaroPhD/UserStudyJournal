@@ -50,7 +50,6 @@ class BlacklistManager(object):
             if template.matches_template(new_template):
                 templates.remove(template)
                 return self.iface.SetBlacklist(templates)
-        raise ValueError()
 
     def delete_events_matching_blacklist(self):
         raise NotImplementedError("This function is not available yet")

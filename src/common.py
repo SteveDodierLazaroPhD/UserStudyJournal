@@ -971,6 +971,8 @@ class GioFile(object):
                     if info is None:
                         continue
                     location = info.get_filename()
+                    if not location:
+                        continue # (LP: #722227)
                     icon = gtk.gdk.pixbuf_new_from_file_at_size(location, size, size)
                     if icon:
                         break
