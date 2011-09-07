@@ -408,7 +408,11 @@ class Store(gobject.GObject):
         global currentTimestamp, histogramLoaderCounter
         today = datetime.date.today()
         currentTimestamp = time.mktime(today.timetuple())
-        days_population = CLIENT_EXTENSION.GetHistogramData()
+        try:
+            days_population = CLIENT_EXTENSION.GetHistogramData()
+        except:
+            from zeitgeist.client import ZeitgeistDBusInterface
+            days_population = ZeitgeistDBusInterface().get_extension("Histogram", "journal/activity").GetHistogramData()
         for i in xrange(50 * 6):
             date = datetime.date.fromtimestamp(currentTimestamp)
             day = Day(date, days_population)
