@@ -41,7 +41,10 @@ class ClientExtension(object):
     _restarted = False
 
     def __init__(self):
-        self._extension = CLIENT._iface.get_extension("Log", "journal/activity")
+        if CLIENT.get_version() >= [0, 8, 99]:
+            self._extension = CLIENT._iface.get_extension("Histogram", "journal/activity")
+        else:
+            self._extension = CLIENT._iface.get_extension("Log", "journal/activity")
 
     def _show_error(self):
         dialog = gtk.MessageDialog(

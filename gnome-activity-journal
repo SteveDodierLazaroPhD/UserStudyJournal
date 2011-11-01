@@ -62,7 +62,7 @@ try:
 except ImportError, e:
     print "-" * 60
     print "ERROR: %s." % e.message
-    print "Did you remember to fetch the 'lp:zeitgeist' and 'lp:fungtk' repositories?"
+    print "The public Python API for Zeitgeist was not found."
     print
     print "Please see the README file for more information, or contact us"
     print "in IRC channel #zeitgeist on Freenode (irc.freenode.net)."
