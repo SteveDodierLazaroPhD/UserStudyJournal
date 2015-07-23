@@ -233,6 +233,74 @@ class PluginManager(object):
 # Singletons and constants
 bookmarker = Bookmarker()
 
+# Event interpretations
+CLIPBOARD_COPY = "http://www.zeitgeist-project.com/ontologies/2010/01/27/zg#ClipboardCopy";
+CLIPBOARD_COPY2 = "activity://gui-toolkit/gtk2/Clipboard/Copy";
+CLIPBOARD_COPY3 = "activity://gui-toolkit/gtk3/Clipboard/Copy";
+CLIPBOARD_PASTE2 = "activity://gui-toolkit/gtk2/Clipboard/Paste";
+CLIPBOARD_PASTE3 = "activity://gui-toolkit/gtk3/Clipboard/Paste";
+FILE_ACCESS2 = "activity://gui-toolkit/gtk2/FileChooser/FileAccess"
+FILE_CREATE2 = "activity://gui-toolkit/gtk2/FileChooser/FileCreate"
+FILE_MODIFY2 = "activity://gui-toolkit/gtk2/FileChooser/FileModify"
+FILE_GTK_BTN_SET2 = "activity://gui-toolkit/gtk2/FileChooserButton/FileSet"
+RECENT_FILE_ACCESS2 = "activity://gui-toolkit/gtk2/RecentFile/FileAccess"
+FILE_ACCESS3 = "activity://gui-toolkit/gtk3/FileChooser/FileAccess"
+FILE_CREATE3 = "activity://gui-toolkit/gtk3/FileChooser/FileCreate"
+FILE_MODIFY3 = "activity://gui-toolkit/gtk3/FileChooser/FileModify"
+FILE_GTK_BTN_SET3 = "activity://gui-toolkit/gtk3/FileChooserButton/FileSet"
+RECENT_FILE_ACCESS3 = "activity://gui-toolkit/gtk3/RecentFile/FileAccess"
+WINDOW_OPEN_UNITY = "activity://window-manager/unity/WindowOpen"
+APP_LAUNCH_GLIB = "activity://gui-toolkit/glib/AppAccess"
+APP_LAUNCH_NAUTILUS = "activity://file-manager/nautilus/AppAccess"
+FILE_COPY = "http://www.zeitgeist-project.com/ontologies/2010/01/27/zg#CopyEvent"
+FILE_LINK = "http://www.zeitgeist-project.com/ontologies/2010/01/27/zg#LinkEvent"
+WEB_ACCESS = "activity://web-browser/chromium/WebAccessEvent"
+WEB_LEAVE = "activity://web-browser/chromium/WebLeaveEvent"
+WEB_DL = "activity://web-browser/chromium/WebDownloadEvent"
+WEB_TABS = "activity://web-browser/chromium/OpenWindowsInterval"
+UNITY_IDLE_EVENT                     = "activity://session-manager/unity/PresenceAPI"
+UNITY_WINDOW_TITLE_CHANGE_EVENT      = "activity://window-manager/unity/WindowTitleChange"
+UNITY_WINDOW_OPEN_EVENT              = "activity://window-manager/unity/WindowOpen"
+UNITY_WINDOW_CLOSED_EVENT            = "activity://window-manager/unity/WindowClosed"
+UNITY_APP_CRASHED_EVENT              = "activity://window-manager/unity/AppCrashed"
+UNITY_ACTIVE_WINDOWS_EVENT           = "activity://window-manager/unity/ActiveWindows"
+UNITY_MANIFESTATION_WINDOW_MANAGER   = "activity://window-manager/unity/WindowManagerManifestation"
+  
+
+UCL_INTERPRETATIONS = {
+  'copy': CLIPBOARD_COPY,
+  'copy2': CLIPBOARD_COPY2,
+  'copy3': CLIPBOARD_COPY3,
+  'paste2': CLIPBOARD_PASTE2,
+  'paste3': CLIPBOARD_PASTE3,
+  'file-access2': FILE_ACCESS2,
+  'file-create2': FILE_CREATE2,
+  'file-modify2': FILE_MODIFY2,
+  'file-set2': FILE_GTK_BTN_SET2,
+  'recent-file-access2': RECENT_FILE_ACCESS2,
+  'file-access3': FILE_ACCESS3,
+  'file-create3': FILE_CREATE3,
+  'file-modify3': FILE_MODIFY3,
+  'file-set3': FILE_GTK_BTN_SET3,
+  'recent-file-access3': RECENT_FILE_ACCESS3,
+  'app-launch': APP_LAUNCH_GLIB,
+  'app-launch-n': APP_LAUNCH_NAUTILUS,
+  'window-open': WINDOW_OPEN_UNITY,
+  'file-copy': FILE_COPY,
+  'file-link': FILE_LINK,
+  'web-access': WEB_ACCESS,
+  'web-leave': WEB_LEAVE,
+  'web-dl': WEB_DL,
+  'web-tabs': WEB_TABS,
+  'unity-idle': UNITY_IDLE_EVENT,
+  'unity-title': UNITY_WINDOW_TITLE_CHANGE_EVENT,
+  'unity-open': UNITY_WINDOW_OPEN_EVENT,
+  'unity-closed': UNITY_WINDOW_CLOSED_EVENT,
+  'unity-crash': UNITY_APP_CRASHED_EVENT,
+  'unity-active': UNITY_ACTIVE_WINDOWS_EVENT,
+}
+
+# Subject interpretations
 SUPPORTED_SOURCES = {
     # TODO: Move this into Zeitgeist's library, implemented properly
     Interpretation.VIDEO.uri: Source(Interpretation.VIDEO, "gnome-mime-video", _("Worked with a Video"), _("Worked with Videos")),
@@ -246,5 +314,28 @@ SUPPORTED_SOURCES = {
     Interpretation.TODO.uri: Source(Interpretation.TODO, "applications-office", _("Todo"), _("Todos")),
     INTERPRETATION_UNKNOWN: Source("Unknown", "applications-other", _("Other Activity"), _("Other Activities")),
     INTERPRETATION_NOTE: Source("aj://note", "tomboy", _("Edited or Read Note"), _("Edited or Read Notes")),
-    INTERPRETATION_VCS: Source("aj://vcs", "bzr-icon-64", _("Software Development"), _("Software Developments"))
+    INTERPRETATION_VCS: Source("aj://vcs", "bzr-icon-64", _("Software Development"), _("Software Developments")),
+
+    CLIPBOARD_COPY: Source(CLIPBOARD_COPY, "edit-copy", _("Copied Data"), _("Copied Data")),
+    CLIPBOARD_PASTE3: Source(CLIPBOARD_PASTE3, "edit-paste", _("Pasted Data"), _("Pasted Data")),
+
+    RECENT_FILE_ACCESS3: Source(RECENT_FILE_ACCESS3, "document-open-recent", _("Opened Recent File"), _("Opened Recent Files")),
+    FILE_ACCESS3:  Source(FILE_ACCESS3, "document-open", _("Opened File"), _("Opened Files")),
+    FILE_LINK:  Source(FILE_LINK, "document-export", _("Copied or Link File"), _("Copied or Link Files")),
+    FILE_MODIFY3: Source(FILE_MODIFY3, "document-save", _("Created or Saved File"), _("Created or Saved Files")),
+    APP_LAUNCH_GLIB: Source(APP_LAUNCH_GLIB, "system-run", _("Launched an App"), _("Launched Apps")),
+    
+    WEB_ACCESS: Source(WEB_ACCESS, "browser", _("Opened a Website Tab"), _("Opened Website Tabs")),
+    WEB_LEAVE: Source(WEB_LEAVE, "browser", _("Closed a Website Tab"), _("Closed Website Tabs")),
+    WEB_DL: Source(WEB_DL, "browser", _("Downloaded a File"), _("Downloaded Files")),
+    WEB_TABS: Source(WEB_TABS, "browser", _("Active Website Tabs"), _("Active Website Tabs")),
+    
+    "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Application": Source(APP_LAUNCH_GLIB, "system-run",  _("Launched an App"), _("Launched Apps")),
+
+    UNITY_IDLE_EVENT: Source(UNITY_IDLE_EVENT, "clock", _("Idle Status Change"), _("Idle Status Changes")),
+    UNITY_WINDOW_TITLE_CHANGE_EVENT: Source(UNITY_WINDOW_TITLE_CHANGE_EVENT, "preferences-system-windows", _("Window Title Change"), _("Window Title Changes")),
+    UNITY_WINDOW_OPEN_EVENT: Source(UNITY_WINDOW_OPEN_EVENT, "window-new",  _("Window Opened"), _("Windows Opened")),
+    UNITY_WINDOW_CLOSED_EVENT: Source(UNITY_WINDOW_CLOSED_EVENT, "window-close",  _("Window Closed"), _("Windows Closed")),
+    UNITY_APP_CRASHED_EVENT: Source(UNITY_APP_CRASHED_EVENT, "apport",  _("App Crashed"), _("Apps Crashed")),
+    UNITY_ACTIVE_WINDOWS_EVENT: Source(UNITY_ACTIVE_WINDOWS_EVENT, "preferences-system-windows",  _("Active Windows"), _("Active Windows")),
 }

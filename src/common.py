@@ -143,7 +143,9 @@ FILETYPES = {
     Interpretation.SOURCE_CODE.uri : 12,
     INTERPRETATION_UNKNOWN : 21,
     Interpretation.IMMESSAGE.uri : 21,
-    Interpretation.EMAIL.uri : 21
+    Interpretation.EMAIL.uri : 21,
+    "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Application" : 17,
+    'http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#HtmlDocument' : 9
 }
 
 FILETYPESNAMES = {
@@ -155,7 +157,6 @@ FILETYPESNAMES = {
     INTERPRETATION_UNKNOWN : _("Unknown"),
     Interpretation.IMMESSAGE.uri : _("IM Message"),
     Interpretation.EMAIL.uri :_("Email"),
-
 }
 
 INTERPRETATION_PARENTS = {
@@ -210,7 +211,10 @@ def get_event_typename(event):
         return Interpretation[event.subjects[0].interpretation].display_name
     except KeyError:
         pass
-    return FILETYPESNAMES[event.subjects[0].interpretation]
+    try:
+      return FILETYPESNAMES[event.subjects[0].interpretation]
+    except KeyError:
+      return "Unknown type"
 
 ##
 # Cairo drawing functions

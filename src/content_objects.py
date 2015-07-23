@@ -28,14 +28,16 @@ import gio
 import glib
 import gtk
 import os
+import glob
 import sys
+import datetime
 from urlparse import urlparse
 from xdg import DesktopEntry
 import xml.dom.minidom as dom
 
 from zeitgeist.datamodel import Event, Subject, Interpretation, Manifestation
 
-from config import get_icon_path, get_data_path, SUPPORTED_SOURCES
+from config import get_icon_path, get_data_path, SUPPORTED_SOURCES, UCL_INTERPRETATIONS
 from external import TELEPATHY
 # Fix for merging this and giofile
 import common
@@ -188,6 +190,10 @@ class ContentObject(AbstractContentObject):
     def mime_type(self):
         return self.event.subjects[0].mimetype
 
+    @property
+    def category(self):
+        return self.event.subjects[0].interpretation
+
     # View methods
     @property
     def thumbview_pixbuf(self):
@@ -272,30 +278,48 @@ class ContentObject(AbstractContentObject):
         """
         return self.text
 
-    def get_actor_desktop_file(self):
+    def get_actor_desktop_file(self, actor=None):
         """
         Finds a desktop file for a actor
         """
+        
+        if actor is None:
+            actor = self.event.actor
+        
         desktop_file = None
-        if self.event.actor in common.DESKTOP_FILES:
-            return common.DESKTOP_FILES[self.event.actor]
+        if actor in common.DESKTOP_FILES:
+            return common.DESKTOP_FILES[actor]
         path = None
         for desktop_path in common.DESKTOP_FILE_PATHS:
-            if os.path.exists(self.event.actor.replace("application://", desktop_path)):
-                path = self.event.actor.replace("application://", desktop_path)
+            if os.path.exists(actor.replace("application://", desktop_path)):
+                path = actor.replace("application://", desktop_path)
                 break
         if path:
             desktop_file = DesktopEntry.DesktopEntry(path)
-        common.DESKTOP_FILES[self.event.actor] = desktop_file
+        else:
+            actor_name = actor.replace("application://", "").replace(".desktop", "")
+            for desktop_path in common.DESKTOP_FILE_PATHS:
+                for file in glob.glob(desktop_path+'*.desktop'):
+                    try:
+                        with open(file) as f:
+                            contents = f.read()
+                        if 'TryExec='+actor_name in contents or 'Exec='+actor_name in contents:
+                            desktop_file = DesktopEntry.DesktopEntry(file)
+                            common.DESKTOP_FILES[actor] = desktop_file
+                            return desktop_file
+                    except IOError:
+                        pass
+
+        common.DESKTOP_FILES[actor] = desktop_file
         return desktop_file
 
-    def get_actor_pixbuf(self, size):
+    def get_actor_pixbuf(self, size, target=None):
         """
         Finds a icon for a actor
 
         :returns: a pixbuf
         """
-        desktop = self.get_actor_desktop_file()
+        desktop = self.get_actor_desktop_file(target)
         if not desktop:
             pixbuf = None
         else:
@@ -443,9 +467,11 @@ class BaseContentType(ContentObject):
                     if icon != None: return icon
                 if "$ACTOR" in self.icon_name:
                     icon = self.get_actor_pixbuf(size)
+                if "$ACTINGSUBJECT" in self.icon_name:
+                    icon = self.get_actor_pixbuf(size, self.event.subjects[0].uri)
                 if self.icon_uri:
                     icon = common.get_icon_for_uri(self.icon_uri, size)
-                elif self.icon_name and self.icon_name not in ("$MIME", "$ACTOR"):
+                elif self.icon_name and self.icon_name not in ("$MIME", "$ACTOR", "$ACTINGSUBJECT"):
                     icon = common.get_icon_for_name(self.icon_name, size)
                 break
         except glib.GError:
@@ -577,6 +603,385 @@ class BzrContentObject(BaseContentType):
         if common.is_command_available("xdg-open"):
             common.launch_command("xdg-open", [self.uri])
 
+class UCLContentType(BaseContentType):
+    @classmethod
+    def use_class(cls, event):
+        """ Used by the content object chooser to check if the content object will work for the event"""
+        for inter in cls.class_interpretation():
+            if event.interpretation == UCL_INTERPRETATIONS[inter]:
+                return cls
+        return False
+
+    @classmethod
+    def class_interpretation(cls):
+        return ()
+
+    @property
+    def category(self):
+        return UCL_INTERPRETATIONS[self.__class__.class_interpretation()[-1]]
+#        return self.event.interpretation
+#        return self.event.subjects[self._meta_subject].interpretation
+
+    icon_name = ""
+
+    _text = "UCL event"
+    _thumbview_text = "UCL event"
+    _timelineview_text = "UCL event"
+    _molteplicity_text = "Multiple UCL events"
+
+    _meta_subject = -1
+    _use_time = False
+
+    molteplicity = True
+
+    @property
+    def uri(self):
+        return self.event.subjects[0].uri
+    @property
+    def mime_type(self):
+        return self.event.subjects[0].mimetype
+    
+    @CachedAttribute
+    def actor_name(self):
+        return self._actor_name()
+    
+    def _actor_name(self, target=None):
+        desktop = self.get_actor_desktop_file(target);
+        if desktop:
+            actor = desktop.getName()
+        else:
+            actor = "{event.actor}"
+        return actor
+
+    def actor_pid(self):
+        try:
+            uri = self.event.subjects[self._meta_subject].uri
+            return uri.split("///")[1].split("//")[1]
+        except IndexError:
+            return 0
+
+    @CachedAttribute 
+    def molteplicity_text(self):
+        return _(self._molteplicity_text)
+
+    @CachedAttribute
+    def time(self):
+        if self._use_time:
+            return ", at " + (datetime.datetime.fromtimestamp(int(int(self.event.timestamp) / 1000)).strftime('%H:%M:%S'))
+        else:
+            return ""
+
+    @CachedAttribute
+    def text(self):
+        pid = self.actor_pid()
+        if pid != 0:
+            return self._text + "\n" + self.actor_name + ", pid " + pid + self.time
+        else:
+            return self._text + "\n" + self.actor_name + self.time;
+
+    @CachedAttribute
+    def timelineview_text(self):
+        pid = self.actor_pid()
+        if pid != 0:
+            return self._timelineview_text + "\n" + self.actor_name + ", pid " + pid + self.time
+        else:
+            return self._timelineview_text + "\n" + self.actor_name + self.time;
+
+    @CachedAttribute
+    def thumbview_text(self):
+        return self._thumbview_text + "\n" + self.actor_name + self.time;
+
+    type_color_representation = common.TANGOCOLORS[1], common.TANGOCOLORS[2]
+
+    def launch(self):
+        pass
+
+class ClipboardCopyObject(UCLContentType):
+    @classmethod
+    def class_interpretation(cls):
+        return ('copy2', 'copy3', 'copy')
+
+    icon_name = "edit-copy"
+    _text = "Copy event"
+    _thumbview_text = "Copy event"
+    _timelineview_text = "Copy event"
+    _molteplicity_text = "Copied data"
+    _use_time = True
+
+    type_color_representation = common.TANGOCOLORS[1], common.TANGOCOLORS[2]
+
+class ClipboardPasteObject(UCLContentType):
+    @classmethod
+    def class_interpretation(cls):
+        return ('paste2', 'paste3')
+
+    icon_name = "edit-paste"
+    _text = "Paste event"
+    _thumbview_text = "Paste event"
+    _timelineview_text = "Paste event"
+    _molteplicity_text = "Pasted data"
+    _use_time = True
+
+    type_color_representation = common.TANGOCOLORS[1], common.TANGOCOLORS[2]
+
+class UCLFSContentType(UCLContentType):
+    
+    icon_name = "$MIME $ACTOR"
+    _action = "Accessed"
+
+    @CachedAttribute
+    def text(self):
+        pid = self.actor_pid()
+        if pid != 0:
+            return self.event.subjects[0].text + "\n" + self._action + " in " + self.actor_name + " (" + pid + ")"
+        else:
+            return self.event.subjects[0].text + "\n" + self._action + " in " + self.actor_name
+
+    @CachedAttribute
+    def timelineview_text(self):
+        return self.text
+
+    @CachedAttribute
+    def thumbview_text(self):
+        return self.text
+
+    type_color_representation = common.TANGOCOLORS[2], common.TANGOCOLORS[5]
+
+class FileAccessObject(UCLFSContentType):
+    @classmethod
+    def class_interpretation(cls):
+        return ('file-access2', 'file-set2', 'file-set3', 'file-access3')
+
+    #icon_name = "document-open"
+    _action = "Opened"
+    _text = "Opened File"
+    _thumbview_text = "Opened File"
+    _timelineview_text = "Opened File"
+    _molteplicity_text = "Opened File"
+
+class FileCopyObject(UCLFSContentType):
+    @classmethod
+    def class_interpretation(cls):
+        return ('file-copy', 'file-link')
+
+    #icon_name = "document-open"
+    _action = "Copied"
+    _text = "Copied File"
+    _thumbview_text = "Copied File"
+    _timelineview_text = "Copied File"
+    _molteplicity_text = "Copied File"
+    
+    @CachedAttribute
+    def text(self):
+        return self.event.subjects[0].text + "\n" + "Copied to " + self.event.subjects[1].text
+
+class FileCreateObject(UCLFSContentType):
+    @classmethod
+    def class_interpretation(cls):
+        return ('file-create2', 'file-create3', 'file-modify2', 'file-modify3')
+
+    #icon_name = "document-save"
+    _action = "Edited"
+    _text = "Saved or Created File"
+    _thumbview_text = "Saved or Created File"
+    _timelineview_text = "Saved or Created File"
+    _molteplicity_text = "Saved File"
+
+class FileRecentObject(UCLFSContentType):
+    @classmethod
+    def class_interpretation(cls):
+        return ('recent-file-access2', 'recent-file-access3')
+
+    #icon_name = "document-open-recent"
+    _action = "Reopened"
+    _text = "Reopened Recent File"
+    _thumbview_text = "Reopened Recent File"
+    _timelineview_text = "Reopened Recent File"
+    _molteplicity_text = "Recent File"
+    
+    def thumbview_text(self):
+        print "Recently opened: " + self.uri
+        return self._text
+
+class AppLaunchObject(UCLContentType):
+    @classmethod
+    def class_interpretation(cls):
+        return ('app-launch-n','app-launch')
+
+    #icon_name = "document-open-recent"
+    _action = "Launched"
+    _text = "Launched App"
+    _thumbview_text = "Launched App"
+    _timelineview_text = "Launched App"
+    _molteplicity_text = "App Launches"
+    icon_name = "$ACTINGSUBJECT"
+
+    @CachedAttribute
+    def text(self):
+        pid = self.actor_pid()
+        if pid != 0:
+            return self._actor_name(self.event.subjects[0].uri) + "\n" + self._action + " by " + self.actor_name + " (" + pid + ")"
+        else:
+            return self._actor_name(self.event.subjects[0].uri) + "\n" + self._action + " by " + self.actor_name
+
+    @CachedAttribute
+    def timelineview_text(self):
+        return self.text
+
+    @CachedAttribute
+    def thumbview_text(self):
+        return self.text
+        
+    def launch(self):
+        actor_name = self.event.subjects[0].uri.replace("application://", "").replace(".desktop", "")
+        if common.is_command_available(actor_name):
+            common.launch_command(actor_name)
+
+    type_color_representation = common.TANGOCOLORS[20], common.TANGOCOLORS[17]
+
+class WebAccessObject(UCLContentType):
+    @classmethod
+    def class_interpretation(cls):
+        return ('web-access',)
+
+    icon_name = "browser"
+    _action = "Visited"
+    _text = "Visited a Website"
+    _thumbview_text = "Visited a Website"
+    _timelineview_text = "Visited a Website"
+    _molteplicity_text = "Visited Websites"
+
+    @CachedAttribute
+    def text(self):
+        return self._text + "\n" + self.event.subjects[0].uri
+
+    @CachedAttribute
+    def timelineview_text(self):
+        return self.text
+
+    @CachedAttribute
+    def thumbview_text(self):
+        return self.text
+        
+    def launch(self):
+        actor_name = self.event.actor.replace("application://", "").replace(".desktop", "")
+        if common.is_command_available(actor_name):
+            common.launch_command(actor_name, [self.uri])
+        elif common.is_command_available('xdg-open'):
+            common.launch_command('xdg-open', [self.uri])
+
+    type_color_representation = common.TANGOCOLORS[9], common.TANGOCOLORS[1]
+
+class WebLeaveObject(WebAccessObject):
+    @classmethod
+    def class_interpretation(cls):
+        return ('web-leave',)
+
+    _action = "Left"
+    _text = "Left a Website / Closed a Tab"
+    _thumbview_text = "Left a Website / Closed a Tab"
+    _timelineview_text = "Left a Website / Closed a Tab"
+    _molteplicity_text = "Left Websites / Closed Tabs"
+
+class WebDLObject(WebAccessObject):
+    @classmethod
+    def class_interpretation(cls):
+        return ('web-dl',)
+
+    _action = "Downloaded"
+    _text = "Downloaded a File"
+    _thumbview_text = "Downloaded a File"
+    _timelineview_text = "Downloaded a File"
+    _molteplicity_text = "Downloaded Files"
+
+class WebActiveObject(WebAccessObject):
+    @classmethod
+    def class_interpretation(cls):
+        return ('web-tabs',)
+
+    #icon_name = "browser"
+    _use_time = True
+    icon_name = "browser"
+    _action = "Opened in"
+    _text = "Open Web Tabs"
+    _thumbview_text = "Open Web Tabs"
+    _timelineview_text = "Open Web Tabs"
+    _molteplicity_text = "Open Web Tabs"
+
+    @CachedAttribute
+    def text(self):
+        tabcount = len(self.event.subjects) - 1
+        return self._text + "\n" + str(tabcount) + " tabs open" + self.time
+
+class WindowOpenObject(UCLContentType):
+    @classmethod
+    def class_interpretation(cls):
+        return ('unity-open',)
+
+    icon_name = "window-new"
+    _text = "Window Opened"
+    _thumbview_text = "Window Opened"
+    _timelineview_text = "Window Opened"
+    _molteplicity_text = "Windows Opened"
+    
+    type_color_representation = common.TANGOCOLORS[5], common.TANGOCOLORS[4]
+
+class WindowCloseObject(UCLContentType):
+    @classmethod
+    def class_interpretation(cls):
+        return ('unity-closed',)
+
+    icon_name = "window-close"
+    _text = "Window Closed"
+    _thumbview_text = "Window Closed"
+    _timelineview_text = "Window Closed"
+    _molteplicity_text = "Windows Closed"
+    
+    type_color_representation = common.TANGOCOLORS[5], common.TANGOCOLORS[4]
+
+class WindowCrashObject(UCLContentType):
+    @classmethod
+    def class_interpretation(cls):
+        return ('unity-crash',)
+
+    icon_name = "apport"
+    _text = "App Crashed"
+    _thumbview_text = "App Crashed"
+    _timelineview_text = "App Crashed"
+    _molteplicity_text = "Apps Crashed"
+    
+    type_color_representation = common.TANGOCOLORS[5], common.TANGOCOLORS[4]
+
+class WindowTitleObject(UCLContentType):
+    @classmethod
+    def class_interpretation(cls):
+        return ('unity-title',)
+
+    icon_name = "preferences-system-windows"
+    _text = "Window Title Changed"
+    _thumbview_text = "Window Title Changed"
+    _timelineview_text = "Window Title Changed"
+    _molteplicity_text = "Window Titles Changed"
+    
+    type_color_representation = common.TANGOCOLORS[5], common.TANGOCOLORS[4]
+
+class WindowActiveObject(UCLContentType):
+    @classmethod
+    def class_interpretation(cls):
+        return ('unity-active',)
+
+    icon_name = "preferences-system-windows"
+    _text = "Active Windows"
+    _thumbview_text = "Active Windows"
+    _timelineview_text = "Active Windows"
+    _molteplicity_text = "Active Windows"
+
+    @CachedAttribute
+    def text(self):
+        tabcount = len(self.event.subjects) - 1
+        return self._text + "\n" + str(tabcount) + " windows open" + self.time
+    
+    type_color_representation = common.TANGOCOLORS[5], common.TANGOCOLORS[4]
 
 class IMContentObject(BaseContentType):
     @classmethod
@@ -657,31 +1062,31 @@ class IMContentObject(BaseContentType):
                 common.launch_command("empathy", [self.uri])
 
 
-class WebContentObject(BaseContentType):
-    """
-    Displays page visits
-
-    We can write dataproviders which generate pixbufs and the thumbnail_uri
-    property request will find it for the thumbview
-    """
-    @classmethod
-    def use_class(cls, event):
-        """ Used by the content object chooser to check if the content object will work for the event"""
-        if event.subjects[0].uri.startswith(("http://", "https://")):
-            return cls
-        return False
+#class WebContentObject(BaseContentType):
+#    """
+#    Displays page visits
+#
+#    We can write dataproviders which generate pixbufs and the thumbnail_uri
+#    property request will find it for the thumbview
+#    """
+#    @classmethod
+#    def use_class(cls, event):
+#        """ Used by the content object chooser to check if the content object will work for the event"""
+#        if event.subjects[0].uri.startswith(("http://", "https://")):
+#            return cls
+#        return False
     
-    molteplicity = True
+#    molteplicity = True
     
-    @CachedAttribute 
-    def molteplicity_text(self): 
-        return _("Surfed in ") + urlparse(self.uri).netloc
+#    @CachedAttribute 
+#    def molteplicity_text(self): 
+#        return _("Surfed in ") + urlparse(self.uri).netloc
 
-    icon_name = "$MIME $ACTOR"
+#    icon_name = "$MIME $ACTOR"
     # thumbnail_uri = "/some/users/cache/hash(uri).png"
-    text = "{event.subjects[0].text}"
-    timelineview_text = "{event.subjects[0].uri}"
-    thumbview_text = "{event.subjects[0].text}"
+#    text = "{event.subjects[0].text}"
+#    timelineview_text = "{event.subjects[0].uri}"
+#    thumbview_text = "{event.subjects[0].text}"
     #type_color_representation = (207/255.0, 77/255.0, 16/255.0), (207/255.0, 77/255.0, 16/255.0)
 
 
@@ -867,6 +1272,9 @@ class MusicPlayerContentObject(BaseContentType):
 # Content object list used by the section function. Should use Subclasses but I like to have some order in which these should be used
 if sys.version_info >= (2,6):
     map(AbstractContentObject.content_object_types.append,
-        (MusicPlayerContentObject, BzrContentObject, WebContentObject,XChatContentObject,
+        (MusicPlayerContentObject, BzrContentObject, ClipboardCopyObject, ClipboardPasteObject, XChatContentObject, #WebContentObject,
+         FileAccessObject, FileCopyObject, FileCreateObject, FileRecentObject, AppLaunchObject,
+         WebAccessObject, WebLeaveObject, WebDLObject, WebActiveObject,
+         WindowOpenObject, WindowCloseObject, WindowTitleObject, WindowCrashObject, WindowActiveObject,
          IMContentObject, TomboyContentObject, GTGContentObject, EmailContentObject, HamsterContentObject))
 

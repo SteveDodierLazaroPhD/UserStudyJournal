@@ -33,6 +33,8 @@ import time
 import pango
 import gio
 import threading
+import datetime
+from os.path import expanduser
 from dbus.exceptions import DBusException
 try:
     import gst
@@ -47,6 +49,88 @@ from config import BASE_PATH, VERSION, settings, PluginManager, get_icon_path, g
 import external
 from store import STORE, get_related_events_for_uri, CLIENT
 
+class ClientDeletionManager:
+
+    @classmethod
+    def get_event_pid(cls, event):
+      if event is None:
+        return 0
+      
+      try:
+        pid = event.subjects[-1].uri.split("///")[1].split("//")[1]
+      except IndexError:
+        pid = 0
+      except KeyError:
+        pid = 0
+      
+      if pid == "n/a":
+        pid = 0
+      
+      return pid
+    
+    @classmethod
+    def note_deletion_for_pid(cls, pid, events):
+      for event in events:
+        time = (datetime.datetime.fromtimestamp(int(int(event.timestamp) / 1000)).strftime('%Y-%m-%d_%H%M%S'));
+        filename = str(pid) + "_" + time + "_deletions.log"
+        home = expanduser("~")
+        path = home + "/.local/share/zeitgeist/" + filename
+        try:
+          with open(path, 'a') as noteFile:
+            noteFile.write(time + ": " + event.interpretation + " on " + str(len(event.subjects)) + " subjects\n")
+        except IOError:
+          print "Could not write to " + path + ". There will be no record of event " + str(event.id) + " being deleted."
+          pass
+
+    
+    @classmethod
+    def note_deletion_for_actor(cls, actor, events):
+      try:
+        actor_name = actor.split("application://")[1].split(".desktop")[0]
+      except KeyError:
+        actor_name = "Unknown"
+      except IndexError:
+        actor_name = "Unknown"
+      
+      for event in events:
+        time = (datetime.datetime.fromtimestamp(int(int(event.timestamp) / 1000)).strftime('%Y-%m-%d_%H%M%S'));
+        filename = actor_name + "_" + time + "_deletions.log"
+        home = expanduser("~")
+        path = home + "/.local/share/zeitgeist/" + filename
+        try:
+          with open(path, 'a') as noteFile:
+            noteFile.write(time + ": " + event.interpretation + " on " + str(len(event.subjects)) + " subjects\n")
+        except IOError:
+          print "Could not write to " + path + ". There will be no record of event " + str(event.id) + " being deleted."
+          pass
+
+    @classmethod
+    def log_event_deletion(cls, events):
+      pids = {}
+      actors = {}
+      print len(events)
+      for ev in events:
+        print ev.id
+        pid = cls.get_event_pid(ev)
+#        print "*"+str(pid)
+        if pid:
+#          actor = ev.actor
+#          print "*"+str(actor)
+          pids.setdefault(pid, []).append(ev)
+        else:
+          actor = ev.actor
+#          print "*"+str(actor)
+          actors.setdefault(actor, []).append(ev)
+
+      for pid in pids:
+        cls.note_deletion_for_pid(pid, pids[pid])
+      for actor in actors:
+        cls.note_deletion_for_actor(actor, actors[actor])
+
+    @classmethod
+    def client_delete_events(cls, ids):
+      CLIENT.get_events(ids, cls.log_event_deletion)
+      #CLIENT.delete_events(ids) TMP FIXME testing
 
 class DayLabel(gtk.DrawingArea):
 
@@ -997,27 +1081,27 @@ class ContextMenu(gtk.Menu):
             uri = unicode(uri)
             isbookmarked = bookmarker.is_bookmarked(uri)
             if isbookmarked:               
-                bookmarker.unbookmark(uri)
+                bookmarker.unbookmark(uri)              
 
     def do_delete(self, menuitem):
         for obj in self.subjects:
             CLIENT.find_event_ids_for_template(
                 Event.new_for_values(subject_uri=obj.uri),
-                lambda ids: CLIENT.delete_events(map(int, ids)),
+                lambda ids: ClientDeletionManager.client_delete_events(map(int, ids)),
                 timerange=DayParts.get_day_part_range_for_item(obj))
                 
     def do_delete_object(self, obj):
         if obj is None: return
         CLIENT.find_event_ids_for_template(
             Event.new_for_values(subject_uri=obj.uri),
-            lambda ids: CLIENT.delete_events(map(int, ids)))
+            lambda ids: ClientDeletionManager.client_delete_events(map(int, ids)))
 
 
     def do_delete_events_with_shared_uri(self, menuitem):
         for uri in map(lambda obj: obj.uri, self.subjects):
             CLIENT.find_event_ids_for_template(
                 Event.new_for_values(subject_uri=uri),
-                lambda ids: CLIENT.delete_events(map(int, ids)))
+                lambda ids: ClientDeletionManager.client_delete_events(map(int, ids)))
 
     def do_send_to(self, menuitem):
         launch_command("nautilus-sendto", map(lambda obj: obj.uri, self.subjects))
@@ -1077,7 +1161,7 @@ class ContextMenuMolteplicity(gtk.Menu):
             obj = obj_.content_object
             CLIENT.find_event_ids_for_template(
                 Event.new_for_values(subject_uri=obj.uri),
-                lambda ids: CLIENT.delete_events(map(int, ids)),
+                lambda ids: ClientDeletionManager.client_delete_events(map(int, ids)),
                 timerange=DayParts.get_day_part_range_for_item(obj))
                 
     def do_delete_list(self, list_):
@@ -1085,7 +1169,7 @@ class ContextMenuMolteplicity(gtk.Menu):
             obj = obj_.content_object
             CLIENT.find_event_ids_for_template(
                 Event.new_for_values(subject_uri=obj.uri),
-                lambda ids: CLIENT.delete_events(map(int, ids)),
+                lambda ids: ClientDeletionManager.client_delete_events(map(int, ids)),
                 timerange=DayParts.get_day_part_range_for_item(obj))
  
 
@@ -1490,7 +1574,7 @@ class InformationContainer(gtk.Dialog):
     def do_delete_events_with_shared_uri(self, *args):
         CLIENT.find_event_ids_for_template(
             Event.new_for_values(subject_uri=self.obj.uri),
-            lambda ids: CLIENT.delete_events(map(int, ids)))
+            lambda ids: ClientDeletionManager.client_delete_events(map(int, ids)))
         self.hide()
 
     def set_content_object(self, obj):

@@ -37,7 +37,7 @@ except ImportError:
 
 from common import *
 import content_objects
-from config import event_exists, settings, bookmarker, SUPPORTED_SOURCES
+from config import event_exists, settings, bookmarker, SUPPORTED_SOURCES, UCL_INTERPRETATIONS
 from store import ContentStruct, CLIENT
 from supporting_widgets import DayLabel, ContextMenu, ContextMenuMolteplicity, StaticPreviewTooltip, VideoPreviewTooltip,\
 SearchBox, AudioPreviewTooltip
@@ -180,13 +180,18 @@ class MultiViewContainer(gtk.HBox):
         #    page.in_erase_mode = not page.in_erase_mode
 
 class DayViewContainer(gtk.VBox):
-    event_templates = (
+    template_list = [
         Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri),
         Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri),
         Event.new_for_values(interpretation=Interpretation.ACCESS_EVENT.uri),
         Event.new_for_values(interpretation=Interpretation.SEND_EVENT.uri),
-        Event.new_for_values(interpretation=Interpretation.RECEIVE_EVENT.uri)
-    )
+        Event.new_for_values(interpretation=Interpretation.RECEIVE_EVENT.uri),
+    ]
+    for item in UCL_INTERPRETATIONS:
+      template_list.append (Event.new_for_values(interpretation=UCL_INTERPRETATIONS[item]))
+    event_templates = tuple(template_list)
+    
+    
     def __init__(self):
         super(DayViewContainer, self).__init__()
         self.daylabel = DayLabel()
@@ -280,8 +285,7 @@ class DayView(gtk.VBox):
         categories = {}
         for struct in items:
             if not struct.content_object: continue
-            subject = struct.event.subjects[0]
-            interpretation = subject.interpretation
+            interpretation = struct.content_object.category
             if INTERPRETATION_PARENTS.has_key(interpretation):
                 interpretation = INTERPRETATION_PARENTS[interpretation]
             if struct.event.actor == "application://tomboy.desktop":
@@ -350,6 +354,8 @@ class CategoryBox(gtk.HBox):
             if category in SUPPORTED_SOURCES:
                 text = SUPPORTED_SOURCES[category].group_label(len(event_structs))
             else:
+                print "Unknown category: " + category + " for Event "
+                print event_structs[0].event
                 text = "Unknown"
             self.label = gtk.Label()
             self.label.set_markup("<span>%s</span>" % text)
@@ -495,9 +501,10 @@ class Item(gtk.HBox, Draggable):
         self.time = float(event.timestamp) / 1000
         self.time =  time.strftime("%H:%M", time.localtime(self.time))
         if self.content_obj is not None:
-            if self.subject.uri.startswith("http"):
-                self.icon = self.content_obj.get_actor_pixbuf(24)
-            else:
+#            if self.subject.uri.startswith("http"):
+#                desktop = self.content_obj.get_actor_desktop_file()
+#                self.icon = self.content_obj.get_actor_pixbuf(24)
+#            else:
                 self.icon = self.content_obj.get_icon(
                     can_thumb=settings.get('small_thumbnails', False), border=0)          
         else:
@@ -913,7 +920,7 @@ class _ThumbViewRenderer(gtk.GenericCellRenderer):
         context = window.cairo_create()
         if self.molteplicity > 1:
             text_ = get_text_or_uri(self.content_obj, molteplicity=True)
-            text_ = text_.split(" ")[-1]
+            #text_ = text_.split(" ")[-1]
         else:
             text_ = self.content_obj.thumbview_text
         text = self.insert_file_markup(text_, self.text_size)
@@ -1149,13 +1156,17 @@ class ThumbView(gtk.VBox):
     """
     A container for three image views representing periods in time
     """
-    event_templates = (
+    template_list = [
             Event.new_for_values(interpretation=Interpretation.MODIFY_EVENT.uri),
             Event.new_for_values(interpretation=Interpretation.CREATE_EVENT.uri),
             Event.new_for_values(interpretation=Interpretation.ACCESS_EVENT.uri),
             Event.new_for_values(interpretation=Interpretation.SEND_EVENT.uri),
             Event.new_for_values(interpretation=Interpretation.RECEIVE_EVENT.uri),
-        )
+        ]
+    for item in UCL_INTERPRETATIONS:
+      template_list.append (Event.new_for_values(interpretation=UCL_INTERPRETATIONS[item]))
+    event_templates = tuple(template_list)
+
     def __init__(self):
         """Woo"""
         gtk.VBox.__init__(self)

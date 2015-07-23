@@ -167,7 +167,8 @@ class Hamster(object):
             end = start+86399
         start -= 86400
         end -= 86400
-        return map(self.Fact, self.iface.GetFacts(start, end))
+        # There should be a third parameter (string) to this call, but I've no idea what value it should have...
+        return map(self.Fact, self.iface.GetFacts(start, end, 'confused hamster'))
 
 try:
     HAMSTER = Hamster()
