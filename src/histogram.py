@@ -157,7 +157,7 @@ class CairoHistogram(gtk.DrawingArea):
         """
         The major drawing method that the expose event calls directly
         """
-        widget.style.set_background(widget.window, gtk.STATE_NORMAL)
+        #widget.style.set_background(widget.window, gtk.STATE_NORMAL)
         context = widget.window.cairo_create()
         self.expose(widget, event, context)
 

@@ -1,0 +1,39 @@
+Source: ucl-study-journal
+Section: gnome
+Priority: optional
+Maintainer: Steve Dodier-Lazaro <sidnioulz@gmail.com>
+Build-Depends:
+ debhelper (>= 7.0.50~),
+ intltool,
+ python,
+ python-distutils-extra,
+ python-support (>= 0.5.3)
+Homepage: https://launchpad.net/activityfinder
+Standards-Version: 3.9.2
+
+Package: ucl-study-journal
+Architecture: all
+Depends:
+ ${misc:Depends},
+ ${python:Depends},
+ zeitgeist-core (>= 0.8~) | zeitgeist (>= 0.8~),
+ python-gtk2,
+ python-gnome2,
+ python-gconf,
+ python-cairo,
+ python-xdg,
+ python-dbus
+Recommends:
+ python-gst0.10,
+ python-pygments,
+ gstreamer0.10-plugins-base,
+Description: graphical user interface for UCL data collection studies
+ Zeitgeist is a service which logs the user's activities and events (files
+ opened, websites visited, conversations held with other people, etc.) and
+ makes the relevant information available to other applications.
+ .
+ It serves as a comprehensive activity log and also makes it possible to
+ determine relationships between items based on usage patterns.
+ .
+ This package contains the UCL Study Journal, a graphical user interface
+ which shows a journal of your activities.

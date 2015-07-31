@@ -1,0 +1,124 @@
+gnome-activity-journal (0.9.1) trusty; urgency=medium
+
+  * Hijacked old GNOME Activity Journal, added UCL events
+
+ -- Steve Dodier-Lazaro <sidnioulz@gmail.com>  Fri, 31 Jul 2015 17:16:11 +0100
+
+gnome-activity-journal (0.9.is.really.0.8.0-0ubuntu2) precise; urgency=low
+
+  * debian/patches/bluebird_histogram.patch:
+     - Add support for the Histogram plugin included in the Vala port
+       of Zeitgeist (LP: #930196).
+
+ -- Siegfried-Angel Gevatter Pujals <rainct@ubuntu.com>  Sat, 11 Feb 2012 12:20:07 +0100
+
+gnome-activity-journal (0.9.is.really.0.8.0-0ubuntu1) precise; urgency=low
+
+  * revert to previous package
+
+ -- Didier Roche <didrocks@ubuntu.com>  Tue, 07 Feb 2012 18:41:17 +0100
+
+gnome-activity-journal (0.8.0-1ubuntu1) oneiric; urgency=low
+
+  * Add patch to disable setting the background which was blocking AJ
+    (LP: #831436)
+
+ -- Manish Sinha <manishsinha@ubuntu.com>  Tue, 04 Oct 2011 01:24:57 +0530
+
+gnome-activity-journal (0.8.0-1) unstable; urgency=low
+
+  [ Siegfried-Angel Gevatter Pujals ]
+  * New upstream releases (Closes: #621011) (LP: #643795, #722227, #734412,
+    #743054, #743125, #650917).
+  * debian/postinst:
+     - Restart zeitgeist-daemon after installation, to ensure that
+       the extension gets loaded (LP: #638217).
+  * debian/control:
+     - Bump Zeitgeist dependency to 0.8.0.
+     - Remove Tracker from Suggests, support for it has been disabled
+       for now.
+     - Bump Standards-Version to 3.9.2.
+  * debian/rules:
+     - Remove build/ directory on clean.
+  * debian/copyright:
+     - Update copyright years and add Stefano Candori and Collabora.
+
+  [ Manish Sinha ]
+  * debian/control:
+     - Add Recommends on gstreamer0.10-plugins-base (LP: #705545).
+
+ -- Siegfried-Angel Gevatter Pujals <rainct@ubuntu.com>  Sat, 16 Jul 2011 19:12:03 +0200
+
+gnome-activity-journal (0.5.0.1-1) experimental; urgency=low
+
+  * New upstream bug-fix release:
+     - Updated Hamster-specific code to use the new ontology from Zeitgeist
+       0.5.0 (LP: #641148, Closes: #591267).
+     - Catch exception trying to extract a non-existant thumbnail from an
+       OpenDocument file (LP: #535440).
+     - Other minor fixes and removed superfluous debugging output.
+     - Updated several translations.
+  * debian/control:
+     - Add Tracker to Suggests, now that Tracker 0.7+ is available in the
+       repositories (LP: #612732).
+  * Remove debian/patches/disable-version-check, incorporated upstream.
+
+ -- Siegfried-Angel Gevatter Pujals <rainct@ubuntu.com>  Sat, 18 Sep 2010 20:56:22 +0200
+
+gnome-activity-journal (0.5.0+tb1-1) experimental; urgency=low
+
+  * New upstream release. Some of the changes since the last snapshot are:
+     - Improved start-up time and responsiveness.
+     - Better support for Tomboy and websites.
+     - Removed the "minimal mode" and "tray icon" extensions.
+  * debian/control:
+     - Bump minimum Zeitgeist version to 0.4.0+bzr20100718~.
+     - Bump Standards-Version to 3.9.1.
+  * Add debian/source/format with "3.0 (quilt)" and a patch to disable the
+    Zeitgeist-version check (debian/patches/disable-version-check).
+
+ -- Siegfried-Angel Gevatter Pujals <rainct@ubuntu.com>  Sun, 12 Sep 2010 15:31:55 +0200
+
+gnome-activity-journal (0.3.4.1+bzr20100718-1) unstable; urgency=low
+
+  * New upstream development snapshot:
+     - Major rewrite of the code and some design changes.
+     - Added a toolbar to change between the three available views.
+     - Added support for extensions and included a Blacklist Manager extension.
+     - Closes: #577201, #591267; LP: #574207.
+  * debian/control:
+     - Bump minimum Zeitgeist version to 0.4.0~.
+
+ -- Siegfried-Angel Gevatter Pujals <rainct@ubuntu.com>  Sun, 18 Jul 2010 17:05:44 +0200
+
+gnome-activity-journal (0.3.4.1-0ubuntu1~ppa1) lucid; urgency=low
+
+  * New upstream release:
+     - Multiple widget/style improvements, and better support for black themes.
+     - The context menu now works with all widgets.
+     - Added "more information" widget for events, showing related items.
+     - Support for non-file events (webpages, IM contacts, etc).
+     - Performance improvements and better thumbnail rendering.
+  * debian/control:
+     - Add python-gnome2 as a dependency, thanks to Raphael Wimmer
+       (Closes: #577979).
+
+ -- Siegfried-Angel Gevatter Pujals <rainct@ubuntu.com>  Wed, 26 May 2010 18:32:34 +0200
+
+gnome-activity-journal (0.3.3-1) unstable; urgency=low
+
+  * New upstream release:
+     - Introduced two detailed day views, one showing file usage over time
+       and the other featuring a thumbnail view of all activities.
+     - Added an option to delete items from the Journal (and from Zeitgeist).
+     - Bug fixes, performance improvements, etc.
+  * debian/control:
+     - Bump Standards-Version to 3.8.4.
+
+ -- Siegfried-Angel Gevatter Pujals <rainct@ubuntu.com>  Tue, 23 Feb 2010 14:27:23 +0100
+
+gnome-activity-journal (0.3.2-1) unstable; urgency=low
+
+  * Initial packaging (Closes: #566506).
+
+ -- Siegfried-Angel Gevatter Pujals <rainct@ubuntu.com>  Tue, 19 Jan 2010 19:02:56 +0100
