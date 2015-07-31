@@ -1,4 +1,4 @@
-gnome-activity-journal (0.9.1) trusty; urgency=medium
+ucl-study-journal (0.9.1) trusty; urgency=medium
 
   * Hijacked old GNOME Activity Journal, added UCL events
 
