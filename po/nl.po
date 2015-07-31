@@ -15,15 +15,15 @@ msgstr ""
 "X-Poedit-Country: NETHERLANDS\n"
 "X-Poedit-Language: Dutch\n"
 
-#: ../gnome-activity-journal:85
+#: ../ucl-study-journal:85
 msgid "print additional debugging information"
 msgstr ""
 
-#: ../gnome-activity-journal:92
+#: ../ucl-study-journal:92
 msgid "ERROR"
 msgstr "FOUT"
 
-#: ../gnome-activity-journal:92
+#: ../ucl-study-journal:92
 msgid "Unable to connect to Zeitgeist:"
 msgstr ""
 
@@ -125,7 +125,7 @@ msgstr ""
 msgid "%s to %s"
 msgstr ""
 
-#: ../src/main.py:318 ../extra/gnome-activity-journal.desktop.in.h:1
+#: ../src/main.py:318 ../extra/ucl-study-journal.desktop.in.h:1
 msgid "Activity Journal"
 msgstr "Activiteitendagboek"
 
@@ -301,7 +301,7 @@ msgid "Software Developments"
 msgstr "Software-ontwikkelingen"
 
 #: ../src/Indicator.py:87
-msgid "Hide/Show GAJ"
+msgid "Hide/Show Journal"
 msgstr ""
 
 #: ../src/common.py:144
@@ -378,7 +378,7 @@ msgstr ""
 msgid "Pinned Items"
 msgstr ""
 
-#: ../extra/gnome-activity-journal.desktop.in.h:2
+#: ../extra/ucl-study-journal.desktop.in.h:2
 msgid ""
 "Browse a chronological log of your activities and easily find files, "
 "contacts, etc."
@@ -386,50 +386,50 @@ msgstr ""
 "Blader door een chronologisch dagboek van je activiteiten om gemakkelijk "
 "bestanden terug te vinden."
 
-#: ../extra/gnome-activity-journal.schemas.in.h:1
+#: ../extra/ucl-study-journal.schemas.in.h:1
 msgid "Accessibility"
 msgstr "Toegankelijkheid"
 
-#: ../extra/gnome-activity-journal.schemas.in.h:2
+#: ../extra/ucl-study-journal.schemas.in.h:2
 msgid "Allow thumbnails as icons"
 msgstr ""
 
-#: ../extra/gnome-activity-journal.schemas.in.h:3
+#: ../extra/ucl-study-journal.schemas.in.h:3
 msgid "Amount of visible days"
 msgstr ""
 
-#: ../extra/gnome-activity-journal.schemas.in.h:4
+#: ../extra/ucl-study-journal.schemas.in.h:4
 msgid ""
 "Customized height for the main window, in pixels (requires restart). Can't "
 "be bigger than the desktop's size."
 msgstr ""
 
-#: ../extra/gnome-activity-journal.schemas.in.h:5
+#: ../extra/ucl-study-journal.schemas.in.h:5
 msgid ""
 "Customized width for the main window, in pixels (requires restart). Can't be "
 "bigger than the desktop's size."
 msgstr ""
 
-#: ../extra/gnome-activity-journal.schemas.in.h:6
+#: ../extra/ucl-study-journal.schemas.in.h:6
 msgid "The amount of days to show at once."
 msgstr ""
 
-#: ../extra/gnome-activity-journal.schemas.in.h:7
+#: ../extra/ucl-study-journal.schemas.in.h:7
 msgid ""
 "Whether special accessibility options should be enabled (requires restart)."
 msgstr ""
 
-#: ../extra/gnome-activity-journal.schemas.in.h:8
+#: ../extra/ucl-study-journal.schemas.in.h:8
 msgid ""
 "Whether to allow showing little thumbnails next to each activity (requires "
 "restart). If False, only generic mime-type icons will be used."
 msgstr ""
 
-#: ../extra/gnome-activity-journal.schemas.in.h:9
+#: ../extra/ucl-study-journal.schemas.in.h:9
 msgid "Window height"
 msgstr "Vensterhoogte"
 
-#: ../extra/gnome-activity-journal.schemas.in.h:10
+#: ../extra/ucl-study-journal.schemas.in.h:10
 msgid "Window width"
 msgstr "Vensterbreedte"
 

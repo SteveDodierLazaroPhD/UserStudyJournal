@@ -1,11 +1,11 @@
-# German translation for gnome-activity-journal
+# German translation for ucl-study-journal
 # Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
-# This file is distributed under the same license as the gnome-activity-journal package.
+# This file is distributed under the same license as the ucl-study-journal package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-activity-journal\n"
+"Project-Id-Version: ucl-study-journal\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2011-01-26 18:05+0100\n"
 "PO-Revision-Date: 2011-04-09 16:38+0000\n"
@@ -18,15 +18,15 @@ msgstr ""
 "X-Launchpad-Export-Date: 2011-04-10 05:01+0000\n"
 "X-Generator: Launchpad (build 12735)\n"
 
-#: ../gnome-activity-journal:85
+#: ../ucl-study-journal:85
 msgid "print additional debugging information"
 msgstr "zusätzliche Informationen zur Fehlerbehebung anzeigen"
 
-#: ../gnome-activity-journal:92
+#: ../ucl-study-journal:92
 msgid "ERROR"
 msgstr "FEHLER"
 
-#: ../gnome-activity-journal:92
+#: ../ucl-study-journal:92
 msgid "Unable to connect to Zeitgeist:"
 msgstr "Keine Verbindung zu Zeitgeist möglich"
 
@@ -128,7 +128,7 @@ msgstr "<span size=\"larger\"><b>Lade Journal...</b></span>"
 msgid "%s to %s"
 msgstr "%s bis %s"
 
-#: ../src/main.py:318 ../extra/gnome-activity-journal.desktop.in.h:1
+#: ../src/main.py:318 ../extra/ucl-study-journal.desktop.in.h:1
 msgid "Activity Journal"
 msgstr "Tagebuch über Aktivitäten"
 
@@ -304,8 +304,8 @@ msgid "Software Developments"
 msgstr "Programm-Entwicklungen"
 
 #: ../src/Indicator.py:87
-msgid "Hide/Show GAJ"
-msgstr "Verstecke/Zeige GAJ"
+msgid "Hide/Show Journal"
+msgstr "Verstecke/Zeige Journal"
 
 #: ../src/common.py:144
 msgid "Video"
@@ -381,7 +381,7 @@ msgstr "Zur Zeitstrahl-Ansicht wechseln"
 msgid "Pinned Items"
 msgstr "Markierte Elemente"
 
-#: ../extra/gnome-activity-journal.desktop.in.h:2
+#: ../extra/ucl-study-journal.desktop.in.h:2
 msgid ""
 "Browse a chronological log of your activities and easily find files, "
 "contacts, etc."
@@ -389,19 +389,19 @@ msgstr ""
 "Durchsuche eine chronologische Auflistung deiner Aktivitäten und finde so "
 "einfach Dateien, Kontakte und Sonstiges"
 
-#: ../extra/gnome-activity-journal.schemas.in.h:1
+#: ../extra/ucl-study-journal.schemas.in.h:1
 msgid "Accessibility"
 msgstr "Eingabehilfen"
 
-#: ../extra/gnome-activity-journal.schemas.in.h:2
+#: ../extra/ucl-study-journal.schemas.in.h:2
 msgid "Allow thumbnails as icons"
 msgstr "Vorschaubilder als Symbole zulassen"
 
-#: ../extra/gnome-activity-journal.schemas.in.h:3
+#: ../extra/ucl-study-journal.schemas.in.h:3
 msgid "Amount of visible days"
 msgstr "Anzahl der sichtbaren Tage"
 
-#: ../extra/gnome-activity-journal.schemas.in.h:4
+#: ../extra/ucl-study-journal.schemas.in.h:4
 msgid ""
 "Customized height for the main window, in pixels (requires restart). Can't "
 "be bigger than the desktop's size."
@@ -409,7 +409,7 @@ msgstr ""
 "Angepasste Höhe für das Hauptfenster in Pixel (benötigt Neustart). Kann "
 "nicht mehr als die Desktopgröße betragen."
 
-#: ../extra/gnome-activity-journal.schemas.in.h:5
+#: ../extra/ucl-study-journal.schemas.in.h:5
 msgid ""
 "Customized width for the main window, in pixels (requires restart). Can't be "
 "bigger than the desktop's size."
@@ -417,16 +417,16 @@ msgstr ""
 "Angepasste Breite für das Hauptfenster in Pixel (benötigt Neustart). Kann "
 "nicht mehr als die Desktopgröße betragen."
 
-#: ../extra/gnome-activity-journal.schemas.in.h:6
+#: ../extra/ucl-study-journal.schemas.in.h:6
 msgid "The amount of days to show at once."
 msgstr "Anzahl der Tage, die gleichzeitig angezeigt werden."
 
-#: ../extra/gnome-activity-journal.schemas.in.h:7
+#: ../extra/ucl-study-journal.schemas.in.h:7
 msgid ""
 "Whether special accessibility options should be enabled (requires restart)."
 msgstr "Optionen für Barrierefreiheit aktivieren (benötigt Neustart)."
 
-#: ../extra/gnome-activity-journal.schemas.in.h:8
+#: ../extra/ucl-study-journal.schemas.in.h:8
 msgid ""
 "Whether to allow showing little thumbnails next to each activity (requires "
 "restart). If False, only generic mime-type icons will be used."
@@ -435,11 +435,11 @@ msgstr ""
 "Neustart). Wenn diese Option deaktiviert ist werden nur die Icons der "
 "Dateitypen genutzt."
 
-#: ../extra/gnome-activity-journal.schemas.in.h:9
+#: ../extra/ucl-study-journal.schemas.in.h:9
 msgid "Window height"
 msgstr "Fensterhöhe"
 
-#: ../extra/gnome-activity-journal.schemas.in.h:10
+#: ../extra/ucl-study-journal.schemas.in.h:10
 msgid "Window width"
 msgstr "Fensterbreite"
 

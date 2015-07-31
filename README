@@ -1,4 +1,4 @@
-GNOME Activity Journal
+UCL Study Journal
 
 Dependencies
 ------------------------------
@@ -6,7 +6,7 @@ Dependencies
 You'll need to have Zeitgeist (version 0.8.0 or later) installed.
 
 To get it, run inside the same directory where you have checked out the
-"gnome-activity-journal" branch:
+"ucl-study-journal" branch:
 
  $ bzr get lp:zeitgeist
 
@@ -14,9 +14,9 @@ And then start Zeitgeist in a separate terminal window, running:
 
  $ ./zeitgeist/zeitgeist-daemon.py
 
-Once Zeitgeist is running, you can start the GNOME Activity Journal like this:
+Once Zeitgeist is running, you can start the UCL Study Journal like this:
 
- $ ./gnome-activity-journal/gnome-activity-journal
+ $ ./ucl-study-journal/ucl-study-journal
 
 License
 ------------------------------

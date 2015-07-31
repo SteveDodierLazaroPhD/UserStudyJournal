@@ -25,14 +25,14 @@ from _zeitgeist.engine import constants
 from _zeitgeist.engine.extension import Extension
 #from _zeitgeist.engine.sql import get_default_cursor
 
-GAJ_DBUS_OBJECT_PATH = "/org/gnome/zeitgeist/journal/activity"
+GAJ_DBUS_OBJECT_PATH = "/uk/ac/ucl/cs/study/multitasking/journal/activity"
 
 log = logging.getLogger("zeitgeist.activity_journal")
 
 class ActivityJournalExtension(Extension, dbus.service.Object):
     """
     This is a specialized extension which adds a new :const:`GetHistogramData`
-    method to Zeitgeist for use by GNOME Activity Journal.
+    method to Zeitgeist for use by UCL Study Journal.
     """
     PUBLIC_METHODS = ["get_histogram_data"]
 

@@ -51,7 +51,7 @@ DATA_PATH = os.path.join(BASE_PATH, "data")
 VERSION = "0.8.0"
 GETTEXT_PATH = os.path.join(BASE_PATH, "../locale")
 
-USER_DATA_PATH = BaseDirectory.save_data_path("gnome-activity-journal")
+USER_DATA_PATH = BaseDirectory.save_data_path("ucl-study-journal")
 
 PLUGIN_PATH = os.path.join(BASE_PATH, "src/plugins")
 if not os.path.exists(PLUGIN_PATH) or not os.path.isdir(PLUGIN_PATH):
@@ -60,7 +60,7 @@ USER_PLUGIN_PATH = os.path.join(USER_DATA_PATH, "plugins")
 if not os.path.exists(USER_PLUGIN_PATH) or not os.path.isdir(USER_PLUGIN_PATH):
     USER_PLUGIN_PATH = None
 
-settings = QuickConf("/apps/gnome-activity-journal")
+settings = QuickConf("/apps/ucl-study-journal")
 
 def _get_path(path):
     return os.path.join(BASE_PATH, path)
@@ -165,7 +165,7 @@ class PluginManager(object):
     str __plugin_name__: plugin name
     str __description__: description of the plugin
     """
-    plugin_settings = QuickConf("/apps/gnome-activity-journal/plugins")
+    plugin_settings = QuickConf("/apps/ucl-study-journal/plugins")
 
     def __init__(self, client, store, window):
         self.plugins = {}

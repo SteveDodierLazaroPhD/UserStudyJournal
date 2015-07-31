@@ -230,14 +230,14 @@ class PortalWindow(gtk.Window):
         self.throbber_popup_button.connect("toggle-erase-mode", self._on_toggle_erase_mode)
         SearchBox.connect("clear", self._on_search_clear)
         # Window configuration
-        self.set_icon_name("gnome-activity-journal")
+        self.set_icon_name("ucl-study-journal")
         self.set_icon_list(
             *[gtk.gdk.pixbuf_new_from_file(get_icon_path(f)) for f in (
-                "hicolor/16x16/apps/gnome-activity-journal.png",
-                "hicolor/24x24/apps/gnome-activity-journal.png",
-                "hicolor/32x32/apps/gnome-activity-journal.png",
-                "hicolor/48x48/apps/gnome-activity-journal.png",
-                "hicolor/256x256/apps/gnome-activity-journal.png")])
+                "hicolor/16x16/apps/ucl-study-journal.png",
+                "hicolor/24x24/apps/ucl-study-journal.png",
+                "hicolor/32x32/apps/ucl-study-journal.png",
+                "hicolor/48x48/apps/ucl-study-journal.png",
+                "hicolor/256x256/apps/ucl-study-journal.png")])
         gobject.idle_add(self.setup)
         gobject.idle_add(self.load_plugins)
 
@@ -394,9 +394,9 @@ class PortalWindow(gtk.Window):
             start = start_date.strftime("%d %B")
             end = date.strftime("%d %B")
         if self.view.page != 0:
-            self.set_title(end + " - Activity Journal")
+            self.set_title(end + " - Study Journal")
         else:
-            self.set_title(_("%s to %s") % (start, end) + " - " + _("Activity Journal"))
+            self.set_title(_("%s to %s") % (start, end) + " - " + _("Study Journal"))
 
     def on_delete(self, w, event):
         x, y = self.get_size()

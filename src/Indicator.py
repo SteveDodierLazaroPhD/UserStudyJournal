@@ -37,8 +37,8 @@ else:
         A widget that implements the appindicator for ubuntu
         """
         def __init__(self, main_window):
-            path = get_icon_path("hicolor/scalable/apps/gnome-activity-journal.svg")
-            name = _("Activity Journal")
+            path = get_icon_path("hicolor/scalable/apps/ucl-study-journal.svg")
+            name = _("Study Journal")
             appindicator.Indicator.__init__(self, name, path, \
                 appindicator.CATEGORY_APPLICATION_STATUS)
 
@@ -58,9 +58,9 @@ class TrayIcon(gtk.StatusIcon):
 
         gtk.StatusIcon.__init__(self)
         self.main_window = main_window
-        path = get_icon_path("hicolor/scalable/apps/gnome-activity-journal-paused.svg")
+        path = get_icon_path("hicolor/scalable/apps/ucl-study-journal-paused.svg")
         self.set_from_file(path)
-        self.set_tooltip(_("Activity Journal"))
+        self.set_tooltip(_("Study Journal"))
         self.connect('activate', self._on_activate)
         self.connect('popup-menu', self._on_popup)
 
@@ -80,9 +80,9 @@ class TrayIcon(gtk.StatusIcon):
 
     def set_icon(self, paused):
         if paused:
-            name = "hicolor/scalable/apps/gnome-activity-journal-paused.svg"
+            name = "hicolor/scalable/apps/ucl-study-journal-paused.svg"
         else:
-            name = "hicolor/scalable/apps/gnome-activity-journal.svg"
+            name = "hicolor/scalable/apps/ucl-study-journal.svg"
         self.set_from_file(get_icon_path(name))
 
 class Menu(gtk.Menu):
@@ -96,7 +96,7 @@ class Menu(gtk.Menu):
         gtk.Menu.__init__(self)
         self.main_window = main_window
         self._parent = parent
-        self.hide_show_mainwindow = gtk.MenuItem(_('Hide/Show GAJ'))
+        self.hide_show_mainwindow = gtk.MenuItem(_('Hide/Show Journal'))
         self.hide_show_mainwindow.connect('activate', self._on_activate)
         self.incognito_enable = gtk.MenuItem(_('Start incognito mode (pause event logging)'))
         self.incognito_enable.connect('activate', self._toggle_incognito)

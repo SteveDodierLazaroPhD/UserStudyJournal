@@ -1,11 +1,11 @@
-# Asturian translation for gnome-activity-journal
+# Asturian translation for ucl-study-journal
 # Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
-# This file is distributed under the same license as the gnome-activity-journal package.
+# This file is distributed under the same license as the ucl-study-journal package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-activity-journal\n"
+"Project-Id-Version: ucl-study-journal\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2011-01-26 18:05+0100\n"
 "PO-Revision-Date: 2010-10-31 00:57+0000\n"
@@ -18,15 +18,15 @@ msgstr ""
 "X-Launchpad-Export-Date: 2011-01-27 04:52+0000\n"
 "X-Generator: Launchpad (build 12177)\n"
 
-#: ../gnome-activity-journal:85
+#: ../ucl-study-journal:85
 msgid "print additional debugging information"
 msgstr "amosar información de depuración adicional"
 
-#: ../gnome-activity-journal:92
+#: ../ucl-study-journal:92
 msgid "ERROR"
 msgstr "ERROR"
 
-#: ../gnome-activity-journal:92
+#: ../ucl-study-journal:92
 msgid "Unable to connect to Zeitgeist:"
 msgstr "Nun se pudo coneutar con Zeitgeist:"
 
@@ -128,7 +128,7 @@ msgstr ""
 msgid "%s to %s"
 msgstr "%s a %s"
 
-#: ../src/main.py:318 ../extra/gnome-activity-journal.desktop.in.h:1
+#: ../src/main.py:318 ../extra/ucl-study-journal.desktop.in.h:1
 msgid "Activity Journal"
 msgstr "Diariu d'actividá"
 
@@ -304,7 +304,7 @@ msgid "Software Developments"
 msgstr ""
 
 #: ../src/Indicator.py:87
-msgid "Hide/Show GAJ"
+msgid "Hide/Show Journal"
 msgstr ""
 
 #: ../src/common.py:144
@@ -379,7 +379,7 @@ msgstr "Cambear a vista de llinia de tiempu"
 msgid "Pinned Items"
 msgstr "Artículos pinchaos"
 
-#: ../extra/gnome-activity-journal.desktop.in.h:2
+#: ../extra/ucl-study-journal.desktop.in.h:2
 msgid ""
 "Browse a chronological log of your activities and easily find files, "
 "contacts, etc."
@@ -387,19 +387,19 @@ msgstr ""
 "Revisa un rexistru cronolóxicu de les actividaes y alcuentra fácilmente "
 "ficheros, contautos, etc."
 
-#: ../extra/gnome-activity-journal.schemas.in.h:1
+#: ../extra/ucl-study-journal.schemas.in.h:1
 msgid "Accessibility"
 msgstr "Accesibilidá"
 
-#: ../extra/gnome-activity-journal.schemas.in.h:2
+#: ../extra/ucl-study-journal.schemas.in.h:2
 msgid "Allow thumbnails as icons"
 msgstr "Permitir miniatures como iconos"
 
-#: ../extra/gnome-activity-journal.schemas.in.h:3
+#: ../extra/ucl-study-journal.schemas.in.h:3
 msgid "Amount of visible days"
 msgstr "Cantidá de díes visibles"
 
-#: ../extra/gnome-activity-journal.schemas.in.h:4
+#: ../extra/ucl-study-journal.schemas.in.h:4
 msgid ""
 "Customized height for the main window, in pixels (requires restart). Can't "
 "be bigger than the desktop's size."
@@ -407,7 +407,7 @@ msgstr ""
 "Altor personalizáu de la ventana principal, en pixels (requier reaniciar). "
 "Nun pue ser mayor que'l tamañu del escritoriu."
 
-#: ../extra/gnome-activity-journal.schemas.in.h:5
+#: ../extra/ucl-study-journal.schemas.in.h:5
 msgid ""
 "Customized width for the main window, in pixels (requires restart). Can't be "
 "bigger than the desktop's size."
@@ -415,18 +415,18 @@ msgstr ""
 "Anchor personalizáu de la ventana principal, en pixels (requier reaniciar). "
 "Nun pue ser mayor que'l tamañu del escritoriu."
 
-#: ../extra/gnome-activity-journal.schemas.in.h:6
+#: ../extra/ucl-study-journal.schemas.in.h:6
 msgid "The amount of days to show at once."
 msgstr "Cantidá de díes qu'amosar a la vez."
 
-#: ../extra/gnome-activity-journal.schemas.in.h:7
+#: ../extra/ucl-study-journal.schemas.in.h:7
 msgid ""
 "Whether special accessibility options should be enabled (requires restart)."
 msgstr ""
 "Indica si tienen d'activase les opciones especiales d'accesibilidá (requier "
 "reaniciar)."
 
-#: ../extra/gnome-activity-journal.schemas.in.h:8
+#: ../extra/ucl-study-journal.schemas.in.h:8
 msgid ""
 "Whether to allow showing little thumbnails next to each activity (requires "
 "restart). If False, only generic mime-type icons will be used."
@@ -434,11 +434,11 @@ msgstr ""
 "Indica si se permite amosar miniatures xunto a cada actividá (requier "
 "reaniciar). Si ye falso, sólo s'usarán los iconos xenéricos del tipu MIME."
 
-#: ../extra/gnome-activity-journal.schemas.in.h:9
+#: ../extra/ucl-study-journal.schemas.in.h:9
 msgid "Window height"
 msgstr "Altor de la ventana"
 
-#: ../extra/gnome-activity-journal.schemas.in.h:10
+#: ../extra/ucl-study-journal.schemas.in.h:10
 msgid "Window width"
 msgstr "Anchor de la ventana"
 

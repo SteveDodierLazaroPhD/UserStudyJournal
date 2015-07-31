@@ -1,11 +1,11 @@
-# Basque translation for gnome-activity-journal
+# Basque translation for ucl-study-journal
 # Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
-# This file is distributed under the same license as the gnome-activity-journal package.
+# This file is distributed under the same license as the ucl-study-journal package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-activity-journal\n"
+"Project-Id-Version: ucl-study-journal\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2011-01-26 18:05+0100\n"
 "PO-Revision-Date: 2011-05-18 15:22+0000\n"
@@ -18,15 +18,15 @@ msgstr ""
 "X-Launchpad-Export-Date: 2011-05-19 04:51+0000\n"
 "X-Generator: Launchpad (build 12959)\n"
 
-#: ../gnome-activity-journal:85
+#: ../ucl-study-journal:85
 msgid "print additional debugging information"
 msgstr "inprimatu arazketa-informazio gehigarria"
 
-#: ../gnome-activity-journal:92
+#: ../ucl-study-journal:92
 msgid "ERROR"
 msgstr "ERROREA"
 
-#: ../gnome-activity-journal:92
+#: ../ucl-study-journal:92
 msgid "Unable to connect to Zeitgeist:"
 msgstr "Ezin izan da Zeitgeist-era konektatu:"
 
@@ -128,7 +128,7 @@ msgstr "<span size=\"larger\"><b>Journal kargatzen...</b></span>"
 msgid "%s to %s"
 msgstr "%s-(e)tik %s-(e)ra"
 
-#: ../src/main.py:318 ../extra/gnome-activity-journal.desktop.in.h:1
+#: ../src/main.py:318 ../extra/ucl-study-journal.desktop.in.h:1
 msgid "Activity Journal"
 msgstr "Jarduera-egunkaria"
 
@@ -306,8 +306,8 @@ msgid "Software Developments"
 msgstr "Software-garapenak"
 
 #: ../src/Indicator.py:87
-msgid "Hide/Show GAJ"
-msgstr "Ezkutatu/erakutsi GAJ"
+msgid "Hide/Show Journal"
+msgstr "Ezkutatu/erakutsi Journal"
 
 #: ../src/common.py:144
 msgid "Video"
@@ -383,7 +383,7 @@ msgstr "Aldatu denbora-lerroaren bistaratzera"
 msgid "Pinned Items"
 msgstr "Finkatutako elementuak"
 
-#: ../extra/gnome-activity-journal.desktop.in.h:2
+#: ../extra/ucl-study-journal.desktop.in.h:2
 msgid ""
 "Browse a chronological log of your activities and easily find files, "
 "contacts, etc."
@@ -391,19 +391,19 @@ msgstr ""
 "Arakatu zure jardueren egunkari kronologikoa eta bilatu fitxategiak, "
 "kontaktuak, etab. modu errazean."
 
-#: ../extra/gnome-activity-journal.schemas.in.h:1
+#: ../extra/ucl-study-journal.schemas.in.h:1
 msgid "Accessibility"
 msgstr "Erabilerraztasuna"
 
-#: ../extra/gnome-activity-journal.schemas.in.h:2
+#: ../extra/ucl-study-journal.schemas.in.h:2
 msgid "Allow thumbnails as icons"
 msgstr "Onartu miniaturak ikono modura"
 
-#: ../extra/gnome-activity-journal.schemas.in.h:3
+#: ../extra/ucl-study-journal.schemas.in.h:3
 msgid "Amount of visible days"
 msgstr "Ikusgarri den egun-kopurua"
 
-#: ../extra/gnome-activity-journal.schemas.in.h:4
+#: ../extra/ucl-study-journal.schemas.in.h:4
 msgid ""
 "Customized height for the main window, in pixels (requires restart). Can't "
 "be bigger than the desktop's size."
@@ -411,7 +411,7 @@ msgstr ""
 "Leiho nagusiaren altuera pertsonalizatua, pixeletan (berrabiaraztea behar "
 "du). Ezin da izan mahaigainaren tamaina baino handiagoa."
 
-#: ../extra/gnome-activity-journal.schemas.in.h:5
+#: ../extra/ucl-study-journal.schemas.in.h:5
 msgid ""
 "Customized width for the main window, in pixels (requires restart). Can't be "
 "bigger than the desktop's size."
@@ -419,18 +419,18 @@ msgstr ""
 "Leiho nagusiaren zabalera pertsonalizatua, pixeletan (berrabiaraztea behar "
 "du). Ezin da izan mahaigainaren tamaina baino handiagoa."
 
-#: ../extra/gnome-activity-journal.schemas.in.h:6
+#: ../extra/ucl-study-journal.schemas.in.h:6
 msgid "The amount of days to show at once."
 msgstr "Aldi berean erakutsiko den egun-kopurua."
 
-#: ../extra/gnome-activity-journal.schemas.in.h:7
+#: ../extra/ucl-study-journal.schemas.in.h:7
 msgid ""
 "Whether special accessibility options should be enabled (requires restart)."
 msgstr ""
 "Erabilerraztasun-aukera bereziak gaituko diren ala ez (berrabiaraztea behar "
 "du)."
 
-#: ../extra/gnome-activity-journal.schemas.in.h:8
+#: ../extra/ucl-study-journal.schemas.in.h:8
 msgid ""
 "Whether to allow showing little thumbnails next to each activity (requires "
 "restart). If False, only generic mime-type icons will be used."
@@ -439,11 +439,11 @@ msgstr ""
 "ez (berrabiaraztea behar du). Gezurra bada, mime-type ikono generikoak "
 "soilik erabiliko dira."
 
-#: ../extra/gnome-activity-journal.schemas.in.h:9
+#: ../extra/ucl-study-journal.schemas.in.h:9
 msgid "Window height"
 msgstr "Leiho-altuera"
 
-#: ../extra/gnome-activity-journal.schemas.in.h:10
+#: ../extra/ucl-study-journal.schemas.in.h:10
 msgid "Window width"
 msgstr "Leiho-zabalera"
 

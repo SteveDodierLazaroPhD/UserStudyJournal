@@ -51,11 +51,11 @@ class ClientExtension(object):
             type=gtk.MESSAGE_ERROR,
             buttons=gtk.BUTTONS_CLOSE)
         dialog.set_title(
-            _("Incomplete GNOME Activity Journal installation"))
+            _("Incomplete UCL Study Journal installation"))
         dialog.set_markup(_(
-            "<b>GNOME Activity Journal comes together with a Zeitgeist "
+            "<b>UCL Study Journal comes together with a Zeitgeist "
             "extension which can't be found.</b>\n\n"
-            "If you've installed GNOME Activity Journal manually, "
+            "If you've installed UCL Study Journal manually, "
             "please ensure that you've copied "
             "<i>extension/gnome_activity_journal.py</i> "
             "into <i>~/.local/share/zeitgeist/extensions/</i>."))

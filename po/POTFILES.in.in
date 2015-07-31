@@ -1,5 +1,5 @@
-gnome-activity-journal
+ucl-study-journal
 src/*.py
 src/histogramwidget/*.py
-extra/gnome-activity-journal.desktop.in
-extra/gnome-activity-journal.schemas.in
+extra/ucl-study-journal.desktop.in
+extra/ucl-study-journal.schemas.in

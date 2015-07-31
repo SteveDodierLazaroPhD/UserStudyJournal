@@ -64,29 +64,29 @@ except (IOError, IndexError):
     VERSION = 'unknown'
 
 setup(
-    name = 'gnome-activity-journal',
+    name = 'ucl-study-journal',
     version = VERSION,
     description = 'GUI to browse and search your Zeitgeist activities',
     long_description = \
-        'GNOME Activity Journal is a tool for easily browsing and finding '\
+        'The UCL Study Journal is a tool for easily browsing and finding '\
         'files on your computer. It shows a chronological journal of all '\
         'file activity and supports full-text search through Tracker.',
-    author = 'GNOME Activity Journal Developers',
-    author_email = 'zeitgeist@lists.launchpad.net',
-    url = 'https://launchpad.net/gnome-activity-journal',
+    author = 'GNOME Activity Journal Developers, forked by Steve Dodier-Lazaro',
+    author_email = 'sidnioulz@gmail.com (original developers: zeitgeist@lists.launchpad.net)',
+    url = 'https://launchpad.net/activityfinder',
     license = 'GPLv3+',
     platforms = ['GNU/Linux'],
     data_files = list_from_lists(
-        [('bin/', ['gnome-activity-journal'])],
-        [('share/gnome-activity-journal/data', glob('data/*.svg'))],
-        [('share/gnome-activity-journal/data', glob('data/*.png'))],
-        [('share/gnome-activity-journal/data/zlogo', glob('data/zlogo/*.png'))],
-        [('share/pixmaps/', ['data/gnome-activity-journal.xpm'])],
+        [('bin/', ['ucl-study-journal'])],
+        [('share/ucl-study-journal/data', glob('data/*.svg'))],
+        [('share/ucl-study-journal/data', glob('data/*.png'))],
+        [('share/ucl-study-journal/data/zlogo', glob('data/zlogo/*.png'))],
+        [('share/pixmaps/', ['data/ucl-study-journal.xpm'])],
         recursive_install('share/icons/hicolor', 'data/icons/hicolor/', '',
             ext=['.png', '.svg']),
-        recursive_install('share/gnome-activity-journal', 'src/', ext=['.py']),
-        [('share/man/man1/', ['extra/gnome-activity-journal.1'])],
-        [('share/gnome-activity-journal/fungtk', glob('fungtk/*.py'))],
+        recursive_install('share/ucl-study-journal', 'src/', ext=['.py']),
+        [('share/man/man1/', ['extra/ucl-study-journal.1'])],
+        [('share/ucl-study-journal/fungtk', glob('fungtk/*.py'))],
         [('share/zeitgeist/_zeitgeist/engine/extensions/', glob('extension/*.py'))],
         ),
     cmdclass = {

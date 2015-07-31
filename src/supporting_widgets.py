@@ -108,18 +108,12 @@ class ClientDeletionManager:
     def log_event_deletion(cls, events):
       pids = {}
       actors = {}
-      print len(events)
       for ev in events:
-        print ev.id
         pid = cls.get_event_pid(ev)
-#        print "*"+str(pid)
         if pid:
-#          actor = ev.actor
-#          print "*"+str(actor)
           pids.setdefault(pid, []).append(ev)
         else:
           actor = ev.actor
-#          print "*"+str(actor)
           actors.setdefault(actor, []).append(ev)
 
       for pid in pids:
@@ -130,7 +124,7 @@ class ClientDeletionManager:
     @classmethod
     def client_delete_events(cls, ids):
       CLIENT.get_events(ids, cls.log_event_deletion)
-      #CLIENT.delete_events(ids) TMP FIXME testing
+      CLIENT.delete_events(ids)
 
 class DayLabel(gtk.DrawingArea):
 
@@ -958,7 +952,7 @@ class ThrobberPopupButton(gtk.ToolItem):
 
 
 class AboutDialog(gtk.AboutDialog):
-    name = "Activity Journal"
+    name = "Study Journal"
     authors = (
         "Seif Lotfy <seif@lotfy.com>",
         "Randal Barlow <email.tehk@gmail.com>",
@@ -968,13 +962,14 @@ class AboutDialog(gtk.AboutDialog):
         "Markus Korn <thekorn@gmx.de>",
         "Mikkel Kamstrup <mikkel.kamstrup@gmail.com>",
         "Thorsten Prante <thorsten@prante.eu>",
-        "Stefano Candori <stefano.candori@gmail.com>"
+        "Stefano Candori <stefano.candori@gmail.com>",
+        "Steve Dodier-Lazaro <sidnioulz@gmail.com>",
         )
     artists = (
                "Hylke Bons <hylkebons@gmail.com>",
                "Thorsten Prante <thorsten@prante.eu>"
                 )
-    copyright_ = "Copyright © 2009-2011 Activity Journal authors"
+    copyright_ = "Copyright © 2009-2015 Activity Journal authors, forked in 2015 by Steve Dodier-Lazaro"
     comment = "A viewport into the past powered by Zeitgeist"
     version = VERSION
     def __init__(self):
@@ -997,9 +992,9 @@ class AboutDialog(gtk.AboutDialog):
             license = "GNU General Public License, version 3 or later."
 
         self.set_license(license)
-        #self.set_logo_icon_name("gnome-activity-journal")
+        #self.set_logo_icon_name("ucl-study-journal")
         self.set_logo(gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path(
-            "hicolor/scalable/apps/gnome-activity-journal.svg"), 48, 48))
+            "hicolor/scalable/apps/ucl-study-journal.svg"), 48, 48))
 
 
 class ContextMenu(gtk.Menu):

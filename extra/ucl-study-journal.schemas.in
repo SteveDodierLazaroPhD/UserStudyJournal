@@ -2,9 +2,9 @@
 <gconfschemafile>
   <schemalist>
     <schema>
-      <key>/schemas/apps/gnome-activity-journal/window_width</key>
-      <applyto>/apps/gnome-activity-journal/window_width</applyto>
-      <owner>gnome-activity-journal</owner>
+      <key>/schemas/apps/ucl-study-journal/window_width</key>
+      <applyto>/apps/ucl-study-journal/window_width</applyto>
+      <owner>ucl-study-journal</owner>
       <type>int</type>
       <locale name="C">
         <short>Window width</short>
@@ -12,9 +12,9 @@
       </locale>
     </schema>
     <schema>
-      <key>/schemas/apps/gnome-activity-journal/window_height</key>
-      <applyto>/apps/gnome-activity-journal/window_height</applyto>
-      <owner>gnome-activity-journal</owner>
+      <key>/schemas/apps/ucl-study-journal/window_height</key>
+      <applyto>/apps/ucl-study-journal/window_height</applyto>
+      <owner>ucl-study-journal</owner>
       <type>int</type>
       <locale name="C">
         <short>Window height</short>
@@ -22,9 +22,9 @@
       </locale>
     </schema>
     <schema>
-      <key>/schemas/apps/gnome-activity-journal/amount_days</key>
-      <applyto>/apps/gnome-activity-journal/amount_days</applyto>
-      <owner>gnome-activity-journal</owner>
+      <key>/schemas/apps/ucl-study-journal/amount_days</key>
+      <applyto>/apps/ucl-study-journal/amount_days</applyto>
+      <owner>ucl-study-journal</owner>
       <type>int</type>
       <locale name="C">
         <short>Amount of visible days</short>
@@ -32,9 +32,9 @@
       </locale>
     </schema>
     <schema>
-      <key>/schemas/apps/gnome-activity-journal/accessibility</key>
-      <applyto>/apps/gnome-activity-journal/accessibility</applyto>
-      <owner>gnome-activity-journal</owner>
+      <key>/schemas/apps/ucl-study-journal/accessibility</key>
+      <applyto>/apps/ucl-study-journal/accessibility</applyto>
+      <owner>ucl-study-journal</owner>
       <type>bool</type>
       <default>False</default>
       <locale name="C">
@@ -43,9 +43,9 @@
       </locale>
     </schema>
     <schema>
-      <key>/schemas/apps/gnome-activity-journal/small_thumbnails</key>
-      <applyto>/apps/gnome-activity-journal/small_thumbnails</applyto>
-      <owner>gnome-activity-journal</owner>
+      <key>/schemas/apps/ucl-study-journal/small_thumbnails</key>
+      <applyto>/apps/ucl-study-journal/small_thumbnails</applyto>
+      <owner>ucl-study-journal</owner>
       <type>bool</type>
       <default>False</default>
       <locale name="C">

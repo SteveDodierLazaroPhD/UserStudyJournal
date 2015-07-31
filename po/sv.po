@@ -1,11 +1,11 @@
-# Swedish translation for gnome-activity-journal
+# Swedish translation for ucl-study-journal
 # Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
-# This file is distributed under the same license as the gnome-activity-journal package.
+# This file is distributed under the same license as the ucl-study-journal package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-activity-journal\n"
+"Project-Id-Version: ucl-study-journal\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2011-01-26 18:05+0100\n"
 "PO-Revision-Date: 2011-03-21 16:59+0000\n"
@@ -18,15 +18,15 @@ msgstr ""
 "X-Launchpad-Export-Date: 2011-03-22 04:56+0000\n"
 "X-Generator: Launchpad (build 12559)\n"
 
-#: ../gnome-activity-journal:85
+#: ../ucl-study-journal:85
 msgid "print additional debugging information"
 msgstr "skriv ut ytterligare felsökningsinformation"
 
-#: ../gnome-activity-journal:92
+#: ../ucl-study-journal:92
 msgid "ERROR"
 msgstr "FEL"
 
-#: ../gnome-activity-journal:92
+#: ../ucl-study-journal:92
 msgid "Unable to connect to Zeitgeist:"
 msgstr "Kunde inte ansluta till Zeitgeist:"
 
@@ -128,7 +128,7 @@ msgstr "<span size=\"larger\"><b>Läser in journal...</b></span>"
 msgid "%s to %s"
 msgstr "%s till %s"
 
-#: ../src/main.py:318 ../extra/gnome-activity-journal.desktop.in.h:1
+#: ../src/main.py:318 ../extra/ucl-study-journal.desktop.in.h:1
 msgid "Activity Journal"
 msgstr "Aktivitetsjournal"
 
@@ -306,8 +306,8 @@ msgid "Software Developments"
 msgstr "Programutveckling"
 
 #: ../src/Indicator.py:87
-msgid "Hide/Show GAJ"
-msgstr "Visa/dölj GAJ"
+msgid "Hide/Show Journal"
+msgstr "Visa/dölj Journal"
 
 #: ../src/common.py:144
 msgid "Video"
@@ -383,7 +383,7 @@ msgstr "Växla till tidslinjevy"
 msgid "Pinned Items"
 msgstr "Nålade objekt"
 
-#: ../extra/gnome-activity-journal.desktop.in.h:2
+#: ../extra/ucl-study-journal.desktop.in.h:2
 msgid ""
 "Browse a chronological log of your activities and easily find files, "
 "contacts, etc."
@@ -391,19 +391,19 @@ msgstr ""
 "Bläddra i en kronologisk logg över dina aktiviteter och hitta enkelt filer, "
 "kontakter etc."
 
-#: ../extra/gnome-activity-journal.schemas.in.h:1
+#: ../extra/ucl-study-journal.schemas.in.h:1
 msgid "Accessibility"
 msgstr "Hjälpmedel"
 
-#: ../extra/gnome-activity-journal.schemas.in.h:2
+#: ../extra/ucl-study-journal.schemas.in.h:2
 msgid "Allow thumbnails as icons"
 msgstr "Tillåt miniatyrbilder som ikoner"
 
-#: ../extra/gnome-activity-journal.schemas.in.h:3
+#: ../extra/ucl-study-journal.schemas.in.h:3
 msgid "Amount of visible days"
 msgstr "Antal synliga dagar"
 
-#: ../extra/gnome-activity-journal.schemas.in.h:4
+#: ../extra/ucl-study-journal.schemas.in.h:4
 msgid ""
 "Customized height for the main window, in pixels (requires restart). Can't "
 "be bigger than the desktop's size."
@@ -411,7 +411,7 @@ msgstr ""
 "Anpassad höjd för huvudfönstret, i bildpunkter (kräver omstart). Får inte "
 "vara större än skrivbordets storlek."
 
-#: ../extra/gnome-activity-journal.schemas.in.h:5
+#: ../extra/ucl-study-journal.schemas.in.h:5
 msgid ""
 "Customized width for the main window, in pixels (requires restart). Can't be "
 "bigger than the desktop's size."
@@ -419,18 +419,18 @@ msgstr ""
 "Anpassad bredd för huvudfönstret, i bildpunkter (kräver omstart). Får inte "
 "vara större än skrivbordets storlek."
 
-#: ../extra/gnome-activity-journal.schemas.in.h:6
+#: ../extra/ucl-study-journal.schemas.in.h:6
 msgid "The amount of days to show at once."
 msgstr "Antal dagar att visa samtidigt."
 
-#: ../extra/gnome-activity-journal.schemas.in.h:7
+#: ../extra/ucl-study-journal.schemas.in.h:7
 msgid ""
 "Whether special accessibility options should be enabled (requires restart)."
 msgstr ""
 "Huruvida speciella hjälpmedelsalternativ ska vara aktiverade (kräver "
 "omstart)."
 
-#: ../extra/gnome-activity-journal.schemas.in.h:8
+#: ../extra/ucl-study-journal.schemas.in.h:8
 msgid ""
 "Whether to allow showing little thumbnails next to each activity (requires "
 "restart). If False, only generic mime-type icons will be used."
@@ -439,11 +439,11 @@ msgstr ""
 "(kräver omstart). Om False så kommer endast allmänna mimetypsikoner att "
 "användas."
 
-#: ../extra/gnome-activity-journal.schemas.in.h:9
+#: ../extra/ucl-study-journal.schemas.in.h:9
 msgid "Window height"
 msgstr "Fönsterhöjd"
 
-#: ../extra/gnome-activity-journal.schemas.in.h:10
+#: ../extra/ucl-study-journal.schemas.in.h:10
 msgid "Window width"
 msgstr "Fönsterbredd"
 

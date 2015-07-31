@@ -1,8 +1,8 @@
 [Desktop Entry]
 Type=Application
-_Name=Activity Journal
-_GenericName=Activity Journal
+_Name=UCL Study Journal
+_GenericName=Study Journal
 _Comment=Browse a chronological log of your activities and easily find files, contacts, etc.
-Exec=gnome-activity-journal
-Icon=gnome-activity-journal
+Exec=ucl-study-journal
+Icon=ucl-study-journal
 Categories=GTK;Utility;

@@ -96,8 +96,8 @@ except KeyError:pass
 
 # Placeholder pixbufs for common sizes
 PLACEHOLDER_PIXBUFFS = {
-    24 : gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path("hicolor/scalable/apps/gnome-activity-journal.svg"), 24, 24),
-    16 : gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path("hicolor/scalable/apps/gnome-activity-journal.svg"), 16, 16)
+    24 : gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path("hicolor/scalable/apps/ucl-study-journal.svg"), 24, 24),
+    16 : gtk.gdk.pixbuf_new_from_file_at_size(get_icon_path("hicolor/scalable/apps/ucl-study-journal.svg"), 16, 16)
     }
 
 # Color magic
@@ -651,7 +651,7 @@ class PixbufCache(dict):
         return self[uri]
 
     def get_buff(self, key):
-        thumbpath = os.path.expanduser("~/.cache/GAJ/1_" + str(hash(key)))
+        thumbpath = os.path.expanduser("~/.cache/UCL/Journal/1_" + str(hash(key)))
         if os.path.exists(thumbpath):
             self[key] = (gtk.gdk.pixbuf_new_from_file(thumbpath), True)
             return self[key]
@@ -663,8 +663,8 @@ class PixbufCache(dict):
         return self.get_buff(key)
 
     def __setitem__(self, key, (pb, isthumb)):
-        dir_ = os.path.expanduser("~/.cache/GAJ/")
-        if not os.path.exists(os.path.expanduser("~/.cache/GAJ/")):
+        dir_ = os.path.expanduser("~/.cache/UCL/Journal/")
+        if not os.path.exists(os.path.expanduser("~/.cache/UCL/Journal/")):
             os.makedirs(dir_)
         path = dir_ + str(hash(isthumb)) + "_" + str(hash(key))
         if not os.path.exists(path):

@@ -1,11 +1,11 @@
-# Malayalam translation for gnome-activity-journal
+# Malayalam translation for ucl-study-journal
 # Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
-# This file is distributed under the same license as the gnome-activity-journal package.
+# This file is distributed under the same license as the ucl-study-journal package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-activity-journal\n"
+"Project-Id-Version: ucl-study-journal\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2011-01-26 18:05+0100\n"
 "PO-Revision-Date: 2010-07-15 05:06+0000\n"
@@ -18,15 +18,15 @@ msgstr ""
 "X-Launchpad-Export-Date: 2011-01-27 04:52+0000\n"
 "X-Generator: Launchpad (build 12177)\n"
 
-#: ../gnome-activity-journal:85
+#: ../ucl-study-journal:85
 msgid "print additional debugging information"
 msgstr "കൂടുതല്‍ ഡീബഗ്ഗിംഗ് വിവരങ്ങള്‍ അച്ചടിക്കുക"
 
-#: ../gnome-activity-journal:92
+#: ../ucl-study-journal:92
 msgid "ERROR"
 msgstr "തെറ്റ്‌"
 
-#: ../gnome-activity-journal:92
+#: ../ucl-study-journal:92
 msgid "Unable to connect to Zeitgeist:"
 msgstr "Zeitgeist-ആയി ബന്ധപ്പെടാന്‍ കഴിഞ്ഞില്ല:"
 
@@ -128,7 +128,7 @@ msgstr ""
 msgid "%s to %s"
 msgstr "%s മുതല്‍ %s വരെ"
 
-#: ../src/main.py:318 ../extra/gnome-activity-journal.desktop.in.h:1
+#: ../src/main.py:318 ../extra/ucl-study-journal.desktop.in.h:1
 msgid "Activity Journal"
 msgstr "ആക്ടിവിറ്റി ജേര്‍ണല്‍"
 
@@ -301,7 +301,7 @@ msgid "Software Developments"
 msgstr ""
 
 #: ../src/Indicator.py:87
-msgid "Hide/Show GAJ"
+msgid "Hide/Show Journal"
 msgstr ""
 
 #: ../src/common.py:144
@@ -376,7 +376,7 @@ msgstr ""
 msgid "Pinned Items"
 msgstr ""
 
-#: ../extra/gnome-activity-journal.desktop.in.h:2
+#: ../extra/ucl-study-journal.desktop.in.h:2
 msgid ""
 "Browse a chronological log of your activities and easily find files, "
 "contacts, etc."
@@ -384,19 +384,19 @@ msgstr ""
 "കാലഗതി അനുസരിച്ചുള്ള നിങ്ങളുടെ പ്രവര്‍ത്തികളുടെ ഒരു ലോഗ്  പരതുകയും, "
 "എളുപ്പത്തില്‍ ഫയലുകള്‍, വിലാസങ്ങള്‍ തുടങ്ങിയവ കണ്ടെത്തുക."
 
-#: ../extra/gnome-activity-journal.schemas.in.h:1
+#: ../extra/ucl-study-journal.schemas.in.h:1
 msgid "Accessibility"
 msgstr "ഉപയോഗക്ഷമത"
 
-#: ../extra/gnome-activity-journal.schemas.in.h:2
+#: ../extra/ucl-study-journal.schemas.in.h:2
 msgid "Allow thumbnails as icons"
 msgstr "നഖചിത്രങ്ങള്‍ ഐക്കനുകള്‍ ആയി ഉപയോഗിക്കാന്‍ അനുവദിക്കുക"
 
-#: ../extra/gnome-activity-journal.schemas.in.h:3
+#: ../extra/ucl-study-journal.schemas.in.h:3
 msgid "Amount of visible days"
 msgstr "ഗോചരമായ ദിവസങ്ങളുടെ എണ്ണം"
 
-#: ../extra/gnome-activity-journal.schemas.in.h:4
+#: ../extra/ucl-study-journal.schemas.in.h:4
 msgid ""
 "Customized height for the main window, in pixels (requires restart). Can't "
 "be bigger than the desktop's size."
@@ -404,7 +404,7 @@ msgstr ""
 "പ്രധാന ജാലകത്തിനു നിര്‍ദ്ദേശിക്കുന്ന ഉയരം, പിക്സലുകളില്‍ (റീസ്റ്റാര്‍ട്ട്‌ "
 "ആവശ്യമാണ്). ടെസ്ക്ടോപിന്റെ വലുപ്പത്തേക്കാള്‍ കൂടുതലാകാന്‍ പാടില്ല."
 
-#: ../extra/gnome-activity-journal.schemas.in.h:5
+#: ../extra/ucl-study-journal.schemas.in.h:5
 msgid ""
 "Customized width for the main window, in pixels (requires restart). Can't be "
 "bigger than the desktop's size."
@@ -412,18 +412,18 @@ msgstr ""
 "പ്രധാന ജാലകത്തിനു നിര്‍ദ്ദേശിക്കുന്ന വീതി, പിക്സലുകളില്‍ (റീസ്റ്റാര്‍ട്ട്‌ "
 "ആവശ്യമാണ്). ടെസ്ക്ടോപിന്റെ വലുപ്പത്തേക്കാള്‍ കൂടുതലാകാന്‍ പാടില്ല."
 
-#: ../extra/gnome-activity-journal.schemas.in.h:6
+#: ../extra/ucl-study-journal.schemas.in.h:6
 msgid "The amount of days to show at once."
 msgstr "ഒന്നിച്ചു കാണിക്കേണ്ട ദിവസങ്ങളുടെ എണ്ണം."
 
-#: ../extra/gnome-activity-journal.schemas.in.h:7
+#: ../extra/ucl-study-journal.schemas.in.h:7
 msgid ""
 "Whether special accessibility options should be enabled (requires restart)."
 msgstr ""
 "പ്രത്യേക സാമീപ്യതാ ഐശ്ചികങ്ങള്‍ സജീവമാക്കണോ എന്നു (റീസ്റ്റാര്‍ട്ട്‌ "
 "ആവശ്യമാണ്)."
 
-#: ../extra/gnome-activity-journal.schemas.in.h:8
+#: ../extra/ucl-study-journal.schemas.in.h:8
 msgid ""
 "Whether to allow showing little thumbnails next to each activity (requires "
 "restart). If False, only generic mime-type icons will be used."
@@ -432,11 +432,11 @@ msgstr ""
 "അനുവദിക്കണോ എന്നു (റീസ്റ്റാര്‍ട്ട്‌ ആവശ്യമാണ്). വേണ്ട എന്നാണെങ്കില്‍, "
 "പൊതുവായ mime-തരം ഐക്കണുകള്‍ ഉപയോഗിക്കും."
 
-#: ../extra/gnome-activity-journal.schemas.in.h:9
+#: ../extra/ucl-study-journal.schemas.in.h:9
 msgid "Window height"
 msgstr "ജാലകത്തിന്റെ ഉയരം"
 
-#: ../extra/gnome-activity-journal.schemas.in.h:10
+#: ../extra/ucl-study-journal.schemas.in.h:10
 msgid "Window width"
 msgstr "ജാലകത്തിന്റെ വീതി"
 
